@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import annex1 from '../assets/annex1.jpg'
+import annex2 from '../assets/annex2.jpg'
 
 interface AnnexDetails {
   title: string;
@@ -27,9 +29,9 @@ const annexDetailsData: AnnexDetailsData = {
     address: "අංක 123, මල් පාර, පේරාදෙණිය",
     features: ["කාමර 3", "සාලය", "කුස්සිය", "නානකාමරය", "වාහන නැවැත්වීම"],
     images: [
-      "https://via.placeholder.com/600/FF0000",
-      "https://via.placeholder.com/600/00FF00",
-      "https://via.placeholder.com/600/0000FF"
+      annex1,
+      annex2,
+      // "https://via.placeholder.com/600/0000FF"
     ],
     contact: {
       name: "කමල් පෙරේරා",
@@ -43,8 +45,8 @@ const annexDetailsData: AnnexDetailsData = {
     address: "අංක 45, සමන් මාවත, මොරටුව",
     features: ["AC", "Wi-Fi", "නානකාමරය"],
     images: [
-      "https://via.placeholder.com/600/FFFF00",
-      "https://via.placeholder.com/600/00FFFF"
+      annex1,
+      annex2,
     ],
     contact: {
       name: "සුනිල් සිල්වා",

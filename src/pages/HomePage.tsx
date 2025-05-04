@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import backgroundImage from '../assets/homeImage.jpg'
+import annex1 from '../assets/annex1.jpg'
+import annex2 from '../assets/annex2.jpg'
 
 const HomePage = () => {
   return (
@@ -55,7 +57,7 @@ const HomePage = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* Tempory Ad Cards */}
             <div className="bg-white shadow rounded-md overflow-hidden">
-              <img src="https://via.placeholder.com/300" alt="Annex" className="w-full h-48 object-cover" />
+              <img src={annex1} alt="Annex" className="w-full h-48 object-cover" />
               <div className="p-4">
                 <h3 className="text-lg font-semibold text-gray-800 mb-2">Annex Near Peradeniya</h3>
                 <p className="text-gray-600 text-sm">Rs. 15,000/month</p>
@@ -63,7 +65,7 @@ const HomePage = () => {
               </div>
             </div>
             <div className="bg-white shadow rounded-md overflow-hidden">
-              <img src="https://via.placeholder.com/300/00FF00" alt="Annex" className="w-full h-48 object-cover" />
+              <img src={annex2} alt="Annex" className="w-full h-48 object-cover" />
               <div className="p-4">
                 <h3 className="text-lg font-semibold text-gray-800 mb-2">Comfortable Room in Moratuwa</h3>
                 <p className="text-gray-600 text-sm">Rs. 12,000/month</p>
@@ -71,7 +73,7 @@ const HomePage = () => {
               </div>
             </div>
             <div className="bg-white shadow rounded-md overflow-hidden">
-              <img src="https://via.placeholder.com/300/0000FF" alt="Annex" className="w-full h-48 object-cover" />
+              <img src={annex2} alt="Annex" className="w-full h-48 object-cover" />
               <div className="p-4">
                 <h3 className="text-lg font-semibold text-gray-800 mb-2">Annex for Rent in Colombo</h3>
                 <p className="text-gray-600 text-sm">Rs. 18,000/month</p>
