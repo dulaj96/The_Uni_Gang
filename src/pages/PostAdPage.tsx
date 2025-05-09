@@ -11,8 +11,6 @@ const PostAdPage = () => {
   const [title, setTitle] = useState('');
   const [selectedCampus, setSelectedCampus] = useState<string | null>(null);
   const [openCampusDropDown, setOpenCampusDropDown] = useState(false);
-  const [campuses, setCampuses] = useState<University[]>(universitiesData);
-  const [searchCampus, setSearchCampus] = useState('');
   const [filteredCampuses, setFilteredCampuses] = useState<University[]>(universitiesData);
   const [address, setAddress] = useState('');
   const [price, setPrice] = useState('');
@@ -105,8 +103,7 @@ const PostAdPage = () => {
                       onClick={() => {
                         setSelectedCampus(campus.name);
                         setOpenCampusDropDown(false);
-                        setSearchCampus('');
-                        setFilteredCampuses(campuses); // Reset filtered list
+                        setFilteredCampuses(universitiesData); // Reset filtered list
                       }}
                       className='px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer'
                     >

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import backgroundImage from '../assets/homeImage.jpg'
 import annex1 from '../assets/annex1.jpg'

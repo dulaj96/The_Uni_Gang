@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import searchAnnex from '../assets/searchAnnex.jpg';
 import universitiesData from '../constants/annex/Universities.json';
