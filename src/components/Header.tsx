@@ -47,7 +47,7 @@ const Header = () => {
          {/* Navigation Menu */}
          <nav
           className={`md:block ${
-            isMobileMenuOpen ? 'fixed inset-0 bg-white z-20 flex justify-center items-center' : 'hidden'
+            isMobileMenuOpen ? 'fixed inset-0 bg-white z-20 flex justify-center items-center h-60 w-full mt-18 pt-5 pb-5' : 'hidden'
           }`}
         >
           <ul
@@ -62,7 +62,6 @@ const Header = () => {
                   className="text-black hover:text-red-600 focus:outline-none focus:shadow-outline"
                   aria-label="Close Mobile Menu"
                 >
-                  <FaTimes className="h-6 w-6" />
                 </button>
               </li>
             )}

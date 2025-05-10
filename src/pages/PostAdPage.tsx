@@ -61,14 +61,14 @@ const PostAdPage = () => {
     <div className="container mx-auto px-4 sm:px-6 lg:px-8">
       <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">Post a New Annex Add</h1>
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className='flex justify-center items-center'>
-          <div>
+      <div className='flex justify-center items-center'>
+          <div className='w-full max-w-[300px]'>
             <label htmlFor="title" className="block text-lg font-bold text-gray-700">Title</label>
             <div className="mt-1">
               <input
                 type="text"
                 id="title"
-                className="bg-gray-200 p-2 block w-200 sm:text-sm rounded-md "
+                className="bg-gray-200 p-2 block w-full sm:text-sm rounded-md"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 required
@@ -76,13 +76,13 @@ const PostAdPage = () => {
             </div>
           </div>
         </div>
-
+       
         <div className='flex justify-center items-center'>
-          <div>
+          <div className='w-full max-w-[300px]'>
             <label htmlFor="campus" className="block text-lg font-bold text-gray-700">Select Campus</label>
             <div
               onClick={() => setOpenCampusDropDown(!openCampusDropDown)}
-              className='flex justify-between items-center w-200 rounded-md border border-gray-600 px-3 py-2 mt-1 cursor-pointer relative'
+              className='flex justify-between items-center w-full rounded-md border border-gray-600 px-3 py-2 mt-1 cursor-pointer relative'
             >
               <p className='text-gray-700'>
                 {selectedCampus || 'Select Campus'}
@@ -91,19 +91,16 @@ const PostAdPage = () => {
                 {openCampusDropDown ? <RiArrowDropUpLine className='text-2xl' /> : <RiArrowDropDownLine className='text-2xl' />}
               </div>
             </div>
-            <div className='absolute z-10 mt-1 w-200 bg-gray-200 rounded-md shadow-lg'>
+            <div className={`absolute z-10 mt-1 w-full bg-gray-200 rounded-md shadow-lg max-h-56 overflow-y-auto ${openCampusDropDown ? 'block' : 'none'}`}>
               {openCampusDropDown && (
-                <div className='max-h-50 overflow-y-auto'>
-                  <div className='relative p-2'>
-                    {/* සර්ච් ඉන්පුට් එක අයින් කළා */}
-                  </div>
+                <div>
                   {filteredCampuses.map((campus) => (
                     <div
                       key={campus.id}
                       onClick={() => {
                         setSelectedCampus(campus.name);
                         setOpenCampusDropDown(false);
-                        setFilteredCampuses(universitiesData); // Reset filtered list
+                        setFilteredCampuses(universitiesData);
                       }}
                       className='px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer'
                     >
@@ -117,13 +114,13 @@ const PostAdPage = () => {
         </div>
 
         <div className='flex justify-center items-center'>
-          <div>
+          <div className='w-full max-w-[300px]'>
             <label htmlFor="address" className="block text-lg font-bold text-gray-700">Address</label>
             <div className="mt-1">
               <textarea
                 id="address"
                 rows={3}
-                className="shadow-sm p-2 block w-200 sm:text-sm bg-gray-200 rounded-md"
+                className="shadow-sm p-2 block w-full sm:text-sm bg-gray-200 rounded-md"
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
                 required
@@ -133,13 +130,13 @@ const PostAdPage = () => {
         </div>
 
         <div className='flex justify-center items-center'>
-          <div>
+          <div className='w-full max-w-[300px]'>
             <label htmlFor="price" className="block text-lg font-bold text-gray-700">Price (Rs. per month)</label>
             <div className="mt-1 relative rounded-md shadow-sm">
               <input
                 type="number"
                 id="price"
-                className="p-2 block w-200 sm:text-sm bg-gray-200 rounded-md pr-12"
+                className="p-2 block w-full sm:text-sm bg-gray-200 rounded-md pr-12"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
                 required
@@ -152,13 +149,13 @@ const PostAdPage = () => {
         </div>
 
         <div className='flex justify-center items-center'>
-          <div>
+          <div className='w-full max-w-[300px]'>
             <label htmlFor="description" className="block text-lg font-bold text-gray-700">Description</label>
             <div className="mt-1">
               <textarea
                 id="description"
                 rows={5}
-                className="p-2 block w-200 sm:text-sm bg-gray-200 rounded-md"
+                className="p-2 block w-full sm:text-sm bg-gray-200 rounded-md"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 required
@@ -169,13 +166,13 @@ const PostAdPage = () => {
 
         {/* Features සඳහා Textarea */}
         <div className='flex justify-center items-center'>
-          <div>
+          <div className='w-full max-w-[300px]'>
             <label htmlFor="features" className="block text-lg font-bold text-gray-700">Features (one per line)</label>
             <div className="mt-1">
               <textarea
                 id="features"
                 rows={3}
-                className="p-2 block w-200 sm:text-sm bg-gray-200 rounded-md"
+                className="p-2 block w-full sm:text-sm bg-gray-200 rounded-md"
                 value={featuresText}
                 onChange={(e) => setFeaturesText(e.target.value)}
               />
@@ -185,26 +182,26 @@ const PostAdPage = () => {
         </div>
 
         <div className='flex justify-center items-center'>
-          <div>
+          <div className='w-full max-w-[300px]'>
             <label htmlFor="images" className="block text-lg font-bold text-gray-700">Images</label>
             <div className="mt-1">
               <input
                 type="file"
                 id="images"
-                className="p-2 block w-200 bg-gray-200 sm:text-sm rounded-md"
+                className="p-2 block w-full bg-gray-200 sm:text-sm rounded-md"
                 multiple
                 onChange={handleImageChange}
                 accept="image/*"
               />
               <p className="mt-1 text-sm text-gray-500">Upload one or more images of the annex.</p>
               {images.length > 0 && (
-                <div className="mt-2 grid grid-cols-3 gap-2">
+                <div className="mt-2 grid grid-cols-2 sm:grid-cols-3 gap-2">
                   {images.map((image, index) => (
                     <div key={index} className="relative">
                       <img
                         src={URL.createObjectURL(image)}
                         alt={`Uploaded Image ${index + 1}`}
-                        className="w-60 h-60 object-cover rounded-md"
+                        className="w-full h-24 object-cover rounded-md"
                       />
                       {/* රූපය ඉවත් කිරීමේ බොත්තම */}
                       <button
@@ -222,15 +219,14 @@ const PostAdPage = () => {
           </div>
         </div>
 
-
         <div className='flex justify-center items-center'>
-          <div>
+          <div className='w-full max-w-[300px]'>
             <label htmlFor="contactName" className="block text-lg font-bold text-gray-700">Contact Name</label>
             <div className="mt-1">
               <input
                 type="text"
                 id="contactName"
-                className="p-2 block w-200 sm:text-sm bg-gray-200 rounded-md"
+                className="p-2 block w-full sm:text-sm bg-gray-200 rounded-md"
                 value={contactName}
                 onChange={(e) => setContactName(e.target.value)}
                 required
@@ -240,13 +236,13 @@ const PostAdPage = () => {
         </div>
 
         <div className='flex justify-center items-center'>
-          <div>
+          <div className='w-full max-w-[300px]'>
             <label htmlFor="contactPhone" className="block text-lg font-bold text-gray-700">Contact Phone</label>
             <div className="mt-1">
               <input
                 type="tel"
                 id="contactPhone"
-                className="p-2 block w-200 sm:text-sm bg-gray-200 rounded-md"
+                className="p-2 block w-full sm:text-sm bg-gray-200 rounded-md"
                 value={contactPhone}
                 onChange={(e) => setContactPhone(e.target.value)}
                 required
@@ -256,13 +252,13 @@ const PostAdPage = () => {
         </div>
 
         <div className='flex justify-center items-center'>
-          <div>
+          <div className='w-full max-w-[300px]'>
             <label htmlFor="contactEmail" className="block text-lg font-bold text-gray-700">Contact Email (Optional)</label>
             <div className="mt-1">
               <input
                 type="email"
                 id="contactEmail"
-                className="p-2 block w-200 sm:text-sm bg-gray-200 rounded-md"
+                className="p-2 block w-full sm:text-sm bg-gray-200 rounded-md"
                 value={contactEmail}
                 onChange={(e) => setContactEmail(e.target.value)}
               />
