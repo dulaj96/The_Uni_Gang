@@ -15,11 +15,11 @@ const PostAdPage = () => {
   const [address, setAddress] = useState('');
   const [price, setPrice] = useState('');
   const [description, setDescription] = useState('');
-  const [featuresText, setFeaturesText] = useState(''); 
+  const [featuresText, setFeaturesText] = useState('');
   const [images, setImages] = useState<File[]>([]);
   const [contactName, setContactName] = useState('');
   const [contactPhone, setContactPhone] = useState('');
-  const [contactEmail, setContactEmail] = useState(''); 
+  const [contactEmail, setContactEmail] = useState('');
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -39,7 +39,7 @@ const PostAdPage = () => {
       address,
       price,
       description,
-      features: featuresText.split('\n').map(f => f.trim()).filter(f => f !== ''), 
+      features: featuresText.split('\n').map(f => f.trim()).filter(f => f !== ''),
       images,
       contactName,
       contactPhone,
@@ -61,8 +61,8 @@ const PostAdPage = () => {
     <div className="container mx-auto px-4 sm:px-6 lg:px-8">
       <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">Post a New Annex Add</h1>
       <form onSubmit={handleSubmit} className="space-y-6">
-      <div className='flex justify-center items-center'>
-          <div className='w-full max-w-[300px]'>
+        <div className='flex justify-center items-center'>
+          <div className='w-[300px] sm:w-[300px] lg:w-200'>
             <label htmlFor="title" className="block text-lg font-bold text-gray-700">Title</label>
             <div className="mt-1">
               <input
@@ -76,9 +76,9 @@ const PostAdPage = () => {
             </div>
           </div>
         </div>
-       
+
         <div className='flex justify-center items-center'>
-          <div className='w-full max-w-[300px]'>
+          <div className='w-[300px] sm:w-[300px] lg:w-200'>
             <label htmlFor="campus" className="block text-lg font-bold text-gray-700">Select Campus</label>
             <div
               onClick={() => setOpenCampusDropDown(!openCampusDropDown)}
@@ -91,7 +91,7 @@ const PostAdPage = () => {
                 {openCampusDropDown ? <RiArrowDropUpLine className='text-2xl' /> : <RiArrowDropDownLine className='text-2xl' />}
               </div>
             </div>
-            <div className={`absolute z-10 mt-1 w-full bg-gray-200 rounded-md shadow-lg max-h-56 overflow-y-auto ${openCampusDropDown ? 'block' : 'none'}`}>
+            <div className={`absolute z-10 mt-1 w-[300px] sm:w-[300px] lg:w-200 bg-gray-200 rounded-md shadow-lg max-h-56 overflow-y-auto ${openCampusDropDown ? 'block' : 'none'}`}>
               {openCampusDropDown && (
                 <div>
                   {filteredCampuses.map((campus) => (
@@ -114,7 +114,7 @@ const PostAdPage = () => {
         </div>
 
         <div className='flex justify-center items-center'>
-          <div className='w-full max-w-[300px]'>
+          <div className='w-[300px] sm:w-[300px] lg:w-200'>
             <label htmlFor="address" className="block text-lg font-bold text-gray-700">Address</label>
             <div className="mt-1">
               <textarea
@@ -130,7 +130,7 @@ const PostAdPage = () => {
         </div>
 
         <div className='flex justify-center items-center'>
-          <div className='w-full max-w-[300px]'>
+          <div className='w-[300px] sm:w-[300px] lg:w-200'>
             <label htmlFor="price" className="block text-lg font-bold text-gray-700">Price (Rs. per month)</label>
             <div className="mt-1 relative rounded-md shadow-sm">
               <input
@@ -149,7 +149,7 @@ const PostAdPage = () => {
         </div>
 
         <div className='flex justify-center items-center'>
-          <div className='w-full max-w-[300px]'>
+          <div className='w-[300px] sm:w-[300px] lg:w-200'>
             <label htmlFor="description" className="block text-lg font-bold text-gray-700">Description</label>
             <div className="mt-1">
               <textarea
@@ -166,7 +166,7 @@ const PostAdPage = () => {
 
         {/* Features සඳහා Textarea */}
         <div className='flex justify-center items-center'>
-          <div className='w-full max-w-[300px]'>
+          <div className='w-[300px] sm:w-[300px] lg:w-200'>
             <label htmlFor="features" className="block text-lg font-bold text-gray-700">Features (one per line)</label>
             <div className="mt-1">
               <textarea
@@ -182,7 +182,7 @@ const PostAdPage = () => {
         </div>
 
         <div className='flex justify-center items-center'>
-          <div className='w-full max-w-[300px]'>
+          <div className='w-[300px] sm:w-[300px] lg:w-200'>
             <label htmlFor="images" className="block text-lg font-bold text-gray-700">Images</label>
             <div className="mt-1">
               <input
@@ -220,7 +220,7 @@ const PostAdPage = () => {
         </div>
 
         <div className='flex justify-center items-center'>
-          <div className='w-full max-w-[300px]'>
+          <div className='w-[300px] sm:w-[300px] lg:w-200'>
             <label htmlFor="contactName" className="block text-lg font-bold text-gray-700">Contact Name</label>
             <div className="mt-1">
               <input
@@ -236,13 +236,13 @@ const PostAdPage = () => {
         </div>
 
         <div className='flex justify-center items-center'>
-          <div className='w-full max-w-[300px]'>
+          <div className='w-[300px] sm:w-[300px] lg:w-200'>
             <label htmlFor="contactPhone" className="block text-lg font-bold text-gray-700">Contact Phone</label>
             <div className="mt-1">
               <input
                 type="tel"
                 id="contactPhone"
-                className="p-2 block w-full sm:text-sm bg-gray-200 rounded-md"
+                className="p-2 block w-full  sm:text-sm bg-gray-200 rounded-md"
                 value={contactPhone}
                 onChange={(e) => setContactPhone(e.target.value)}
                 required
@@ -252,7 +252,7 @@ const PostAdPage = () => {
         </div>
 
         <div className='flex justify-center items-center'>
-          <div className='w-full max-w-[300px]'>
+          <div className='w-[300px] sm:w-[300px] lg:w-200'>
             <label htmlFor="contactEmail" className="block text-lg font-bold text-gray-700">Contact Email (Optional)</label>
             <div className="mt-1">
               <input
