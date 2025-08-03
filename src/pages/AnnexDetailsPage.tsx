@@ -1,4 +1,4 @@
-import  { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import annex1 from '../assets/annex1.jpg'
@@ -91,10 +91,10 @@ const AnnexDetailsPage = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8"> {/* කන්ටේනර් එකට පැඩින් දැම්මා */}
-      <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6 text-center">{annexDetails.title}</h1> {/* හෙඩින් සයිස් එක */}
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-2">
+      <h1 className="text-xl sm:text-xl font-bold text-black mb-6 text-center">{annexDetails.title}</h1>
 
-      {/* ප්‍රධාන පින්තූරය සහ මාරු කිරීමේ බොත්තම් */}
+      {/* Main image with change button */}
       <div className="relative mb-6 flex justify-center">
         <img
           src={annexDetails.images[currentImageIndex]}
@@ -119,20 +119,20 @@ const AnnexDetailsPage = () => {
         )}
       </div>
 
-      {/* මිල */}
-      <p className="text-xl sm:text-2xl font-bold text-red-500 mb-4">{annexDetails.price}</p> {/* මිල සයිස් එක */}
+      {/* price */}
+      <p className="text-xl sm:text-2xl font-bold text-red-500 mb-4">{annexDetails.price}</p>
 
-      {/* විස්තරය */}
+      {/* description */}
       <div className="mb-6">
-        <h2 className="text-lg sm:text-xl font-bold text-gray-800 mb-2">Description</h2> {/* ඩිස්ක්‍රිප්ෂන් හෙඩින් සයිස් එක */}
-        <p className="text-gray-700">{annexDetails.description}</p> {/* ඩිස්ක්‍රිප්ෂන් ටෙක්ස්ට් එක */}
+        <h2 className="text-lg sm:text-xl font-bold text-black mb-2">Description</h2>
+        <p className="text-gray-800">{annexDetails.description}</p>
       </div>
 
-      {/* පහසුකම් */}
+      {/* facilities */}
       {annexDetails.features && annexDetails.features.length > 0 && (
         <div className="mb-6">
-          <h2 className="text-lg sm:text-xl font-bold text-gray-800 mb-2">Features</h2> {/* පහසුකම් හෙඩින් සයිස් එක */}
-          <ul className="list-disc list-inside text-gray-700"> {/* පහසුකම් ලිස්ට් එක */}
+          <h2 className="text-lg sm:text-xl font-bold text-black mb-2">Features</h2>
+          <ul className="list-disc list-inside text-gray-800">
             {annexDetails.features.map((feature: string, index: number) => (
               <li key={index}>{feature}</li>
             ))}
@@ -140,18 +140,18 @@ const AnnexDetailsPage = () => {
         </div>
       )}
 
-      {/* ලිපිනය */}
+      {/* address */}
       <div className="mb-6">
-        <h2 className="text-lg sm:text-xl font-bold text-gray-800 mb-2">Address</h2> {/* ලිපිනය හෙඩින් සයිස් එක */}
-        <p className="text-gray-700">{annexDetails.address}</p> {/* ලිපිනය ටෙක්ස්ට් එක */}
+        <h2 className="text-lg sm:text-xl font-bold text-black mb-2">Address</h2>
+        <p className="text-gray-800">{annexDetails.address}</p>
       </div>
 
-      {/* සම්බන්ධතා තොරතුරු */}
+      {/* related info */}
       <div>
-        <h2 className="text-lg sm:text-xl font-bold text-gray-800 mb-2">Contact Information</h2> {/* සම්බන්ධතා හෙඩින් සයිස් එක */}
-        <p className="text-gray-700">Name: {annexDetails.contact.name}</p> {/* නම */}
-        <p className="text-gray-700">Phone: {annexDetails.contact.phone}</p> {/* දුරකථන අංකය */}
-        <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-4 w-full sm:w-auto">Contact Now</button> {/* කොන්ටැක්ට් බට්න් එක */}
+        <h2 className="text-lg sm:text-xl font-bold text-black mb-2">Contact Information</h2>
+        <p className="text-gray-800">Name: {annexDetails.contact.name}</p>
+        <p className="text-gray-800">Phone: {annexDetails.contact.phone}</p>
+        <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-4 w-full sm:w-auto">Contact Now</button>
       </div>
     </div>
   );

@@ -25,8 +25,8 @@ const HomePage = () => {
         </div>
       </section> */}
 
-        {/* හැඳින්වීමේ සෙක්ෂන් එක */}
-        <section
+      {/* inrto */}
+      <section
         className="py-16 relative flex items-center justify-center rounded-md"
         style={{
           backgroundImage: `url('${backgroundImage}')`,
@@ -35,7 +35,7 @@ const HomePage = () => {
           minHeight: '500px',
         }}
       >
-        <div className="absolute inset-0 "></div> {/* Overlay color changed to black and opacity to 30% */}
+        <div className="absolute inset-0 "></div>
         <div className="container mx-auto text-center relative" >
           <h1 className="text-4xl font-bold text-red-500 mb-6">Welcome to The Uni Gang</h1>
           <p className="text-xl text-gray-500 leading-relaxed mb-8">
@@ -48,40 +48,39 @@ const HomePage = () => {
       </section>
 
       {/* Latest Annex */}
-      <section className="py-10 bg-gray-200 mt-10 p-10 rounded-xl">
+      <section className="py-10 bg-gray-200 mt-10 p-10 rounded-xl border border-red-600">
         <div className="container mx-auto">
           <div className='text-center'>
-            <h2 className="text-2xl sm:text-2xl md:text-2xl font-bold mb-10">Recently Added Annexes</h2>
+            <h2 className="text-black text-2xl sm:text-2xl md:text-xl font-bold mb-8">Recently Added Annexes</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* Tempory Ad Cards */}
             <div className="bg-white shadow rounded-md overflow-hidden">
               <img src={annex1} alt="Annex" className="w-full h-48 object-cover" />
               <div className="p-4">
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">Annex Near Peradeniya</h3>
-                <p className="text-gray-600 text-sm">Rs. 15,000/month</p>
+                <h3 className="text-lg font-semibold text-black mb-2">Annex Near Peradeniya</h3>
+                <p className="text-gray-800 text-sm">Rs. 15,000/month</p>
                 <Link to="/annex/1" className="text-red-500 hover:underline mt-2 block font-medium">View Details</Link>
               </div>
             </div>
             <div className="bg-white shadow rounded-md overflow-hidden">
               <img src={annex2} alt="Annex" className="w-full h-48 object-cover" />
               <div className="p-4">
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">Comfortable Room in Moratuwa</h3>
-                <p className="text-gray-600 text-sm">Rs. 12,000/month</p>
+                <h3 className="text-lg font-semibold text-black mb-2">Comfortable Room in Moratuwa</h3>
+                <p className="text-gray-800 text-sm">Rs. 12,000/month</p>
                 <Link to="/annex/2" className="text-red-500 hover:underline mt-2 block font-medium">View Details</Link>
               </div>
             </div>
             <div className="bg-white shadow rounded-md overflow-hidden">
               <img src={annex2} alt="Annex" className="w-full h-48 object-cover" />
               <div className="p-4">
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">Annex for Rent in Colombo</h3>
-                <p className="text-gray-600 text-sm">Rs. 18,000/month</p>
+                <h3 className="text-lg font-semibold text-black mb-2">Annex for Rent in Colombo</h3>
+                <p className="text-gray-800 text-sm">Rs. 18,000/month</p>
                 <Link to="/annex/3" className="text-red-500 hover:underline mt-2 block font-medium">View Details</Link>
               </div>
             </div>
           </div>
           <div className="text-center mt-6">
-            <Link to="/find-accommodation" className="text-red-500 hover:underline font-semibold">View All Accommodation</Link>
+            <Link to="/find-accommodation" className="text-red-500 hover:text-red-600 text-lg font-semibold">View All Accommodation</Link>
           </div>
         </div>
       </section>
@@ -89,12 +88,12 @@ const HomePage = () => {
       {/* Annex Advertiement */}
       <section className="py-16">
         <div className="container mx-auto text-center">
-          <h2 className="text-3xl font-bold text-gray-800 mb-6">Looking to Rent Out Your Annex?</h2>
-          <p className="text-lg text-gray-700 leading-relaxed mb-8">
+          <h2 className="text-3xl font-bold text-black mb-6">Looking to Rent Out Your Annex?</h2>
+          <p className="text-lg text-gray-800 leading-relaxed mb-8">
             Reach thousands of university students across Sri Lanka.
             Post your annex ad today and find the perfect tenants!
           </p>
-          <Link to="/post-ad" className="bg-red-500 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-full focus:outline-none focus:shadow-outline text-lg">
+          <Link to="/post-ad" className="bg-red-500 hover:bg-red-700 text-white font-semibold py-3 px-6 rounded-full focus:outline-none focus:shadow-outline text-md">
             Post Your Annex Ad
           </Link>
         </div>
