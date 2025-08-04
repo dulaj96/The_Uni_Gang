@@ -78,7 +78,7 @@ const Header = () => {
 
   return (
     <header className="bg-white py-4 shadow-md sticky top-0 z-10">
-      <div className="container mx-auto flex items-center justify-between px-4">
+      <div className="container mx-auto flex items-center px-4 relative">
         <div className="flex items-center">
           {/* Circular Logo */}
           <div className="mr-2">
@@ -131,7 +131,7 @@ const Header = () => {
         </div>
 
         {/* Desktop Navigation Menu and Profile */}
-        <div className="hidden md:flex items-center space-x-6">
+        <div className="hidden md:flex absolute left-1/2 transform -translate-x-1/2 items-center space-x-6 z-10">
           <nav>
             <ul className="flex space-x-6">
               <li><Link to="/" className="font-semibold text-black hover:text-red-600">Home</Link></li>
@@ -143,7 +143,7 @@ const Header = () => {
         </div>
 
         {/* Profile Icon and Dropdown for Desktop */}
-        <div className="hidden md:flex relative items-center" ref={dropdownRef}>
+        <div className="hidden md:flex relative items-center ml-auto z-20" ref={dropdownRef}>
           {isLoggedIn && userName && (
             <span className="text-red-600 font-semibold mr-2 text-sm">{userName}</span>
           )}
