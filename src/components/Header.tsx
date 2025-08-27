@@ -78,7 +78,7 @@ const Header = () => {
 
   return (
     <header className="bg-white py-4 shadow-md sticky top-0 z-10">
-      <div className="container mx-auto flex items-center px-4 relative">
+      <div className="container mx-auto flex items-center justify-between px-4 relative">
         <div className="flex items-center">
           {/* Circular Logo */}
           <div className="mr-2">
