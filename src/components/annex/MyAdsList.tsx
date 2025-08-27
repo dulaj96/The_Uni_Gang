@@ -30,7 +30,7 @@ const MyAdsList: React.FC<MyAdsListProps> = ({ ads, onEdit, onDelete }) => {
 
   return (
     <div className="my-ads-section mt-8">
-      <div className='bg-gray-200 shadow-lg rounded-lg p-6 md:p-8 border-1 border-red-600'>
+      <div className='bg-gray-200 shadow-lg rounded-lg p-6 md:p-8 border-1 border-gray-300'>
         <h2 className="text-xl font-bold text-black mb-6 text-center">My Posted Ads</h2>
         {ads.length === 0 ? (
           <p className="text-center text-gray-600">You haven't posted any ads yet.</p>

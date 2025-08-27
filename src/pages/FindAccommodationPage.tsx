@@ -147,18 +147,23 @@ const FindAccommodationPage = () => {
       </section>
 
       {/* Annex List with Pagination */}
-      <section className='bg-gray-200 p-10 rounded-xl border border-red-600 pt-8'>
+      <section className=' bg-gray-200 p-10 rounded-xl border border-gray-300 pt-8'>
         <div className="container mx-auto">
           <h2 className="text-xl font-bold text-black mb-8 text-center">Available Annex</h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {currentAnnexes.map((annex) => (
-            <div key={annex.id} className="bg-white shadow rounded-md overflow-hidden">
+            <div key={annex.id} className="bg-white shadow rounded-md overflow-hidden relative transition-all duration-300 hover:scale-105">
               <img src={annex.images[0]} alt="Annex" className="w-full h-48 object-cover" />
               <div className="p-4">
                 <h3 className="text-md font-semibold text-black mb-2">{annex.title}</h3>
                 <p className="text-gray-800 text-sm">{annex.price}</p>
-                <Link to={annex.link} className="text-red-500 mt-2 block font-medium">View Details</Link>
+                <Link
+                  to={annex.link}
+                  className="mt-2 inline-block text-sm px-4 py-2 bg-gray-500 text-white font-medium rounded-lg shadow hover:bg-red-600 transition"
+                >
+                  View Details
+                </Link>
               </div>
             </div>
           ))}

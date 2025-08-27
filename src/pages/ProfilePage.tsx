@@ -87,7 +87,7 @@ const ProfilePage = () => {
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 -py-5">
-      <div className="bg-gray-200 shadow-lg rounded-lg p-6 md:p-8 flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8 border border-red-600">
+      <div className="bg-gray-200 shadow-lg rounded-lg p-6 md:p-8 flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8 border border-gray-300">
         {/* Profile Picture Section (Left) */}
         <div className="flex flex-col items-center justify-center md:w-1/3 mt-20">
           <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center border-4 border-red-500 shadow-md">

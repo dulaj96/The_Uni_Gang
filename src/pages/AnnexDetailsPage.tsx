@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import annex1 from '../assets/annex1.jpg'
 import annex2 from '../assets/annex2.jpg'
@@ -59,6 +59,8 @@ const AnnexDetailsPage = () => {
   const { id } = useParams<{ id: string }>();
   const [annexDetails, setAnnexDetails] = useState<AnnexDetails | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  const Navigate = useNavigate();
 
   useEffect(() => {
     const annexId = id;
@@ -151,7 +153,15 @@ const AnnexDetailsPage = () => {
         <h2 className="text-lg sm:text-xl font-bold text-black mb-2">Contact Information</h2>
         <p className="text-gray-800">Name: {annexDetails.contact.name}</p>
         <p className="text-gray-800">Phone: {annexDetails.contact.phone}</p>
-        <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-4 w-full sm:w-auto">Contact Now</button>
+      </div>
+
+      <div className='flex items-center justify-center mt-4'>
+        <button
+          onClick={() => Navigate(-1)}
+          className=" mt-2 inline-block text-sm px-4 py-2 bg-red-500 text-white font-medium rounded-lg shadow hover:bg-red-600 transition"
+        >
+          Go Back
+        </button>
       </div>
     </div>
   );

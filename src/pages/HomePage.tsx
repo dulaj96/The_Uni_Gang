@@ -2,8 +2,26 @@ import { Link } from 'react-router-dom';
 import backgroundImage from '../assets/homeImage.jpg'
 import annex1 from '../assets/annex1.jpg'
 import annex2 from '../assets/annex2.jpg'
+import { useEffect, useState } from 'react';
+
+const dummyAnnexes = Array.from({ length: 6 }, (_, i) => ({
+  id: String(i + 1),
+  title: `Annex ${i + 1} Near University`,
+  price: `Rs. ${10000 + (i * 500)}/month`,
+  description: `This is a description for annex ${i + 1}. It is comfortable and close to campus.`,
+  address: `Address ${i + 1}, City`,
+  images: [i % 2 === 0 ? annex1 : annex2],
+  link: `/annex/${i + 1}`
+}));
+
 
 const HomePage = () => {
+  const [allAnnexes, setAllAnnexes] = useState<any[]>([]);
+
+  useEffect(() => {
+    setAllAnnexes(dummyAnnexes);
+  }, []);
+
   return (
     <div>
       {/* Find Annex */}
@@ -48,39 +66,37 @@ const HomePage = () => {
       </section>
 
       {/* Latest Annex */}
-      <section className="py-10 bg-gray-200 mt-10 p-10 rounded-xl border border-red-600">
+      <section className="py-10 bg-gray-200 mt-10 p-10 rounded-xl border border-gray-300">
         <div className="container mx-auto">
           <div className='text-center'>
             <h2 className="text-black text-2xl sm:text-2xl md:text-xl font-bold mb-8">Recently Added Annexes</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="bg-white shadow rounded-md overflow-hidden">
-              <img src={annex1} alt="Annex" className="w-full h-48 object-cover" />
-              <div className="p-4">
-                <h3 className="text-lg font-semibold text-black mb-2">Annex Near Peradeniya</h3>
-                <p className="text-gray-800 text-sm">Rs. 15,000/month</p>
-                <Link to="/annex/1" className="text-red-500 hover:underline mt-2 block font-medium">View Details</Link>
-              </div>
-            </div>
-            <div className="bg-white shadow rounded-md overflow-hidden">
-              <img src={annex2} alt="Annex" className="w-full h-48 object-cover" />
-              <div className="p-4">
-                <h3 className="text-lg font-semibold text-black mb-2">Comfortable Room in Moratuwa</h3>
-                <p className="text-gray-800 text-sm">Rs. 12,000/month</p>
-                <Link to="/annex/2" className="text-red-500 hover:underline mt-2 block font-medium">View Details</Link>
-              </div>
-            </div>
-            <div className="bg-white shadow rounded-md overflow-hidden">
-              <img src={annex2} alt="Annex" className="w-full h-48 object-cover" />
-              <div className="p-4">
-                <h3 className="text-lg font-semibold text-black mb-2">Annex for Rent in Colombo</h3>
-                <p className="text-gray-800 text-sm">Rs. 18,000/month</p>
-                <Link to="/annex/3" className="text-red-500 hover:underline mt-2 block font-medium">View Details</Link>
-              </div>
-            </div>
+            {
+              allAnnexes.map((annex) => (
+                <div className="bg-white shadow rounded-md overflow-hidden">
+                  <img src={annex.images[0]} alt="Annex" className="w-full h-48 object-cover" />
+                  <div className="p-4">
+                    <h3 className="text-lg font-semibold text-black mb-2">{annex.title}</h3>
+                    <p className="text-gray-800 text-sm">{annex.price}</p>
+                    <Link
+                      to={annex.link}
+                      className="mt-2 inline-block text-sm px-4 py-2 bg-gray-500 text-white font-medium rounded-lg shadow hover:bg-red-600 transition"
+                    >
+                      View Details
+                    </Link>
+                  </div>
+                </div>
+              ))
+            }
           </div>
-          <div className="text-center mt-6">
-            <Link to="/find-accommodation" className="text-red-500 hover:text-red-600 text-lg font-semibold">View All Accommodation</Link>
+          <div className="text-center mt-10">
+            <Link
+              to="/find-accommodation"
+              className="inline-block text-sm px-4 py-2 bg-gray-500 text-white font-medium rounded-lg shadow hover:bg-red-600 transition"
+            >
+              View All Accommodation
+            </Link>
           </div>
         </div>
       </section>

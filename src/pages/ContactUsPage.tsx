@@ -36,7 +36,7 @@ const ContactUsPage = () => {
     // }}
     >
       <div className="relative grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="bg-white border border-red-600 shadow-md rounded-lg p-6 bg-opacity-70">
+        <div className="bg-white border border-gray-300 shadow-md rounded-lg p-6 bg-opacity-70">
           <h2 className="text-lg font-bold text-gray-700 mb-4">Send us a Message</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
@@ -90,7 +90,7 @@ const ContactUsPage = () => {
         </div>
 
         {/* Contact Information Card with WhatsApp and Facebook in a Row */}
-        <div className="bg-white border border-red-600 shadow-md rounded-lg p-6 bg-opacity-70">
+        <div className="bg-white border border-gray-300 shadow-md rounded-lg p-6 bg-opacity-70">
           <h2 className="text-lg font-bold text-gray-700 mb-4">Contact Information</h2>
           <div className="space-y-3">
             <div className="flex items-center">
