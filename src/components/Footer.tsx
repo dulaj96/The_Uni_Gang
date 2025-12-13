@@ -13,7 +13,7 @@ const Footer = () => {
               The <span className="text-red-600 dark:text-red-500">Uni Gang</span>
             </h3>
             <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-6">
-              The best one of the University student's platform in SriLanka. Your trusted website for finding the best student accommodations closer to your university. Secure, reliable, and student-first.
+              Your trusted platform for finding the best student accommodations closer to your university. Secure, reliable, and student-first. More features loading....!
             </p>
           </div>
 
