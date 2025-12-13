@@ -44,7 +44,7 @@ const HomePage = () => {
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-300 to-indigo-300">Student Home</span>
           </h1>
           <p className="text-xl md:text-2xl text-slate-200 mb-10 max-w-2xl mx-auto font-light leading-relaxed">
-            Discover safe, affordable, and convenient accommodations near your university campus.
+            Discover safe, affordable, and convenient accommodations near your university.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -138,7 +138,7 @@ const HomePage = () => {
               Join thousands of landlords who trust The Uni Gang to find reliable student tenants. Simple, fast, and secure.
             </p>
             <Link to="/post-ad" className="inline-block bg-white text-slate-900 text-lg font-bold py-4 px-10 rounded-full shadow-xl hover:shadow-2xl hover:scale-105 transition-all">
-              Post Your Ad Free
+              List Your Property Now
             </Link>
           </div>
         </div>
