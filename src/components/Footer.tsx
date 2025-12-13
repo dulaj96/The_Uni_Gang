@@ -62,9 +62,9 @@ const Footer = () => {
           <p className="text-slate-400 text-sm">
             &copy; {new Date().getFullYear()} The Uni Gang. All rights reserved.
           </p>
-          <p className="text-slate-400 text-sm mt-2 md:mt-0">
+          {/* <p className="text-slate-400 text-sm mt-2 md:mt-0">
             Made with ❤️ for students.
-          </p>
+          </p> */}
         </div>
       </div>
     </footer>
