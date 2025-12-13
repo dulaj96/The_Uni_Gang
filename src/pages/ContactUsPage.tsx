@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { FaWhatsapp, FaFacebook } from 'react-icons/fa';
-import { FiPhone, FiMail } from 'react-icons/fi';
+import { LuPhone, LuMail, LuSend, LuMapPin, LuFacebook } from 'react-icons/lu';
 
 const ContactUsPage = () => {
   const [name, setName] = useState('');
@@ -9,116 +8,114 @@ const ContactUsPage = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({
-      name,
-      email,
-      message,
-    });
+    console.log({ name, email, message });
     setName('');
     setEmail('');
     setMessage('');
     alert('Message sent successfully!');
   };
 
-  const whatsappLink = 'https://wa.me/YOUR_WHATSAPP_NUMBER';
-  const facebookLink = 'https://www.facebook.com/YOUR_FACEBOOK_PAGE';
-  const phoneNumber = '+94 72 44 78 148';
-  const emailAddress = 'your.email@example.com';
-
   return (
-    <div
-      className="container bg-gray-200 mx-auto py-8 px-4 sm:px-6 lg:px-8 relative rounded-md"
-    // style={{
-    //   backgroundImage: `url('${backgroundImage}')`,
-    //   backgroundSize: 'cover',
-    //   backgroundPosition: 'center',
-    //   minHeight: '400px', // Adjust as needed
-    // }}
-    >
-      <div className="relative grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="bg-white border border-gray-300 shadow-md rounded-lg p-6 bg-opacity-70">
-          <h2 className="text-lg font-bold text-gray-700 mb-4">Send us a Message</h2>
-          <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="max-w-6xl mx-auto px-4 md:px-8 py-8">
+      <div className="text-center mb-16">
+        <h1 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-6">Get in Touch</h1>
+        <p className="text-xl text-slate-500 dark:text-slate-400 max-w-2xl mx-auto">
+          Have questions or need assistance? We're here to help you find your perfect accommodation.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20">
+        {/* Contact Form */}
+        <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-slate-900/50 p-8 md:p-10 border border-slate-100 dark:border-slate-700">
+          <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-6">Send us a message</h2>
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
-              <div className="mt-1">
-                <input
-                  type="text"
-                  id="name"
-                  className="p-2 block w-full sm:text-sm bg-gray-200 rounded-md"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
-                />
-              </div>
+              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Your Name</label>
+              <input
+                type="text"
+                className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:bg-white dark:focus:bg-slate-800 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 transition-all outline-none text-slate-800 dark:text-white"
+                placeholder="John Doe"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
             </div>
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email Address</label>
-              <div className="mt-1">
-                <input
-                  type="email"
-                  id="email"
-                  className="p-2 block w-full sm:text-sm bg-gray-200 rounded-md"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
+              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Email Address</label>
+              <input
+                type="email"
+                className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:bg-white dark:focus:bg-slate-800 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 transition-all outline-none text-slate-800 dark:text-white"
+                placeholder="john@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
             </div>
             <div>
-              <label htmlFor="message" className="block text-sm font-medium text-gray-700">Message</label>
-              <div className="mt-1">
-                <textarea
-                  id="message"
-                  rows={5}
-                  className="p-2 block w-full sm:text-sm bg-gray-200 rounded-md"
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  required
-                />
-              </div>
+              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Message</label>
+              <textarea
+                rows={5}
+                className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:bg-white dark:focus:bg-slate-800 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 transition-all outline-none text-slate-800 dark:text-white"
+                placeholder="How can we help you?"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                required
+              />
             </div>
-            <div>
-              <button
-                type="submit"
-                className="inline-flex justify-center mt-1 py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
-                Send Message
-              </button>
-            </div>
+            <button
+              type="submit"
+              className="w-full bg-brand-600 text-white font-bold py-4 rounded-xl shadow-lg shadow-brand-200 hover:bg-brand-700 hover:shadow-xl transition-all flex items-center justify-center gap-2"
+            >
+              Send Message <LuSend className="w-5 h-5" />
+            </button>
           </form>
         </div>
 
-        {/* Contact Information Card with WhatsApp and Facebook in a Row */}
-        <div className="bg-white border border-gray-300 shadow-md rounded-lg p-6 bg-opacity-70">
-          <h2 className="text-lg font-bold text-gray-700 mb-4">Contact Information</h2>
-          <div className="space-y-3">
-            <div className="flex items-center">
-              <FiPhone className="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5z"></path></FiPhone>
-              <p className="block text-sm font-medium text-gray-700">Phone: <a href={`tel:${phoneNumber}`} className="text-indigo-500 hover:underline">{phoneNumber}</a></p>
-            </div>
-            <div className="flex items-center">
-              <FiMail className="w-4 h-4 text-blue-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8m0 0l-7.89 5.26a2 2 0 01-2.22 0L3 8m0 0l1.66-5.66a2 2 0 012.83 0l14.11 5.66m-14.11-5.66L9.9 13.26a2 2 0 01-2.22 0L3 8z"></path></FiMail>
-              <p className="block text-sm font-medium text-gray-700">Email: <a href={`mailto:${emailAddress}`} className="text-indigo-500 hover:underline">{emailAddress}</a></p>
+        {/* Info Side */}
+        <div className="space-y-12 flex flex-col justify-center">
+          {/* Contact Info Cards */}
+          <div className="space-y-6">
+            <div className="flex items-start gap-4 p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:border-brand-200 dark:hover:border-brand-900 transition-colors group">
+              <div className="bg-brand-50 dark:bg-brand-900/20 p-3 rounded-full text-brand-600 dark:text-brand-400 group-hover:bg-brand-600 group-hover:text-white transition-colors">
+                <LuPhone className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="font-bold text-slate-900 dark:text-white mb-1">Phone</h3>
+                <p className="text-slate-500 dark:text-slate-400 mb-1">Mon-Fri from 8am to 5pm</p>
+                <a href="tel:+94724478148" className="text-brand-600 dark:text-brand-400 font-semibold hover:underline text-lg">+94 72 44 78 148</a>
+              </div>
             </div>
 
-            {/* WhatsApp and Facebook Cards in a Row */}
-            <div className="flex space-x-2 mt-5">
-              {/* WhatsApp Card */}
-              <div className="bg-green-500 rounded-md p-4 shadow-md w-50">
-                <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="flex items-center text-white">
-                  <FaWhatsapp className="w-6 h-6 mr-3" />
-                  <span className="font-bold text-sm">WhatsApp</span>
-                </a>
+            <div className="flex items-start gap-4 p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:border-brand-200 dark:hover:border-brand-900 transition-colors group">
+              <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-full text-blue-600 dark:text-blue-400 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                <LuMail className="w-6 h-6" />
               </div>
+              <div>
+                <h3 className="font-bold text-slate-900 dark:text-white mb-1">Email</h3>
+                <p className="text-slate-500 dark:text-slate-400 mb-1">Our friendly team is here to help.</p>
+                <a href="mailto:support@theunigang.com" className="text-blue-600 dark:text-blue-400 font-semibold hover:underline text-lg">support@theunigang.com</a>
+              </div>
+            </div>
 
-              {/* Facebook Card */}
-              <div className="bg-blue-500 rounded-md p-4 shadow-md w-50">
-                <a href={facebookLink} target="_blank" rel="noopener noreferrer" className="flex items-center text-white">
-                  <FaFacebook className="w-6 h-6 mr-3" />
-                  <span className="font-bold text-sm">Facebook</span>
-                </a>
+            <div className="flex items-start gap-4 p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:border-brand-200 dark:hover:border-brand-900 transition-colors group">
+              <div className="bg-purple-50 dark:bg-purple-900/20 p-3 rounded-full text-purple-600 dark:text-purple-400 group-hover:bg-purple-600 group-hover:text-white transition-colors">
+                <LuMapPin className="w-6 h-6" />
               </div>
+              <div>
+                <h3 className="font-bold text-slate-900 dark:text-white mb-1">Office</h3>
+                <p className="text-slate-500 dark:text-slate-400 mb-1">Come say hello at our office HQ.</p>
+                <p className="text-slate-800 dark:text-slate-200 font-medium">123 University Road, Colombo 07</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Socials */}
+          <div>
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4">Follow us</h3>
+            <div className="flex gap-4">
+              <a href="#" className="w-12 h-12 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center text-slate-400 dark:text-slate-500 border border-slate-200 dark:border-slate-700 hover:border-brand-200 dark:hover:border-brand-900 hover:text-brand-600 dark:hover:text-brand-400 shadow-sm transition-all hover:-translate-y-1">
+                <LuFacebook className="w-6 h-6" />
+              </a>
             </div>
           </div>
         </div>

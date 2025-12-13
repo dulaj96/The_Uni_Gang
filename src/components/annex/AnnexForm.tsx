@@ -1,339 +1,237 @@
-  import React, { useState, useEffect } from 'react';
-  import { RiCloseCircleLine } from 'react-icons/ri';
+import React, { useState, useEffect } from 'react';
+import { LuX, LuUpload, LuImage, LuMapPin, LuDollarSign, LuFileText } from 'react-icons/lu';
 
-  interface AnnexFormProps {
-    initialData?: any;
-    onSubmit: (data: any, isEditing: boolean) => void;
-    onCancel: () => void;
-    isEditing: boolean;
-  }
+interface AnnexFormProps {
+  initialData?: any;
+  onSubmit: (data: any, isEditing: boolean) => void;
+  onCancel: () => void;
+  isEditing: boolean;
+}
 
-  const AnnexForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel, isEditing }) => {
-    const [title, setTitle] = useState('');
-    const [campus, setCampus] = useState('');
-    const [address, setAddress] = useState('');
-    const [price, setPrice] = useState('');
-    const [description, setDescription] = useState('');
-    const [featuresText, setFeaturesText] = useState('');
-    const [images, setImages] = useState<File[]>([]);
-    const [existingImageUrls, setExistingImageUrls] = useState<string[]>([]); // Existing images when editing
-    const [contactName, setContactName] = useState('');
-    const [contactPhone, setContactPhone] = useState('');
-    const [contactEmail, setContactEmail] = useState('');
+const AnnexForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel, isEditing }) => {
+  const [title, setTitle] = useState('');
+  const [campus, setCampus] = useState('');
+  const [address, setAddress] = useState('');
+  const [price, setPrice] = useState('');
+  const [description, setDescription] = useState('');
+  const [featuresText, setFeaturesText] = useState('');
+  const [images, setImages] = useState<File[]>([]);
+  const [existingImageUrls, setExistingImageUrls] = useState<string[]>([]);
+  const [contactName, setContactName] = useState('');
+  const [contactPhone, setContactPhone] = useState('');
+  const [contactEmail, setContactEmail] = useState('');
 
-    useEffect(() => {
-      if (initialData) {//populate form when edit mode
-        setTitle(initialData.title || '');
-        setCampus(initialData.campus || '');
-        setAddress(initialData.address || '');
-        setPrice(initialData.price ? initialData.price.replace('Rs. ', '').replace('/month', '') : '');
-        setDescription(initialData.description || '');
-        setFeaturesText(initialData.features ? initialData.features.join('\n') : '');
-        setExistingImageUrls(initialData.images || []); // load existing image URLs 
-        setContactName(initialData.contactName || '');
-        setContactPhone(initialData.contactPhone || '');
-        setContactEmail(initialData.contactEmail || '');
-      } else { //reset form for new ad
-        setTitle('');
-        setCampus('');
-        setAddress('');
-        setPrice('');
-        setDescription('');
-        setFeaturesText('');
-        setImages([]);
-        setExistingImageUrls([]);
-        setContactName('');
-        setContactPhone('');
-        setContactEmail('');
+  useEffect(() => {
+    if (initialData) {
+      setTitle(initialData.title || '');
+      setCampus(initialData.campus || '');
+      setAddress(initialData.address || '');
+      setPrice(initialData.price ? initialData.price.replace('Rs. ', '').replace('/month', '') : '');
+      setDescription(initialData.description || '');
+      setFeaturesText(initialData.features ? initialData.features.join('\n') : '');
+      setExistingImageUrls(initialData.images || []);
+      setContactName(initialData.contactName || '');
+      setContactPhone(initialData.contactPhone || '');
+      setContactEmail(initialData.contactEmail || '');
+    }
+  }, [initialData]);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const newFiles = Array.from(e.target.files);
+      if (existingImageUrls.length + images.length + newFiles.length > 3) {
+        alert("Maximum 3 images allowed.");
+        return;
       }
-    }, [initialData]);
-
-    // Image upload handler with limit
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (e.target.files) {
-        const newFiles = Array.from(e.target.files);
-        const totalImages = existingImageUrls.length + images.length + newFiles.length;
-
-        if (totalImages > 3) {
-          alert(`You can only upload a maximum of 3 images. You currently have ${existingImageUrls.length + images.length} images.`);
-          e.target.value = ''; // Clear the input field
-          return;
-        }
-        setImages(prev => [...prev, ...newFiles]);
-      }
-    };
-
-    const handleRemoveNewImage = (index: number) => {
-      setImages(images.filter((_, i) => i !== index));
-    };
-
-    const handleRemoveExistingImage = (index: number) => {
-      // send request to BE for delete Backend එකට මේ image එක delete කරන්න කියලා request එකක් යවන්න ඕන
-      // දැනට dummy data වලින් remove කරනවා
-      setExistingImageUrls(existingImageUrls.filter((_, i) => i !== index));
-      alert('Existing image removal functionality not fully implemented (needs backend call).');
-    };
-
-    const handleSubmit = (e: React.FormEvent) => {
-      e.preventDefault();
-
-      const adData = {
-        title,
-        campus,
-        address,
-        price,
-        description,
-        features: featuresText.split('\n').map(f => f.trim()).filter(f => f !== ''),
-        newImages: images,
-        existingImages: existingImageUrls,
-        contactName,
-        contactPhone,
-        contactEmail,
-      };
-      onSubmit(adData, isEditing);
-    };
-
-    return (
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className='bg-gray-200 shadow-lg rounded-lg p-6 md:p-8 border-1 border-gray-300'>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 space-y-5">
-            {/* Title Field */}
-            <div className='flex justify-center items-center'>
-              <div className='w-full max-w-[300px]'>
-                <label htmlFor="title" className="block text-md font-semibold text-black">Title</label>
-                <div className="mt-2">
-                  <input
-                    type="text"
-                    id="title"
-                    className="bg-white p-2 block w-full sm:text-sm rounded-md focus:outline-none focus:ring-1 focus:ring-gray-400"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Campus */}
-            <div className='flex justify-center items-center'>
-              <div className='w-full max-w-[300px]'>
-                <label htmlFor="campus" className="block text-md font-semibold text-black">Near Campus / Institute</label>
-                <div className='mt-2'>
-                  <input
-                    type="text"
-                    id="campus"
-                    className="bg-white p-2 block w-full sm:text-sm rounded-md focus:outline-none focus:ring-1 focus:ring-gray-400"
-                    value={campus}
-                    onChange={(e) => setCampus(e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Price Field */}
-            <div className='flex justify-center items-center'>
-              <div className='w-full max-w-[300px]'>
-                <label htmlFor="price" className="block text-md font-semibold text-black">Price (Rs. per month)</label>
-                <div className="mt-2 relative rounded-md shadow-sm">
-                  <input
-                    type="number"
-                    id="price"
-                    className="p-2 block w-full sm:text-sm bg-white rounded-md pr-12 focus:outline-none focus:ring-1 focus:ring-gray-400"
-                    value={price}
-                    onChange={(e) => setPrice(e.target.value)}
-                    required
-                  />
-                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-gray-700 sm:text-sm">
-                    Rs.
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Address Field */}
-            <div className='flex justify-center items-center'>
-              <div className='w-full max-w-[300px]'>
-                <label htmlFor="address" className="block text-md font-semibold text-black">Address</label>
-                <div className="mt-2">
-                  <textarea
-                    id="address"
-                    rows={4}
-                    className="shadow-sm p-2 block w-full sm:text-sm bg-white rounded-md focus:outline-none focus:ring-1 focus:ring-gray-400"
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Description Field */}
-            <div className='flex justify-center items-center'>
-              <div className='w-full max-w-[300px]'>
-                <label htmlFor="description" className="block text-md font-semibold text-black">Description</label>
-                <div className="mt-2">
-                  <textarea
-                    id="description"
-                    rows={4}
-                    className="p-2 block w-full sm:text-sm bg-white rounded-md focus:outline-none focus:ring-1 focus:ring-gray-400"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Features Textarea */}
-            <div className='flex justify-center items-center'>
-              <div className='w-full max-w-[300px]'>
-                <label htmlFor="features" className="block text-md font-semibold text-black">Features (one per line)</label>
-                <div className="mt-2">
-                  <textarea
-                    id="features"
-                    rows={4}
-                    className="p-2 block w-full sm:text-sm bg-white rounded-md focus:outline-none focus:ring-1 focus:ring-gray-400"
-                    value={featuresText}
-                    onChange={(e) => setFeaturesText(e.target.value)}
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Contact Name */}
-            <div className='flex justify-center items-center'>
-              <div className='w-full max-w-[300px]'>
-                <label htmlFor="contactName" className="block text-md font-semibold text-black">Contact Name</label>
-                <div className="mt-2">
-                  <input
-                    type="text"
-                    id="contactName"
-                    className="p-2 block w-full sm:text-sm bg-white rounded-md focus:outline-none focus:ring-1 focus:ring-gray-400"
-                    value={contactName}
-                    onChange={(e) => setContactName(e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Contact Phone */}
-            <div className='flex justify-center items-center'>
-              <div className='w-full max-w-[300px]'>
-                <label htmlFor="contactPhone" className="block text-md font-semibold text-black">Contact Phone</label>
-                <div className="mt-2">
-                  <input
-                    type="tel"
-                    id="contactPhone"
-                    className="p-2 block w-full sm:text-sm bg-white rounded-md focus:outline-none focus:ring-1 focus:ring-gray-400"
-                    value={contactPhone}
-                    onChange={(e) => setContactPhone(e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Contact Email */}
-            <div className='flex justify-center items-center'>
-              <div className='w-full max-w-[300px]'>
-                <label htmlFor="contactEmail" className="block text-md font-semibold text-black">Contact Email (Optional)</label>
-                <div className="mt-2">
-                  <input
-                    type="email"
-                    id="contactEmail"
-                    className="p-2 block w-full sm:text-sm bg-white rounded-md focus:outline-none focus:ring-1 focus:ring-gray-400"
-                    value={contactEmail}
-                    onChange={(e) => setContactEmail(e.target.value)}
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Images Upload */}
-            <div className='flex justify-center items-center'>
-              <div className='w-full max-w-[300px]'>
-                <label htmlFor="images" className="block text-md font-semibold text-black">Images</label>
-                <div className="mt-2">
-                  {(existingImageUrls.length + images.length) < 3 && (
-                    <input
-                      type="file"
-                      id="images"
-                      className="p-2 block w-full bg-white sm:text-sm rounded-md focus:outline-none focus:ring-1 focus:ring-gray-400"
-                      multiple
-                      onChange={handleImageChange}
-                      accept="image/*"
-                    />
-                  )}
-                  <p className="mt-1 text-sm text-gray-500">Upload one or more new images for the annex. Max 3 images allowed.</p>
-                  {/* Display newly selected images */}
-                  {images.length > 0 && (
-                    <div className="mt-2 grid grid-cols-2 sm:grid-cols-3 gap-2">
-                      {images.map((image, index) => (
-                        <div key={`new-${index}`} className="relative">
-                          <img
-                            src={URL.createObjectURL(image)}
-                            alt={`New Uploaded Image ${index + 1}`}
-                            className="w-full h-24 object-cover rounded-md focus:outline-none focus:ring-1 focus:ring-gray-400"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveNewImage(index)}
-                            className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 opacity-75 hover:opacity-100"
-                          >
-                            <RiCloseCircleLine size={16} />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  {/* Display existing images when editing */}
-                  {existingImageUrls.length > 0 && (
-                    <div className="mt-2 grid grid-cols-2 sm:grid-cols-3 gap-2">
-                      <p className="col-span-full text-sm text-gray-600 mb-1">Existing Images:</p>
-                      {existingImageUrls.map((imgUrl: string, index: number) => (
-                        <div key={`existing-${index}`} className="relative">
-                          <img
-                            src={imgUrl}
-                            alt={`Existing Image ${index + 1}`}
-                            className="w-full h-24 object-cover rounded-md"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveExistingImage(index)}
-                            className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 opacity-75 hover:opacity-100"
-                          >
-                            <RiCloseCircleLine size={16} />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Submit and Go Back Buttons */}
-          <div className="pt-5 flex justify-end space-x-4">
-            <button
-              type="button"
-              onClick={onCancel}
-              className="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-full sm:w-auto"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-full sm:w-auto"
-            >
-              {isEditing ? 'Update Ad' : 'Post Ad'}
-            </button>
-          </div>
-        </div>
-      </form>
-    );
+      setImages(prev => [...prev, ...newFiles]);
+    }
   };
 
-  export default AnnexForm;
+  const handleRemoveNewImage = (index: number) => {
+    setImages(images.filter((_, i) => i !== index));
+  };
+
+  const handleRemoveExistingImage = (index: number) => {
+    setExistingImageUrls(existingImageUrls.filter((_, i) => i !== index));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const adData = {
+      title, campus, address, price, description,
+      features: featuresText.split('\n').filter(f => f.trim() !== ''),
+      newImages: images, existingImages: existingImageUrls,
+      contactName, contactPhone, contactEmail,
+    };
+    onSubmit(adData, isEditing);
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
+      <div className="bg-slate-50 dark:bg-slate-900 border-b border-slate-100 dark:border-slate-700 p-6 md:p-8">
+        <h2 className="text-2xl font-bold text-slate-800 dark:text-white">{isEditing ? 'Update Property Details' : 'List New Property'}</h2>
+        <p className="text-slate-500 dark:text-slate-400 mt-2">Fill in the details below to reach thousands of students.</p>
+      </div>
+
+      <div className="p-6 md:p-8 space-y-8">
+        {/* Basic Info Section */}
+        <div>
+          <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
+            <LuFileText className="text-brand-500" /> Basic Information
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="md:col-span-2">
+              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Ad Title</label>
+              <input
+                type="text"
+                className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:bg-white dark:focus:bg-slate-800 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 transition-all outline-none text-slate-800 dark:text-white"
+                placeholder="e.g. Spacious Room near Campus"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Nearest Campus</label>
+              <input
+                type="text"
+                className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:bg-white dark:focus:bg-slate-800 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 transition-all outline-none text-slate-800 dark:text-white"
+                value={campus}
+                onChange={(e) => setCampus(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="relative">
+              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Monthly Rent</label>
+              <div className="relative">
+                <LuDollarSign className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input
+                  type="number"
+                  className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:bg-white dark:focus:bg-slate-800 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 transition-all outline-none text-slate-800 dark:text-white"
+                  placeholder="25000"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Location & Details */}
+        <div>
+          <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
+            <LuMapPin className="text-brand-500" /> Location & Details
+          </h3>
+          <div className="space-y-6">
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Full Address</label>
+              <textarea
+                rows={2}
+                className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:bg-white dark:focus:bg-slate-800 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 transition-all outline-none text-slate-800 dark:text-white"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Description</label>
+              <textarea
+                rows={4}
+                className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:bg-white dark:focus:bg-slate-800 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 transition-all outline-none text-slate-800 dark:text-white"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Features (One per line)</label>
+              <textarea
+                rows={4}
+                className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:bg-white dark:focus:bg-slate-800 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 transition-all outline-none text-slate-800 dark:text-white"
+                placeholder="WiFi&#10;Attached Bathroom&#10;Parking"
+                value={featuresText}
+                onChange={(e) => setFeaturesText(e.target.value)}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Images */}
+        <div>
+          <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
+            <LuImage className="text-brand-500" /> Property Images
+          </h3>
+          <div className="border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-xl p-8 text-center hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
+            <input
+              type="file"
+              id="images"
+              className="hidden"
+              multiple
+              onChange={handleImageChange}
+              accept="image/*"
+            />
+            <label htmlFor="images" className="cursor-pointer flex flex-col items-center">
+              <div className="bg-brand-50 dark:bg-brand-900/20 p-4 rounded-full text-brand-500 mb-3">
+                <LuUpload className="w-6 h-6" />
+              </div>
+              <span className="font-semibold text-slate-700 dark:text-slate-300">Click to upload images</span>
+              <span className="text-sm text-slate-400 mt-1">Max 3 images (JPG, PNG)</span>
+            </label>
+          </div>
+
+          {/* Image Previews */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-4">
+            {existingImageUrls.map((url, idx) => (
+              <div key={`exist-${idx}`} className="relative h-24 rounded-lg overflow-hidden group">
+                <img src={url} className="w-full h-full object-cover" />
+                <button type="button" onClick={() => handleRemoveExistingImage(idx)} className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"><LuX className="w-3 h-3" /></button>
+              </div>
+            ))}
+            {images.map((file, idx) => (
+              <div key={`new-${idx}`} className="relative h-24 rounded-lg overflow-hidden group">
+                <img src={URL.createObjectURL(file)} className="w-full h-full object-cover" />
+                <button type="button" onClick={() => handleRemoveNewImage(idx)} className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"><LuX className="w-3 h-3" /></button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Contact Info */}
+        <div>
+          <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-4">Contact Details</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <input
+              type="text"
+              placeholder="Contact Name"
+              className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:bg-white dark:focus:bg-slate-800 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 transition-all outline-none text-slate-800 dark:text-white"
+              value={contactName}
+              onChange={(e) => setContactName(e.target.value)}
+              required
+            />
+            <input
+              type="tel"
+              placeholder="Phone Number"
+              className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:bg-white dark:focus:bg-slate-800 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 transition-all outline-none text-slate-800 dark:text-white"
+              value={contactPhone}
+              onChange={(e) => setContactPhone(e.target.value)}
+              required
+            />
+          </div>
+        </div>
+
+      </div>
+
+      <div className="bg-slate-50 dark:bg-slate-900 p-6 flex justify-end gap-3 border-t border-slate-100 dark:border-slate-700">
+        <button type="button" onClick={onCancel} className="px-6 py-3 font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-xl transition-colors">Cancel</button>
+        <button type="submit" className="px-8 py-3 bg-brand-600 text-white font-bold rounded-xl shadow-lg shadow-brand-200 hover:bg-brand-700 hover:shadow-xl transition-all">{isEditing ? 'Save Changes' : 'Post Ad'}</button>
+      </div>
+    </form>
+  );
+};
+
+export default AnnexForm;

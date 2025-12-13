@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { FaUserCircle, FaEye, FaEyeSlash } from 'react-icons/fa';
+import { LuUser, LuMail, LuPhone, LuBuilding, LuLock, LuCamera, LuPencil, LuSave, LuX, LuEye, LuEyeOff } from 'react-icons/lu';
 
 const ProfilePage = () => {
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
@@ -8,13 +8,12 @@ const ProfilePage = () => {
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [university, setUniversity] = useState<string>('');
-  const [password, setPassword] = useState(''); // Dummy password for now
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
-  const fileInputRef = useRef<HTMLInputElement>(null); // File input එකට reference එකක්
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Dummy User Data Load instead getting data from BE
   useEffect(() => {
     const storedFirstName = localStorage.getItem('userFirstName') || 'John';
     const storedLastName = localStorage.getItem('userLastName') || 'Doe';
@@ -40,37 +39,21 @@ const ProfilePage = () => {
       reader.onloadend = () => {
         setProfilePicture(reader.result as string);
         localStorage.setItem('userProfilePicture', reader.result as string);
-        e.target.value = ''; // Clear file input to allow re-uploading same file
+        e.target.value = '';
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const handleRemoveProfilePicture = () => {
-    setProfilePicture(null);
-    localStorage.removeItem('userProfilePicture');
-    alert('Profile picture removed!');
-  }
-
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
-    // update user data using BE API calls
-    console.log('Saving profile data:', {
-      firstName,
-      lastName,
-      email,
-      phoneNumber,
-      university,
-      password,
-      profilePicture // Current profile picture (base64)
-    });
-
     localStorage.setItem('userFirstName', firstName);
     localStorage.setItem('userLastName', lastName);
     localStorage.setItem('userEmail', email);
     localStorage.setItem('userPhoneNumber', phoneNumber);
     localStorage.setItem('userUniversity', university);
-    localStorage.setItem('userPassword', password); // Dummy save
+    localStorage.setItem('userPassword', password);
+
     if (profilePicture) {
       localStorage.setItem('userProfilePicture', profilePicture);
     } else {
@@ -81,173 +64,161 @@ const ProfilePage = () => {
     alert('Profile updated successfully!');
   };
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 -py-5">
-      <div className="bg-gray-200 shadow-lg rounded-lg p-6 md:p-8 flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8 border border-gray-300">
-        {/* Profile Picture Section (Left) */}
-        <div className="flex flex-col items-center justify-center md:w-1/3 mt-20">
-          <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center border-4 border-red-500 shadow-md">
-            {profilePicture ? (
-              <img src={profilePicture} alt="Profile" className="w-full h-full object-cover" />
-            ) : (
-              <FaUserCircle className="w-24 h-24 md:w-32 md:h-32 text-gray-400" />
-            )}
-          </div>
-          {isEditing && (
-            <>
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleProfilePictureChange}
-                className="hidden"
-                accept="image/*"
-              />
-              <button
-                type="button"
-                onClick={() => fileInputRef.current?.click()}
-                className="mt-4 py-2 px-4 bg-blue-500 text-white text-sm rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-              >
-                Upload Profile Picture
-              </button>
-              {profilePicture && (
-                <button
-                  type='button'
-                  onClick={handleRemoveProfilePicture}
-                  className='mt-3 py-2 px-4 bg-red-500 text-white text-sm rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500'
-                >
-                  Remove Photo
-                </button>
-              )}
-            </>
-          )}
-        </div>
+    <div className="max-w-4xl mx-auto px-4 py-12">
+      <div className="bg-white dark:bg-slate-800 rounded-[2.5rem] shadow-xl shadow-slate-200/50 dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-700 overflow-hidden relative">
+        <div className="h-32 bg-gradient-to-r from-brand-600 to-indigo-600"></div>
 
-        {/* User Details Section (Right) */}
-        <div className="w-full md:w-2/3">
-          <h2 className="text-2xl font-bold text-gray-800 mt-4 mb-8 hidden md:block">My Profile</h2> {/* Desktop title */}
-          <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center md:text-left md:hidden">My Profile</h2> {/* Mobile title */}
-          <form onSubmit={handleSave} className="space-y-4">
-
-            {/* First Name & Last Name */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">First Name</label>
-                <input
-                  type="text"
-                  id="firstName"
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 bg-white"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  disabled={!isEditing}
-                  required
-                />
-              </div>
-              <div>
-                <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">Last Name</label>
-                <input
-                  type="text"
-                  id="lastName"
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 bg-white"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                  disabled={!isEditing}
-                  required
-                />
-              </div>
-            </div>
-
-            {/* Email & Phone Number */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
-                <div className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 bg-white">
-                  {email}
+        <div className="px-8 pb-10">
+          <div className="relative -mt-16 mb-6 flex flex-col md:flex-row items-end md:items-end justify-between gap-6">
+            <div className="flex flex-col items-center md:items-start">
+              <div className="relative group">
+                <div className="w-32 h-32 rounded-full border-4 border-white dark:border-slate-800 shadow-lg overflow-hidden bg-slate-100 dark:bg-slate-700">
+                  {profilePicture ? (
+                    <img src={profilePicture} alt="Profile" className="w-full h-full object-cover" />
+                  ) : (
+                    <LuUser className="w-full h-full p-6 text-slate-300" />
+                  )}
                 </div>
-              </div>
-              <div>
-                <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700">Phone Number</label>
-                <input
-                  type="tel"
-                  id="phoneNumber"
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 bg-white"
-                  value={phoneNumber}
-                  onChange={(e) => setPhoneNumber(e.target.value)}
-                  disabled={!isEditing}
-                  required
-                />
-              </div>
-            </div>
-
-            {/* University (Optional) - Now a simple text input */}
-            <div>
-              <label htmlFor="university" className="block text-sm font-medium text-gray-700">University (Optional)</label>
-              <input
-                type="text"
-                id="university"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 bg-white"
-                value={university || ''}
-                onChange={(e) => setUniversity(e.target.value)}
-                disabled={!isEditing}
-              />
-            </div>
-
-            {/* Password Management */}
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
-              <div className="mt-1 relative rounded-md shadow-sm">
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  id="password"
-                  className="block w-full rounded-md border-gray-300 shadow-sm p-2 pr-10 bg-white"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  disabled={!isEditing}
-                  required
-                />
                 {isEditing && (
                   <button
-                    type="button"
-                    onClick={togglePasswordVisibility}
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 text-gray-500"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="absolute bottom-0 right-0 p-2.5 bg-slate-900 dark:bg-slate-600 text-white rounded-full shadow-lg hover:bg-slate-700 dark:hover:bg-slate-500 transition-colors"
                   >
-                    {showPassword ? <FaEyeSlash className="h-5 w-5" /> : <FaEye className="h-5 w-5" />}
+                    <LuCamera className="w-5 h-5" />
                   </button>
                 )}
+                <input type="file" ref={fileInputRef} onChange={handleProfilePictureChange} className="hidden" accept="image/*" />
               </div>
-              {isEditing && <p className="mt-1 text-xs text-gray-500">Click to change password (not fully implemented)</p>}
+              <div className="mt-3 text-center md:text-left">
+                <h1 className="text-2xl font-bold text-slate-900 dark:text-white">{firstName} {lastName}</h1>
+                <p className="text-slate-500 dark:text-slate-400 font-medium">Student / Member</p>
+              </div>
             </div>
 
-            {/* Edit/Save Buttons */}
-            <div className="pt-5 flex justify-end space-x-3">
-              {isEditing ? (
-                <>
-                  <button
-                    type="button"
-                    onClick={() => setIsEditing(false)} // Cancel editing
-                    className="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                  >
-                    Save Changes
-                  </button>
-                </>
-              ) : (
+            <div className="flex-shrink-0 mb-2">
+              {!isEditing ? (
                 <button
-                  type="button"
                   onClick={() => setIsEditing(true)}
-                  className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  className="flex items-center gap-2 px-6 py-3 bg-slate-900 dark:bg-slate-200 text-white dark:text-slate-900 font-bold rounded-xl shadow-lg hover:bg-slate-800 dark:hover:bg-white transition-all"
                 >
-                  Edit Profile
+                  <LuPencil className="w-4 h-4" /> Edit Profile
                 </button>
+              ) : (
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setIsEditing(false)}
+                    className="flex items-center gap-2 px-5 py-3 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-200 font-bold rounded-xl hover:bg-slate-200 dark:hover:bg-slate-600 transition-all"
+                  >
+                    <LuX className="w-4 h-4" /> Cancel
+                  </button>
+                  <button
+                    onClick={handleSave}
+                    className="flex items-center gap-2 px-6 py-3 bg-brand-600 text-white font-bold rounded-xl shadow-lg hover:bg-brand-700 transition-all"
+                  >
+                    <LuSave className="w-4 h-4" /> Save Changes
+                  </button>
+                </div>
               )}
+            </div>
+          </div>
+
+          <form onSubmit={handleSave} className="space-y-8 mt-10">
+            {/* Personal Info */}
+            <div>
+              <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-5 pb-2 border-b border-slate-100 dark:border-slate-700">Personal Information</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">First Name</label>
+                  <div className="relative">
+                    <LuUser className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <input
+                      type="text"
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
+                      disabled={!isEditing}
+                      className={`w-full pl-12 pr-4 py-3 rounded-xl border transition-all outline-none ${isEditing ? 'bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-600 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 text-slate-800 dark:text-white' : 'bg-slate-50 dark:bg-slate-700/50 border-transparent text-slate-600 dark:text-slate-300'}`}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Last Name</label>
+                  <div className="relative">
+                    <LuUser className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <input
+                      type="text"
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
+                      disabled={!isEditing}
+                      className={`w-full pl-12 pr-4 py-3 rounded-xl border transition-all outline-none ${isEditing ? 'bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-600 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 text-slate-800 dark:text-white' : 'bg-slate-50 dark:bg-slate-700/50 border-transparent text-slate-600 dark:text-slate-300'}`}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Email Address</label>
+                  <div className="relative">
+                    <LuMail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <input
+                      type="email"
+                      value={email}
+                      disabled={true} // Email usually not editable directly
+                      className="w-full pl-12 pr-4 py-3 rounded-xl border border-transparent bg-slate-100 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 cursor-not-allowed"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Phone Number</label>
+                  <div className="relative">
+                    <LuPhone className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <input
+                      type="tel"
+                      value={phoneNumber}
+                      onChange={(e) => setPhoneNumber(e.target.value)}
+                      disabled={!isEditing}
+                      className={`w-full pl-12 pr-4 py-3 rounded-xl border transition-all outline-none ${isEditing ? 'bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-600 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 text-slate-800 dark:text-white' : 'bg-slate-50 dark:bg-slate-700/50 border-transparent text-slate-600 dark:text-slate-300'}`}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Academic & Security */}
+            <div>
+              <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-5 pb-2 border-b border-slate-100 dark:border-slate-700">Academic & Security</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">University / Institute</label>
+                  <div className="relative">
+                    <LuBuilding className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <input
+                      type="text"
+                      value={university}
+                      onChange={(e) => setUniversity(e.target.value)}
+                      disabled={!isEditing}
+                      placeholder="e.g. University of Colombo"
+                      className={`w-full pl-12 pr-4 py-3 rounded-xl border transition-all outline-none ${isEditing ? 'bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-600 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 text-slate-800 dark:text-white' : 'bg-slate-50 dark:bg-slate-700/50 border-transparent text-slate-600 dark:text-slate-300'}`}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Password</label>
+                  <div className="relative">
+                    <LuLock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      disabled={!isEditing}
+                      className={`w-full pl-12 pr-12 py-3 rounded-xl border transition-all outline-none ${isEditing ? 'bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-600 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 text-slate-800 dark:text-white' : 'bg-slate-50 dark:bg-slate-700/50 border-transparent text-slate-600 dark:text-slate-300'}`}
+                    />
+                    {isEditing && (
+                      <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                        {showPassword ? <LuEyeOff /> : <LuEye />}
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
             </div>
           </form>
         </div>

@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import searchAnnex from '../assets/searchAnnex.jpg';
 import universitiesData from '../constants/annex/Universities.json';
-import { RiArrowDropDownLine, RiArrowDropUpLine } from 'react-icons/ri';
-import { IoIosSearch } from 'react-icons/io';
+import { LuSearch, LuMapPin, LuChevronDown, LuFilter, LuChevronLeft, LuChevronRight } from 'react-icons/lu';
 import annex1 from '../assets/annex1.jpg';
 import annex2 from '../assets/annex2.jpg';
 
@@ -12,191 +10,159 @@ interface University {
   name: string;
 }
 
-// used dummy data instead of the actual data coming from BE
 const dummyAnnexes = Array.from({ length: 20 }, (_, i) => ({
   id: String(i + 1),
-  title: `Annex ${i + 1} Near University`,
+  title: `Luxury Annex ${i + 1} Near Campus`,
   price: `Rs. ${10000 + (i * 500)}/month`,
-  description: `This is a description for annex ${i + 1}. It is comfortable and close to campus.`,
-  address: `Address ${i + 1}, City`,
+  description: `Modern student accommodation with all amenities included. Close to lecture halls and public transport.`,
+  address: `University Road ${i + 1}, City`,
   images: [i % 2 === 0 ? annex1 : annex2],
-  link: `/annex/${i + 1}`
+  link: `/annex/${i + 1}`,
+  rating: (4 + Math.random()).toFixed(1)
 }));
 
 const FindAccommodationPage = () => {
   const [universities, setUniversities] = useState<University[]>([]);
-  const [openDropDown, setOpenDropDown] = useState(false);
-  const [selectedUniversity, setSelectedUniversity] = useState<string | null>(null);
-  const [search, setSearch] = useState('');
-  const [filteredUniversities, setFilteredUniversities] = useState<University[]>([]);
-  const [showWarning, setShowWarning] = useState(false);
+  const [selectedUniversity, setSelectedUniversity] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState('');
 
-  // FOR Pagination 
+  // Pagination
   const [allAnnexes, setAllAnnexes] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [annexesPerPage] = useState(9);
 
   useEffect(() => {
     setUniversities(universitiesData);
-    setFilteredUniversities(universitiesData);
     setAllAnnexes(dummyAnnexes);
   }, []);
 
-  const handleSearch = (text: string) => {
-    setSearch(text);
-    const filtered = universities.filter(uni =>
-      uni.name.toLowerCase().includes(text.toLowerCase())
-    );
-    setFilteredUniversities(filtered);
-  };
+  const filteredAnnexes = allAnnexes.filter(annex =>
+    annex.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    annex.address.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-  // Pagination Logic
   const indexOfLastAnnex = currentPage * annexesPerPage;
   const indexOfFirstAnnex = indexOfLastAnnex - annexesPerPage;
-  const currentAnnexes = allAnnexes.slice(indexOfFirstAnnex, indexOfLastAnnex);
-
-  const totalPages = Math.ceil(allAnnexes.length / annexesPerPage);
+  const currentAnnexes = filteredAnnexes.slice(indexOfFirstAnnex, indexOfLastAnnex);
+  const totalPages = Math.ceil(filteredAnnexes.length / annexesPerPage);
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
-  const nextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const prevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
   return (
-    <div className="container mx-auto ">
-      <section
-        className="relative rounded-md overflow-hidden mb-8 "
-        style={{
-          backgroundImage: `url(${searchAnnex})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          minHeight: '500px'
-        }}>
-        <div className="absolute inset-0 flex items-center justify-center sm:justify-start p-6 sm:p-10">
-          <div className="bg-white shadow rounded-md p-6 sm:w-1/2 md:w-1/3 lg:w-1/4 w-[280px]">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4 text-center">Annex Search by Campus</h2>
-            <div className="mb-4">
-              <label htmlFor="campus" className="block text-gray-700 text-sm font-bold mb-2">Campus</label>
-              <div
-                onClick={() => setOpenDropDown(!openDropDown)}
-                className='flex justify-between items-center w-full rounded-md border border-gray-600 px-3 py-1 mt-4 mb-5 cursor-pointer relative'
+    <div className="space-y-8">
+      {/* Header / Filter Section */}
+      <section className="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 p-6 md:p-8">
+        <div className="flex flex-col md:flex-row gap-6 items-end md:items-center">
+          <div className="flex-grow space-y-2 w-full">
+            <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 ml-1">Search or Filter by University</label>
+            <div className="relative">
+              <LuSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
+              <input
+                type="text"
+                placeholder="Search by location or name..."
+                className="w-full pl-12 pr-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:bg-white dark:focus:bg-slate-800 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/20 transition-all outline-none text-slate-800 dark:text-white font-medium"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="w-full md:w-1/3 space-y-2">
+            <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 ml-1">University Campus</label>
+            <div className="relative">
+              <LuFilter className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
+              <select
+                className="w-full pl-12 pr-10 py-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:bg-white dark:focus:bg-slate-800 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/20 transition-all outline-none appearance-none text-slate-800 dark:text-white font-medium cursor-pointer"
+                value={selectedUniversity}
+                onChange={(e) => setSelectedUniversity(e.target.value)}
               >
-                <p className='text-black/100'>
-                  {selectedUniversity || 'Select Campus'}
-                </p>
-                <div>
-                  {
-                    openDropDown ? <RiArrowDropUpLine className='text-3xl' /> : <RiArrowDropDownLine className='text-3xl' />
-                  }
+                <option value="">All Campuses</option>
+                {universities.map((uni) => (
+                  <option key={uni.id} value={uni.name}>{uni.name}</option>
+                ))}
+              </select>
+              <LuChevronDown className="absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5 pointer-events-none" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Listings Grid */}
+      <section>
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-bold text-slate-800 dark:text-white">Available Places</h2>
+          <span className="text-slate-500 dark:text-slate-400 font-medium">{filteredAnnexes.length} results found</span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {currentAnnexes.map((annex) => (
+            <Link to={annex.link} key={annex.id} className="group bg-white dark:bg-slate-800 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 dark:border-slate-700 flex flex-col">
+              <div className="relative h-64 overflow-hidden">
+                <img src={annex.images[0]} alt={annex.title} className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" />
+                <div className="absolute top-4 right-4 bg-white/95 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-slate-900 shadow-sm flex items-center gap-1">
+                  ⭐ {annex.rating}
                 </div>
               </div>
-              <div className='flex justify-center -mt-2 absolute z-50'>
-                {
-                  openDropDown && (
-                    <div className='w-[275px] sm:h-[350px] h-[195px] rounded-md bg-gray-200 p-3 overflow-y-auto absolute sm:ml-2 ml-57 sm:-top-57 sm:left-70'>
-                      <div className='relative'>
-                        <input
-                          type='text'
-                          value={search}
-                          onChange={e => handleSearch(e.target.value)}
-                          placeholder='Search University Here'
-                          className='w-full rounded-md border border-gray-300 px-2 py-1 mt-1 pr-10' />
-                        <div className='absolute inset-y-0 right-3 flex items-center justify-center cursor-pointer'>
-                          <IoIosSearch className='text-black/60 text-xl' />
-                        </div>
-                      </div>
-                      <div className='mt-2 max-h-[260px] overflow-y-auto'>
-                        {filteredUniversities.map((item) => (
-                          <div
-                            key={item.id}
-                            onClick={() => {
-                              setSearch('');
-                              setSelectedUniversity(item.name);
-                              setShowWarning(false);
-                              setOpenDropDown(false);
-                            }}
-                            className='p-2 hover:bg-gray-700 hover:text-white rounded-md cursor-pointer'>
-                            {item.name}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )
-                }
-              </div>
-            </div>
-            <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full">Search</button>
-          </div>
-          {
-            showWarning && (
-              <div className='flex justify-center mt-4'>
-                <p className='text-red-600 font-semibold'>First choose your university !</p>
-              </div>
-            )
-          }
-        </div>
-      </section>
+              <div className="p-6 flex flex-col flex-grow">
+                <div className="flex justify-between items-start mb-2">
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-brand-600 transition-colors line-clamp-1">{annex.title}</h3>
+                </div>
+                <p className="text-brand-600 font-bold text-lg mb-3">{annex.price}</p>
 
-      {/* Annex List with Pagination */}
-      <section className=' bg-gray-200 p-10 rounded-xl border border-gray-300 pt-8'>
-        <div className="container mx-auto">
-          <h2 className="text-xl font-bold text-black mb-8 text-center">Available Annex</h2>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {currentAnnexes.map((annex) => (
-            <div key={annex.id} className="bg-white shadow rounded-md overflow-hidden relative transition-all duration-300 hover:scale-105">
-              <img src={annex.images[0]} alt="Annex" className="w-full h-48 object-cover" />
-              <div className="p-4">
-                <h3 className="text-md font-semibold text-black mb-2">{annex.title}</h3>
-                <p className="text-gray-800 text-sm">{annex.price}</p>
-                <Link
-                  to={annex.link}
-                  className="mt-2 inline-block text-sm px-4 py-2 bg-gray-500 text-white font-medium rounded-lg shadow hover:bg-red-600 transition"
-                >
-                  View Details
-                </Link>
+                <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-sm mb-4">
+                  <LuMapPin className="w-4 h-4 text-slate-400" />
+                  <span className="truncate">{annex.address}</span>
+                </div>
+
+                <div className="mt-auto pt-4 border-t border-slate-50 dark:border-slate-700">
+                  <span className="text-sm font-semibold text-slate-600 dark:text-slate-300 group-hover:text-brand-600 transition-colors">View Property Details &rarr;</span>
+                </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
+
+        {filteredAnnexes.length === 0 && (
+          <div className="text-center py-20 bg-white dark:bg-slate-800 rounded-3xl border border-dashed border-slate-300 dark:border-slate-700">
+            <p className="text-slate-500 dark:text-slate-400 text-lg">No accommodations found matching your criteria.</p>
+            <button onClick={() => setSearchQuery('')} className="mt-4 text-brand-600 font-semibold hover:underline">Clear Search</button>
+          </div>
+        )}
       </section>
 
-      {/* Pagination Controls */}
-      <div className="mt-8 flex justify-center space-x-2">
-        <button
-          onClick={prevPage}
-          disabled={currentPage === 1}
-          className="px-2 py-2 bg-red-500 text-sm text-white w-20 rounded-md font-semibold hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Previous
-        </button>
-        {Array.from({ length: totalPages }, (_, i) => (
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex justify-center items-center gap-2 mt-12">
           <button
-            key={i + 1}
-            onClick={() => paginate(i + 1)}
-            className={`px-2 py-2 rounded-md text-sm w-10 ${currentPage === i + 1 ? 'bg-red-600 text-white font-semibold' : 'bg-red-400 text-white hover:bg-red-600'
-              }`}
+            onClick={() => paginate(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="p-3 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
           >
-            {i + 1}
+            <LuChevronLeft className="w-5 h-5" />
           </button>
-        ))}
-        <button
-          onClick={nextPage}
-          disabled={currentPage === totalPages}
-          className="px-2 py-2 text-sm w-20 bg-red-500 text-white font-semibold rounded-md hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Next
-        </button>
-      </div>
+
+          {Array.from({ length: totalPages }, (_, i) => (
+            <button
+              key={i + 1}
+              onClick={() => paginate(i + 1)}
+              className={`w-10 h-10 rounded-full text-sm font-bold transition-all ${currentPage === i + 1
+                ? 'bg-brand-600 text-white shadow-lg shadow-brand-200 scale-110'
+                : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700'
+                }`}
+            >
+              {i + 1}
+            </button>
+          ))}
+
+          <button
+            onClick={() => paginate(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="p-3 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+          >
+            <LuChevronRight className="w-5 h-5" />
+          </button>
+        </div>
+      )}
     </div>
   );
 };

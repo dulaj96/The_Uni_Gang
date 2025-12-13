@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
+import { LuUser, LuMail, LuLock, LuArrowRight } from 'react-icons/lu';
 
 interface AuthCardProps {
     onAuthSuccess: () => void;
@@ -18,51 +19,42 @@ const AuthCard: React.FC<AuthCardProps> = ({ onAuthSuccess }) => {
 
     const handleLogin = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log('Logging in with:', authEmail, authPassword);
-        setMessage({ text: 'Login functionality not implemented yet. Simulating login.', type: 'error' });
-        // backend API call 
-        // if success: localStorage.setItem('userToken', 'your_token_here'); onAuthSuccess();
-        alert('Login functionality not implemented yet. Simulating login.');
-        localStorage.setItem('userToken', 'dummy_token');
-        localStorage.setItem('userName', 'TestUser');
-        onAuthSuccess();
+        setLoading(true);
+        // Simulating login
+        setTimeout(() => {
+            localStorage.setItem('userToken', 'dummy_token');
+            localStorage.setItem('userName', 'TestUser');
+            onAuthSuccess();
+            setLoading(false);
+        }, 1000);
     };
 
     const handleRegister = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log('Registering with:', authName, authEmail, authPassword);
-        setMessage({ text: 'Registration functionality not implemented yet. Simulating registration.', type: 'error' });
-        // backend API call
-        // if success: localStorage.setItem('userToken', 'your_token_here'); onAuthSuccess();
-        alert('Registration functionality not implemented yet. Simulating registration.');
-        localStorage.setItem('userToken', 'dummy_token');
-        localStorage.setItem('userName', authName || 'NewUser');
-        onAuthSuccess();
+        setLoading(true);
+        // Simulating registration
+        setTimeout(() => {
+            localStorage.setItem('userToken', 'dummy_token');
+            localStorage.setItem('userName', authName || 'NewUser');
+            onAuthSuccess();
+            setLoading(false);
+        }, 1000);
     };
 
     const handleGoogleSuccess = (response: any) => {
         setLoading(true);
-        setMessage(null);
         try {
-            console.log('Google Login Response:', response);
             const credentialResponse = response;
-
-            // get user's details decode the id_token 
             const decodedUser: any = jwtDecode(credentialResponse.credential);
-
-            console.log('Decoded User Info:', decodedUser);
-
             localStorage.setItem('userToken', credentialResponse.credential);
             localStorage.setItem('userName', decodedUser.name);
             localStorage.setItem('userProfilePicture', decodedUser.picture);
             localStorage.setItem('userFirstName', decodedUser.given_name);
             localStorage.setItem('userLastName', decodedUser.family_name);
             localStorage.setItem('userEmail', decodedUser.email);
-
-            setMessage({ text: 'Goodle Login Successful!', type: 'success' });
             onAuthSuccess();
         } catch (error) {
-            console.log('Login Failed', error);
+            console.error('Login Failed', error);
             setMessage({ text: 'Login Failed. Please Try Again.', type: 'error' });
         } finally {
             setLoading(false);
@@ -70,96 +62,107 @@ const AuthCard: React.FC<AuthCardProps> = ({ onAuthSuccess }) => {
     };
 
     const handleGoogleFailure = () => {
-        console.error('Google Login Failed');
         setMessage({ text: 'Google Login Failed. Please Try Again.', type: 'error' });
-        setLoading(false);
     };
 
     return (
-        <div className="bg-gray-800 shadow rounded-lg p-8 max-w-md w-full text-center">
-            <h2 className="text-2xl font-bold text-white mb-6">
-                {isRegistering ? 'Register to Post an Ad' : 'Log In to Post an Ad'}
-            </h2>
-            {/* Status Message Box */}
-            {message && (
-                <div className={`p-3 rounded-md mb-4 text-sm ${message.type === 'error' ? 'bg-red-500 text-white' : 'bg-green-500 text-white'}`}>
-                    {message.text}
+        <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-xl overflow-hidden max-w-md w-full border border-slate-100 dark:border-slate-700">
+            <div className="p-8 pb-6">
+                <div className="text-center mb-8">
+                    <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
+                        {isRegistering ? 'Create Account' : 'Welcome Back'}
+                    </h2>
+                    <p className="text-slate-500 dark:text-slate-400">
+                        {isRegistering ? 'Join The Uni Gang today' : 'Please sign in to continue'}
+                    </p>
                 </div>
-            )}
-            <form onSubmit={isRegistering ? handleRegister : handleLogin} className="space-y-4">
-                {isRegistering && (
-                    <div>
-                        <label htmlFor="authName" className="sr-only">Name</label>
+
+                {message && (
+                    <div className={`p-4 rounded-xl mb-6 text-sm font-medium ${message.type === 'error' ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600'}`}>
+                        {message.text}
+                    </div>
+                )}
+
+                <form onSubmit={isRegistering ? handleRegister : handleLogin} className="space-y-4">
+                    {isRegistering && (
+                        <div className="relative">
+                            <LuUser className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                            <input
+                                type="text"
+                                className="w-full pl-12 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all text-slate-800 dark:text-white"
+                                placeholder="Full Name"
+                                value={authName}
+                                onChange={(e) => setAuthName(e.target.value)}
+                                required
+                            />
+                        </div>
+                    )}
+                    <div className="relative">
+                        <LuMail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
                         <input
-                            type="text"
-                            id="authName"
-                            className="p-3 block w-full border border-gray-300 placeholder-white text-white rounded-md focus:ring-red-500 focus:border-red-500"
-                            placeholder="Your Name"
-                            value={authName}
-                            onChange={(e) => setAuthName(e.target.value)}
+                            type="email"
+                            className="w-full pl-12 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all text-slate-800 dark:text-white"
+                            placeholder="Email Address"
+                            value={authEmail}
+                            onChange={(e) => setAuthEmail(e.target.value)}
                             required
                         />
                     </div>
-                )}
-                <div>
-                    <label htmlFor="authEmail" className="sr-only">Email</label>
-                    <input
-                        type="email"
-                        id="authEmail"
-                        className="p-3 block w-full border border-gray-300 placeholder-white text-white rounded-md focus:ring-red-500 focus:border-red-500"
-                        placeholder="Email Address"
-                        value={authEmail}
-                        onChange={(e) => setAuthEmail(e.target.value)}
-                        required
-                    />
-                </div>
-                <div>
-                    <label htmlFor="authPassword" className="sr-only">Password</label>
-                    <input
-                        type="password"
-                        id="authPassword"
-                        className="p-3 block w-full border border-gray-300 placeholder-white text-white rounded-md focus:ring-red-500 focus:border-red-500"
-                        placeholder="Password"
-                        value={authPassword}
-                        onChange={(e) => setAuthPassword(e.target.value)}
-                        required
-                    />
-                </div>
-                <button
-                    type="submit"
-                    className="w-full py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                >
-                    {isRegistering ? 'Register' : 'Log In'}
-                </button>
-            </form>
+                    <div className="relative">
+                        <LuLock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                        <input
+                            type="password"
+                            className="w-full pl-12 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all text-slate-800 dark:text-white"
+                            placeholder="Password"
+                            value={authPassword}
+                            onChange={(e) => setAuthPassword(e.target.value)}
+                            required
+                        />
+                    </div>
 
-            <div className="mt-4 text-sm text-white">
-                {isRegistering ? (
-                    <p>Already have an account? <button onClick={() => setIsRegistering(false)} className="text-red-500 hover:underline font-semibold">Log In</button></p>
-                ) : (
-                    <p>Don't have an account? <button onClick={() => setIsRegistering(true)} className="text-red-500 hover:underline font-semibold">Register</button></p>
-                )}
-            </div>
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className="w-full bg-brand-600 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-brand-200 hover:bg-brand-700 hover:shadow-xl transition-all flex items-center justify-center gap-2 group"
+                    >
+                        {loading ? 'Processing...' : (isRegistering ? 'Sign Up' : 'Sign In')}
+                        {!loading && <LuArrowRight className="group-hover:translate-x-1 transition-transform" />}
+                    </button>
+                </form>
 
-            <div className="relative my-6">
-                <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-gray-300"></div>
+                <div className="relative my-8">
+                    <div className="absolute inset-0 flex items-center">
+                        <div className="w-full border-t border-slate-100 dark:border-slate-700"></div>
+                    </div>
+                    <div className="relative flex justify-center text-xs uppercase tracking-wider">
+                        <span className="px-4 bg-white dark:bg-slate-800 text-slate-400">Or continue with</span>
+                    </div>
                 </div>
-                <div className="relative flex justify-center text-sm">
-                    <span className="px-2 bg-gray-800 text-gray-200">Or</span>
-                </div>
-            </div>
 
-            <div className="w-full flex justify-center ">
-                <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-                    <div style={{ pointerEvents: loading ? 'none' : 'auto' }}>
+                <div className="flex justify-center">
+                    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
                         <GoogleLogin
                             onSuccess={handleGoogleSuccess}
                             onError={handleGoogleFailure}
-
+                            theme="filled_black"
+                            shape="pill"
+                            size="large"
+                            width="100%"
                         />
-                    </div>
-                </GoogleOAuthProvider>
+                    </GoogleOAuthProvider>
+                </div>
+            </div>
+
+            <div className="bg-slate-50 dark:bg-slate-900/50 p-4 text-center border-t border-slate-100 dark:border-slate-700">
+                <p className="text-slate-600 dark:text-slate-400 text-sm">
+                    {isRegistering ? 'Already have an account?' : "Don't have an account?"}
+                    <button
+                        onClick={() => setIsRegistering(!isRegistering)}
+                        className="ml-2 font-bold text-brand-600 hover:text-brand-700"
+                    >
+                        {isRegistering ? 'Log In' : 'Register now'}
+                    </button>
+                </p>
             </div>
         </div>
     );
