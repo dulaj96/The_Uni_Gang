@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { LuX, LuUpload, LuImage, LuMapPin, LuDollarSign, LuFileText } from 'react-icons/lu';
+import { LuX, LuUpload, LuImage, LuMapPin, LuFileText } from 'react-icons/lu';
+import universitiesData from '../../constants/annex/Universities.json';
+import { FaRupeeSign } from 'react-icons/fa6';
 
 interface AnnexFormProps {
   initialData?: any;
@@ -10,6 +12,7 @@ interface AnnexFormProps {
 
 const AnnexForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel, isEditing }) => {
   const [title, setTitle] = useState('');
+  const [selectedUniversity, setSelectedUniversity] = useState('');
   const [campus, setCampus] = useState('');
   const [address, setAddress] = useState('');
   const [price, setPrice] = useState('');
@@ -21,10 +24,26 @@ const AnnexForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel, 
   const [contactPhone, setContactPhone] = useState('');
   const [contactEmail, setContactEmail] = useState('');
 
+  // Load universities from JSON
+  const universitiesList = universitiesData.map((uni: { name: string }) => uni.name);
+
   useEffect(() => {
     if (initialData) {
       setTitle(initialData.title || '');
-      setCampus(initialData.campus || '');
+
+      // Handle initial campus selection logic
+      const initialCampus = initialData.campus || '';
+      if (universitiesList.includes(initialCampus)) {
+        setSelectedUniversity(initialCampus);
+        setCampus(initialCampus);
+      } else if (initialCampus) {
+        setSelectedUniversity('Other');
+        setCampus(initialCampus);
+      } else {
+        setSelectedUniversity('');
+        setCampus('');
+      }
+
       setAddress(initialData.address || '');
       setPrice(initialData.price ? initialData.price.replace('Rs. ', '').replace('/month', '') : '');
       setDescription(initialData.description || '');
@@ -35,6 +54,16 @@ const AnnexForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel, 
       setContactEmail(initialData.contactEmail || '');
     }
   }, [initialData]);
+
+  const handleUniversityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    setSelectedUniversity(value);
+    if (value === 'Other') {
+      setCampus(''); // Clear campus if 'Other' is selected so user can type
+    } else {
+      setCampus(value); // Set campus to selected university
+    }
+  };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -94,19 +123,38 @@ const AnnexForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel, 
 
             <div>
               <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Nearest Campus</label>
-              <input
-                type="text"
-                className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:bg-white dark:focus:bg-slate-800 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 transition-all outline-none text-slate-800 dark:text-white"
-                value={campus}
-                onChange={(e) => setCampus(e.target.value)}
+              <select
+                className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:bg-white dark:focus:bg-slate-800 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 transition-all outline-none text-slate-800 dark:text-white appearance-none"
+                value={selectedUniversity}
+                onChange={handleUniversityChange}
                 required
-              />
+              >
+                <option value="" disabled>Select a University</option>
+                {universitiesList.map((uni, index) => (
+                  <option key={index} value={uni}>{uni}</option>
+                ))}
+                <option value="Other">Other</option>
+              </select>
+
+              {selectedUniversity === 'Other' && (
+                <div className="mt-3 animate-fadeIn">
+                  <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Enter Nearest University</label>
+                  <input
+                    type="text"
+                    className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:bg-white dark:focus:bg-slate-800 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 transition-all outline-none text-slate-800 dark:text-white"
+                    placeholder="e.g. My Local Institute"
+                    value={campus}
+                    onChange={(e) => setCampus(e.target.value)}
+                    required
+                  />
+                </div>
+              )}
             </div>
 
             <div className="relative">
               <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Monthly Rent</label>
               <div className="relative">
-                <LuDollarSign className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                <FaRupeeSign className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
                 <input
                   type="number"
                   className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:bg-white dark:focus:bg-slate-800 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 transition-all outline-none text-slate-800 dark:text-white"
