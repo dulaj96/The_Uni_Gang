@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
 import { LuUser, LuMail, LuLock, LuArrowRight } from 'react-icons/lu';
+import { dispatchAuthUpdate } from '../../utils/authEvents';
 
 interface AuthCardProps {
     onAuthSuccess: () => void;
@@ -24,6 +25,7 @@ const AuthCard: React.FC<AuthCardProps> = ({ onAuthSuccess }) => {
         setTimeout(() => {
             localStorage.setItem('userToken', 'dummy_token');
             localStorage.setItem('userName', 'TestUser');
+            dispatchAuthUpdate();
             onAuthSuccess();
             setLoading(false);
         }, 1000);
@@ -36,6 +38,7 @@ const AuthCard: React.FC<AuthCardProps> = ({ onAuthSuccess }) => {
         setTimeout(() => {
             localStorage.setItem('userToken', 'dummy_token');
             localStorage.setItem('userName', authName || 'NewUser');
+            dispatchAuthUpdate();
             onAuthSuccess();
             setLoading(false);
         }, 1000);
@@ -52,6 +55,7 @@ const AuthCard: React.FC<AuthCardProps> = ({ onAuthSuccess }) => {
             localStorage.setItem('userFirstName', decodedUser.given_name);
             localStorage.setItem('userLastName', decodedUser.family_name);
             localStorage.setItem('userEmail', decodedUser.email);
+            dispatchAuthUpdate();
             onAuthSuccess();
         } catch (error) {
             console.error('Login Failed', error);

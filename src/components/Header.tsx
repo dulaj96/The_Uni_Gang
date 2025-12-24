@@ -5,6 +5,7 @@ import logo from '../assets/logoImage.jpg';
 
 import { LuMenu, LuX, LuUser, LuLogOut, LuLayoutDashboard, LuSun, LuMoon } from 'react-icons/lu';
 import { useTheme } from '../context/ThemeContext';
+import { dispatchAuthUpdate, listenToAuthUpdate } from '../utils/authEvents';
 
 const Header = () => {
   const { theme, toggleTheme } = useTheme();
@@ -42,8 +43,17 @@ const Header = () => {
     };
 
     checkLoginStatus();
+
+    // Listen for custom auth events (same tab)
+    const cleanup = listenToAuthUpdate(checkLoginStatus);
+
+    // Also listen for storage events (cross tab)
     window.addEventListener('storage', checkLoginStatus);
-    return () => window.removeEventListener('storage', checkLoginStatus);
+
+    return () => {
+      cleanup();
+      window.removeEventListener('storage', checkLoginStatus);
+    };
   }, []);
 
   // Close menus on route change
@@ -72,6 +82,7 @@ const Header = () => {
     setUserName(null);
     setUserProfilePic(null);
     setIsProfileDropdownOpen(false);
+    dispatchAuthUpdate();
   };
 
   const navLinks = [

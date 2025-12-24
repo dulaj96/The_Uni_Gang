@@ -6,6 +6,7 @@ import MyAdsList from '../components/annex/MyAdsList';
 import annex1 from '../assets/annex1.jpg'
 import annex2 from '../assets/annex2.jpg'
 import { LuPlus, LuLayoutDashboard, LuLogOut } from 'react-icons/lu';
+import { dispatchAuthUpdate } from '../utils/authEvents';
 
 const dummyMyAds = [
   {
@@ -65,6 +66,8 @@ const PostAdPage = () => {
     setIsLoggedIn(false);
     localStorage.removeItem('userToken');
     localStorage.removeItem('userProfilePicture');
+    localStorage.removeItem('userName');
+    dispatchAuthUpdate();
   };
 
   const handleAnnexFormSubmit = (adData: any, isEditing: boolean) => {
