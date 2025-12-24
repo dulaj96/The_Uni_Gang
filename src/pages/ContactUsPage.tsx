@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { LuPhone, LuMail, LuSend, LuMapPin, LuFacebook } from 'react-icons/lu';
+import { FaWhatsapp } from 'react-icons/fa6';
 import SEO from '../components/SEO';
 import toast from 'react-hot-toast';
 
@@ -104,13 +105,13 @@ const ContactUsPage = () => {
             </div>
 
             <div className="flex items-start gap-4 p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:border-brand-200 dark:hover:border-brand-900 transition-colors group">
-              <div className="bg-purple-50 dark:bg-purple-900/20 p-3 rounded-full text-purple-600 dark:text-purple-400 group-hover:bg-purple-600 group-hover:text-white transition-colors">
-                <LuMapPin className="w-6 h-6" />
+              <div className="bg-green-50 dark:bg-green-900/20 p-3 rounded-full text-green-600 dark:text-green-400 group-hover:bg-green-600 group-hover:text-white transition-colors">
+                <FaWhatsapp className="w-6 h-6" />
               </div>
               <div>
-                <h3 className="font-bold text-slate-900 dark:text-white mb-1">Office</h3>
-                <p className="text-slate-500 dark:text-slate-400 mb-1">Come say hello at our office HQ.</p>
-                <p className="text-slate-800 dark:text-slate-200 font-medium">123 University Road, Colombo 07</p>
+                <h3 className="font-bold text-slate-900 dark:text-white mb-1">WhatsApp</h3>
+                <p className="text-slate-500 dark:text-slate-400 mb-1">Chat with us anytime.</p>
+                <a href="https://wa.me/94724478148" target="_blank" rel="noopener noreferrer" className="text-green-600 dark:text-green-400 font-semibold hover:underline text-lg">+94 72 44 78 148</a>
               </div>
             </div>
           </div>
