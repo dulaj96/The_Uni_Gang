@@ -8,6 +8,7 @@ import annex2 from '../assets/annex2.jpg'
 import { LuPlus, LuLayoutDashboard, LuLogOut } from 'react-icons/lu';
 import { dispatchAuthUpdate } from '../utils/authEvents';
 import SEO from '../components/SEO';
+import toast from 'react-hot-toast';
 
 const dummyMyAds = [
   {
@@ -69,6 +70,7 @@ const PostAdPage = () => {
     localStorage.removeItem('userProfilePicture');
     localStorage.removeItem('userName');
     dispatchAuthUpdate();
+    toast.success('Logged out successfully');
   };
 
   const handleAnnexFormSubmit = (adData: any, isEditing: boolean) => {
@@ -78,7 +80,7 @@ const PostAdPage = () => {
         ...adData,
         images: adData.existingImages.concat(adData.newImages.map((file: File) => URL.createObjectURL(file)))
       } : ad));
-      alert('Ad updated successfully!');
+      toast.success('Ad updated successfully!');
     } else {
       const newAd = {
         ...adData,
@@ -86,7 +88,7 @@ const PostAdPage = () => {
         images: adData.newImages.map((file: File) => URL.createObjectURL(file)),
       };
       setMyAds([...myAds, newAd]);
-      alert('Ad posted successfully!');
+      toast.success('Ad posted successfully!');
     }
     setEditingAd(null);
     setCurrentView('myAds');
@@ -101,7 +103,7 @@ const PostAdPage = () => {
   if (!isLoggedIn) {
     return (
       <div className="min-h-[80vh] flex flex-col justify-center items-center py-10 px-4">
-        <SEO 
+        <SEO
           title="Post Your Annex Advertisement - The Uni Gang"
           description="Landlords and students: Post your boarding place or annex advertisement for free and reach thousands of students."
         />
@@ -112,7 +114,7 @@ const PostAdPage = () => {
 
   return (
     <div className="max-w-5xl mx-auto space-y-8">
-      <SEO 
+      <SEO
         title="Post Your Annex Advertisement - The Uni Gang"
         description="Landlords and students: Post your boarding place or annex advertisement for free and reach thousands of students."
       />

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { LuPhone, LuMail, LuSend, LuMapPin, LuFacebook } from 'react-icons/lu';
 import SEO from '../components/SEO';
+import toast from 'react-hot-toast';
 
 const ContactUsPage = () => {
   const [name, setName] = useState('');
@@ -13,7 +14,7 @@ const ContactUsPage = () => {
     setName('');
     setEmail('');
     setMessage('');
-    alert('Message sent successfully!');
+    toast.success('Message sent successfully!');
   };
 
   return (

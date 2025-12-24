@@ -6,6 +6,7 @@ import logo from '../assets/logoImage.jpg';
 import { LuMenu, LuX, LuUser, LuLogOut, LuLayoutDashboard, LuSun, LuMoon } from 'react-icons/lu';
 import { useTheme } from '../context/ThemeContext';
 import { dispatchAuthUpdate, listenToAuthUpdate } from '../utils/authEvents';
+import toast from 'react-hot-toast';
 
 const Header = () => {
   const { theme, toggleTheme } = useTheme();
@@ -83,6 +84,7 @@ const Header = () => {
     setUserProfilePic(null);
     setIsProfileDropdownOpen(false);
     dispatchAuthUpdate();
+    toast.success('Logged out successfully');
   };
 
   const navLinks = [

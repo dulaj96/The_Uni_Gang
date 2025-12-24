@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { LuUser, LuMail, LuPhone, LuBuilding, LuLock, LuCamera, LuPencil, LuSave, LuX, LuEye, LuEyeOff } from 'react-icons/lu';
 import SEO from '../components/SEO';
+import toast from 'react-hot-toast';
 
 const ProfilePage = () => {
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
@@ -62,7 +63,7 @@ const ProfilePage = () => {
     }
 
     setIsEditing(false);
-    alert('Profile updated successfully!');
+    toast.success('Profile updated successfully!');
   };
 
   return (

@@ -3,6 +3,7 @@ import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
 import { LuUser, LuMail, LuLock, LuArrowRight } from 'react-icons/lu';
 import { dispatchAuthUpdate } from '../../utils/authEvents';
+import toast from 'react-hot-toast';
 
 interface AuthCardProps {
     onAuthSuccess: () => void;
@@ -28,6 +29,7 @@ const AuthCard: React.FC<AuthCardProps> = ({ onAuthSuccess }) => {
             dispatchAuthUpdate();
             onAuthSuccess();
             setLoading(false);
+            toast.success('Welcome back!');
         }, 1000);
     };
 
@@ -41,6 +43,7 @@ const AuthCard: React.FC<AuthCardProps> = ({ onAuthSuccess }) => {
             dispatchAuthUpdate();
             onAuthSuccess();
             setLoading(false);
+            toast.success('Account created successfully!');
         }, 1000);
     };
 
@@ -57,9 +60,11 @@ const AuthCard: React.FC<AuthCardProps> = ({ onAuthSuccess }) => {
             localStorage.setItem('userEmail', decodedUser.email);
             dispatchAuthUpdate();
             onAuthSuccess();
+            toast.success(`Welcome back, ${decodedUser.name}!`);
         } catch (error) {
             console.error('Login Failed', error);
             setMessage({ text: 'Login Failed. Please Try Again.', type: 'error' });
+            toast.error('Google login failed.');
         } finally {
             setLoading(false);
         }
