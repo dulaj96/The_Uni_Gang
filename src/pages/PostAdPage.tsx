@@ -7,6 +7,7 @@ import annex1 from '../assets/annex1.jpg'
 import annex2 from '../assets/annex2.jpg'
 import { LuPlus, LuLayoutDashboard, LuLogOut } from 'react-icons/lu';
 import { dispatchAuthUpdate } from '../utils/authEvents';
+import SEO from '../components/SEO';
 
 const dummyMyAds = [
   {
@@ -100,6 +101,10 @@ const PostAdPage = () => {
   if (!isLoggedIn) {
     return (
       <div className="min-h-[80vh] flex flex-col justify-center items-center py-10 px-4">
+        <SEO 
+          title="Post Your Annex Advertisement - The Uni Gang"
+          description="Landlords and students: Post your boarding place or annex advertisement for free and reach thousands of students."
+        />
         <AuthCard onAuthSuccess={handleAuthSuccess} />
       </div>
     );
@@ -107,6 +112,10 @@ const PostAdPage = () => {
 
   return (
     <div className="max-w-5xl mx-auto space-y-8">
+      <SEO 
+        title="Post Your Annex Advertisement - The Uni Gang"
+        description="Landlords and students: Post your boarding place or annex advertisement for free and reach thousands of students."
+      />
       {/* Dashboard Nav */}
       <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-2 flex justify-center sm:justify-between items-center">
         <div className="flex bg-slate-100 dark:bg-slate-700/50 p-1 rounded-xl">

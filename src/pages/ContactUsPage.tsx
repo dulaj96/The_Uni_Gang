@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { LuPhone, LuMail, LuSend, LuMapPin, LuFacebook } from 'react-icons/lu';
+import SEO from '../components/SEO';
 
 const ContactUsPage = () => {
   const [name, setName] = useState('');
@@ -17,6 +18,10 @@ const ContactUsPage = () => {
 
   return (
     <div className="max-w-6xl mx-auto px-4 md:px-8 py-8">
+      <SEO
+        title="Contact Us - The Uni Gang Support"
+        description="Have questions? Contact The Uni Gang team for support with finding accommodation or posting advertisements."
+      />
       <div className="text-center mb-16">
         <h1 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-6">Get in Touch</h1>
         <p className="text-xl text-slate-500 dark:text-slate-400 max-w-2xl mx-auto">
@@ -93,7 +98,7 @@ const ContactUsPage = () => {
               <div>
                 <h3 className="font-bold text-slate-900 dark:text-white mb-1">Email</h3>
                 <p className="text-slate-500 dark:text-slate-400 mb-1">Our friendly team is here to help.</p>
-                <a href="mailto:support@theunigang.com" className="text-blue-600 dark:text-blue-400 font-semibold hover:underline text-lg">support@theunigang.com</a>
+                <a href="mailto:support@theunigang.com" className="text-blue-600 dark:text-blue-400 font-semibold hover:underline text-lg">uniganglk@gmail.com</a>
               </div>
             </div>
 

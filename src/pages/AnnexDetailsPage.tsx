@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { LuChevronLeft, LuChevronRight, LuMapPin, LuPhone, LuUser, LuCircleCheckBig, LuShare2, LuHeart } from 'react-icons/lu';
 import annex1 from '../assets/annex1.jpg';
 import annex2 from '../assets/annex2.jpg';
+import SEO from '../components/SEO';
 
 interface AnnexDetails {
   title: string;
@@ -75,6 +76,11 @@ const AnnexDetailsPage = () => {
 
   return (
     <div className="max-w-7xl mx-auto">
+      <SEO
+        title={`${annexDetails.title} - The Uni Gang`}
+        description={annexDetails.description.substring(0, 160)}
+        image={annexDetails.images[0]}
+      />
       {/* Breadcrumb / Back */}
       <div className="mb-6 flex items-center justify-between">
         <button

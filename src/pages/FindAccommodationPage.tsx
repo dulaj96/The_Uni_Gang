@@ -4,6 +4,7 @@ import universitiesData from '../constants/annex/Universities.json';
 import { LuSearch, LuMapPin, LuChevronDown, LuFilter, LuChevronLeft, LuChevronRight } from 'react-icons/lu';
 import annex1 from '../assets/annex1.jpg';
 import annex2 from '../assets/annex2.jpg';
+import SEO from '../components/SEO';
 
 interface University {
   id: string;
@@ -50,6 +51,10 @@ const FindAccommodationPage = () => {
 
   return (
     <div className="space-y-8">
+      <SEO
+        title="Find Student Accommodation & Annexes - The Uni Gang"
+        description="Search through hundreds of verified annexes and rooms for university students. Filter by location, price, and facilities."
+      />
       {/* Header / Filter Section */}
       <section className="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 p-6 md:p-8">
         <div className="flex flex-col md:flex-row gap-6 items-end md:items-center">

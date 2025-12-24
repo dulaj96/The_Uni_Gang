@@ -4,6 +4,7 @@ import annex1 from '../assets/annex1.jpg'
 import annex2 from '../assets/annex2.jpg'
 import { useEffect, useState } from 'react';
 import { LuMapPin, LuArrowRight, LuHouse, LuSearch } from 'react-icons/lu';
+import SEO from '../components/SEO';
 
 const dummyAnnexes = Array.from({ length: 6 }, (_, i) => ({
   id: String(i + 1),
@@ -25,6 +26,10 @@ const HomePage = () => {
 
   return (
     <div className="space-y-24">
+      <SEO
+        title="The Uni Gang - Find Your Perfect Student Annex in Sri Lanka"
+        description="Connect with the best student accommodations near universities in Sri Lanka. Easy, secure, and student-friendly annex hunting."
+      />
       {/* Hero Section */}
       <section className="relative h-[85vh] min-h-[600px] flex items-center justify-center -mt-24 overflow-hidden">
         {/* Background Image & Overlay */}

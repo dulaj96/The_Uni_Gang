@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { LuUser, LuMail, LuPhone, LuBuilding, LuLock, LuCamera, LuPencil, LuSave, LuX, LuEye, LuEyeOff } from 'react-icons/lu';
+import SEO from '../components/SEO';
 
 const ProfilePage = () => {
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
@@ -66,6 +67,7 @@ const ProfilePage = () => {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">
+      <SEO title="My Profile - The Uni Gang" />
       <div className="bg-white dark:bg-slate-800 rounded-[2.5rem] shadow-xl shadow-slate-200/50 dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-700 overflow-hidden relative">
         <div className="h-32 bg-gradient-to-r from-brand-600 to-indigo-600"></div>
 
