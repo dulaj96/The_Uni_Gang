@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { LuPhone, LuMail, LuSend, LuMapPin, LuFacebook } from 'react-icons/lu';
+import { LuPhone, LuMail, LuSend, LuFacebook } from 'react-icons/lu';
 import { FaWhatsapp } from 'react-icons/fa6';
 import SEO from '../components/SEO';
 import toast from 'react-hot-toast';
