@@ -157,7 +157,7 @@ const AnnexForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel, 
                 <FaRupeeSign className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
                 <input
                   type="number"
-                  className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:bg-white dark:focus:bg-slate-800 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 transition-all outline-none text-slate-800 dark:text-white"
+                  className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:bg-white dark:focus:bg-slate-800 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 transition-all outline-none text-slate-800 dark:text-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   placeholder="25000"
                   value={price}
                   onChange={(e) => setPrice(e.target.value)}

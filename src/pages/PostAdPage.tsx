@@ -14,7 +14,7 @@ const dummyMyAds = [
   {
     id: 'user_ad_1',
     title: 'Annex near Peradeniya',
-    price: 'Rs. 20,000/month',
+    price: '20,000',
     address: 'No. 10, Flower Road, Colombo 07',
     images: [annex1],
     description: 'A comfortable annex with all facilities.',
@@ -27,7 +27,7 @@ const dummyMyAds = [
   {
     id: 'user_ad_2',
     title: 'Room for student',
-    price: 'Rs. 18,000/month',
+    price: '18,000',
     address: 'No. 5, Lake Road, Peradeniya',
     images: [annex2],
     description: 'Large room with good ventilation.',

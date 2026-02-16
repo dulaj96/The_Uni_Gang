@@ -56,7 +56,7 @@ const MyAdsList: React.FC<MyAdsListProps> = ({ ads, onEdit, onDelete }) => {
               )}
 
               <div className="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-slate-800 shadow-sm">
-                {ad.price}
+                Rs. {ad.price}/month
               </div>
             </div>
 
