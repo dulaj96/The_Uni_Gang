@@ -3,9 +3,23 @@ import { LuX, LuUpload, LuImage, LuMapPin, LuFileText } from 'react-icons/lu';
 import universitiesData from '../../constants/annex/Universities.json';
 import { FaRupeeSign } from 'react-icons/fa6';
 
+interface AnnexData {
+  title: string;
+  campus: string;
+  address: string;
+  price: string;
+  description: string;
+  features: string[];
+  newImages: File[];
+  existingImages: string[];
+  contactName: string;
+  contactPhone: string;
+  contactEmail: string;
+}
+
 interface AnnexFormProps {
   initialData?: any;
-  onSubmit: (data: any, isEditing: boolean) => void;
+  onSubmit: (data: AnnexData, isEditing: boolean) => void;
   onCancel: () => void;
   isEditing: boolean;
 }

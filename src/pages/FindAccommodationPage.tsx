@@ -11,7 +11,18 @@ interface University {
   name: string;
 }
 
-const dummyAnnexes = Array.from({ length: 20 }, (_, i) => ({
+interface Annex {
+  id: string;
+  title: string;
+  price: string;
+  description: string;
+  address: string;
+  images: string[];
+  link: string;
+  rating: string;
+}
+
+const dummyAnnexes: Annex[] = Array.from({ length: 20 }, (_, i) => ({
   id: String(i + 1),
   title: `Luxury Annex ${i + 1} Near Campus`,
   price: `Rs. ${10000 + (i * 500)}/month`,
@@ -28,7 +39,7 @@ const FindAccommodationPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
 
   // Pagination
-  const [allAnnexes, setAllAnnexes] = useState<any[]>([]);
+  const [allAnnexes, setAllAnnexes] = useState<Annex[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [annexesPerPage] = useState(9);
 

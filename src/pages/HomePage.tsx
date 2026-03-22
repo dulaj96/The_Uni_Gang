@@ -1,12 +1,24 @@
 import { Link } from 'react-router-dom';
-import backgroundImage from '../assets/homeImage.jpg'
+import backgroundImage from '../assets/hero_bg.png'
 import annex1 from '../assets/annex1.jpg'
 import annex2 from '../assets/annex2.jpg'
 import { useEffect, useState } from 'react';
-import { LuMapPin, LuArrowRight, LuHouse, LuSearch } from 'react-icons/lu';
+import { LuMapPin, LuArrowRight, LuHouse, LuSearch, LuGraduationCap, LuBuilding, LuAward, LuActivity, LuUsers, LuBook, LuGlobe } from 'react-icons/lu';
+import { FaApple, FaGooglePlay } from 'react-icons/fa';
 import SEO from '../components/SEO';
 
-const dummyAnnexes = Array.from({ length: 6 }, (_, i) => ({
+interface Annex {
+  id: string;
+  title: string;
+  price: string;
+  description: string;
+  address: string;
+  images: string[];
+  link: string;
+  tag: string;
+}
+
+const dummyAnnexes: Annex[] = Array.from({ length: 6 }, (_, i) => ({
   id: String(i + 1),
   title: `Modern Annex Near University ${i + 1}`,
   price: `Rs. ${10000 + (i * 500)}/month`,
@@ -18,7 +30,7 @@ const dummyAnnexes = Array.from({ length: 6 }, (_, i) => ({
 }));
 
 const HomePage = () => {
-  const [allAnnexes, setAllAnnexes] = useState<any[]>([]);
+  const [allAnnexes, setAllAnnexes] = useState<Annex[]>([]);
 
   useEffect(() => {
     setAllAnnexes(dummyAnnexes);
@@ -30,41 +42,109 @@ const HomePage = () => {
         title="The Uni Gang - Find Your Perfect Student Annex in Sri Lanka"
         description="Connect with the best student accommodations near universities in Sri Lanka. Easy, secure, and student-friendly annex hunting."
       />
-      {/* Hero Section */}
-      <section className="relative h-[85vh] min-h-[600px] flex items-center justify-center -mt-24 overflow-hidden">
-        {/* Background Image & Overlay */}
-        <div className="absolute inset-0 z-0">
-          <img
-            src={backgroundImage}
-            alt="Campus Life"
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-slate-900/60 via-slate-900/40 to-slate-50"></div>
+      {/* Hero Section Reimagined */}
+      <section className="flex-grow flex items-center justify-center px-4 lg:px-12 max-w-7xl mx-auto w-full relative z-10 min-h-[85vh] -mt-24 pt-28 pb-16">
+        <div className="grid lg:grid-cols-2 gap-16 items-center w-full py-12">
+          {/* Left Content Column */}
+          <div className="space-y-10 order-2 lg:order-1">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-slate-200 shadow-sm">
+              <span className="w-2 h-2 rounded-full bg-brand-600 animate-pulse"></span>
+              <span className="text-xs font-bold tracking-widest uppercase text-brand-600 font-sans">Now Live: Autumn 2026 Enrollment</span>
+            </div>
+            
+            <div className="space-y-6">
+              <h1 className="text-5xl lg:text-7xl font-extrabold text-slate-900 leading-[1.1] tracking-tight font-sans">
+                Welcome to <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 to-indigo-600">Uni Gang World</span>
+              </h1>
+              <p className="text-xl text-slate-600 max-w-xl leading-relaxed font-light">
+                Experience the future of student collaboration. Connect with elite campuses, track your academic milestones, and join a global network of innovators in an environment designed for modern excellence.
+              </p>
+            </div>
+            
+            <div className="flex flex-wrap gap-4 pt-4">
+              <button className="flex items-center gap-3 px-8 py-4 rounded-full bg-white/70 backdrop-blur-xl border border-white/40 shadow-lg hover:bg-white transition-all scale-100 hover:scale-105 active:scale-95 group">
+                <FaApple className="text-slate-900 text-3xl" />
+                <div className="text-left">
+                  <p className="text-[10px] uppercase tracking-tighter text-slate-500 font-bold leading-none">Download on</p>
+                  <p className="text-lg font-bold text-slate-900 leading-none">App Store</p>
+                </div>
+              </button>
+              <button className="flex items-center gap-3 px-8 py-4 rounded-full bg-white/70 backdrop-blur-xl border border-white/40 shadow-lg hover:bg-white transition-all scale-100 hover:scale-105 active:scale-95 group">
+                <FaGooglePlay className="text-slate-900 text-3xl" />
+                <div className="text-left">
+                  <p className="text-[10px] uppercase tracking-tighter text-slate-500 font-bold leading-none">Get it on</p>
+                  <p className="text-lg font-bold text-slate-900 leading-none">Google Play</p>
+                </div>
+              </button>
+            </div>
+            
+            {/* Trust Bar */}
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 pt-6 grayscale opacity-60">
+              <p className="text-xs font-bold uppercase tracking-widest text-slate-500">Affiliated with</p>
+              <div className="flex gap-8 items-center">
+                <LuGraduationCap className="text-4xl" />
+                <LuBuilding className="text-4xl" />
+                <LuAward className="text-4xl" />
+              </div>
+            </div>
+          </div>
+          
+          {/* Right Visual Column */}
+          <div className="relative order-1 lg:order-2 flex justify-center items-center">
+            {/* Main Image Frame with Soft Frosted Glass */}
+            <div className="relative w-full max-w-lg aspect-[4/5] rounded-[3rem] overflow-hidden shadow-[0px_64px_96px_rgba(220,38,38,0.12)] border-[12px] border-white/30 backdrop-blur-md z-10">
+              <img 
+                alt="Modern University Architecture" 
+                className="w-full h-full object-cover" 
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRFV7zovlhxOqNLIlMHmIV8r4A8byd5D4NvJlHk_apI8EpkWiMlGBbSFZxhO74seWe_R6-XvzvN6-XAJCX7Ys5PyPLPo6T7HSGAfid5fB02VsRMX0v9MjPy5W_YSGqOvMaEQw6usHEXlCJOOWwjczK51PTTkCtv7YJOeVWwMN6DMqZWFqW5BC2RgJXtNh8Aq9eYplzYIM_M0inQeE8cUxq-kByRJltNoMGkrZYfHY1KQtnheVXT4q7RSYp-CB4zBiMF6Q9FadmuYxl" 
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-brand-600/20 to-transparent pointer-events-none"></div>
+            </div>
+            
+            {/* Floating Glass Status Cards */}
+            <div className="absolute -top-8 -right-4 lg:-right-12 glass-card p-4 rounded-3xl shadow-xl flex items-center gap-4 z-20 animate-[float_4s_ease-in-out_infinite]">
+              <div className="w-12 h-12 rounded-full bg-brand-100 flex items-center justify-center">
+                <LuActivity className="text-brand-600 text-xl" />
+              </div>
+              <div className="hidden sm:block">
+                <p className="text-xs font-bold text-slate-500 uppercase tracking-tighter">Live Campus Pulse</p>
+                <p className="text-lg font-extrabold text-slate-900">Active Now</p>
+              </div>
+            </div>
+            
+            <div className="absolute -bottom-10 -left-4 lg:-left-12 glass-card p-4 rounded-3xl shadow-xl flex items-center gap-4 z-20 animate-[float_5s_ease-in-out_infinite_reverse]">
+              <div className="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center">
+                <LuUsers className="text-indigo-600 text-xl" />
+              </div>
+              <div className="hidden sm:block">
+                <p className="text-xs font-bold text-slate-500 uppercase tracking-tighter">Student Stats</p>
+                <p className="text-lg font-extrabold text-slate-900">12k+ Global</p>
+              </div>
+            </div>
+            
+            {/* Decorative Floating 3D Icons */}
+            <div className="absolute top-1/4 -left-8 sm:-left-16 w-16 h-16 rounded-2xl glass-card flex items-center justify-center shadow-lg transform -rotate-12 z-20 animate-[float_6s_ease-in-out_infinite]">
+              <LuBook className="text-brand-600 text-3xl" />
+            </div>
+            <div className="absolute bottom-1/4 -right-6 sm:-right-12 w-20 h-20 rounded-full glass-card flex items-center justify-center shadow-lg transform rotate-12 bg-white/80 z-20 animate-[float_4.5s_ease-in-out_infinite]">
+              <LuGraduationCap className="text-indigo-600 text-4xl" />
+            </div>
+            <div className="absolute top-10 right-4 sm:right-10 w-12 h-12 rounded-full glass-card flex items-center justify-center shadow-md z-20 animate-[float_5.5s_ease-in-out_infinite_reverse]">
+              <LuGlobe className="text-brand-400 text-2xl" />
+            </div>
+            
+            {/* Ambient Glows */}
+            <div className="absolute -z-10 w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] bg-brand-400/20 blur-[120px] rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
+          </div>
         </div>
-
-        {/* Content */}
-        <div className="relative z-10 container mx-auto px-4 text-center">
-          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight drop-shadow-lg">
-            Find Your Perfect <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-300 to-indigo-300">Student Home</span>
-          </h1>
-          <p className="text-xl md:text-2xl text-slate-200 mb-10 max-w-2xl mx-auto font-light leading-relaxed">
-            Discover safe, affordable, and convenient accommodations near your university.
-          </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              to="/find-accommodation"
-              className="group bg-brand-600 hover:bg-brand-700 text-white text-lg font-semibold py-4 px-8 rounded-full shadow-lg shadow-brand-500/30 transition-all hover:scale-105 flex items-center gap-2"
-            >
-              Find Accommodation <LuSearch className="w-5 h-5 group-hover:bg-brand-700" />
-            </Link>
-            <Link
-              to="/post-ad"
-              className="group bg-white/10 backdrop-blur-md hover:bg-white/20 text-white border border-white/30 text-lg font-semibold py-4 px-8 rounded-full shadow-lg transition-all hover:scale-105 flex items-center gap-2"
-            >
-              List Your Property <LuHouse className="w-5 h-5" />
-            </Link>
+        
+        {/* Connection Dots / Background Patterns */}
+        <div className="absolute top-0 right-0 p-12 sm:p-24 opacity-10 pointer-events-none hidden sm:block">
+          <div className="grid grid-cols-6 gap-8">
+            {Array.from({ length: 12 }).map((_, i) => (
+              <div key={i} className="w-1 h-1 bg-brand-600 rounded-full"></div>
+            ))}
           </div>
         </div>
       </section>

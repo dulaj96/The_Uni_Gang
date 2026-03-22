@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
 import { LuChevronLeft, LuChevronRight, LuPencil, LuTrash, LuMapPin } from 'react-icons/lu';
 
+interface Annex {
+  id: string;
+  title: string;
+  price: string;
+  address: string;
+  images: string[];
+}
+
 interface MyAdsListProps {
-  ads: any[];
-  onEdit: (ad: any) => void;
+  ads: Annex[];
+  onEdit: (ad: Annex) => void;
   onDelete: (adId: string) => void;
 }
 

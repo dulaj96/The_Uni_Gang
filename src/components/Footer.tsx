@@ -3,14 +3,14 @@ import { FaFacebook, FaInstagram, FaTwitter, FaLinkedin } from 'react-icons/fa';
 
 const Footer = () => {
   return (
-    <footer className="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 mt-20 pt-16 pb-8">
+    <footer className="bg-white border-t border-slate-100 mt-20 pt-16 pb-8">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
 
           {/* Brand Column */}
           <div className="md:col-span-1">
-            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-4">
-              The <span className="text-red-600 dark:text-red-500">Uni Gang</span>
+            <h3 className="text-xl font-bold text-slate-900 mb-4">
+              The <span className="text-brand-600">Uni Gang</span>
             </h3>
             <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-6">
               Your trusted platform for finding the best student accommodations closer to your university. Secure, reliable, and student-first. Stay with us for more features!
@@ -19,22 +19,24 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h4 className="font-semibold text-slate-800 dark:text-white mb-6">Quick Links</h4>
+            <h4 className="font-semibold text-slate-800 mb-6">Quick Links</h4>
             <ul className="space-y-3">
-              <li><Link to="/" className="text-slate-500 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition-colors text-sm">Home</Link></li>
-              <li><Link to="/find-accommodation" className="text-slate-500 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition-colors text-sm">Find Annex</Link></li>
-              <li><Link to="/post-ad" className="text-slate-500 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition-colors text-sm">Post an Ad</Link></li>
-              <li><Link to="/contact-us" className="text-slate-500 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition-colors text-sm">Contact Support</Link></li>
+              <li><Link to="/" className="text-slate-500 hover:text-brand-600 transition-colors text-sm font-medium">Home</Link></li>
+              <li><Link to="/find-accommodation" className="text-slate-500 hover:text-brand-600 transition-colors text-sm font-medium">Find Annex</Link></li>
+              <li><Link to="/feed" className="text-slate-500 hover:text-brand-600 transition-colors text-sm font-medium">Feed</Link></li>
+              <li><Link to="/services" className="text-slate-500 hover:text-brand-600 transition-colors text-sm font-medium">Services</Link></li>
+              <li><Link to="/events" className="text-slate-500 hover:text-brand-600 transition-colors text-sm font-medium">Events</Link></li>
+              <li><Link to="/contact-us" className="text-slate-500 hover:text-brand-600 transition-colors text-sm font-medium">Contact Support</Link></li>
             </ul>
           </div>
 
           {/* Legal / Info */}
           <div>
-            <h4 className="font-semibold text-slate-800 dark:text-white mb-6">Support</h4>
+            <h4 className="font-semibold text-slate-800 mb-6">Support</h4>
             <ul className="space-y-3">
-              <li><Link to="#" className="text-slate-500 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition-colors text-sm">Privacy Policy</Link></li>
-              <li><Link to="#" className="text-slate-500 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition-colors text-sm">Terms of Service</Link></li>
-              <li><Link to="#" className="text-slate-500 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition-colors text-sm">FAQ</Link></li>
+              <li><Link to="#" className="text-slate-500 hover:text-brand-600 transition-colors text-sm font-medium">Privacy Policy</Link></li>
+              <li><Link to="#" className="text-slate-500 hover:text-brand-600 transition-colors text-sm font-medium">Terms of Service</Link></li>
+              <li><Link to="#" className="text-slate-500 hover:text-brand-600 transition-colors text-sm font-medium">FAQ</Link></li>
             </ul>
           </div>
 

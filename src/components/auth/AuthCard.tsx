@@ -47,12 +47,18 @@ const AuthCard: React.FC<AuthCardProps> = ({ onAuthSuccess }) => {
         }, 1000);
     };
 
-    const handleGoogleSuccess = (response: any) => {
+    const handleGoogleSuccess = (response: { credential?: string }) => {
         setLoading(true);
         try {
             const credentialResponse = response;
-            const decodedUser: any = jwtDecode(credentialResponse.credential);
-            localStorage.setItem('userToken', credentialResponse.credential);
+            const decodedUser: { 
+                name: string; 
+                picture: string; 
+                given_name: string; 
+                family_name: string; 
+                email: string; 
+            } = jwtDecode(credentialResponse.credential!);
+            localStorage.setItem('userToken', credentialResponse.credential!);
             localStorage.setItem('userName', decodedUser.name);
             localStorage.setItem('userProfilePicture', decodedUser.picture);
             localStorage.setItem('userFirstName', decodedUser.given_name);

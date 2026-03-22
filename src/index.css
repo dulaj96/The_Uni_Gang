@@ -1,9 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 @variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --font-sans: "Outfit", sans-serif;
+  --font-sans: "Poppins", sans-serif;
   --color-brand-50: #fef2f2;
   --color-brand-100: #fee2e2;
   --color-brand-200: #fecaca;
@@ -16,13 +16,13 @@
 
 @layer base {
   html {
-    font-family: "Outfit", sans-serif;
+    font-family: "Poppins", sans-serif;
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
   }
 
   body {
-    @apply bg-slate-50 text-slate-900 transition-colors duration-300;
+    @apply bg-white text-slate-900 transition-colors duration-300;
   }
 
   .dark body {
@@ -41,5 +41,9 @@
 
   .text-gradient {
     @apply bg-clip-text text-transparent bg-linear-to-r from-brand-600 to-indigo-600;
+  }
+
+  .glass-card {
+    @apply bg-white/70 backdrop-blur-[16px] border border-white/30;
   }
 }

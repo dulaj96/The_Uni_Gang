@@ -10,7 +10,21 @@ import { dispatchAuthUpdate } from '../utils/authEvents';
 import SEO from '../components/SEO';
 import toast from 'react-hot-toast';
 
-const dummyMyAds = [
+interface Annex {
+  id: string;
+  title: string;
+  price: string;
+  address: string;
+  images: string[];
+  description: string;
+  features: string[];
+  contactName: string;
+  contactPhone: string;
+  contactEmail: string;
+  university: string;
+}
+
+const dummyMyAds: Annex[] = [
   {
     id: 'user_ad_1',
     title: 'Annex near Peradeniya',
@@ -42,8 +56,8 @@ const dummyMyAds = [
 const PostAdPage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentView, setCurrentView] = useState<'postAdForm' | 'myAds'>('postAdForm');
-  const [editingAd, setEditingAd] = useState<any | null>(null);
-  const [myAds, setMyAds] = useState<any[]>(dummyMyAds);
+  const [editingAd, setEditingAd] = useState<Annex | null>(null);
+  const [myAds, setMyAds] = useState<Annex[]>(dummyMyAds);
   const [searchParams] = useSearchParams();
   const tab = searchParams.get('tab');
 
@@ -154,7 +168,7 @@ const PostAdPage = () => {
         {currentView === 'myAds' && (
           <MyAdsList
             ads={myAds}
-            onEdit={(ad) => { setEditingAd(ad); setCurrentView('postAdForm'); }}
+            onEdit={(ad: Annex) => { setEditingAd(ad); setCurrentView('postAdForm'); }}
             onDelete={handleDeleteAd}
           />
         )}
