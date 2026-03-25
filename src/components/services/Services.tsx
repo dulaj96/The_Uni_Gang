@@ -27,7 +27,7 @@ const servicesData: ServiceItem[] = [
     description: 'We build high-performance, responsive websites using modern frameworks like React and Next.js to ensure your business stands out in the digital landscape.',
     icon: <LuLayoutDashboard />,
     features: ['Custom Web Applications', 'E-commerce Solutions', 'Performance Optimization', 'Responsive Design'],
-    buttonText: 'Request Quote',
+    buttonText: 'Request Project',
     isReversed: false
   },
   {
@@ -37,7 +37,7 @@ const servicesData: ServiceItem[] = [
     description: 'Our team specializes in creating intuitive iOS and Android applications using React Native, providing a seamless user experience across all devices.',
     icon: <LuSmartphone />,
     features: ['Cross-platform Apps', 'UI/UX Design', 'App Store Optimization', 'API Integration'],
-    buttonText: 'Inquire',
+    buttonText: 'Request Project',
     isReversed: true
   },
   {
@@ -47,7 +47,7 @@ const servicesData: ServiceItem[] = [
     description: 'Drive organic traffic to your platform with our data-driven SEO strategies. We help you rank higher on search engines and reach your target audience effectively.',
     icon: <LuSearch />,
     features: ['Keyword Research', 'Technical SEO Audits', 'On-page Optimization', 'Backlink Building'],
-    buttonText: 'Boost Rankings',
+    buttonText: 'Request Project',
     isReversed: false
   },
   {
@@ -57,7 +57,7 @@ const servicesData: ServiceItem[] = [
     description: 'From branding to digital assets, our creative designers craft visual identities that capture your brand essence and engage your customers.',
     icon: <LuPalette />,
     features: ['Logo & Branding', 'Social Media Graphics', 'Print Design', 'Marketing Material'],
-    buttonText: 'View Designs',
+    buttonText: 'Request Project',
     isReversed: true
   },
   {
@@ -67,7 +67,7 @@ const servicesData: ServiceItem[] = [
     description: 'Professional video production and cinematic editing services to tell your story. We create high-quality promotional videos and motion graphics.',
     icon: <LuVideo />,
     features: ['Professional Video Editing', 'Motion Graphics', 'Cinematic Shooting', 'Social Media Shorts'],
-    buttonText: 'Start Project',
+    buttonText: 'Request Project',
     isReversed: false
   }
 ];

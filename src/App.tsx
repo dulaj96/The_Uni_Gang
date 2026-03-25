@@ -6,6 +6,7 @@ import ScrollHandler from './components/ScrollHandler';
 import Hero from './components/home/Hero';
 import FeaturedAnnexes from './components/annex/Annex';
 import Services from './components/services/Services';
+import Events from './components/events/Events';
 
 // Pages Imports
 import FindAccommodationPage from './pages/FindAccommodationPage';
@@ -40,7 +41,7 @@ function App() {
                   {/* Future Placeholders handling Navigation Anchors */}
                   <div id="feed" className="min-h-[10px]"></div>
                   <Services />
-                  <div id="events" className="min-h-[10px]"></div>
+                  <Events />
                   <div id="contact" className="min-h-[10px]"></div>
                 </div>
               </div>
