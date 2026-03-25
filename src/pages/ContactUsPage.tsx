@@ -82,7 +82,7 @@ const ContactUsPage = () => {
         <div className="space-y-12 flex flex-col justify-center">
           {/* Contact Info Cards */}
           <div className="space-y-6">
-            <div className="flex items-start gap-4 p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:border-brand-200 dark:hover:border-brand-900 transition-colors group">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-4 p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:border-brand-200 dark:hover:border-brand-900 transition-colors group">
               <div className="bg-brand-50 dark:bg-brand-900/20 p-3 rounded-full text-brand-600 dark:text-brand-400 group-hover:bg-brand-600 group-hover:text-white transition-colors">
                 <LuPhone className="w-6 h-6" />
               </div>
@@ -93,7 +93,7 @@ const ContactUsPage = () => {
               </div>
             </div>
 
-            <div className="flex items-start gap-4 p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:border-brand-200 dark:hover:border-brand-900 transition-colors group">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-4 p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:border-brand-200 dark:hover:border-brand-900 transition-colors group">
               <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-full text-blue-600 dark:text-blue-400 group-hover:bg-blue-600 group-hover:text-white transition-colors">
                 <LuMail className="w-6 h-6" />
               </div>
@@ -104,7 +104,7 @@ const ContactUsPage = () => {
               </div>
             </div>
 
-            <div className="flex items-start gap-4 p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:border-brand-200 dark:hover:border-brand-900 transition-colors group">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-4 p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:border-brand-200 dark:hover:border-brand-900 transition-colors group">
               <div className="bg-green-50 dark:bg-green-900/20 p-3 rounded-full text-green-600 dark:text-green-400 group-hover:bg-green-600 group-hover:text-white transition-colors">
                 <FaWhatsapp className="w-6 h-6" />
               </div>

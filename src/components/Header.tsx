@@ -88,12 +88,12 @@ const Header = () => {
   };
 
   const navLinks = [
-    { name: 'Home', path: '/' },
-    { name: 'Annex', path: '/find-accommodation' },
-    { name: 'Feed', path: '/feed' },
-    { name: 'Services', path: '/services' },
-    { name: 'Events', path: '/events' },
-    { name: 'Contact', path: '/contact-us' },
+    { name: 'Home', path: '/#home' },
+    { name: 'Annex', path: '/#annex' },
+    { name: 'Feed', path: '/#feed' },
+    { name: 'Services', path: '/#services' },
+    { name: 'Events', path: '/#events' },
+    { name: 'Contact', path: '/#contact' },
   ];
 
   return (
@@ -116,7 +116,10 @@ const Header = () => {
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-1 bg-slate-50/50 px-2 py-1.5 rounded-full border border-slate-100 shadow-sm">
           {navLinks.map((link) => {
-            const isActive = location.pathname === link.path;
+            const isActive = 
+              (location.pathname === '/' && location.hash === link.path.replace('/', '')) || 
+              (location.pathname === '/' && !location.hash && link.path === '/#home');
+              
             return (
               <Link
                 key={link.path}

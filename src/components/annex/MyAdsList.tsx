@@ -7,6 +7,12 @@ interface Annex {
   price: string;
   address: string;
   images: string[];
+  description?: string;
+  features?: string[];
+  contactName?: string;
+  contactPhone?: string;
+  contactEmail?: string;
+  university?: string;
 }
 
 interface MyAdsListProps {

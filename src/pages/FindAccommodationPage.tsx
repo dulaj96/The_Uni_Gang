@@ -105,7 +105,7 @@ const FindAccommodationPage = () => {
 
       {/* Listings Grid */}
       <section>
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
           <h2 className="text-2xl font-bold text-slate-800 dark:text-white">Available Places</h2>
           <span className="text-slate-500 dark:text-slate-400 font-medium">{filteredAnnexes.length} results found</span>
         </div>
@@ -161,8 +161,11 @@ const FindAccommodationPage = () => {
             <button
               key={i + 1}
               onClick={() => paginate(i + 1)}
-              className={`w-10 h-10 rounded-full text-sm font-bold transition-all ${currentPage === i + 1
-                ? 'bg-brand-600 text-white shadow-lg shadow-brand-200 scale-110'
+              className={`w-10 h-10 rounded-full text-sm font-bold transition-all ${
+                i + 1 !== currentPage && 'hidden xs:flex'
+              } items-center justify-center ${
+                currentPage === i + 1
+                ? 'bg-brand-600 text-white shadow-lg shadow-brand-200 scale-110 flex'
                 : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700'
                 }`}
             >

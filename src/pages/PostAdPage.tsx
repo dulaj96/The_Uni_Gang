@@ -87,6 +87,7 @@ const PostAdPage = () => {
     toast.success('Logged out successfully');
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleAnnexFormSubmit = (adData: any, isEditing: boolean) => {
     if (isEditing && editingAd) {
       setMyAds(myAds.map(ad => ad.id === editingAd.id ? {

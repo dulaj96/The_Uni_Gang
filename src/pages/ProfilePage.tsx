@@ -72,8 +72,8 @@ const ProfilePage = () => {
       <div className="bg-white dark:bg-slate-800 rounded-[2.5rem] shadow-xl shadow-slate-200/50 dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-700 overflow-hidden relative">
         <div className="h-32 bg-gradient-to-r from-brand-600 to-indigo-600"></div>
 
-        <div className="px-8 pb-10">
-          <div className="relative -mt-16 mb-6 flex flex-col md:flex-row items-end md:items-end justify-between gap-6">
+        <div className="px-4 sm:px-8 pb-10">
+          <div className="relative -mt-16 mb-6 flex flex-col items-center md:items-end md:flex-row justify-between gap-6">
             <div className="flex flex-col items-center md:items-start">
               <div className="relative group">
                 <div className="w-32 h-32 rounded-full border-4 border-white dark:border-slate-800 shadow-lg overflow-hidden bg-slate-100 dark:bg-slate-700">

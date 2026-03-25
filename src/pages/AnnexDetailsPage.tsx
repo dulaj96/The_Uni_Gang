@@ -75,7 +75,7 @@ const AnnexDetailsPage = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="max-w-7xl mx-auto px-4 sm:px-0">
       <SEO
         title={`${annexDetails.title} - The Uni Gang`}
         description={annexDetails.description.substring(0, 160)}
@@ -105,7 +105,7 @@ const AnnexDetailsPage = () => {
         <div className="lg:col-span-2 space-y-8">
 
           {/* Gallery */}
-          <div className="relative rounded-3xl overflow-hidden shadow-lg aspect-video bg-slate-200 dark:bg-slate-800 group">
+          <div className="relative rounded-3xl overflow-hidden shadow-lg aspect-[4/3] sm:aspect-video bg-slate-200 dark:bg-slate-800 group">
             <img
               src={annexDetails.images[currentImageIndex]}
               alt="Property"
@@ -173,7 +173,7 @@ const AnnexDetailsPage = () => {
 
         {/* Right Column: Sticky Sidebar */}
         <div className="lg:col-span-1">
-          <div className="sticky top-28 space-y-6">
+          <div className="lg:sticky lg:top-28 space-y-6 pb-20 lg:pb-0">
             {/* Price Card */}
             <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-700 p-6 md:p-8">
               <p className="text-slate-500 dark:text-slate-400 font-medium mb-1">Rent per month</p>

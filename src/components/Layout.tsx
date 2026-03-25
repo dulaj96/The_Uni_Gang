@@ -49,8 +49,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           },
         }}
       />
-      <main className="flex-grow pt-24 pb-12 px-4 md:px-0">
-        <div className="container mx-auto max-w-7xl animate-fade-in">
+      <main className="flex-grow pt-20 sm:pt-24 pb-12 px-4 md:px-6">
+        <div className="container mx-auto max-w-7xl">
           {children}
         </div>
       </main>

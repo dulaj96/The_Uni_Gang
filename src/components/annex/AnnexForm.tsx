@@ -288,9 +288,9 @@ const AnnexForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel, 
 
       </div>
 
-      <div className="bg-slate-50 dark:bg-slate-900 p-6 flex justify-end gap-3 border-t border-slate-100 dark:border-slate-700">
-        <button type="button" onClick={onCancel} className="px-6 py-3 font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-xl transition-colors">Cancel</button>
-        <button type="submit" className="px-8 py-3 bg-brand-600 text-white font-bold rounded-xl shadow-lg shadow-brand-200 hover:bg-brand-700 hover:shadow-xl transition-all">{isEditing ? 'Save Changes' : 'Post Ad'}</button>
+      <div className="bg-slate-50 dark:bg-slate-900 p-6 flex flex-col sm:flex-row justify-end gap-3 border-t border-slate-100 dark:border-slate-700">
+        <button type="button" onClick={onCancel} className="w-full sm:w-auto px-6 py-3 font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-xl transition-colors">Cancel</button>
+        <button type="submit" className="w-full sm:w-auto px-8 py-3 bg-brand-600 text-white font-bold rounded-xl shadow-lg shadow-brand-200 hover:bg-brand-700 hover:shadow-xl transition-all">{isEditing ? 'Save Changes' : 'Post Ad'}</button>
       </div>
     </form>
   );
