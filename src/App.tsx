@@ -8,6 +8,8 @@ import FeaturedAnnexes from './components/annex/Annex';
 import Services from './components/services/Services';
 import Events from './components/events/Events';
 
+import Contact from './components/contact/Contact';
+
 // Pages Imports
 import FindAccommodationPage from './pages/FindAccommodationPage';
 import PostAdPage from './pages/PostAdPage';
@@ -42,7 +44,7 @@ function App() {
                   <div id="feed" className="min-h-[10px]"></div>
                   <Services />
                   <Events />
-                  <div id="contact" className="min-h-[10px]"></div>
+                  <Contact />
                 </div>
               </div>
             }
