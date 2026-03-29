@@ -10,7 +10,7 @@ const Events = () => {
         const interval = setInterval(() => {
             if (scrollRef.current) {
                 const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
-                
+
                 // If we've reached the end, loop back (allowing 10px threshold)
                 if (scrollLeft + clientWidth >= scrollWidth - 10) {
                     scrollRef.current.scrollTo({ left: 0, behavior: 'smooth' });
@@ -73,12 +73,12 @@ const Events = () => {
             </div>
 
             {/* Horizontal Scrolling Section */}
-            <div 
+            <div
                 className="relative max-w-[1440px] mx-auto"
-                onMouseEnter={() => setIsHovered(true)} 
+                onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
             >
-                <div 
+                <div
                     ref={scrollRef}
                     className="flex overflow-x-auto gap-8 pb-12 px-4 hide-scrollbar snap-x snap-mandatory"
                 >
@@ -254,46 +254,35 @@ const Events = () => {
             </div>
 
             {/* Stats Counter Section (Additional Aesthetic Depth) */}
-            <section className="max-w-7xl mx-auto px-4 md:px-8 mt-12 grid grid-cols-2 md:grid-cols-4 gap-8">
-                <div className="relative group p-8 rounded-[2rem] glass-card text-center hover:shadow-lg transition-all duration-500 hover:-translate-y-2">
-                    <div className="absolute top-4 right-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                        <span className="material-symbols-outlined text-4xl">groups</span>
-                    </div>
-                    <p className="text-4xl font-extrabold text-primary mb-1">12k+</p>
-                    <p className="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Active Students</p>
-                    <div className="mt-4 flex justify-center text-primary/40 group-hover:text-primary transition-colors">
-                        <span className="material-symbols-outlined text-2xl">groups</span>
-                    </div>
-                </div>
-                <div className="relative group p-8 rounded-[2rem] glass-card text-center hover:shadow-lg transition-all duration-500 hover:-translate-y-2">
-                    <div className="absolute top-4 right-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                        <span className="material-symbols-outlined text-4xl">event_available</span>
-                    </div>
-                    <p className="text-4xl font-extrabold text-primary mb-1">450</p>
-                    <p className="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Events Hosted</p>
-                    <div className="mt-4 flex justify-center text-primary/40 group-hover:text-primary transition-colors">
-                        <span className="material-symbols-outlined text-2xl">event_available</span>
-                    </div>
-                </div>
-                <div className="relative group p-8 rounded-[2rem] glass-card text-center hover:shadow-lg transition-all duration-500 hover:-translate-y-2">
-                    <div className="absolute top-4 right-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                        <span className="material-symbols-outlined text-4xl">diversity_3</span>
-                    </div>
-                    <p className="text-4xl font-extrabold text-primary mb-1">85</p>
-                    <p className="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Clubs & Societies</p>
-                    <div className="mt-4 flex justify-center text-primary/40 group-hover:text-primary transition-colors">
-                        <span className="material-symbols-outlined text-2xl">diversity_3</span>
-                    </div>
-                </div>
-                <div className="relative group p-8 rounded-[2rem] glass-card text-center hover:shadow-lg transition-all duration-500 hover:-translate-y-2">
-                    <div className="absolute top-4 right-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                        <span className="material-symbols-outlined text-4xl">grade</span>
-                    </div>
-                    <p className="text-4xl font-extrabold text-primary mb-1">4.9</p>
-                    <p className="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Experience Rating</p>
-                    <div className="mt-4 flex justify-center text-primary/40 group-hover:text-primary transition-colors">
-                        <span className="material-symbols-outlined text-2xl">grade</span>
-                    </div>
+            <section className="max-w-7xl mx-auto px-4 md:px-8 mt-12">
+                {/* Stats Grid */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+                    {[
+                        { label: "Active Students", value: "12k+", icon: "groups" },
+                        { label: "Events Hosted", value: "450", icon: "event_available" },
+                        { label: "Clubs & Societies", value: "85", icon: "diversity_3" },
+                        { label: "Experience Rating", value: "4.9", icon: "grade" }
+                    ].map((s, i) => (
+                        <div
+                            key={i}
+                            className="bg-white/40 dark:bg-slate-900/40 backdrop-blur-md p-10 rounded-[2.5rem] border border-white/60 dark:border-slate-800 shadow-sm text-center group transition-all duration-500 hover:-translate-y-2 hover:bg-white dark:hover:bg-slate-800"
+                        >
+                            {/* Icon Container - Matching your Clients Say stats style */}
+                            <div className="w-16 h-16 rounded-2xl bg-white dark:bg-slate-800 shadow-sm flex items-center justify-center text-primary text-3xl mx-auto mb-6 transition-all duration-500 group-hover:bg-primary group-hover:text-white group-hover:scale-110">
+                                <span className="material-symbols-outlined text-3xl">{s.icon}</span>
+                            </div>
+
+                            {/* Value */}
+                            <h4 className="text-4xl font-bold text-slate-900 dark:text-white mb-2 tracking-tight">
+                                {s.value}
+                            </h4>
+
+                            {/* Label */}
+                            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors">
+                                {s.label}
+                            </p>
+                        </div>
+                    ))}
                 </div>
             </section>
         </section>

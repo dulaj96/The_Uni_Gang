@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { LuSend, LuPhone, LuMail, LuMapPin, LuMessageSquareQuote, LuMonitor, LuSearch, LuCalendarDays, LuUsers, LuStar } from 'react-icons/lu';
+import { LuSend, LuPhone, LuMail, LuMapPin, LuMessageSquareQuote, LuCircle, LuMonitor, LuSearch, LuCalendarDays, LuUsers, LuStar, LuChevronDown, LuUser } from 'react-icons/lu';
 
 interface Feedback {
     id: number;
@@ -93,34 +93,31 @@ const TestimonialCard = ({ feedback }: { feedback: Feedback }) => {
     const lastName = nameParts.slice(1).join(' ');
 
     return (
-        <div
-            className="relative bg-white dark:bg-slate-900 rounded-3xl shadow-lg overflow-hidden flex-shrink-0"
-            style={{ width: "340px", padding: "28px 24px 24px" }}
-        >
+        <div className="relative p-6 flex-shrink-0" style={{ width: "340px" }}>
             {/* Top-left gray wave blob */}
-            <div className="absolute top-0 left-0 pointer-events-none" style={{ width: "120px", height: "90px" }}>
+            {/* <div className="absolute top-0 left-0 pointer-events-none" style={{ width: "120px", height: "90px" }}>
                 <svg viewBox="0 0 120 90" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M0 0 C40 0, 80 15, 110 45 C120 60, 115 90, 85 90 L0 90 Z" fill="#EBEBEB" className="dark:opacity-10" />
                 </svg>
-            </div>
+            </div> */}
 
             {/* Bottom-left pink wave blob */}
-            <div className="absolute bottom-0 left-0 pointer-events-none" style={{ width: "130px", height: "100px" }}>
+            {/* <div className="absolute bottom-0 left-0 pointer-events-none" style={{ width: "130px", height: "100px" }}>
                 <svg viewBox="0 0 130 100" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M0 100 C0 65, 20 38, 52 25 C85 12, 125 32, 130 65 L130 100 Z" fill="#C2185B" opacity="0.80" />
                 </svg>
-            </div>
+            </div> */}
 
             {/* Horizontal pink + gray bar stripes (mid-card accent) */}
-            <div className="absolute left-0 right-0 pointer-events-none" style={{ top: "140px", height: "38px" }}>
+            {/* <div className="absolute left-0 right-0 pointer-events-none" style={{ top: "140px", height: "38px" }}>
                 <div style={{ height: "5px", background: "#E91E63", marginBottom: "4px" }} />
                 <div style={{ height: "5px", background: "#9E9E9E", opacity: 0.25, marginBottom: "4px" }} />
                 <div style={{ height: "5px", background: "#9E9E9E", opacity: 0.25 }} />
-            </div>
+            </div> */}
 
             {/* Decorative dot grids */}
-            <DotGrid style={{ top: "48px", right: "28px", zIndex: 10 }} />
-            <DotGrid style={{ bottom: "60px", left: "28px", zIndex: 10 }} />
+            {/* <DotGrid style={{ top: "48px", right: "28px", zIndex: 10 }} />
+            <DotGrid style={{ bottom: "60px", left: "28px", zIndex: 10 }} /> */}
 
             {/* Large open-quote (top-left, outside bubble) */}
             <div
@@ -139,13 +136,13 @@ const TestimonialCard = ({ feedback }: { feedback: Feedback }) => {
             </div>
 
             {/* Headline */}
-            <div className="relative z-10 mb-4">
+            {/* <div className="relative z-10 mb-4">
                 <p className="text-gray-800 dark:text-slate-200 font-semibold text-sm" style={{ fontFamily: "Georgia, serif" }}>
                     <span style={{ color: "#E91E63", fontSize: "1.1rem" }}>"</span>
                     What Our Clients Say!
                     <span style={{ color: "#E91E63", fontSize: "1.1rem" }}>"</span>
                 </p>
-            </div>
+            </div> */}
 
             {/* Speech Bubble Area */}
             <div className="relative z-10 mt-1">
@@ -165,8 +162,12 @@ const TestimonialCard = ({ feedback }: { feedback: Feedback }) => {
 
                 {/* Bubble Body */}
                 <div
-                    className="relative bg-gray-100 dark:bg-slate-800 rounded-3xl px-6 py-5"
-                    style={{ minHeight: "190px", borderRadius: "22px" }}
+                    className="relative px-6 py-5 shadow-lg bg-white/70 dark:bg-slate-800/70 backdrop-blur-xl border border-white/20"
+                    style={{
+                        minHeight: "190px",
+                        borderRadius: "22px",
+                        boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.15)" // මෙන්න මේකෙන් Glass look එක වැඩියෙන් එනවා
+                    }}
                 >
                     {/* Name & Role */}
                     <div className="mb-3 pr-20">
@@ -225,7 +226,7 @@ const TestimonialCard = ({ feedback }: { feedback: Feedback }) => {
                             height: 0,
                             borderLeft: "16px solid transparent",
                             borderRight: "0px solid transparent",
-                            borderTop: "22px solid #F3F4F6",
+                            borderTop: "22px solid rgba(255, 255, 255, 0.7)", // මෙන්න මේ පාට තමයි දාන්න ඕනේ
                         }}
                     />
                 </div>
@@ -240,9 +241,18 @@ const TestimonialCard = ({ feedback }: { feedback: Feedback }) => {
 const Contact = () => {
     const [activeTab, setActiveTab] = useState<'contact' | 'feedback'>('contact');
     const [rating, setRating] = useState(0);
+    const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+
+    // Simple handle for file input changes (optional but good UI)
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            setAvatarPreview(URL.createObjectURL(file));
+        }
+    };
 
     return (
-        <section id="contact" className="relative py-24 px-4 md:px-8 bg-[#f7f9fb] dark:bg-slate-950 font-sans overflow-hidden">
+        <section id="contact" className="relative pt-24 pb-5 px-4 md:px-8 bg-[#f7f9fb] dark:bg-slate-950 font-sans overflow-hidden">
             {/* Ambient background decorations */}
             <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2 opacity-50"></div>
             <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-secondary-fixed/10 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/2 opacity-50"></div>
@@ -263,12 +273,15 @@ const Contact = () => {
 
                     {/* Contact Info Card */}
                     <div className="lg:col-span-5">
-                        <div className="bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl p-10 md:p-12 rounded-[2.5rem] border border-white/60 dark:border-slate-800 shadow-[0_20px_50px_rgba(0,0,0,0.03)] h-full">
+                        {/* Main Card: Opacity එක අඩු කරලා Blur එක වැඩි කළා */}
+                        <div className="bg-white/10 dark:bg-slate-900/40 backdrop-blur-2xl p-10 md:p-12 rounded-[2.5rem] border border-white/30 dark:border-slate-800 shadow-2xl h-full transition-all duration-500">
                             <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-10 tracking-tight">Reach Out To Us</h3>
 
                             <div className="space-y-10">
-                                <div className="flex gap-6 items-center group">
-                                    <div className="w-14 h-14 rounded-2xl bg-white dark:bg-slate-800 shadow-sm flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-500">
+                                {/* Email Item */}
+                                <div className="flex gap-6 items-center group cursor-pointer">
+                                    {/* Icon Div: group-hover:scale-110 එකෙන් ලොකු වෙලා පේනවා */}
+                                    <div className="w-14 h-14 rounded-2xl bg-white/20 dark:bg-slate-800/30 backdrop-blur-md border border-white/20 shadow-sm flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white group-hover:scale-110 transition-all duration-500">
                                         <LuMail className="text-2xl" />
                                     </div>
                                     <div>
@@ -277,8 +290,9 @@ const Contact = () => {
                                     </div>
                                 </div>
 
-                                <div className="flex gap-6 items-center group">
-                                    <div className="w-14 h-14 rounded-2xl bg-white dark:bg-slate-800 shadow-sm flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-500">
+                                {/* Phone Item */}
+                                <div className="flex gap-6 items-center group cursor-pointer">
+                                    <div className="w-14 h-14 rounded-2xl bg-white/20 dark:bg-slate-800/30 backdrop-blur-md border border-white/20 shadow-sm flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white group-hover:scale-110 transition-all duration-500">
                                         <LuPhone className="text-2xl" />
                                     </div>
                                     <div>
@@ -287,8 +301,9 @@ const Contact = () => {
                                     </div>
                                 </div>
 
-                                <div className="flex gap-6 items-center group">
-                                    <div className="w-14 h-14 rounded-2xl bg-white dark:bg-slate-800 shadow-sm flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-500">
+                                {/* Location Item */}
+                                <div className="flex gap-6 items-center group cursor-pointer">
+                                    <div className="w-14 h-14 rounded-2xl bg-white/20 dark:bg-slate-800/30 backdrop-blur-md border border-white/20 shadow-sm flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white group-hover:scale-110 transition-all duration-500">
                                         <LuMapPin className="text-2xl" />
                                     </div>
                                     <div>
@@ -298,7 +313,8 @@ const Contact = () => {
                                 </div>
                             </div>
 
-                            <div className="mt-16 p-8 rounded-[2rem] bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700/50">
+                            {/* Bottom Online Status Box: මේකත් තව Glassy කළා */}
+                            <div className="mt-16 p-8 rounded-[2rem] bg-white/5 dark:bg-slate-800/20 backdrop-blur-lg border border-white/10 dark:border-slate-700/30">
                                 <div className="flex items-center gap-3 mb-4">
                                     <span className="relative flex h-3 w-3">
                                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
@@ -312,74 +328,125 @@ const Contact = () => {
                     </div>
 
                     {/* Pro Dual Form */}
-                    <div className="lg:col-span-7">
-                        <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl rounded-[3rem] shadow-[0_30px_60px_rgba(0,0,0,0.05)] border border-white/60 dark:border-slate-800 overflow-hidden">
-                            {/* Tab Switcher */}
-                            <div className="flex p-2 bg-slate-100/50 dark:bg-slate-800/50 m-6 rounded-[2rem] border border-slate-200/50 dark:border-slate-700/50">
-                                <button
-                                    onClick={() => setActiveTab('contact')}
-                                    className={`flex-1 py-4 rounded-[1.6rem] text-sm font-bold uppercase tracking-tighter transition-all duration-500 ${activeTab === 'contact' ? 'bg-white dark:bg-slate-700 shadow-md text-primary' : 'text-slate-400 hover:text-slate-600'}`}
-                                >
-                                    Service Request
-                                </button>
-                                <button
-                                    onClick={() => setActiveTab('feedback')}
-                                    className={`flex-1 py-4 rounded-[1.6rem] text-sm font-bold uppercase tracking-tighter transition-all duration-500 ${activeTab === 'feedback' ? 'bg-white dark:bg-slate-700 shadow-md text-primary' : 'text-slate-400 hover:text-slate-600'}`}
-                                >
-                                    Client Feedback
-                                </button>
+                    <div className="lg:col-span-7 p-4">
+                        <div className="relative rounded-[2rem] overflow-hidden border border-white/55 shadow-[0_8px_32px_rgba(0,0,0,0.08),inset_0_1px_0_rgba(255,255,255,0.8)]"
+                            style={{ background: 'rgba(255,255,255,0.25)', backdropFilter: 'blur(24px)' }}>
+
+                            {/* Top shine line */}
+                            <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-white/90 to-transparent" />
+
+                            {/* Tab switcher */}
+                            <div className="p-4 pb-0">
+                                <div className="flex gap-1 p-1.5 rounded-[1.25rem] border border-white/40"
+                                    style={{ background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(8px)' }}>
+                                    <button
+                                        onClick={() => setActiveTab('contact')}
+                                        className={`flex-1 py-3 rounded-2xl text-[11px] font-bold uppercase tracking-widest transition-all duration-300 ${activeTab === 'contact'
+                                            ? 'bg-white/85 text-primary shadow-[0_2px_12px_rgba(0,0,0,0.08),inset_0_1px_0_white]'
+                                            : 'text-slate-400 hover:text-slate-600'
+                                            }`}
+                                    >
+                                        Request Service
+                                    </button>
+                                    <button
+                                        onClick={() => setActiveTab('feedback')}
+                                        className={`flex-1 py-3 rounded-2xl text-[11px] font-bold uppercase tracking-widest transition-all duration-300 ${activeTab === 'feedback'
+                                            ? 'bg-white/85 text-[#E91E63] shadow-[0_2px_12px_rgba(0,0,0,0.08),inset_0_1px_0_white]'
+                                            : 'text-slate-400 hover:text-slate-600'
+                                            }`}
+                                    >
+                                        Client Feedback
+                                    </button>
+                                </div>
                             </div>
 
-                            <div className="p-8 md:p-10 pt-4">
+                            {/* Form body */}
+                            <div className="p-5 flex flex-col gap-3">
                                 {activeTab === 'contact' ? (
-                                    <form className="space-y-6">
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                            <input type="text" placeholder="Full Name" className="w-full px-6 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all duration-300 font-medium placeholder:text-slate-400" />
-                                            <input type="email" placeholder="Email Address" className="w-full px-6 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all duration-300 font-medium placeholder:text-slate-400" />
-                                        </div>
-                                        <select className="w-full px-6 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all duration-300 font-medium appearance-none cursor-pointer text-slate-500">
-                                            <option disabled selected>Select Service Interest</option>
-                                            <option>Custom Web Application</option>
-                                            <option>Growth SEO & Analytics</option>
-                                            <option>Digital Interface Redesign</option>
-                                            <option>Campus Ecosystem Integration</option>
-                                        </select>
-                                        <textarea rows={4} placeholder="Project Brief / Message" className="w-full px-6 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all duration-300 font-medium resize-none placeholder:text-slate-400"></textarea>
-                                        <button className="w-full py-5 bg-primary text-white font-bold rounded-2xl hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/25 transition-all duration-500 flex items-center justify-center gap-3 uppercase tracking-tighter text-sm">
-                                            Send Inquiry
-                                            <LuSend className="text-lg" />
-                                        </button>
-                                    </form>
-                                ) : (
-                                    <form className="space-y-6">
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                            <input type="text" placeholder="Your Name" className="w-full px-6 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all duration-300 font-medium placeholder:text-slate-400" />
-                                            <input type="text" placeholder="Your Role / Uni" className="w-full px-6 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all duration-300 font-medium placeholder:text-slate-400" />
+                                    <>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                            <input type="text" placeholder="Full Name" className="w-full px-[18px] py-3.5 rounded-2xl text-sm font-medium text-slate-800 placeholder:text-slate-400/60 placeholder:font-normal outline-none transition-all duration-250 border border-white/60 shadow-[inset_0_1px_3px_rgba(0,0,0,0.04)] focus:border-white/90 focus:shadow-[0_0_0_3px_rgba(99,102,241,0.08),inset_0_1px_3px_rgba(0,0,0,0.04)]"
+                                                style={{ background: 'rgba(255,255,255,0.35)', backdropFilter: 'blur(8px)' }} />
+                                            <input type="email" placeholder="Email Address" className="w-full px-[18px] py-3.5 rounded-2xl text-sm font-medium text-slate-800 placeholder:text-slate-400/60 placeholder:font-normal outline-none transition-all duration-250 border border-white/60 shadow-[inset_0_1px_3px_rgba(0,0,0,0.04)] focus:border-white/90 focus:shadow-[0_0_0_3px_rgba(99,102,241,0.08),inset_0_1px_3px_rgba(0,0,0,0.04)]"
+                                                style={{ background: 'rgba(255,255,255,0.35)', backdropFilter: 'blur(8px)' }} />
                                         </div>
 
-                                        <div className="text-center space-y-3">
-                                            <p className="text-sm font-bold text-slate-400 tracking-tight">How was your experience?</p>
-                                            <div className="flex justify-center gap-3">
+                                        <div className="relative">
+                                            <select className="w-full px-[18px] py-3.5 rounded-2xl text-sm font-medium text-slate-400 outline-none appearance-none cursor-pointer border border-white/60 shadow-[inset_0_1px_3px_rgba(0,0,0,0.04)]"
+                                                style={{ background: 'rgba(255,255,255,0.35)', backdropFilter: 'blur(8px)' }}>
+                                                <option disabled selected>Select Service Interest</option>
+                                                <option>Custom Web Application</option>
+                                                <option>Growth SEO & Analytics</option>
+                                                <option>Digital Interface Redesign</option>
+                                                <option>Campus Ecosystem Integration</option>
+                                            </select>
+                                            <LuChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400/70 pointer-events-none" size={14} />
+                                        </div>
+
+                                        <textarea rows={4} placeholder="Project Brief / Message"
+                                            className="w-full px-[18px] py-3.5 rounded-2xl text-sm font-medium text-slate-800 placeholder:text-slate-400/60 placeholder:font-normal outline-none resize-none border border-white/60 shadow-[inset_0_1px_3px_rgba(0,0,0,0.04)]"
+                                            style={{ background: 'rgba(255,255,255,0.35)', backdropFilter: 'blur(8px)' }} />
+
+                                        <button className="w-full py-4 rounded-[18px] text-white text-[11px] font-bold uppercase tracking-widest flex items-center justify-center gap-2 transition-all duration-200 hover:-translate-y-0.5"
+                                            style={{ background: 'linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%)', boxShadow: '0 4px 20px rgba(26,115,232,0.35), inset 0 1px 0 rgba(255,255,255,0.2)' }}>
+                                            Send Inquiry
+                                            <LuSend size={13} />
+                                        </button>
+                                    </>
+                                ) : (
+                                    <>
+                                        {/* Avatar upload */}
+                                        <div className="flex items-center gap-4 p-4 rounded-[18px] border border-white/45"
+                                            style={{ background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(8px)' }}>
+                                            <label className="relative cursor-pointer flex-shrink-0">
+                                                <input type="file" accept="image/*" onChange={handleFileChange} className="sr-only" />
+                                                <div className="w-14 h-14 rounded-2xl border-2 border-dashed border-slate-300/60 hover:border-[#E91E63]/50 flex items-center justify-center transition-all duration-300"
+                                                    style={{ background: 'rgba(255,255,255,0.3)' }}>
+                                                    {avatarPreview
+                                                        ? <img src={avatarPreview} alt="Avatar" className="w-full h-full object-cover rounded-2xl" />
+                                                        : <LuUser className="text-slate-300/70" size={22} />}
+                                                </div>
+                                                <span className="absolute -bottom-1.5 -right-1.5 bg-[#E91E63] text-white text-[9px] font-bold px-1.5 py-0.5 rounded-lg uppercase tracking-wider">
+                                                    Upload
+                                                </span>
+                                            </label>
+                                            <div>
+                                                <p className="text-[13px] font-semibold text-slate-700 mb-0.5">Profile Picture</p>
+                                                <p className="text-[11px] text-slate-400/70">Optional · JPG or PNG · Max 5MB</p>
+                                            </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                            <input type="text" placeholder="Your Name" className="w-full px-[18px] py-3.5 rounded-2xl text-sm font-medium text-slate-800 placeholder:text-slate-400/60 placeholder:font-normal outline-none transition-all duration-250 border border-white/60 shadow-[inset_0_1px_3px_rgba(0,0,0,0.04)] focus:border-white/90 focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)]"
+                                                style={{ background: 'rgba(255,255,255,0.35)', backdropFilter: 'blur(8px)' }} />
+                                            <input type="text" placeholder="Your Role / Uni" className="w-full px-[18px] py-3.5 rounded-2xl text-sm font-medium text-slate-800 placeholder:text-slate-400/60 placeholder:font-normal outline-none transition-all duration-250 border border-white/60 shadow-[inset_0_1px_3px_rgba(0,0,0,0.04)] focus:border-white/90 focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)]"
+                                                style={{ background: 'rgba(255,255,255,0.35)', backdropFilter: 'blur(8px)' }} />
+                                        </div>
+
+                                        {/* Star rating */}
+                                        <div className="flex flex-col items-center gap-2.5 py-4 px-4 rounded-[18px] border border-white/45"
+                                            style={{ background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(8px)' }}>
+                                            <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400/60">Rate Your Experience</p>
+                                            <div className="flex gap-2">
                                                 {[1, 2, 3, 4, 5].map((i) => (
-                                                    <button
-                                                        key={i}
-                                                        type="button"
-                                                        onClick={() => setRating(i)}
-                                                        className={`text-4xl transition-all duration-300 ${i <= rating ? 'text-yellow-400 scale-110' : 'text-slate-200 hover:text-yellow-100'}`}
-                                                    >
-                                                        <LuStar fill={i <= rating ? "currentColor" : "none"} />
+                                                    <button key={i} type="button" onClick={() => setRating(i)}
+                                                        className={`text-[26px] transition-all duration-150 hover:-translate-y-0.5 ${i <= rating ? 'text-yellow-400' : 'text-slate-200/60'}`}>
+                                                        <LuStar fill={i <= rating ? 'currentColor' : 'none'} />
                                                     </button>
                                                 ))}
                                             </div>
                                         </div>
 
-                                        <textarea rows={4} placeholder="Your Feedback" className="w-full px-6 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all duration-300 font-medium resize-none placeholder:text-slate-400"></textarea>
+                                        <textarea rows={3} placeholder="Share your experience..."
+                                            className="w-full px-[18px] py-3.5 rounded-2xl text-sm font-medium text-slate-800 placeholder:text-slate-400/60 placeholder:font-normal outline-none resize-none border border-white/60 shadow-[inset_0_1px_3px_rgba(0,0,0,0.04)]"
+                                            style={{ background: 'rgba(255,255,255,0.35)', backdropFilter: 'blur(8px)' }} />
 
-                                        <button className="w-full py-5 bg-[#E91E63] text-white font-bold rounded-2xl hover:-translate-y-0.5 hover:shadow-lg hover:shadow-pink-500/25 transition-all duration-500 flex items-center justify-center gap-3 uppercase tracking-tighter text-sm">
+                                        <button className="w-full py-4 rounded-[18px] text-white text-[11px] font-bold uppercase tracking-widest flex items-center justify-center gap-2 transition-all duration-200 hover:-translate-y-0.5"
+                                            style={{ background: 'linear-gradient(135deg, #E91E63 0%, #AD1457 100%)', boxShadow: '0 4px 20px rgba(233,30,99,0.35), inset 0 1px 0 rgba(255,255,255,0.2)' }}>
                                             Submit Testimonial
-                                            <LuMessageSquareQuote className="text-lg" />
+                                            <LuMessageSquareQuote size={13} />
                                         </button>
-                                    </form>
+                                    </>
                                 )}
                             </div>
                         </div>
