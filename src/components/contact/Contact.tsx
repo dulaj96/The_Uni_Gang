@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { LuSend, LuPhone, LuMail, LuMapPin, LuMessageSquareQuote, LuMonitor, LuSearch, LuCalendarDays, LuUsers, LuStar, LuChevronDown, LuUser } from 'react-icons/lu';
+import TiltCard from '../ui/TiltCard.tsx';
 
 interface Feedback {
     id: number;
@@ -68,172 +70,59 @@ const stats = [
     { icon: <LuUsers />, value: "5000+", label: "Happy Clients" }
 ];
 
-// Dot Grid decorator (from testimonial card design)
-// const DotGrid = ({ style }: { style: React.CSSProperties }) => (
-//     <div className="absolute pointer-events-none" style={style}>
-//         {[0, 1, 2].map((row) => (
-//             <div key={row} className="flex gap-1.5 mb-1.5">
-//                 {[0, 1, 2].map((col) => (
-//                     <div
-//                         key={col}
-//                         className="rounded-full"
-//                         style={{ width: "5px", height: "5px", background: "#E91E63", opacity: 0.4 }}
-//                     />
-//                 ))}
-//             </div>
-//         ))}
-//     </div>
-// );
-
-// Individual Testimonial Card (speech bubble design from template)
 const TestimonialCard = ({ feedback }: { feedback: Feedback }) => {
-    // Split name for pink/dark styling
     const nameParts = feedback.name.split(' ');
     const firstName = nameParts[0];
     const lastName = nameParts.slice(1).join(' ');
 
     return (
         <div className="relative p-6 flex-shrink-0" style={{ width: "340px" }}>
-            {/* Top-left gray wave blob */}
-            {/* <div className="absolute top-0 left-0 pointer-events-none" style={{ width: "120px", height: "90px" }}>
-                <svg viewBox="0 0 120 90" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M0 0 C40 0, 80 15, 110 45 C120 60, 115 90, 85 90 L0 90 Z" fill="#EBEBEB" className="dark:opacity-10" />
-                </svg>
-            </div> */}
+            <div className="absolute text-gray-200 dark:text-slate-800 select-none" style={{ top: "62px", left: "22px", fontSize: "44px", lineHeight: 1, fontFamily: "Georgia, serif", zIndex: 10 }}>"</div>
+            <div className="absolute text-gray-200 dark:text-slate-800 select-none" style={{ bottom: "50px", right: "22px", fontSize: "44px", lineHeight: 1, fontFamily: "Georgia, serif", zIndex: 10 }}>"</div>
 
-            {/* Bottom-left pink wave blob */}
-            {/* <div className="absolute bottom-0 left-0 pointer-events-none" style={{ width: "130px", height: "100px" }}>
-                <svg viewBox="0 0 130 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M0 100 C0 65, 20 38, 52 25 C85 12, 125 32, 130 65 L130 100 Z" fill="#C2185B" opacity="0.80" />
-                </svg>
-            </div> */}
-
-            {/* Horizontal pink + gray bar stripes (mid-card accent) */}
-            {/* <div className="absolute left-0 right-0 pointer-events-none" style={{ top: "140px", height: "38px" }}>
-                <div style={{ height: "5px", background: "#E91E63", marginBottom: "4px" }} />
-                <div style={{ height: "5px", background: "#9E9E9E", opacity: 0.25, marginBottom: "4px" }} />
-                <div style={{ height: "5px", background: "#9E9E9E", opacity: 0.25 }} />
-            </div> */}
-
-            {/* Decorative dot grids */}
-            {/* <DotGrid style={{ top: "48px", right: "28px", zIndex: 10 }} />
-            <DotGrid style={{ bottom: "60px", left: "28px", zIndex: 10 }} /> */}
-
-            {/* Large open-quote (top-left, outside bubble) */}
-            <div
-                className="absolute text-gray-200 dark:text-slate-700 select-none"
-                style={{ top: "62px", left: "22px", fontSize: "44px", lineHeight: 1, fontFamily: "Georgia, serif", zIndex: 10 }}
-            >
-                "
-            </div>
-
-            {/* Large close-quote (bottom-right, outer card) */}
-            <div
-                className="absolute text-gray-200 dark:text-slate-700 select-none"
-                style={{ bottom: "50px", right: "22px", fontSize: "44px", lineHeight: 1, fontFamily: "Georgia, serif", zIndex: 10 }}
-            >
-                "
-            </div>
-
-            {/* Headline */}
-            {/* <div className="relative z-10 mb-4">
-                <p className="text-gray-800 dark:text-slate-200 font-semibold text-sm" style={{ fontFamily: "Georgia, serif" }}>
-                    <span style={{ color: "#E91E63", fontSize: "1.1rem" }}>"</span>
-                    What Our Clients Say!
-                    <span style={{ color: "#E91E63", fontSize: "1.1rem" }}>"</span>
-                </p>
-            </div> */}
-
-            {/* Speech Bubble Area */}
-            <div className="relative z-10 mt-1">
-                {/* Avatar — overlapping top-right of bubble */}
-                <div className="absolute z-20" style={{ top: "-20px", right: "16px" }}>
-                    <div
-                        className="rounded-full bg-white dark:bg-slate-900"
-                        style={{ width: "72px", height: "72px", border: "4px solid #E91E63", overflow: "hidden" }}
-                    >
-                        <img
-                            src={feedback.avatar}
-                            alt={feedback.name}
-                            style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                        />
-                    </div>
-                </div>
-
-                {/* Bubble Body */}
-                <div
-                    className="relative px-6 py-5 shadow-lg bg-white/70 dark:bg-slate-800/70 backdrop-blur-xl border border-white/20"
-                    style={{
-                        minHeight: "190px",
-                        borderRadius: "22px",
-                        boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.15)" // මෙන්න මේකෙන් Glass look එක වැඩියෙන් එනවා
-                    }}
-                >
-                    {/* Name & Role */}
-                    <div className="mb-3 pr-20">
-                        <p className="font-extrabold uppercase tracking-wide leading-tight" style={{ fontSize: "0.95rem" }}>
-                            <span style={{ color: "#E91E63" }}>{firstName} </span>
-                            <span className="text-gray-800 dark:text-slate-100">{lastName}</span>
-                        </p>
-                        <p className="text-gray-500 dark:text-slate-400 text-xs mt-0.5 font-medium">{feedback.role}</p>
+            <TiltCard>
+                <div className="relative z-10 mt-1">
+                    <div className="absolute z-20" style={{ top: "-20px", right: "16px" }}>
+                        <motion.div
+                            whileHover={{ scale: 1.1, rotate: 5 }}
+                            className="rounded-full bg-white dark:bg-slate-900 border-[4px] border-[#E91E63] overflow-hidden shadow-lg"
+                            style={{ width: "72px", height: "72px" }}
+                        >
+                            <img src={feedback.avatar} alt={feedback.name} className="w-full h-full object-cover" />
+                        </motion.div>
                     </div>
 
-                    {/* Testimonial text with pink quotes */}
-                    <div className="relative">
-                        <span
-                            className="absolute"
-                            style={{ top: "-2px", left: "-8px", color: "#E91E63", fontSize: "1.5rem", lineHeight: 1, fontFamily: "Georgia, serif" }}
-                        >
-                            '
-                        </span>
-                        <p
-                            className="text-gray-600 dark:text-slate-400 text-xs text-center leading-relaxed px-2"
-                            style={{ fontFamily: "Georgia, serif" }}
-                        >
-                            {feedback.comment}
-                        </p>
-                        <span
-                            className="absolute"
-                            style={{ bottom: "-6px", right: "-4px", color: "#E91E63", fontSize: "1.5rem", lineHeight: 1, fontFamily: "Georgia, serif" }}
-                        >
-                            '
-                        </span>
-                    </div>
-
-                    {/* Stars with pink divider lines */}
-                    <div className="mt-6 flex items-center gap-1.5">
-                        <div style={{ flex: 1, height: "1px", background: "#E91E63" }} />
-                        <div className="flex gap-0.5">
-                            {Array.from({ length: 5 }).map((_, i) => (
-                                <LuStar
-                                    key={i}
-                                    size={16}
-                                    fill={i < feedback.rating ? "#FFC107" : "none"}
-                                    stroke={i < feedback.rating ? "#FFC107" : "#ccc"}
-                                />
-                            ))}
+                    <div className="relative px-6 py-5 shadow-2xl bg-white/70 dark:bg-slate-800/70 backdrop-blur-2xl border border-white/20 rounded-[22px] min-h-[190px]">
+                        <div className="mb-3 pr-20">
+                            <p className="font-extrabold uppercase tracking-wide leading-tight text-[0.95rem]">
+                                <span style={{ color: "#E91E63" }}>{firstName} </span>
+                                <span className="text-gray-800 dark:text-slate-100">{lastName}</span>
+                            </p>
+                            <p className="text-gray-500 dark:text-slate-400 text-xs mt-0.5 font-medium">{feedback.role}</p>
                         </div>
-                        <div style={{ flex: 1, height: "1px", background: "#E91E63" }} />
+
+                        <div className="relative">
+                            <span className="absolute -left-2 -top-1 text-[#E91E63] text-2xl font-serif">'</span>
+                            <p className="text-gray-600 dark:text-slate-400 text-xs text-center leading-relaxed px-2 font-serif italic">
+                                {feedback.comment}
+                            </p>
+                            <span className="absolute -right-1 -bottom-1 text-[#E91E63] text-2xl font-serif">'</span>
+                        </div>
+
+                        <div className="mt-6 flex items-center gap-1.5">
+                            <div className="flex-1 h-px bg-[#E91E63]/20" />
+                            <div className="flex gap-0.5">
+                                {Array.from({ length: 5 }).map((_, i) => (
+                                    <LuStar key={i} size={14} fill={i < feedback.rating ? "#FFC107" : "none"} stroke={i < feedback.rating ? "#FFC107" : "#ccc"} />
+                                ))}
+                            </div>
+                            <div className="flex-1 h-px bg-[#E91E63]/20" />
+                        </div>
+
+                        <div className="absolute -bottom-[22px] right-[52px] w-0 h-0 border-l-[16px] border-l-transparent border-t-[22px] border-t-white/70 dark:border-t-slate-800/70" />
                     </div>
-
-                    {/* Bubble tail triangle */}
-                    <div
-                        className="absolute"
-                        style={{
-                            bottom: "-22px",
-                            right: "52px",
-                            width: 0,
-                            height: 0,
-                            borderLeft: "16px solid transparent",
-                            borderRight: "0px solid transparent",
-                            borderTop: "22px solid rgba(255, 255, 255, 0.7)", // මෙන්න මේ පාට තමයි දාන්න ඕනේ
-                        }}
-                    />
                 </div>
-            </div>
-
-            {/* Bottom spacer so card has breathing room after the tail */}
-            <div className="relative z-10 mt-8" />
+            </TiltCard>
         </div>
     );
 };
@@ -243,261 +132,258 @@ const Contact = () => {
     const [rating, setRating] = useState(0);
     const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
 
-    // Simple handle for file input changes (optional but good UI)
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            const file = e.target.files[0];
-            setAvatarPreview(URL.createObjectURL(file));
-        }
-    };
-
     return (
-        <section id="contact" className="relative pt-24 pb-5 px-4 md:px-8 bg-[#f7f9fb] dark:bg-slate-950 font-sans overflow-hidden">
+        <section id="contact" className="relative pt-24 pb-20 px-4 md:px-8 bg-[#f7f9fb] dark:bg-slate-950 font-sans overflow-hidden">
             {/* Ambient background decorations */}
             <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2 opacity-50"></div>
             <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-secondary-fixed/10 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/2 opacity-50"></div>
 
             <div className="max-w-7xl mx-auto">
-                {/* Header */}
-                <div className="space-y-4">
-                    <h1 className="text-5xl md:text-6xl font-extrabold tracking-tighter text-on-surface leading-[1.1] font-plus-jakarta">
-                        Contact <span className="text-primary">The Uni Gang</span>
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.8 }}
+                    className="space-y-4 mb-20"
+                >
+                    <h1 className="text-5xl md:text-7xl font-extrabold tracking-tighter text-slate-900 dark:text-white leading-[1] font-plus-jakarta">
+                        Contact <span className="text-primary italic">The Uni Gang</span>
                     </h1>
+                </motion.div>
 
-                </div>
-
-                {/* Main Content: Info & Pro Form */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start mb-32">
-
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-stretch mb-32">
                     {/* Contact Info Card */}
-                    <div className="lg:col-span-5">
-                        {/* Main Card: Opacity එක අඩු කරලා Blur එක වැඩි කළා */}
-                        <div className="bg-white/10 dark:bg-slate-900/40 backdrop-blur-2xl p-10 md:p-12 rounded-[2.5rem] border border-white/30 dark:border-slate-800 shadow-2xl h-full transition-all duration-500">
-                            <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-10 tracking-tight">Reach Out To Us</h3>
+                    <motion.div
+                        initial={{ opacity: 0, x: -50 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.8 }}
+                        className="lg:col-span-5"
+                    >
+                        <TiltCard className="h-full">
+                            <div className="bg-white/10 dark:bg-slate-900/40 backdrop-blur-2xl p-10 md:p-12 rounded-[2.5rem] border border-white/30 dark:border-slate-800 shadow-2xl h-full flex flex-col">
+                                <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-12 tracking-tight">Reach Out To Us</h3>
 
-                            <div className="space-y-10">
-                                {/* Email Item */}
-                                <div className="flex gap-6 items-center group cursor-pointer">
-                                    {/* Icon Div: group-hover:scale-110 එකෙන් ලොකු වෙලා පේනවා */}
-                                    <div className="w-14 h-14 rounded-2xl bg-white/20 dark:bg-slate-800/30 backdrop-blur-md border border-white/20 shadow-sm flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white group-hover:scale-110 transition-all duration-500">
-                                        <LuMail className="text-2xl" />
-                                    </div>
-                                    <div>
-                                        <p className="text-[10px] font-bold uppercase tracking-widest text-primary/60 mb-1">Email Endpoint</p>
-                                        <p className="text-lg font-semibold text-slate-800 dark:text-slate-200">hello@theunigang.com</p>
-                                    </div>
+                                <div className="space-y-10 flex-grow">
+                                    {[
+                                        { icon: LuMail, label: "Email Endpoint", value: "hello@theunigang.com" },
+                                        { icon: LuPhone, label: "Direct Hotline", value: "+94 77 123 4567" },
+                                        { icon: LuMapPin, label: "Our Base", value: "Colombo, Sri Lanka" }
+                                    ].map((item, i) => (
+                                        <motion.div
+                                            key={i}
+                                            whileHover={{ x: 10 }}
+                                            className="flex gap-6 items-center group cursor-pointer"
+                                        >
+                                            <motion.div
+                                                animate={{ y: [0, -5, 0] }}
+                                                transition={{ duration: 3, repeat: Infinity, delay: i * 0.5 }}
+                                                className="w-14 h-14 rounded-2xl bg-white/20 dark:bg-slate-800/30 backdrop-blur-md border border-white/20 shadow-sm flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300"
+                                            >
+                                                <item.icon className="text-2xl" />
+                                            </motion.div>
+                                            <div>
+                                                <p className="text-[10px] font-bold uppercase tracking-widest text-primary/60 mb-1">{item.label}</p>
+                                                <p className="text-lg font-semibold text-slate-800 dark:text-slate-200">{item.value}</p>
+                                            </div>
+                                        </motion.div>
+                                    ))}
                                 </div>
 
-                                {/* Phone Item */}
-                                <div className="flex gap-6 items-center group cursor-pointer">
-                                    <div className="w-14 h-14 rounded-2xl bg-white/20 dark:bg-slate-800/30 backdrop-blur-md border border-white/20 shadow-sm flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white group-hover:scale-110 transition-all duration-500">
-                                        <LuPhone className="text-2xl" />
+                                <motion.div
+                                    whileInView={{ opacity: [0, 1], y: [20, 0] }}
+                                    className="mt-16 p-8 rounded-[2rem] bg-white/5 dark:bg-slate-800/20 backdrop-blur-lg border border-white/10 dark:border-slate-700/30 overflow-hidden relative"
+                                >
+                                    <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2"></div>
+                                    <div className="flex items-center gap-3 mb-4">
+                                        <span className="relative flex h-3 w-3">
+                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                            <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                                        </span>
+                                        <span className="text-xs font-bold uppercase tracking-widest text-slate-500">Online Now</span>
                                     </div>
-                                    <div>
-                                        <p className="text-[10px] font-bold uppercase tracking-widest text-primary/60 mb-1">Direct Hotline</p>
-                                        <p className="text-lg font-semibold text-slate-800 dark:text-slate-200">+94 77 123 4567</p>
-                                    </div>
-                                </div>
-
-                                {/* Location Item */}
-                                <div className="flex gap-6 items-center group cursor-pointer">
-                                    <div className="w-14 h-14 rounded-2xl bg-white/20 dark:bg-slate-800/30 backdrop-blur-md border border-white/20 shadow-sm flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white group-hover:scale-110 transition-all duration-500">
-                                        <LuMapPin className="text-2xl" />
-                                    </div>
-                                    <div>
-                                        <p className="text-[10px] font-bold uppercase tracking-widest text-primary/60 mb-1">Our Base</p>
-                                        <p className="text-lg font-semibold text-slate-800 dark:text-slate-200">Colombo, Sri Lanka</p>
-                                    </div>
-                                </div>
+                                    <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">Typical response time: <span className="text-primary font-bold">~2 Hours</span></p>
+                                </motion.div>
                             </div>
-
-                            {/* Bottom Online Status Box: මේකත් තව Glassy කළා */}
-                            <div className="mt-16 p-8 rounded-[2rem] bg-white/5 dark:bg-slate-800/20 backdrop-blur-lg border border-white/10 dark:border-slate-700/30">
-                                <div className="flex items-center gap-3 mb-4">
-                                    <span className="relative flex h-3 w-3">
-                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                                        <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-                                    </span>
-                                    <span className="text-xs font-bold uppercase tracking-widest text-slate-500">Online Now</span>
-                                </div>
-                                <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">Typical response time: <span className="text-primary font-bold">~2 Hours</span></p>
-                            </div>
-                        </div>
-                    </div>
+                        </TiltCard>
+                    </motion.div>
 
                     {/* Pro Dual Form */}
-                    <div className="lg:col-span-7 p-4">
-                        <div className="relative rounded-[2rem] overflow-hidden border border-white/55 shadow-[0_8px_32px_rgba(0,0,0,0.08),inset_0_1px_0_rgba(255,255,255,0.8)]"
-                            style={{ background: 'rgba(255,255,255,0.25)', backdropFilter: 'blur(24px)' }}>
+                    <motion.div
+                        initial={{ opacity: 0, x: 50 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.8 }}
+                        className="lg:col-span-7"
+                    >
+                        <TiltCard className="h-full">
+                            <div className="relative h-full rounded-[2.5rem] overflow-hidden border border-white/40 dark:border-slate-800/50 shadow-2xl bg-white/30 dark:bg-slate-900/40 backdrop-blur-3xl p-8 flex flex-col">
+                                <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-white/80 dark:via-slate-700/50 to-transparent" />
 
-                            {/* Top shine line */}
-                            <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-white/90 to-transparent" />
-
-                            {/* Tab switcher */}
-                            <div className="p-4 pb-0">
-                                <div className="flex gap-1 p-1.5 rounded-[1.25rem] border border-white/40"
-                                    style={{ background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(8px)' }}>
+                                <div className="flex gap-2 p-1.5 rounded-3xl border border-white/40 dark:border-slate-800 mb-8 bg-white/20 dark:bg-slate-900/20 backdrop-blur-md">
                                     <button
                                         onClick={() => setActiveTab('contact')}
-                                        className={`flex-1 py-3 rounded-2xl text-[11px] font-bold uppercase tracking-widest transition-all duration-300 ${activeTab === 'contact'
-                                            ? 'bg-white/85 text-primary shadow-[0_2px_12px_rgba(0,0,0,0.08),inset_0_1px_0_white]'
-                                            : 'text-slate-400 hover:text-slate-600'
-                                            }`}
+                                        className={`flex-1 py-4 rounded-[1.25rem] text-[11px] font-bold uppercase tracking-widest transition-all duration-500 relative ${activeTab === 'contact' ? 'text-primary' : 'text-slate-400 hover:text-slate-600'}`}
                                     >
-                                        Request Service
+                                        {activeTab === 'contact' && <motion.div layoutId="tab-pill" className="absolute inset-0 bg-white/90 dark:bg-slate-800 rounded-[1.25rem] shadow-xl border border-white dark:border-slate-700"></motion.div>}
+                                        <span className="relative z-10">Request Service</span>
                                     </button>
                                     <button
                                         onClick={() => setActiveTab('feedback')}
-                                        className={`flex-1 py-3 rounded-2xl text-[11px] font-bold uppercase tracking-widest transition-all duration-300 ${activeTab === 'feedback'
-                                            ? 'bg-white/85 text-[#E91E63] shadow-[0_2px_12px_rgba(0,0,0,0.08),inset_0_1px_0_white]'
-                                            : 'text-slate-400 hover:text-slate-600'
-                                            }`}
+                                        className={`flex-1 py-4 rounded-[1.25rem] text-[11px] font-bold uppercase tracking-widest transition-all duration-500 relative ${activeTab === 'feedback' ? 'text-[#E91E63]' : 'text-slate-400 hover:text-slate-600'}`}
                                     >
-                                        Client Feedback
+                                        {activeTab === 'feedback' && <motion.div layoutId="tab-pill" className="absolute inset-0 bg-white/90 dark:bg-slate-800 rounded-[1.25rem] shadow-xl border border-white dark:border-slate-700"></motion.div>}
+                                        <span className="relative z-10">Client Feedback</span>
                                     </button>
                                 </div>
-                            </div>
 
-                            {/* Form body */}
-                            <div className="p-5 flex flex-col gap-3">
-                                {activeTab === 'contact' ? (
-                                    <>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                            <input type="text" placeholder="Full Name" className="w-full px-[18px] py-3.5 rounded-2xl text-sm font-medium text-slate-800 placeholder:text-slate-400/60 placeholder:font-normal outline-none transition-all duration-250 border border-white/60 shadow-[inset_0_1px_3px_rgba(0,0,0,0.04)] focus:border-white/90 focus:shadow-[0_0_0_3px_rgba(99,102,241,0.08),inset_0_1px_3px_rgba(0,0,0,0.04)]"
-                                                style={{ background: 'rgba(255,255,255,0.35)', backdropFilter: 'blur(8px)' }} />
-                                            <input type="email" placeholder="Email Address" className="w-full px-[18px] py-3.5 rounded-2xl text-sm font-medium text-slate-800 placeholder:text-slate-400/60 placeholder:font-normal outline-none transition-all duration-250 border border-white/60 shadow-[inset_0_1px_3px_rgba(0,0,0,0.04)] focus:border-white/90 focus:shadow-[0_0_0_3px_rgba(99,102,241,0.08),inset_0_1px_3px_rgba(0,0,0,0.04)]"
-                                                style={{ background: 'rgba(255,255,255,0.35)', backdropFilter: 'blur(8px)' }} />
-                                        </div>
-
-                                        <div className="relative">
-                                            <select className="w-full px-[18px] py-3.5 rounded-2xl text-sm font-medium text-slate-400 outline-none appearance-none cursor-pointer border border-white/60 shadow-[inset_0_1px_3px_rgba(0,0,0,0.04)]"
-                                                style={{ background: 'rgba(255,255,255,0.35)', backdropFilter: 'blur(8px)' }}>
-                                                <option disabled selected>Select Service Interest</option>
-                                                <option>Custom Web Application</option>
-                                                <option>Growth SEO & Analytics</option>
-                                                <option>Digital Interface Redesign</option>
-                                                <option>Campus Ecosystem Integration</option>
-                                            </select>
-                                            <LuChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400/70 pointer-events-none" size={14} />
-                                        </div>
-
-                                        <textarea rows={4} placeholder="Project Brief / Message"
-                                            className="w-full px-[18px] py-3.5 rounded-2xl text-sm font-medium text-slate-800 placeholder:text-slate-400/60 placeholder:font-normal outline-none resize-none border border-white/60 shadow-[inset_0_1px_3px_rgba(0,0,0,0.04)]"
-                                            style={{ background: 'rgba(255,255,255,0.35)', backdropFilter: 'blur(8px)' }} />
-
-                                        <button className="w-full py-4 rounded-[18px] text-white text-[11px] font-bold uppercase tracking-widest flex items-center justify-center gap-2 transition-all duration-200 hover:-translate-y-0.5"
-                                            style={{ background: 'linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%)', boxShadow: '0 4px 20px rgba(26,115,232,0.35), inset 0 1px 0 rgba(255,255,255,0.2)' }}>
-                                            Send Inquiry
-                                            <LuSend size={13} />
-                                        </button>
-                                    </>
-                                ) : (
-                                    <>
-                                        {/* Avatar upload */}
-                                        <div className="flex items-center gap-4 p-4 rounded-[18px] border border-white/45"
-                                            style={{ background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(8px)' }}>
-                                            <label className="relative cursor-pointer flex-shrink-0">
-                                                <input type="file" accept="image/*" onChange={handleFileChange} className="sr-only" />
-                                                <div className="w-14 h-14 rounded-2xl border-2 border-dashed border-slate-300/60 hover:border-[#E91E63]/50 flex items-center justify-center transition-all duration-300"
-                                                    style={{ background: 'rgba(255,255,255,0.3)' }}>
-                                                    {avatarPreview
-                                                        ? <img src={avatarPreview} alt="Avatar" className="w-full h-full object-cover rounded-2xl" />
-                                                        : <LuUser className="text-slate-300/70" size={22} />}
+                                <AnimatePresence mode="wait">
+                                    <motion.div
+                                        key={activeTab}
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -20 }}
+                                        transition={{ duration: 0.4 }}
+                                        className="flex flex-col gap-4 flex-grow"
+                                    >
+                                        {activeTab === 'contact' ? (
+                                            <>
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                    <input type="text" placeholder="Full Name" className="w-full px-6 py-4 rounded-2xl text-sm font-medium bg-white/40 dark:bg-slate-800/40 border border-white/60 dark:border-slate-700/50 focus:border-primary outline-none transition-all shadow-inner" />
+                                                    <input type="email" placeholder="Email Address" className="w-full px-6 py-4 rounded-2xl text-sm font-medium bg-white/40 dark:bg-slate-800/40 border border-white/60 dark:border-slate-700/50 focus:border-primary outline-none transition-all shadow-inner" />
                                                 </div>
-                                                <span className="absolute -bottom-1.5 -right-1.5 bg-[#E91E63] text-white text-[9px] font-bold px-1.5 py-0.5 rounded-lg uppercase tracking-wider">
-                                                    Upload
-                                                </span>
-                                            </label>
-                                            <div>
-                                                <p className="text-[13px] font-semibold text-slate-700 mb-0.5">Profile Picture</p>
-                                                <p className="text-[11px] text-slate-400/70">Optional · JPG or PNG · Max 5MB</p>
-                                            </div>
-                                        </div>
-
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                            <input type="text" placeholder="Your Name" className="w-full px-[18px] py-3.5 rounded-2xl text-sm font-medium text-slate-800 placeholder:text-slate-400/60 placeholder:font-normal outline-none transition-all duration-250 border border-white/60 shadow-[inset_0_1px_3px_rgba(0,0,0,0.04)] focus:border-white/90 focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)]"
-                                                style={{ background: 'rgba(255,255,255,0.35)', backdropFilter: 'blur(8px)' }} />
-                                            <input type="text" placeholder="Your Role / Uni" className="w-full px-[18px] py-3.5 rounded-2xl text-sm font-medium text-slate-800 placeholder:text-slate-400/60 placeholder:font-normal outline-none transition-all duration-250 border border-white/60 shadow-[inset_0_1px_3px_rgba(0,0,0,0.04)] focus:border-white/90 focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)]"
-                                                style={{ background: 'rgba(255,255,255,0.35)', backdropFilter: 'blur(8px)' }} />
-                                        </div>
-
-                                        {/* Star rating */}
-                                        <div className="flex flex-col items-center gap-2.5 py-4 px-4 rounded-[18px] border border-white/45"
-                                            style={{ background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(8px)' }}>
-                                            <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400/60">Rate Your Experience</p>
-                                            <div className="flex gap-2">
-                                                {[1, 2, 3, 4, 5].map((i) => (
-                                                    <button key={i} type="button" onClick={() => setRating(i)}
-                                                        className={`text-[26px] transition-all duration-150 hover:-translate-y-0.5 ${i <= rating ? 'text-yellow-400' : 'text-slate-200/60'}`}>
-                                                        <LuStar fill={i <= rating ? 'currentColor' : 'none'} />
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        </div>
-
-                                        <textarea rows={3} placeholder="Share your experience..."
-                                            className="w-full px-[18px] py-3.5 rounded-2xl text-sm font-medium text-slate-800 placeholder:text-slate-400/60 placeholder:font-normal outline-none resize-none border border-white/60 shadow-[inset_0_1px_3px_rgba(0,0,0,0.04)]"
-                                            style={{ background: 'rgba(255,255,255,0.35)', backdropFilter: 'blur(8px)' }} />
-
-                                        <button className="w-full py-4 rounded-[18px] text-white text-[11px] font-bold uppercase tracking-widest flex items-center justify-center gap-2 transition-all duration-200 hover:-translate-y-0.5"
-                                            style={{ background: 'linear-gradient(135deg, #E91E63 0%, #AD1457 100%)', boxShadow: '0 4px 20px rgba(233,30,99,0.35), inset 0 1px 0 rgba(255,255,255,0.2)' }}>
-                                            Submit Testimonial
-                                            <LuMessageSquareQuote size={13} />
-                                        </button>
-                                    </>
-                                )}
+                                                <div className="relative">
+                                                    <select className="w-full px-6 py-4 rounded-2xl text-sm font-medium bg-white/40 dark:bg-slate-800/40 border border-white/60 dark:border-slate-700/50 focus:border-primary outline-none appearance-none cursor-pointer shadow-inner text-slate-500">
+                                                        <option disabled selected>Select Service Interest</option>
+                                                        <option>Custom Web Application</option>
+                                                        <option>Growth SEO & Analytics</option>
+                                                        <option>Digital Interface Redesign</option>
+                                                        <option>Campus Ecosystem Integration</option>
+                                                    </select>
+                                                    <LuChevronDown className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                                                </div>
+                                                <textarea rows={5} placeholder="Project Brief / Message" className="w-full px-6 py-4 rounded-2xl text-sm font-medium bg-white/40 dark:bg-slate-800/40 border border-white/60 dark:border-slate-700/50 focus:border-primary outline-none resize-none shadow-inner" />
+                                                <motion.button
+                                                    whileHover={{ scale: 1.02, y: -2 }}
+                                                    whileTap={{ scale: 0.98 }}
+                                                    className="w-full py-4 mt-auto rounded-2xl text-white text-[11px] font-black uppercase tracking-[0.2em] shadow-xl bg-gradient-to-r from-blue-700 to-indigo-900 flex items-center justify-center gap-3"
+                                                >
+                                                    Send Inquiry <LuSend size={14} />
+                                                </motion.button>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <div className="flex items-center gap-6 p-6 rounded-2xl bg-white/20 dark:bg-slate-800/40 border border-white/40 dark:border-slate-700/50">
+                                                    <label className="relative cursor-pointer group">
+                                                        <input 
+                                                            type="file" 
+                                                            accept="image/*" 
+                                                            className="sr-only" 
+                                                            onChange={(e) => {
+                                                                if (e.target.files && e.target.files[0]) {
+                                                                    setAvatarPreview(URL.createObjectURL(e.target.files[0]));
+                                                                }
+                                                            }}
+                                                        />
+                                                        <motion.div
+                                                            whileHover={{ scale: 1.05 }}
+                                                            className="w-16 h-16 rounded-3xl border-2 border-dashed border-slate-400 flex items-center justify-center bg-white/40 dark:bg-slate-800/40"
+                                                        >
+                                                            {avatarPreview ? <img src={avatarPreview} alt="Avatar" className="w-full h-full object-cover rounded-3xl" /> : <LuUser className="text-slate-400 size-6" />}
+                                                            <div className="absolute -bottom-1 -right-1 bg-[#E91E63] text-white text-[8px] font-black px-1.5 py-0.5 rounded-lg shadow-lg">UP</div>
+                                                        </motion.div>
+                                                    </label>
+                                                    <div>
+                                                        <p className="text-sm font-bold text-slate-800 dark:text-white uppercase tracking-wider">Profile Avatar</p>
+                                                        <p className="text-[10px] text-slate-500 font-medium">JPG/PNG · Max 5MB · Auto-crops to 1:1</p>
+                                                    </div>
+                                                </div>
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                    <input type="text" placeholder="Your Name" className="w-full px-6 py-4 rounded-2xl text-sm font-medium bg-white/40 dark:bg-slate-800/40 border border-white/60 dark:border-slate-700/50 focus:border-[#E91E63] outline-none shadow-inner" />
+                                                    <input type="text" placeholder="Club / University" className="w-full px-6 py-4 rounded-2xl text-sm font-medium bg-white/40 dark:bg-slate-800/40 border border-white/60 dark:border-slate-700/50 focus:border-[#E91E63] outline-none shadow-inner" />
+                                                </div>
+                                                <div className="flex flex-col items-center gap-4 p-6 rounded-2xl bg-white/20 dark:bg-slate-800/40 border border-white/40 dark:border-slate-700/50">
+                                                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Rate Your Experience</p>
+                                                    <div className="flex gap-3">
+                                                        {[1, 2, 3, 4, 5].map((i) => (
+                                                            <motion.button key={i} whileHover={{ scale: 1.2 }} whileTap={{ scale: 0.9 }} onClick={() => setRating(i)} className={`text-4xl transition-colors ${i <= rating ? 'text-[#FFD700]' : 'text-slate-200 dark:text-slate-700'}`}>
+                                                                <LuStar fill={i <= rating ? 'currentColor' : 'none'} />
+                                                            </motion.button>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                                <textarea rows={3} placeholder="Tell others how it went..." className="w-full px-6 py-4 rounded-2xl text-sm font-medium bg-white/40 dark:bg-slate-800/40 border border-white/60 dark:border-slate-700/50 focus:border-[#E91E63] outline-none resize-none shadow-inner" />
+                                                <motion.button
+                                                    whileHover={{ scale: 1.02, y: -2 }}
+                                                    whileTap={{ scale: 0.98 }}
+                                                    className="w-full py-4 mt-auto rounded-2xl text-white text-[11px] font-black uppercase tracking-[0.2em] shadow-xl bg-gradient-to-r from-[#E91E63] to-[#880E4F] flex items-center justify-center gap-3"
+                                                >
+                                                    Post Feedback <LuMessageSquareQuote size={14} />
+                                                </motion.button>
+                                            </>
+                                        )}
+                                    </motion.div>
+                                </AnimatePresence>
                             </div>
-                        </div>
-                    </div>
+                        </TiltCard>
+                    </motion.div>
                 </div>
 
-                {/* ── Testimonial Cards Marquee (speech-bubble design) ── */}
-                <div className="mb-8 text-center">
-                    <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-3">
+                {/* Testimonials */}
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className="mb-8 text-center"
+                >
+                    <h3 className="text-3xl md:text-5xl font-black tracking-tight text-slate-900 dark:text-white mb-4">
                         What Our <span className="text-[#E91E63] italic">Clients Say</span>
                     </h3>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm font-light">Real experiences from real people across Sri Lanka</p>
-                </div>
+                    <div className="w-24 h-1 bg-gradient-to-r from-transparent via-[#E91E63] to-transparent mx-auto"></div>
+                </motion.div>
 
-                <div className="relative overflow-hidden py-16">
-                    {/* Gradient fade masks */}
-                    <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[#f7f9fb] dark:from-slate-950 to-transparent z-10 pointer-events-none"></div>
-                    <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-[#f7f9fb] dark:from-slate-950 to-transparent z-10 pointer-events-none"></div>
+                <div className="relative overflow-hidden py-24">
+                    <div className="absolute inset-y-0 left-0 w-40 bg-gradient-to-r from-[#f7f9fb] dark:from-slate-950 to-transparent z-10 pointer-events-none"></div>
+                    <div className="absolute inset-y-0 right-0 w-40 bg-gradient-to-l from-[#f7f9fb] dark:from-slate-950 to-transparent z-10 pointer-events-none"></div>
 
-                    {/* Marquee strip */}
                     <div className="flex gap-8 animate-marquee">
-                        {[...feedbacks, ...feedbacks].map((f, i) => (
+                        {[...feedbacks, ...feedbacks, ...feedbacks].map((f, i) => (
                             <TestimonialCard key={`${f.id}-${i}`} feedback={f} />
                         ))}
                     </div>
 
                     <style dangerouslySetInnerHTML={{
                         __html: `
-                            @keyframes marquee {
-                                0%   { transform: translateX(0); }
-                                100% { transform: translateX(-50%); }
-                            }
-                            .animate-marquee {
-                                animation: marquee 32s linear infinite;
-                                width: max-content;
-                            }
-                            .animate-marquee:hover {
-                                animation-play-state: paused;
-                            }
+                            @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-33.33%); } }
+                            .animate-marquee { animation: marquee 60s linear infinite; width: max-content; }
+                            .animate-marquee:hover { animation-play-state: paused; }
                         `
                     }} />
                 </div>
 
                 {/* Stats */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 mt-8">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
                     {stats.map((s, i) => (
-                        <div key={i} className="bg-white/40 dark:bg-slate-900/40 backdrop-blur-md p-10 rounded-[2.5rem] border border-white/60 dark:border-slate-800 shadow-sm text-center group transition-all duration-500 hover:-translate-y-2 hover:bg-white dark:hover:bg-slate-800">
-                            <div className="w-16 h-16 rounded-2xl bg-white dark:bg-slate-800 shadow-sm flex items-center justify-center text-primary text-3xl mx-auto mb-6 transition-all duration-500 group-hover:bg-primary group-hover:text-white group-hover:scale-110">
-                                {s.icon}
-                            </div>
-                            <h4 className="text-4xl font-bold text-slate-900 dark:text-white mb-2 tracking-tight">{s.value}</h4>
-                            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors">{s.label}</p>
-                        </div>
+                        <motion.div
+                            key={i}
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.5, delay: i * 0.1 }}
+                        >
+                            <TiltCard>
+                                <div className="premium-glass p-12 rounded-[3.5rem] text-center group transition-all duration-500 hover:shadow-2xl flex flex-col items-center">
+                                    <motion.div
+                                        whileHover={{ rotate: 360 }}
+                                        transition={{ duration: 1 }}
+                                        className="w-20 h-20 rounded-3xl bg-white dark:bg-slate-900 shadow-xl flex items-center justify-center text-primary text-4xl mb-8 group-hover:bg-primary group-hover:text-white transition-colors"
+                                    >
+                                        {s.icon}
+                                    </motion.div>
+                                    <h4 className="text-4xl lg:text-5xl font-black text-slate-900 dark:text-white mb-3 tracking-tighter">{s.value}</h4>
+                                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 group-hover:text-primary transition-colors">{s.label}</p>
+                                </div>
+                            </TiltCard>
+                        </motion.div>
                     ))}
                 </div>
             </div>
