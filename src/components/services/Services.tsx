@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import {
   LuLayoutDashboard,
   LuSmartphone,
@@ -15,8 +16,7 @@ interface ServiceItem {
   description: string;
   icon: React.ReactNode;
   features: string[];
-  buttonText: string;
-  isReversed: boolean;
+  gradient: string;
 }
 
 const servicesData: ServiceItem[] = [
@@ -24,140 +24,209 @@ const servicesData: ServiceItem[] = [
     id: 1,
     title: 'Web Development',
     image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=800&auto=format&fit=crop',
-    description: 'We build high-performance, responsive websites using modern frameworks like React and Next.js to ensure your business stands out in the digital landscape.',
+    description: 'We build high-performance, responsive websites using modern frameworks like React and Next.js to ensure your business stands out.',
     icon: <LuLayoutDashboard />,
     features: ['Custom Web Applications', 'E-commerce Solutions', 'Performance Optimization', 'Responsive Design'],
-    buttonText: 'Request Project',
-    isReversed: false
+    gradient: 'from-blue-500/20 to-indigo-500/20'
   },
   {
     id: 2,
     title: 'Mobile App Development',
     image: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?q=80&w=800&auto=format&fit=crop',
-    description: 'Our team specializes in creating intuitive iOS and Android applications using React Native, providing a seamless user experience across all devices.',
+    description: 'Our team specializes in creating intuitive iOS and Android applications using React Native, providing a seamless user experience.',
     icon: <LuSmartphone />,
     features: ['Cross-platform Apps', 'UI/UX Design', 'App Store Optimization', 'API Integration'],
-    buttonText: 'Request Project',
-    isReversed: true
+    gradient: 'from-purple-500/20 to-pink-500/20'
   },
   {
     id: 3,
     title: 'SEO Services',
     image: 'https://images.unsplash.com/photo-1562577309-4932fdd64cd1?q=80&w=800&auto=format&fit=crop',
-    description: 'Drive organic traffic to your platform with our data-driven SEO strategies. We help you rank higher on search engines and reach your target audience effectively.',
+    description: 'Drive organic traffic to your platform with our data-driven SEO strategies. We help you rank higher on search engines.',
     icon: <LuSearch />,
     features: ['Keyword Research', 'Technical SEO Audits', 'On-page Optimization', 'Backlink Building'],
-    buttonText: 'Request Project',
-    isReversed: false
+    gradient: 'from-emerald-500/20 to-teal-500/20'
   },
   {
     id: 4,
     title: 'Graphic Design',
     image: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?q=80&w=800&auto=format&fit=crop',
-    description: 'From branding to digital assets, our creative designers craft visual identities that capture your brand essence and engage your customers.',
+    description: 'From branding to digital assets, our creative designers craft visual identities that capture your brand essence.',
     icon: <LuPalette />,
     features: ['Logo & Branding', 'Social Media Graphics', 'Print Design', 'Marketing Material'],
-    buttonText: 'Request Project',
-    isReversed: true
+    gradient: 'from-orange-500/20 to-amber-500/20'
   },
   {
     id: 5,
     title: 'Video Production',
     image: 'https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=800&auto=format&fit=crop',
-    description: 'Professional video production and cinematic editing services to tell your story. We create high-quality promotional videos and motion graphics.',
+    description: 'Professional video production and cinematic editing services to tell your story. High-quality promotional videos.',
     icon: <LuVideo />,
     features: ['Professional Video Editing', 'Motion Graphics', 'Cinematic Shooting', 'Social Media Shorts'],
-    buttonText: 'Request Project',
-    isReversed: false
+    gradient: 'from-rose-500/20 to-red-500/20'
   }
 ];
 
+const TiltCard = ({ children, className }: { children: React.ReactNode, className?: string }) => {
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  const mouseXSpring = useSpring(x);
+  const mouseYSpring = useSpring(y);
+
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["10deg", "-10deg"]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-10deg", "10deg"]);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+
+    const xPct = mouseX / width - 0.5;
+    const yPct = mouseY / height - 0.5;
+
+    x.set(xPct);
+    y.set(yPct);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
+
+  return (
+    <motion.div
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+      className={`relative ${className}`}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
 const Services = () => {
   return (
-    <section id="services" className="bg-white dark:bg-slate-950 font-sans overflow-x-hidden">
+    <section id="services" className="relative py-24 bg-white dark:bg-slate-950 font-sans overflow-hidden">
+      {/* Background Decorative Elements */}
+      <div className="absolute top-0 left-0 w-full h-full pointer-events-none opacity-20 dark:opacity-40">
+        <div className="absolute top-[10%] left-[5%] w-72 h-72 bg-primary/20 blur-[120px] rounded-full animate-pulse"></div>
+        <div className="absolute bottom-[10%] right-[5%] w-96 h-96 bg-indigo-500/20 blur-[150px] rounded-full animate-pulse [animation-delay:2s]"></div>
+      </div>
 
-      {/* --- Header Section --- */}
-      <section className="text-white py-16 lg:py-24">
-        <div className="max-w-[1200px] mx-auto px-6 lg:px-10">
-          <h2 className="text-5xl md:text-6xl font-extrabold tracking-tight text-slate-900 leading-[1.15] mb-6">
-            Our Digital Services
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-20"
+        >
+          <h2 className="text-4xl md:text-6xl font-extrabold text-slate-900 dark:text-white mb-6 tracking-tight">
+            Our <span className="text-primary italic">Antigravity</span> Services
           </h2>
-          <p className="text-xl text-slate-500 leading-relaxed font-light">
-            High-impact IT solutions designed specifically for the modern system ecosystem.
+          <p className="text-lg text-slate-500 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
+            Floating above the competition with cutting-edge digital solutions tailored for the Sri Lankan student ecosystem.
           </p>
-        </div>
-      </section>
+        </motion.div>
 
-      {/* --- Services Loop --- */}
-      <main>
-        {servicesData.map((service, index) => (
-          <section
-            key={service.id}
-            className={`py-20 border-b border-gray-100 dark:border-gray-800 ${index % 2 !== 0 ? 'bg-gray-50 dark:bg-gray-900/30' : ''
-              }`}
-          >
-            <div className="max-w-[1200px] mx-auto px-6 lg:px-10 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <div className="grid grid-cols-1 gap-24">
+          {servicesData.map((service, index) => (
+            <div
+              key={service.id}
+              className={`flex flex-col ${index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'} items-center gap-12 lg:gap-20`}
+            >
+              {/* Floating Image Section */}
+              <div className="flex-1 w-full max-w-md">
+                <TiltCard className="perspective-1000">
+                  <motion.div
+                    initial={{ y: 0 }}
+                    animate={{ y: [-15, 15, -15] }}
+                    transition={{
+                      duration: 5 + Math.random(),
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }}
+                    className="relative group"
+                  >
+                    {/* Shadow Glow */}
+                    <div className={`absolute -inset-4 bg-gradient-to-tr ${service.gradient} blur-2xl opacity-50 group-hover:opacity-100 transition-opacity duration-700`}></div>
 
-              {/* Image / Icon Area */}
-              <div className={`lg:col-span-5 flex justify-center ${service.isReversed ? 'lg:order-2' : ''}`}>
-                <div className="relative group/img size-64 md:size-80 transition-transform hover:scale-105 duration-500">
-                  <div className="absolute inset-0 rounded-full border-4 border-[#d4af37]/20 group-hover/img:border-[#d4af37]/50 transition-colors duration-500"></div>
-                  <div className="absolute inset-4 rounded-full overflow-hidden bg-blue-50 dark:bg-gray-800/50 flex items-center justify-center shadow-xl">
-                    {service.image ? (
-                      <img
-                        src={service.image}
-                        alt={service.title}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover/img:scale-110"
-                      />
-                    ) : (
-                      // Fallback icon
-                      <div className="text-7xl text-blue-600">
-                        {service.icon}
+                    {/* Image Container */}
+                    <div className="relative premium-glass rounded-[2rem] p-4 border border-white/30 dark:border-white/10 overflow-hidden shadow-2xl">
+                      <div className="aspect-square rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-900">
+                        <img
+                          src={service.image}
+                          alt={service.title}
+                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        />
                       </div>
-                    )}
-                    <div className="absolute inset-0 bg-[#0a1432]/20 group-hover/img:bg-transparent transition-colors duration-500"></div>
-                  </div>
 
-                  {/* Floating Small Icon Button */}
-                  <div className="absolute bottom-4 right-4 bg-white dark:bg-[#0a1432] p-4 rounded-full shadow-lg border border-gray-100 dark:border-gray-700 z-10 group-hover/img:rotate-12 transition-transform text-blue-600 text-2xl flex items-center justify-center">
-                    {service.icon}
-                  </div>
-                </div>
+                      {/* Floating Icon Badge */}
+                      <motion.div
+                        whileHover={{ scale: 1.1, rotate: 10 }}
+                        className="absolute bottom-6 right-6 p-4 rounded-2xl bg-white/90 dark:bg-slate-800/90 backdrop-blur shadow-xl border border-white/20 text-primary text-3xl"
+                      >
+                        {service.icon}
+                      </motion.div>
+                    </div>
+                  </motion.div>
+                </TiltCard>
               </div>
 
-              {/* Text Content */}
-              <div className={`lg:col-span-7 ${service.isReversed ? 'lg:order-1' : ''}`}>
-                <h2 className="text-3xl font-bold mb-6 text-[#0a1432] dark:text-white flex items-center gap-4">
-                  <span className="w-8 h-1 bg-[#d4af37] rounded-full"></span>
+              {/* Text Context Section */}
+              <motion.div
+                initial={{ opacity: 0, x: index % 2 === 0 ? 50 : -50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+                className="flex-1 space-y-6"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="h-1 w-12 bg-primary rounded-full"></span>
+                  <span className="text-primary font-bold uppercase tracking-widest text-sm">Service {index + 1}</span>
+                </div>
+
+                <h3 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white leading-tight">
                   {service.title}
-                </h2>
-                <p className="text-gray-600 dark:text-gray-300 text-lg mb-8 leading-relaxed">
+                </h3>
+
+                <p className="text-lg text-slate-600 dark:text-slate-400">
                   {service.description}
                 </p>
 
-                {/* Features List */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
                   {service.features.map((feature, i) => (
-                    <div key={i} className="flex items-center gap-3 text-gray-700 dark:text-gray-400">
-                      <LuCheck className="text-[#d4af37] text-xl" />
-                      <span className="text-sm md:text-base font-medium">{feature}</span>
-                    </div>
+                    <motion.div
+                      key={i}
+                      whileHover={{ x: 5 }}
+                      className="flex items-center gap-3 text-slate-700 dark:text-slate-300"
+                    >
+                      <div className="size-6 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                        <LuCheck className="size-4" />
+                      </div>
+                      <span className="font-medium">{feature}</span>
+                    </motion.div>
                   ))}
                 </div>
 
-                {/* Action Button */}
-                <a
-                  href="#contact-form"
-                  className="inline-block text-center bg-[#d4af37] text-white font-bold py-3 px-8 rounded-lg hover:bg-[#c4a02d] transition-all transform hover:-translate-y-1 shadow-md uppercase tracking-wider text-sm cursor-pointer"
-                >
-                  {service.buttonText}
-                </a>
-              </div>
-
+                <div className="pt-8">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="px-8 py-4 bg-primary text-white font-bold rounded-2xl shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/40 transition-all uppercase tracking-wider text-sm"
+                  >
+                    Request Project
+                  </motion.button>
+                </div>
+              </motion.div>
             </div>
-          </section>
-        ))}
-      </main>
+          ))}
+        </div>
+      </div>
     </section>
   );
 };

@@ -97,11 +97,11 @@
 @keyframes float {
   0%,
   100% {
-    transform: translateY(0px) rotate(var(--tw-rotate, 0deg));
+    translate: 0 0px;
   }
 
   50% {
-    transform: translateY(-20px) rotate(var(--tw-rotate, 0deg));
+    translate: 0 -20px;
   }
 }
 

@@ -259,13 +259,11 @@ const Contact = () => {
 
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
-                <div className="text-center mb-20">
-                    <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-6">
-                        Contact <span className="text-primary italic">The Uni Gang</span>
-                    </h2>
-                    <p className="text-slate-500 dark:text-slate-400 text-lg max-w-2xl mx-auto font-light leading-relaxed">
-                        Ready to elevate your digital presence? Reach out to our expert team for custom web solutions, SEO growth, or leave your valuable feedback below.
-                    </p>
+                <div className="space-y-4">
+                    <h1 className="text-5xl md:text-6xl font-extrabold tracking-tighter text-on-surface leading-[1.1] font-plus-jakarta">
+                        Contact <span className="text-primary">The Uni Gang</span>
+                    </h1>
+
                 </div>
 
                 {/* Main Content: Info & Pro Form */}
