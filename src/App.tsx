@@ -16,6 +16,7 @@ import PostAdPage from './pages/PostAdPage';
 import ContactUsPage from './pages/ContactUsPage';
 import AnnexDetailsPage from './pages/AnnexDetailsPage';
 import ProfilePage from './pages/ProfilePage';
+import WhatsAppButton from './components/whatsAppButton/WhatsAppButton';
 import SEO from './components/SEO';
 import './App.css';
 
@@ -57,6 +58,8 @@ function App() {
           <Route path="/annex/:id" element={<AnnexDetailsPage />} />
           <Route path="/profile" element={<ProfilePage />} />
         </Routes>
+
+        <WhatsAppButton />
       </Layout>
     </Router>
   );

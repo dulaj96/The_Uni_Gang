@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { LuSend, LuPhone, LuMail, LuMapPin, LuMessageSquareQuote, LuCircle, LuMonitor, LuSearch, LuCalendarDays, LuUsers, LuStar, LuChevronDown, LuUser } from 'react-icons/lu';
+import { LuSend, LuPhone, LuMail, LuMapPin, LuMessageSquareQuote, LuMonitor, LuSearch, LuCalendarDays, LuUsers, LuStar, LuChevronDown, LuUser } from 'react-icons/lu';
 
 interface Feedback {
     id: number;
@@ -69,21 +69,21 @@ const stats = [
 ];
 
 // Dot Grid decorator (from testimonial card design)
-const DotGrid = ({ style }: { style: React.CSSProperties }) => (
-    <div className="absolute pointer-events-none" style={style}>
-        {[0, 1, 2].map((row) => (
-            <div key={row} className="flex gap-1.5 mb-1.5">
-                {[0, 1, 2].map((col) => (
-                    <div
-                        key={col}
-                        className="rounded-full"
-                        style={{ width: "5px", height: "5px", background: "#E91E63", opacity: 0.4 }}
-                    />
-                ))}
-            </div>
-        ))}
-    </div>
-);
+// const DotGrid = ({ style }: { style: React.CSSProperties }) => (
+//     <div className="absolute pointer-events-none" style={style}>
+//         {[0, 1, 2].map((row) => (
+//             <div key={row} className="flex gap-1.5 mb-1.5">
+//                 {[0, 1, 2].map((col) => (
+//                     <div
+//                         key={col}
+//                         className="rounded-full"
+//                         style={{ width: "5px", height: "5px", background: "#E91E63", opacity: 0.4 }}
+//                     />
+//                 ))}
+//             </div>
+//         ))}
+//     </div>
+// );
 
 // Individual Testimonial Card (speech bubble design from template)
 const TestimonialCard = ({ feedback }: { feedback: Feedback }) => {

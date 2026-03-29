@@ -18,21 +18,35 @@ const Hero = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-5 pt-6 animate-fade-up [animation-delay:200ms]">
-            <button className="group relative flex items-center justify-center gap-4 px-8 py-4 bg-gradient-to-b from-white/40 to-white/10 backdrop-blur-[32px] border border-white/50 border-t-white/80 border-l-white/70 rounded-[1.5rem] shadow-[inset_0_1px_1px_rgba(255,255,255,0.8),_inset_0_0_20px_rgba(255,255,255,0.2),_0_12px_40px_rgba(0,0,0,0.08)] hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.9),_inset_0_0_20px_rgba(255,255,255,0.3),_0_16px_40px_rgba(220,38,38,0.2)] transition-all duration-300 hover:-translate-y-1 hover:scale-[1.03] active:scale-95 overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-r from-brand-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 mix-blend-overlay"></div>
-              <FaApple className="text-slate-800 text-[2rem] relative z-10 transition-transform group-hover:scale-105 duration-300 drop-shadow-sm" />
-              <div className="text-left relative z-10">
-                <p className="text-[10px] uppercase tracking-[0.2em] text-slate-600 font-bold leading-none mb-1">Download on</p>
-                <p className="text-xl font-black tracking-tight text-slate-900 leading-none">App Store</p>
+            <button className="group relative flex items-center gap-3 px-6 py-3.5 rounded-2xl border border-white/60 transition-all duration-300 hover:-translate-y-0.5 active:scale-95"
+              style={{
+                background: 'rgba(255,255,255,0.45)',
+                backdropFilter: 'blur(20px) saturate(160%)',
+                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.9), 0 4px 20px rgba(0,0,0,0.06)',
+              }}
+              onMouseEnter={e => e.currentTarget.style.boxShadow = 'inset 0 1px 0 rgba(255,255,255,0.9), 0 8px 28px rgba(0,0,0,0.1)'}
+              onMouseLeave={e => e.currentTarget.style.boxShadow = 'inset 0 1px 0 rgba(255,255,255,0.9), 0 4px 20px rgba(0,0,0,0.06)'}
+            >
+              <FaApple className="text-slate-800 text-2xl flex-shrink-0" />
+              <div className="text-left">
+                <p className="text-[9px] uppercase tracking-[0.18em] text-slate-500 font-bold leading-none mb-0.5">Download on</p>
+                <p className="text-base font-black tracking-tight text-slate-900 leading-none">App Store</p>
               </div>
             </button>
 
-            <button className="group relative flex items-center justify-center gap-4 px-8 py-4 bg-gradient-to-b from-white/40 to-white/10 backdrop-blur-[32px] border border-white/50 border-t-white/80 border-l-white/70 rounded-[1.5rem] shadow-[inset_0_1px_1px_rgba(255,255,255,0.8),_inset_0_0_20px_rgba(255,255,255,0.2),_0_12px_40px_rgba(0,0,0,0.08)] hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.9),_inset_0_0_20px_rgba(255,255,255,0.3),_0_16px_40px_rgba(79,70,229,0.2)] transition-all duration-300 hover:-translate-y-1 hover:scale-[1.03] active:scale-95 overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-l from-indigo-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 mix-blend-overlay"></div>
-              <FaGooglePlay className="text-slate-800 text-[1.8rem] relative z-10 transition-transform group-hover:scale-105 duration-300 drop-shadow-sm" />
-              <div className="text-left relative z-10">
-                <p className="text-[10px] uppercase tracking-[0.2em] text-slate-600 font-bold leading-none mb-1">Get it on</p>
-                <p className="text-xl font-black tracking-tight text-slate-900 leading-none">Google Play</p>
+            <button className="group relative flex items-center gap-3 px-6 py-3.5 rounded-2xl border border-white/60 transition-all duration-300 hover:-translate-y-0.5 active:scale-95"
+              style={{
+                background: 'rgba(255,255,255,0.45)',
+                backdropFilter: 'blur(20px) saturate(160%)',
+                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.9), 0 4px 20px rgba(0,0,0,0.06)',
+              }}
+              onMouseEnter={e => e.currentTarget.style.boxShadow = 'inset 0 1px 0 rgba(255,255,255,0.9), 0 8px 28px rgba(0,0,0,0.1)'}
+              onMouseLeave={e => e.currentTarget.style.boxShadow = 'inset 0 1px 0 rgba(255,255,255,0.9), 0 4px 20px rgba(0,0,0,0.06)'}
+            >
+              <FaGooglePlay className="text-slate-800 text-[1.4rem] flex-shrink-0" />
+              <div className="text-left">
+                <p className="text-[9px] uppercase tracking-[0.18em] text-slate-500 font-bold leading-none mb-0.5">Get it on</p>
+                <p className="text-base font-black tracking-tight text-slate-900 leading-none">Google Play</p>
               </div>
             </button>
           </div>
