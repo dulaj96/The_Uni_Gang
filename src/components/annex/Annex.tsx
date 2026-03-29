@@ -50,7 +50,7 @@ const listings = [
 
 const Annex = () => {
   return (
-    <div className="relative z-10 font-sans pb-20 md:pb-0">
+    <div className="relative z-10 font-sans pb-8 md:pb-0">
       <div className="container mx-auto px-4 md:px-6 lg:px-12 max-w-7xl pt-12 pb-24">
         {/* Hero Header */}
         <div className="mb-20 flex flex-col md:flex-row md:items-center justify-between gap-10 animate-fade-up">

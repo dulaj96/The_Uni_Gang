@@ -11,8 +11,8 @@ import Events from './components/events/Events';
 import Contact from './components/contact/Contact';
 
 // Pages Imports
-import FindAccommodationPage from './pages/FindAccommodationPage';
-import PostAdPage from './pages/PostAdPage';
+// import FindAccommodationPage from './pages/FindAccommodationPage';
+// import PostAdPage from './pages/PostAdPage';
 import ContactUsPage from './pages/ContactUsPage';
 import AnnexDetailsPage from './pages/AnnexDetailsPage';
 import ProfilePage from './pages/ProfilePage';
@@ -38,7 +38,7 @@ function App() {
 
                 <Hero />
 
-                <div className="w-full space-y-16 lg:space-y-24">
+                <div className="w-full space-y-8 lg:space-y-12">
                   <div id="annex"><FeaturedAnnexes /></div>
 
                   {/* Future Placeholders handling Navigation Anchors */}
@@ -52,8 +52,8 @@ function App() {
           />
 
           {/* Single Pages */}
-          <Route path="/find-accommodation" element={<FindAccommodationPage />} />
-          <Route path="/post-ad" element={<PostAdPage />} />
+          {/* <Route path="/find-accommodation" element={<FindAccommodationPage />} />
+          <Route path="/post-ad" element={<PostAdPage />} /> */}
           <Route path="/contact-us" element={<ContactUsPage />} />
           <Route path="/annex/:id" element={<AnnexDetailsPage />} />
           <Route path="/profile" element={<ProfilePage />} />
