@@ -267,7 +267,7 @@ const Events = () => {
             </div>
 
             {/* Premium Stats Section */}
-            <div className="max-w-7xl mx-auto px-4 md:px-8 mt-24">
+            <div id="stats" className="max-w-7xl mx-auto px-4 md:px-8 mt-24">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     {stats.map((stat, i) => (
                         <motion.div

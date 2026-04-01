@@ -6,7 +6,8 @@ import {
   LuVideo,
   LuSearch,
   LuCheck,
-  LuPalette
+  LuPalette,
+  LuCamera
 } from 'react-icons/lu';
 
 interface ServiceItem {
@@ -64,6 +65,15 @@ const servicesData: ServiceItem[] = [
     icon: <LuVideo />,
     features: ['Professional Video Editing', 'Motion Graphics', 'Cinematic Shooting', 'Social Media Shorts'],
     gradient: 'from-rose-500/20 to-red-500/20'
+  },
+  {
+    id: 6,
+    title: 'Photography & Event Coverage',
+    image: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=800&auto=format&fit=crop',
+    description: 'Capturing your most precious campus moments with a cinematic touch. From batch photos to grand convocations, we preserve your memories forever.',
+    icon: <LuCamera />,
+    features: ['Batch Photo Shoots', 'Convocation Photography', 'Campus Event Coverage', 'Model & Portrait Sessions'],
+    gradient: 'from-blue-600/20 to-cyan-500/20'
   }
 ];
 
