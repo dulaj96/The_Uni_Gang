@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { LuHeart, LuMapPin, LuBuilding2, LuSearch, LuMail, LuUser } from 'react-icons/lu';
+import { LuHeart, LuMapPin, LuSearch, LuMail, LuUser } from 'react-icons/lu';
 import TiltCard from '../ui/TiltCard.tsx';
 import PremiumTraceButton from '../ui/PremiumTraceButton';
 
