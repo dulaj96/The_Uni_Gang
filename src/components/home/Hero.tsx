@@ -83,8 +83,6 @@ const Hero = () => {
             <LuGlobe className="text-blue-400 text-2xl" />
           </div>
 
-          {/* Ambient Glows */}
-          <div className="absolute -z-10 w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] bg-blue-400/20 blur-[120px] rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
         </div>
       </div>
 

@@ -142,7 +142,7 @@ const Events = () => {
     }, [isHovered]);
 
     return (
-        <section id="events" className="relative pt-32 pb-40 bg-[#f8fafc] dark:bg-slate-950 overflow-hidden">
+        <section id="events" className="relative pt-12 pb-10 bg-slate-150 overflow-hidden">
             {/* Antigravity Floating Background Symbols */}
             <FloatingSymbol symbol="✧" index={0} />
             <FloatingSymbol symbol="✦" index={1} />

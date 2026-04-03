@@ -53,12 +53,8 @@ const listings = [
 
 const Annex = () => {
   return (
-    <div className="relative z-10 font-sans pb-8 md:pb-0 overflow-hidden">
-      {/* Background Decorative Glow */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[150px] pointer-events-none -z-10"></div>
-      <div className="absolute bottom-20 left-0 w-[400px] h-[400px] bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none -z-10"></div>
-
-      <div className="container mx-auto px-4 md:px-6 lg:px-12 max-w-7xl pt-12 pb-24">
+    <div className="relative z-10 font-sans pb-8 md:pb-0">
+      <div className="container mx-auto px-4 md:px-6 lg:px-10 max-w-7xl pt-12 pb-10">
         {/* Header Section */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}

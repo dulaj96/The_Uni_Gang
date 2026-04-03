@@ -133,7 +133,7 @@ const Contact = () => {
     const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
 
     return (
-        <section id="contact" className="relative pt-24 pb-20 px-4 md:px-8 bg-[#f7f9fb] dark:bg-slate-950 font-sans overflow-hidden">
+        <section id="contact" className="relative pt-12 pb-10 bg-slate-150 font-sans overflow-hidden">
             {/* Ambient background decorations */}
             <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2 opacity-50"></div>
             <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-secondary-fixed/10 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/2 opacity-50"></div>
@@ -150,7 +150,7 @@ const Contact = () => {
                     </h1>
                 </motion.div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-stretch mb-32">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-stretch mb-32 px-4 md:px-8">
                     {/* Contact Info Card */}
                     <motion.div
                         initial={{ opacity: 0, x: -50 }}
@@ -274,10 +274,10 @@ const Contact = () => {
                                             <>
                                                 <div className="flex items-center gap-6 p-6 rounded-2xl bg-white/20 dark:bg-slate-800/40 border border-white/40 dark:border-slate-700/50">
                                                     <label className="relative cursor-pointer group">
-                                                        <input 
-                                                            type="file" 
-                                                            accept="image/*" 
-                                                            className="sr-only" 
+                                                        <input
+                                                            type="file"
+                                                            accept="image/*"
+                                                            className="sr-only"
                                                             onChange={(e) => {
                                                                 if (e.target.files && e.target.files[0]) {
                                                                     setAvatarPreview(URL.createObjectURL(e.target.files[0]));
@@ -333,7 +333,7 @@ const Contact = () => {
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    className="mb-8 text-center"
+                    className="mb-5 text-center"
                 >
                     <h3 className="text-3xl md:text-5xl font-black tracking-tight text-slate-900 dark:text-white mb-4">
                         What Our <span className="text-[#E91E63] italic">Clients Say</span>
@@ -341,7 +341,7 @@ const Contact = () => {
                     <div className="w-24 h-1 bg-gradient-to-r from-transparent via-[#E91E63] to-transparent mx-auto"></div>
                 </motion.div>
 
-                <div className="relative overflow-hidden py-24">
+                <div className="relative overflow-hidden pt-15 pb-30">
                     <div className="absolute inset-y-0 left-0 w-40 bg-gradient-to-r from-[#f7f9fb] dark:from-slate-950 to-transparent z-10 pointer-events-none"></div>
                     <div className="absolute inset-y-0 right-0 w-40 bg-gradient-to-l from-[#f7f9fb] dark:from-slate-950 to-transparent z-10 pointer-events-none"></div>
 
@@ -371,7 +371,7 @@ const Contact = () => {
                             transition={{ duration: 0.5, delay: i * 0.1 }}
                         >
                             <TiltCard>
-                                <div className="premium-glass p-12 rounded-[3.5rem] text-center group transition-all duration-500 hover:shadow-2xl flex flex-col items-center">
+                                <div className="premium-glass p-10 rounded-[3.5rem] text-center group transition-all duration-500 hover:shadow-2xl flex flex-col items-center">
                                     <motion.div
                                         whileHover={{ rotate: 360 }}
                                         transition={{ duration: 1 }}

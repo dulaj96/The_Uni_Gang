@@ -120,7 +120,7 @@ const TiltCard = ({ children, className }: { children: React.ReactNode, classNam
 
 const Services = () => {
   return (
-    <section id="services" className="relative py-24 bg-white dark:bg-slate-950 font-sans overflow-hidden">
+    <section id="services" className="relative pt-12 pb-10 bg-slate-150 font-sans overflow-hidden">
       {/* Background Decorative Elements */}
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none opacity-20 dark:opacity-40">
         <div className="absolute top-[10%] left-[5%] w-72 h-72 bg-primary/20 blur-[120px] rounded-full animate-pulse"></div>

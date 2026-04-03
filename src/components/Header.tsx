@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import logo from '../assets/logoImage.jpg';
 
 
-import { LuMenu, LuX, LuUser, LuLogOut, LuLayoutDashboard, LuSun, LuMoon, LuBell, LuDownload } from 'react-icons/lu';
+import { LuMenu, LuX, LuUser, LuLogOut, LuLayoutDashboard, LuSun, LuMoon, LuBell } from 'react-icons/lu';
 import { useTheme } from '../context/ThemeContext';
 import { dispatchAuthUpdate, listenToAuthUpdate } from '../utils/authEvents';
 import toast from 'react-hot-toast';
@@ -235,9 +235,9 @@ const Header = () => {
                     <LuUser className="w-5 h-5" />
                   </div>
                 )}
-                <div className="text-left hidden lg:block">
+                {/* <div className="text-left hidden lg:block">
                   <p className="text-sm font-semibold text-slate-800 leading-tight">{userName}</p>
-                </div>
+                </div> */}
               </button>
 
               {/* Dropdown */}
@@ -282,12 +282,12 @@ const Header = () => {
           )}
 
           {/* Download App Button */}
-          <Link
+          {/* <Link
             to="/download"
             className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white text-sm font-semibold rounded-full hover:bg-slate-800 transition-all shadow-sm hover:shadow-md"
           >
             Download App <LuDownload className="w-4 h-4" />
-          </Link>
+          </Link> */}
         </div>
 
         {/* Mobile Menu Toggle */}
