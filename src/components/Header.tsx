@@ -154,7 +154,6 @@ const Header = () => {
     { name: 'Annex', path: '/#annex', id: 'annex' },
     { name: 'Services', path: '/#services', id: 'services' },
     { name: 'Events', path: '/#events', id: 'events' },
-    { name: 'Stats', path: '/#stats', id: 'stats' },
     { name: 'Contact', path: '/#contact', id: 'contact' },
   ];
 

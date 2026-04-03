@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
-import { LuCirclePlus, LuHeart, LuMapPin, LuBuilding2, LuSearch, LuMail, LuUser } from 'react-icons/lu';
+import { LuHeart, LuMapPin, LuBuilding2, LuSearch, LuMail, LuUser } from 'react-icons/lu';
 import TiltCard from '../ui/TiltCard.tsx';
+import PremiumTraceButton from '../ui/PremiumTraceButton';
 
 const listings = [
   {
@@ -8,7 +9,7 @@ const listings = [
     title: 'Modern Studio',
     badge: 'Verified',
     location: 'Cambridge University Area',
-    price: '$850',
+    price: '8500',
     image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCh951Jlg7MYbwvFzfJf9upLeDfG_7Zn2pxRhQRkUFXZLsgg6fe-19GvCcDuQ89oo_VW3op_CpB0gYzDr2p7o-QTKru_nxRDTo1q03bXgTtldFoL6KbziUtCTZPYWKYty3d3lWUdSdiYjq1pVqZ53hy_TLud2KjoiQZbe_wjq8DVVrwc4bdY1N6r5Cie8o_HjM1CCRbe0MwQVZjfYc1xoctsW_-XHTilHavIHcUD5NS1QUr0cbQ8icxRdq1m70xy85GevMZ11OQOgYE',
     delay: 0
   },
@@ -17,7 +18,7 @@ const listings = [
     title: 'Luxury Penthouse',
     badge: 'New',
     location: 'Oxford Campus Perimeter',
-    price: '$1,200',
+    price: '12000',
     image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBiIOA7KFhadnrPIQmskl2smwqS_ThYh_Zqw416OFDYG-7QYmMrxJ7A4xuWzfJAJhi_ObDtF7uyYmI-jdCUZhpLlPrxnTXewrOOJ2mO3yxs_Z7AGVsNrTham7WPNUejfKkskU94jDOe2L37ocgMYinRXlnMxutfTgCzmFiBkLFl-ygpKJ5-8sE56-Zil7_isB0Q9QPZ_mg67lm2rWy0t3jFeexVZFpEu-dieR9TGdS8Fhep-GBOa29njPEv_Vv_iYvferTCSbWdDspa',
     delay: 0.1
   },
@@ -26,7 +27,7 @@ const listings = [
     title: 'Cozy Guest Wing',
     badge: 'Popular',
     location: 'LSE Central District',
-    price: '$650',
+    price: '6500',
     image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB37Gaa4eoeEvPdFKFh_GkOhKKM7UohB1P3fOUlxuTmrLPvZvjueRwYcTc0nm0Vt13tWwAFMcMJKq6CduU-2uHwhynldc-ivj9y94oN4AyVKAhHBq3zgrMbr1SatRyK9bJGPlCgzcUBM0UjdtM9-OmyfUSDgVUHKuFIQv2nmxMVBfsRAGKFuw4TDL59_HhO3PpK-7rSIojSLhmOzl36Jpow-kYfdObigOtCSpv_0HRTshjDjzbWxxesPoXvABqqXB7LLMGWuVeVOtLN',
     delay: 0.2
   },
@@ -35,7 +36,7 @@ const listings = [
     title: 'The Nordic Suite',
     badge: 'Premium',
     location: 'UCL Bloomsbury',
-    price: '$975',
+    price: '9000',
     image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC3MJ-NzKv7_3gb-d37tcATpL8bMJDBhpfcJlbBUXKnW--J60iaFFJOv5-kPqswcrXhSHF9VppUCv-y1rWfeN_M8pa4C5xnP2oEEYqDq3jc7na52NZ0YmUefERnqS1TTeGebaQyfRGNihD9iLrUkMynV0OiXsb7Djp5DaNhanTdaLMBCLuOYLbNwtm08KNQ2QVAIYzXZAJURZ-WJNPRHm0rxBJq1Ve0p86cBpKLm6-DDEd8xCU2jJjopIVC15YHL_1sXrXWsAlh9tjl',
     delay: 0.3
   },
@@ -44,7 +45,7 @@ const listings = [
     title: 'Creative Loft',
     badge: 'Artist Friendly',
     location: 'Central Saint Martins',
-    price: '$1,100',
+    price: '11000',
     image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBcwCaOqu16b-uvO7GErYZ2kBxrzEF14kSgnKyOvVrj8N7VIvFEMGMjtFQ4FrZbl0bZamoRi3kEw3zaDjV2QrsBRdpP7C2BbhEHXTlWJlWX2Ph0CM4zh1Vlng3nbeXQPDe85y1UW7hOCYJNG4-h_FAdbXa3sBcsPqeC5cMkzTBxfFzZM4rlSX_mDbZzLNnfPmawbweVRmOMRf3-kbhIW_98ZPJLVo_C4pDgddnBLr2O2BEz-kUMwQkFsXsZiyFIICuAypgcoBcUsHiB',
     delay: 0.4
   }
@@ -74,34 +75,49 @@ const Annex = () => {
               Premium student accommodations curated for excellence. Discover annexes near your university that feel like home.
             </p>
           </div>
-          {/* Primary Action */}
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="group flex items-center justify-center gap-3 bg-blue-800 text-white px-10 py-5 rounded-2xl font-bold text-lg shadow-[0_20px_40px_rgba(30,64,175,0.3)] transition-all shrink-0 w-full md:w-auto"
-          >
-            <LuCirclePlus className="text-2xl" />
-            Post an Annex Ad
-          </motion.button>
         </motion.div>
 
-        {/* Filters */}
+        {/* Filters & Actions Section */}
         <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          whileInView={{ opacity: 1, x: 0 }}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="flex flex-wrap gap-4 mb-16"
+          className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-16"
         >
-          {['All Listings', 'Near Campus', 'Budget Friendly', 'Premium Suites'].map((filter, i) => (
+          {/* Left Side: Filter */}
+          <div className="flex flex-wrap gap-4">
             <motion.span
-              key={filter}
               whileHover={{ scale: 1.05 }}
-              className={`${i === 0 ? 'bg-blue-800 text-white shadow-md shadow-blue-800/20' : 'bg-white/60 dark:bg-slate-800/60 text-slate-600 dark:text-slate-300 border border-white dark:border-slate-700/50'} px-8 py-3 rounded-full text-sm font-semibold cursor-pointer backdrop-blur-md shadow-sm transition-all`}
+              className="bg-blue-800 text-white shadow-md shadow-blue-800/20 px-8 py-3 rounded-full text-sm font-semibold cursor-pointer backdrop-blur-md transition-all"
             >
-              {filter}
+              Latest Annexes
             </motion.span>
-          ))}
+          </div>
+
+          {/* Right Side Actions: PREMIUM TRACE BUTTONS */}
+          <div className="flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto">
+            <PremiumTraceButton
+              index={10}
+              icon={<span className="material-symbols-outlined">east</span>}
+              onClick={() => {
+                const el = document.getElementById('annex');
+                el?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="w-full sm:w-auto"
+            >
+              View All Ads
+            </PremiumTraceButton>
+
+            <PremiumTraceButton
+              index={11}
+              icon={<span className="material-symbols-outlined">auto_awesome</span>}
+              onClick={() => window.location.href = '/post-ad'}
+              className="w-full sm:w-auto"
+            >
+              Post an Annex Ad
+            </PremiumTraceButton>
+          </div>
         </motion.div>
 
         {/* Bento Grid of Annex Listings */}
@@ -156,14 +172,14 @@ const Annex = () => {
                     <div className="mt-auto flex items-center justify-between">
                       <div className="flex flex-col">
                         <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400 mb-1">Monthly Fee</span>
-                        <span className="text-3xl font-extrabold text-blue-800 dark:text-blue-400">
-                          {listing.price}<span className="text-sm font-medium text-slate-400 ml-1">/mo</span>
+                        <span className="text-2xl font-extrabold text-blue-800 dark:text-blue-400">
+                          <span>Rs.</span>{listing.price}<span className="text-sm font-medium text-slate-400 ml-1">/mo</span>
                         </span>
                       </div>
                       <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="bg-white/80 dark:bg-slate-800/80 hover:bg-blue-800 hover:text-white dark:hover:bg-blue-800 text-blue-800 dark:text-blue-300 border border-blue-100 dark:border-slate-700 px-6 py-3 rounded-2xl font-bold text-sm transition-all shadow-sm"
+                        className="text-sm bg-white/80 dark:bg-slate-800/80 hover:bg-blue-800 hover:text-white dark:hover:bg-blue-800 text-blue-800 dark:text-blue-300 border border-blue-100 dark:border-slate-700 px-6 py-3 rounded-2xl font-bold text-sm transition-all shadow-sm"
                       >
                         View Details
                       </motion.button>
@@ -174,34 +190,99 @@ const Annex = () => {
             </motion.div>
           ))}
 
-          {/* Promo CTA Card */}
+          {/* Promo CTA Card - Redesigned with Image & Glassmorphism */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            whileInView={{ opacity: 1, scale: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            <TiltCard className="h-full group">
-              <div className="relative h-full rounded-[2.5rem] overflow-hidden bg-blue-800 p-10 flex flex-col justify-center items-center text-center text-white shadow-2xl">
-                {/* Animated Shine */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out"></div>
+            <TiltCard className="h-full group overflow-hidden rounded-[2.5rem] shadow-2xl relative">
+              {/* Background Image with Scaling Effect */}
+              <motion.div
+                className="absolute inset-0 z-0"
+                whileHover={{ scale: 1.1 }}
+                transition={{ duration: 1.5, ease: "easeOut" }}
+              >
+                <img
+                  src="/images/property_listing_cta.png"
+                  alt="Property Listing"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-blue-900/60 backdrop-blur-[2px] group-hover:bg-blue-900/40 transition-colors duration-700"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-blue-950 via-blue-900/20 to-transparent"></div>
+              </motion.div>
 
+              {/* Dynamic Shine Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out z-10"></div>
+
+              {/* Content Container with Glassmorphism */}
+              <div className="relative z-20 h-full p-10 flex flex-col justify-center items-center text-center text-white">
                 <motion.div
-                  animate={{ scale: [1, 1.1, 1], rotate: [0, 5, -5, 0] }}
-                  transition={{ duration: 6, repeat: Infinity }}
-                  className="w-24 h-24 bg-white/10 rounded-3xl flex items-center justify-center mb-8 backdrop-blur-md border border-white/20"
+                  animate={{
+                    y: [0, -10, 0],
+                    rotate: [0, 2, -2, 0],
+                    scale: [1, 1.05, 1]
+                  }}
+                  transition={{
+                    duration: 5,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                  className="w-20 h-20 bg-white/10 rounded-2xl flex items-center justify-center mb-8 backdrop-blur-xl border border-white/30 shadow-2xl"
                 >
-                  <LuBuilding2 className="text-5xl opacity-90 text-white" />
+                  <span className="material-symbols-outlined text-5xl opacity-90 text-white">add_business</span>
                 </motion.div>
-                <h3 className="text-3xl font-bold mb-5 leading-tight">Listing your own property?</h3>
-                <p className="text-blue-100/90 mb-10 text-lg font-light leading-relaxed">Reach thousands of students searching for their next home away from home.</p>
-                <motion.button
-                  whileHover={{ scale: 1.05, boxShadow: "0 0 20px rgba(255,255,255,0.2)" }}
-                  whileTap={{ scale: 0.95 }}
-                  className="bg-white text-blue-800 px-10 py-4 rounded-2xl font-bold shadow-xl flex items-center gap-2"
+
+                <motion.h3
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="text-3xl md:text-4xl font-extrabold mb-5 leading-tight tracking-tight"
                 >
-                  Get Started Free
+                  Listing your <br /> <span className="text-blue-300">own property?</span>
+                </motion.h3>
+
+                <motion.p
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                  className="text-blue-50/90 mb-10 text-lg font-light leading-relaxed max-w-[280px]"
+                >
+                  Reach thousands of students searching for their next home away from home.
+                </motion.p>
+
+                <motion.button
+                  whileHover={{
+                    scale: 1.05,
+                    boxShadow: "0 0 30px rgba(255,255,255,0.3)",
+                    backgroundColor: "#f8fafc"
+                  }}
+                  whileTap={{ scale: 0.95 }}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.5 }}
+                  className="bg-white text-blue-900 px-10 py-4 rounded-2xl font-bold shadow-2xl flex items-center gap-3 group/btn hover:text-blue-800 transition-all"
+                >
+                  <span>Get Started Free</span>
+                  <motion.span
+                    animate={{ x: [0, 5, 0] }}
+                    transition={{ repeat: Infinity, duration: 1.5 }}
+                  >
+                    <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                  </motion.span>
                 </motion.button>
+
+                {/* Bottom Badge for urgency/trust */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  transition={{ delay: 0.7 }}
+                  className="mt-6 flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-bold text-blue-200/60"
+                >
+                  <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
+                  Join 500+ Local Landlords
+                </motion.div>
               </div>
             </TiltCard>
           </motion.div>

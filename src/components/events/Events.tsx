@@ -177,10 +177,72 @@ const Events = () => {
                                 key={label}
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
-                                className="group relative flex items-center gap-3 px-8 py-4 premium-glass rounded-2xl transition-all shadow-lg shadow-black/5 hover:bg-white/30 dark:hover:bg-slate-800/30"
+                                // Text color එකත් ලා නිල් පාටට (Sky/Cyan) match වෙන්න වෙනස් කළා
+                                className="group relative flex items-center gap-3 px-8 py-4 premium-glass rounded-2xl transition-all shadow-lg shadow-black/5 hover:bg-white/30 dark:hover:bg-slate-800/30 overflow-hidden text-sky-900 dark:text-sky-300"
                             >
-                                <span className="text-primary font-bold tracking-tight uppercase text-sm tracking-widest">{label}</span>
-                                <span className="material-symbols-outlined text-primary font-bold text-xl group-hover:translate-x-1 transition-transform">
+
+                                {/* 🌀 Glowing Electric Blue Gradient Trace Effect 👇 */}
+                                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                                    <svg className="w-full h-full">
+                                        <defs>
+                                            {/* දිලිසෙන ලා නිල් පාට gradient එක */}
+                                            <linearGradient id={`blue-gradient-${i}`} x1="0%" y1="0%" x2="100%" y2="100%">
+                                                <stop offset="0%" stopColor="#f0f9ff" />   {/* ඉතාම ලා නිල් (ප්‍රකාශ ගතිය වැඩි කරනවා) */}
+                                                <stop offset="50%" stopColor="#38bdf8" />  {/* ලා නිල් (Sky Blue) */}
+                                                <stop offset="100%" stopColor="#0ea5e9" /> {/* තද නිල් */}
+                                            </linearGradient>
+                                        </defs>
+
+                                        {/* 1. Outer Glow Layer (Lighted effect එක සඳහා - මේක ටිකක් වැඩියෙන් blur කළා) */}
+                                        <motion.rect
+                                            x="1"
+                                            y="1"
+                                            width="calc(100% - 2px)"
+                                            height="calc(100% - 2px)"
+                                            fill="none"
+                                            stroke={`url(#blue-gradient-${i})`}
+                                            strokeWidth="6"
+                                            rx="16"
+                                            strokeDasharray="400 600"
+                                            style={{ filter: 'blur(5px)', opacity: 0.8 }}
+                                            animate={{
+                                                strokeDashoffset: [0, -1000],
+                                            }}
+                                            transition={{
+                                                repeat: Infinity,
+                                                duration: 5,
+                                                ease: "linear",
+                                            }}
+                                        />
+
+                                        {/* 2. Sharp Inner Layer (පැහැදිලි line එක සඳහා) */}
+                                        <motion.rect
+                                            x="1"
+                                            y="1"
+                                            width="calc(100% - 2px)"
+                                            height="calc(100% - 2px)"
+                                            fill="none"
+                                            stroke={`url(#blue-gradient-${i})`}
+                                            strokeWidth="2.5"
+                                            rx="16"
+                                            strokeDasharray="400 600"
+                                            animate={{
+                                                strokeDashoffset: [0, -1000],
+                                            }}
+                                            transition={{
+                                                repeat: Infinity,
+                                                duration: 5,
+                                                ease: "linear",
+                                            }}
+                                        />
+                                    </svg>
+                                </div>
+
+                                {/* Button content */}
+                                <span className="font-bold tracking-tight uppercase text-sm tracking-widest relative z-10">
+                                    {label}
+                                </span>
+                                <span className="material-symbols-outlined font-bold text-xl group-hover:translate-x-1 transition-transform relative z-10">
                                     {i === 0 ? 'east' : 'auto_awesome'}
                                 </span>
                             </motion.button>
@@ -267,7 +329,7 @@ const Events = () => {
             </div>
 
             {/* Premium Stats Section */}
-            <div id="stats" className="max-w-7xl mx-auto px-4 md:px-8 mt-24">
+            <div className="max-w-7xl mx-auto px-4 md:px-8 mt-24">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     {stats.map((stat, i) => (
                         <motion.div

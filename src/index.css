@@ -110,6 +110,15 @@
   50% { box-shadow: 0 0 30px rgba(0, 63, 221, 0.5); }
 }
 
+@keyframes traceSpin {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: -480;
+  }
+}
+
 @keyframes marquee {
   0% { transform: translateX(0); }
   100% { transform: translateX(calc(-100% - 24px)); }
