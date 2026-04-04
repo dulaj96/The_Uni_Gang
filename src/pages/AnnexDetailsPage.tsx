@@ -82,7 +82,7 @@ const AnnexDetailsPage = () => {
               "https://lh3.googleusercontent.com/aida-public/AB6AXuAN8ADW9H0mJ0RF_aitbOBZrnt6SUNqYHtb7Xuw-iZTTbNRjG5m8yuWOQt4AEdfIxJIRECcxtR75BfjZq3q3FnHlBeWj5D6fC_gws4xzHtPA6oPyAXw_UBTTQ7BmfaVnRw2wMzGKoxAxllgaGbAKr0ji3l3sRkT16DvIGupqTtQL2rZuQ2IV3qJRjdlxFzIdX4TBIDpMJthHXB2n3iBOVNt3JBsobZM_0GFFQoDPZkUj-2B2uaIukWH5jV-W3Iiug59zBrFaQxBLfqw",
               "https://lh3.googleusercontent.com/aida-public/AB6AXuCKqRmOmTQdmXTuBy6ZOQ2v06oQHmTanJNCv4wusghymjCtax5AtDh5Fj9joWgm0Q1FaJeyDI-PLfJMFq767_-N73MAQ7s2AacBu2LVCr-0zphZRRPgVBJtXudBbu77pDkXjzI3vTAe-jNbp7hozO-_0iGgzzRbsnjNxXaxySLT_Y0sZJ_6xp-4SqHHUxnYpPSoqlzagIm7NnrIo4b79a6MvySGJjgaDmmDDUXYI_r0SgvmICScu-gzxxtGqSiYjgVXr3-Eg0BGKvwf"
             ].map((src, i) => (
-              <div key={i} className="relative min-w-full aspect-[4/3] rounded-[2rem] overflow-hidden snap-center shadow-md border border-white/20 dark:border-slate-700/50">
+              <div key={i} className="relative min-w-full aspect-[1/2] rounded-[2rem] overflow-hidden snap-center shadow-md border border-white/20 dark:border-slate-700/50">
                 <img className="w-full h-full object-cover" src={src} alt={`property view ${i + 1}`} />
                 {i === 0 && (
                   <div className="absolute top-4 left-4 flex gap-2">
