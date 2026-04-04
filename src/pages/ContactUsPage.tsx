@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { LuPhone, LuMail, LuSend, LuFacebook } from 'react-icons/lu';
 import { FaWhatsapp } from 'react-icons/fa6';
-import SEO from '../components/SEO';
+import SEO from '../components/layout/SEO';
 import toast from 'react-hot-toast';
 
 const ContactUsPage = () => {

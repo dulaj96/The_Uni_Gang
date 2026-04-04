@@ -1,22 +1,19 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import logo from '../assets/logoImage.jpg';
-
+import logo from '../../assets/logoImage.jpg'; // Adjusting path if needed, wait, original Header had '../assets/logoImage.jpg'. I'll use '../assets/logoImage.jpg'. Oh wait, `Layout.tsx` has `import Header from '../Header';`.
 
 import { LuMenu, LuX, LuUser, LuLogOut, LuLayoutDashboard, LuSun, LuMoon, LuBell } from 'react-icons/lu';
-import { useTheme } from '../context/ThemeContext';
-import { dispatchAuthUpdate, listenToAuthUpdate } from '../utils/authEvents';
+import { useTheme } from '../../context/ThemeContext'; // wait, Header.tsx might be in src/components/
+import { dispatchAuthUpdate, listenToAuthUpdate } from '../../utils/authEvents';
 import toast from 'react-hot-toast';
 
-const Header = () => {
+const SubHeader = () => {
   const { theme, toggleTheme } = useTheme();
   const location = useLocation();
-  // const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [activeSection, setActiveSection] = useState('home');
 
   // Auth State
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -34,65 +31,6 @@ const Header = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Intersection Observer for ScrollSpy
-  useEffect(() => {
-    const sectionIds = ['home', 'annex', 'services', 'events', 'stats', 'contact'];
-
-    const observerOptions = {
-      root: null,
-      rootMargin: '-20% 0px -60% 0px', // More balanced for better section detection
-      threshold: 0
-    };
-
-    const observerCallback = (entries: IntersectionObserverEntry[]) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          setActiveSection(entry.target.id);
-        }
-      });
-    };
-
-    const observer = new IntersectionObserver(observerCallback, observerOptions);
-
-    sectionIds.forEach((id) => {
-      const element = document.getElementById(id);
-      if (element) observer.observe(element);
-    });
-
-    return () => {
-      sectionIds.forEach((id) => {
-        const element = document.getElementById(id);
-        if (element) observer.unobserve(element);
-      });
-      observer.disconnect();
-    };
-  }, []);
-
-  // Smooth Scroll Handler
-  const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, path: string) => {
-    const hash = path.split('#')[1];
-    if (location.pathname === '/' && hash) {
-      e.preventDefault();
-      const element = document.getElementById(hash);
-      if (element) {
-        const offset = 90; // Slightly more offset for a cleaner top-padding look
-        const bodyRect = document.body.getBoundingClientRect().top;
-        const elementRect = element.getBoundingClientRect().top;
-        const elementPosition = elementRect - bodyRect;
-        const offsetPosition = elementPosition - offset;
-
-        window.scrollTo({
-          top: offsetPosition,
-          behavior: 'smooth'
-        });
-
-        setIsMobileMenuOpen(false);
-        // Update URL hash without jumping
-        window.history.pushState(null, '', `#${hash}`);
-      }
-    }
-  };
-
   // Check Login Status
   useEffect(() => {
     const checkLoginStatus = () => {
@@ -107,10 +45,7 @@ const Header = () => {
 
     checkLoginStatus();
 
-    // Listen for custom auth events (same tab)
     const cleanup = listenToAuthUpdate(checkLoginStatus);
-
-    // Also listen for storage events (cross tab)
     window.addEventListener('storage', checkLoginStatus);
 
     return () => {
@@ -149,14 +84,6 @@ const Header = () => {
     toast.success('Logged out successfully');
   };
 
-  const navLinks = [
-    { name: 'Home', path: '/#home', id: 'home' },
-    { name: 'Annex', path: '/#annex', id: 'annex' },
-    { name: 'Services', path: '/#services', id: 'services' },
-    { name: 'Events', path: '/#events', id: 'events' },
-    { name: 'Contact', path: '/#contact', id: 'contact' },
-  ];
-
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled
@@ -175,36 +102,6 @@ const Header = () => {
             The <span className="text-blue-600">Uni Gang</span>
           </span>
         </Link>
-
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-1 bg-slate-100/30 dark:bg-slate-800/30 backdrop-blur-md px-2 py-1.5 rounded-full border border-white/20 dark:border-slate-700/30 shadow-inner">
-          {navLinks.map((link) => {
-            const isActive = activeSection === link.id;
-
-            return (
-              <motion.a
-                key={link.id}
-                href={link.path}
-                onClick={(e) => scrollToSection(e, link.path)}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className={`relative px-5 py-2 rounded-full text-sm font-semibold transition-colors duration-300 ${isActive
-                  ? 'text-white'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400'
-                  }`}
-              >
-                {isActive && (
-                  <motion.div
-                    layoutId="activeSection"
-                    className="absolute inset-0 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-full shadow-lg shadow-blue-500/40 -z-10"
-                    transition={{ type: "spring", duration: 0.6 }}
-                  />
-                )}
-                {link.name}
-              </motion.a>
-            );
-          })}
-        </nav>
 
         {/* Desktop Profile / Auth / Actions */}
         <div className="hidden md:flex items-center gap-3" ref={dropdownRef}>
@@ -235,9 +132,6 @@ const Header = () => {
                     <LuUser className="w-5 h-5" />
                   </div>
                 )}
-                {/* <div className="text-left hidden lg:block">
-                  <p className="text-sm font-semibold text-slate-800 leading-tight">{userName}</p>
-                </div> */}
               </button>
 
               {/* Dropdown */}
@@ -280,14 +174,6 @@ const Header = () => {
               Sign In
             </Link>
           )}
-
-          {/* Download App Button */}
-          {/* <Link
-            to="/download"
-            className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white text-sm font-semibold rounded-full hover:bg-slate-800 transition-all shadow-sm hover:shadow-md"
-          >
-            Download App <LuDownload className="w-4 h-4" />
-          </Link> */}
         </div>
 
         {/* Mobile Menu Toggle */}
@@ -298,7 +184,6 @@ const Header = () => {
           {isMobileMenuOpen ? <LuX className="w-7 h-7" /> : <LuMenu className="w-7 h-7" />}
         </button>
 
-        {/* Mobile Navigation Overlay */}
         {/* Mobile Navigation Overlay */}
         <AnimatePresence>
           {isMobileMenuOpen && (
@@ -318,34 +203,7 @@ const Header = () => {
               </button>
 
               {/* Mobile Links */}
-              <div className="flex flex-col items-center space-y-6 w-full px-8">
-                {navLinks.map((link) => {
-                  const isActive = activeSection === link.id;
-                  return (
-                    <motion.a
-                      key={link.id}
-                      href={link.path}
-                      onClick={(e) => scrollToSection(e, link.path)}
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                      className={`relative text-2xl font-bold transition-all duration-300 ${isActive
-                        ? 'text-blue-600 dark:text-blue-400'
-                        : 'text-slate-800 dark:text-white'
-                        }`}
-                    >
-                      {isActive && (
-                        <motion.div
-                          layoutId="mobileActive"
-                          className="absolute -left-6 top-1/2 -translate-y-1/2 w-2 h-8 bg-blue-600 rounded-full"
-                        />
-                      )}
-                      {link.name}
-                    </motion.a>
-                  );
-                })}
-
-                <div className="w-24 h-1 bg-slate-100 dark:bg-slate-800 rounded-full my-4"></div>
-
+              <div className="flex flex-col items-center space-y-6 w-full px-8 mt-10">
                 {isLoggedIn ? (
                   <div className="flex flex-col items-center space-y-4 w-full">
                     <div className="flex items-center gap-3 bg-slate-50 dark:bg-slate-800 px-6 py-3 rounded-2xl w-full justify-center">
@@ -359,9 +217,9 @@ const Header = () => {
                         <p className="text-xs text-slate-500 dark:text-slate-400">Logged In</p>
                       </div>
                     </div>
-                    <Link to="/profile" onClick={() => setIsMobileMenuOpen(false)} className="w-full text-center py-3 text-slate-600 dark:text-slate-300 font-medium">Profile</Link>
-                    <Link to="/post-ad?tab=myAds" onClick={() => setIsMobileMenuOpen(false)} className="w-full text-center py-3 text-slate-600 dark:text-slate-300 font-medium">My Ads</Link>
-                    <button onClick={handleLogout} className="text-red-500 font-medium mt-4">Log Out</button>
+                    <Link to="/profile" onClick={() => setIsMobileMenuOpen(false)} className="w-full text-center py-3 text-slate-600 dark:text-slate-300 font-medium tracking-wide">Profile</Link>
+                    <Link to="/post-ad?tab=myAds" onClick={() => setIsMobileMenuOpen(false)} className="w-full text-center py-3 text-slate-600 dark:text-slate-300 font-medium tracking-wide">My Ads</Link>
+                    <button onClick={handleLogout} className="text-red-500 font-medium tracking-wide mt-4">Log Out</button>
                   </div>
                 ) : (
                   <Link
@@ -381,4 +239,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default SubHeader;

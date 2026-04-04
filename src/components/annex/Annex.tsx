@@ -2,6 +2,9 @@ import { motion } from 'framer-motion';
 import { LuHeart, LuMapPin, LuSearch, LuMail, LuUser } from 'react-icons/lu';
 import TiltCard from '../ui/TiltCard.tsx';
 import PremiumTraceButton from '../ui/PremiumTraceButton';
+import { useNavigate } from 'react-router-dom';
+import PageLoader from '../ui/PageLoader';
+import { useState } from 'react';
 
 const listings = [
   {
@@ -52,8 +55,24 @@ const listings = [
 ];
 
 const Annex = () => {
+  const navigate = useNavigate();
+  const [isNavigating, setIsNavigating] = useState(false);
+
+  const handleViewAllAds = () => {
+    setIsNavigating(true);
+    setTimeout(() => {
+      // Navigate to the AnnexList page and ensure scrolling to top
+      window.scrollTo(0, 0);
+      navigate('/annex-list');
+      // The state reset happens after navigation, usually not strictly required 
+      // if unmounted, but good practice if Annex stays mounted in background
+      setTimeout(() => setIsNavigating(false), 100); 
+    }, 2000); // 2 seconds loading delay
+  };
+
   return (
     <div className="relative z-10 font-sans pb-8 md:pb-0">
+      <PageLoader isLoading={isNavigating} message="Loading premium properties..." />
       <div className="container mx-auto px-4 md:px-6 lg:px-10 max-w-7xl pt-12 pb-10">
         {/* Header Section */}
         <motion.div
@@ -96,10 +115,7 @@ const Annex = () => {
             <PremiumTraceButton
               index={10}
               icon={<span className="material-symbols-outlined">east</span>}
-              onClick={() => {
-                const el = document.getElementById('annex');
-                el?.scrollIntoView({ behavior: 'smooth' });
-              }}
+              onClick={handleViewAllAds}
               className="w-full sm:w-auto"
             >
               View All Ads

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { LuUser, LuMail, LuPhone, LuBuilding, LuLock, LuCamera, LuPencil, LuSave, LuX, LuEye, LuEyeOff } from 'react-icons/lu';
-import SEO from '../components/SEO';
+import SEO from '../components/layout/SEO';
 import toast from 'react-hot-toast';
 
 const ProfilePage = () => {

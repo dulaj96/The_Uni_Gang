@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Layout from './components/Layout';
-import ScrollHandler from './components/ScrollHandler';
+import Layout from './components/layout/Layout';
+import SubLayout from './components/layout/SubLayout';
+import ScrollHandler from './components/layout/ScrollHandler';
 
 // Home Sections Imports
 import Hero from './components/home/Hero';
@@ -17,19 +18,20 @@ import ContactUsPage from './pages/ContactUsPage';
 import AnnexDetailsPage from './pages/AnnexDetailsPage';
 import ProfilePage from './pages/ProfilePage';
 import WhatsAppButton from './components/whatsAppButton/WhatsAppButton';
-import SEO from './components/SEO';
+import SEO from './components/layout/SEO';
 import './App.css';
+import AnnexList from './pages/annex/AnnexList';
 
 function App() {
   return (
     <Router>
-      <Layout>
-        <ScrollHandler />
-        <Routes>
-          {/* Home Route containing all sections inline */}
-          <Route
-            path="/"
-            element={
+      <ScrollHandler />
+      <Routes>
+        {/* Home Route containing all sections inline */}
+        <Route
+          path="/"
+          element={
+            <Layout>
               <div className="flex flex-col">
                 <SEO
                   title="The Uni Gang - Find Your Perfect Student Annex in Sri Lanka"
@@ -48,19 +50,22 @@ function App() {
                   <Contact />
                 </div>
               </div>
-            }
-          />
+            </Layout>
+          }
+        />
 
-          {/* Single Pages */}
-          <Route path="/find-accommodation" element={<FindAccommodationPage />} />
-          <Route path="/post-ad" element={<PostAdPage />} />
-          <Route path="/contact-us" element={<ContactUsPage />} />
-          <Route path="/annex/:id" element={<AnnexDetailsPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
-        </Routes>
+        {/* Single Pages using standard Layout */}
+        <Route path="/find-accommodation" element={<Layout><FindAccommodationPage /></Layout>} />
+        <Route path="/post-ad" element={<Layout><PostAdPage /></Layout>} />
+        <Route path="/contact-us" element={<Layout><ContactUsPage /></Layout>} />
+        <Route path="/annex/:id" element={<Layout><AnnexDetailsPage /></Layout>} />
+        <Route path="/profile" element={<Layout><ProfilePage /></Layout>} />
+        
+        {/* AnnexList using SubLayout */}
+        <Route path="/annex-list" element={<SubLayout><AnnexList /></SubLayout>} />
+      </Routes>
 
-        <WhatsAppButton />
-      </Layout>
+      <WhatsAppButton />
     </Router>
   );
 }

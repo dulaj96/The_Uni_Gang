@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { LuChevronLeft, LuChevronRight, LuMapPin, LuPhone, LuUser, LuCircleCheckBig, LuShare2, LuHeart } from 'react-icons/lu';
 import annex1 from '../assets/annex1.jpg';
 import annex2 from '../assets/annex2.jpg';
-import SEO from '../components/SEO';
+import SEO from '../components/layout/SEO';
 
 interface AnnexDetails {
   title: string;
