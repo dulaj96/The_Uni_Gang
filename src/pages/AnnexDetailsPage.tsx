@@ -83,7 +83,7 @@ const AnnexDetailsPage = () => {
               "https://lh3.googleusercontent.com/aida-public/AB6AXuCKqRmOmTQdmXTuBy6ZOQ2v06oQHmTanJNCv4wusghymjCtax5AtDh5Fj9joWgm0Q1FaJeyDI-PLfJMFq767_-N73MAQ7s2AacBu2LVCr-0zphZRRPgVBJtXudBbu77pDkXjzI3vTAe-jNbp7hozO-_0iGgzzRbsnjNxXaxySLT_Y0sZJ_6xp-4SqHHUxnYpPSoqlzagIm7NnrIo4b79a6MvySGJjgaDmmDDUXYI_r0SgvmICScu-gzxxtGqSiYjgVXr3-Eg0BGKvwf"
             ].map((src, i) => (
               <div key={i} className="relative min-w-full aspect-[4/3] rounded-[2rem] overflow-hidden snap-center shadow-md border border-white/20 dark:border-slate-700/50">
-                <img className="w-full h-full object-cover" src={src} alt={`property view ${i+1}`} />
+                <img className="w-full h-full object-cover" src={src} alt={`property view ${i + 1}`} />
                 {i === 0 && (
                   <div className="absolute top-4 left-4 flex gap-2">
                     <span className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md px-3 py-1.5 rounded-full text-[10px] font-bold tracking-wider text-blue-800 dark:text-blue-400 shadow-sm flex items-center gap-1.5 border border-white/50 dark:border-slate-700">
@@ -99,7 +99,7 @@ const AnnexDetailsPage = () => {
         {/* Right Column: Information Architecture */}
         <section className="w-full md:w-[55%] p-6 md:p-10 overflow-y-auto flex flex-col gap-8 custom-scrollbar">
 
-          {/* Header Info */}
+          {/* Header Information */}
           <div className="space-y-4 pt-10 md:pt-0">
             <div className="flex flex-wrap items-center gap-3">
               <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">Modern Studio near UOM</h1>
