@@ -4,7 +4,7 @@ import universitiesData from '../constants/annex/Universities.json';
 import { LuSearch, LuMapPin, LuChevronDown, LuFilter, LuChevronLeft, LuChevronRight } from 'react-icons/lu';
 import annex1 from '../assets/annex1.jpg';
 import annex2 from '../assets/annex2.jpg';
-import SEO from '../components/layout/SEO';
+import SEO from '../components/SEO';
 import { Annex } from '../types/annex';
 
 interface University {

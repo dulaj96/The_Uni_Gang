@@ -266,7 +266,10 @@ const AnnexList = () => {
                                         <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 text-sm font-medium"><LuShowerHead className="text-lg text-slate-400" /> {item.bath}</div>
                                         <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 text-sm font-medium"><LuWifi className="text-lg text-slate-400" /> WiFi</div>
                                     </div>
-                                    <button className="w-full bg-blue-800 text-white py-4 rounded-3xl font-bold tracking-tight shadow-md shadow-blue-800/20 hover:bg-blue-900 transition-all active:scale-95">
+                                    <button 
+                                        onClick={() => navigate(`/annex/${item.id}`)}
+                                        className="w-full bg-blue-800 text-white py-4 rounded-3xl font-bold tracking-tight shadow-md shadow-blue-800/20 hover:bg-blue-900 transition-all active:scale-95"
+                                    >
                                         View Details
                                     </button>
                                 </div>

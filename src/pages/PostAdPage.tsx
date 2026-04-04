@@ -7,7 +7,7 @@ import annex1 from '../assets/annex1.jpg'
 import annex2 from '../assets/annex2.jpg'
 import { LuPlus, LuLayoutDashboard, LuLogOut } from 'react-icons/lu';
 import { dispatchAuthUpdate } from '../utils/authEvents';
-import SEO from '../components/layout/SEO';
+import SEO from '../components/SEO';
 import toast from 'react-hot-toast';
 import { Annex } from '../types/annex';
 

@@ -18,7 +18,7 @@ import ContactUsPage from './pages/ContactUsPage';
 import AnnexDetailsPage from './pages/AnnexDetailsPage';
 import ProfilePage from './pages/ProfilePage';
 import WhatsAppButton from './components/whatsAppButton/WhatsAppButton';
-import SEO from './components/layout/SEO';
+import SEO from './components/SEO';
 import './App.css';
 import AnnexList from './pages/annex/AnnexList';
 
@@ -60,7 +60,7 @@ function App() {
         <Route path="/contact-us" element={<Layout><ContactUsPage /></Layout>} />
         <Route path="/annex/:id" element={<Layout><AnnexDetailsPage /></Layout>} />
         <Route path="/profile" element={<Layout><ProfilePage /></Layout>} />
-        
+
         {/* AnnexList using SubLayout */}
         <Route path="/annex-list" element={<SubLayout><AnnexList /></SubLayout>} />
       </Routes>
