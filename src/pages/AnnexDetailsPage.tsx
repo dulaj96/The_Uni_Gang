@@ -47,28 +47,52 @@ const AnnexDetailsPage = () => {
 
         {/* Left Column: Media Experience */}
         <section className="w-full md:w-[45%] p-6 md:p-10 flex flex-col gap-6 bg-white/30 dark:bg-slate-950/30 overflow-y-auto custom-scrollbar md:overflow-hidden">
-          <div className="relative group rounded-[2rem] overflow-hidden aspect-[4/5] shadow-xl border border-white/20 dark:border-slate-700/50">
-            <img
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-              alt="luxury modern student studio room"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6kwxMXfOSgxcWir6NewPzV_Jim0gPZf21ni2RrJe_JP9v5HHZBIJArCvpnKQiMF75Iivwu_P1ompk9-uXYEFz-zk1RprDCd8Og38pWmxqnJsTT85pFmtePwfRl4T8t_M-GaPLMtCRjxbg34rC57l__gFvbRWpuexxwW_fgiArDCESGiCtj77J3P0VWsBFIHATnBU1fDbA4208hQa5xUpt6ne1llRLztRKRKexTMSc8QqmmUMkVEPMSUOimriHrn58XnmbFKHsj0-n"
-            />
-            <div className="absolute top-6 left-6 flex gap-2">
-              <span className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md px-4 py-2 rounded-full text-xs font-bold tracking-wider text-blue-800 dark:text-blue-400 shadow-sm flex items-center gap-1.5 border border-white/50 dark:border-slate-700">
-                <LuStar className="fill-blue-500" /> PREMIUM
-              </span>
+          {/* Desktop Image Grid */}
+          <div className="hidden md:flex flex-col gap-6">
+            <div className="relative group rounded-[2rem] overflow-hidden aspect-[4/5] shadow-xl border border-white/20 dark:border-slate-700/50">
+              <img
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                alt="luxury modern student studio room"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6kwxMXfOSgxcWir6NewPzV_Jim0gPZf21ni2RrJe_JP9v5HHZBIJArCvpnKQiMF75Iivwu_P1ompk9-uXYEFz-zk1RprDCd8Og38pWmxqnJsTT85pFmtePwfRl4T8t_M-GaPLMtCRjxbg34rC57l__gFvbRWpuexxwW_fgiArDCESGiCtj77J3P0VWsBFIHATnBU1fDbA4208hQa5xUpt6ne1llRLztRKRKexTMSc8QqmmUMkVEPMSUOimriHrn58XnmbFKHsj0-n"
+              />
+              <div className="absolute top-6 left-6 flex gap-2">
+                <span className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md px-4 py-2 rounded-full text-xs font-bold tracking-wider text-blue-800 dark:text-blue-400 shadow-sm flex items-center gap-1.5 border border-white/50 dark:border-slate-700">
+                  <LuStar className="fill-blue-500" /> PREMIUM
+                </span>
+              </div>
+            </div>
+            <div className="grid grid-cols-3 gap-4">
+              <div className="aspect-square rounded-2xl overflow-hidden cursor-pointer hover:ring-2 ring-blue-600 transition-all shadow-md">
+                <img className="w-full h-full object-cover" alt="sleek modern kitchenette" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAD9_78edkWGErtPfIlAkfSf4hN-fESFqnjNXJiX60cG5zwj0Oj2uGxuqxyNPylH52PPXoYc9r1RMReCVI7XmoF_5Z7NX6i_4QVmr6ws1U1U2OcUjW2uLNRxffpLbOhAEdKoDe4FRX-SWj-lq5vUqAp9W5zaPH3Pa6eM1r2pGQ0e08RrP7ReTpTVc9IZqadSWFrURMdQDZA_nuH2H55E0wbHJHgAxmUzkvlel98mo2Vi3MjDey0aXNGT-ylnlXZiZW4fHLC3H_f4Hg1" />
+              </div>
+              <div className="aspect-square rounded-2xl overflow-hidden cursor-pointer hover:ring-2 ring-blue-600 transition-all shadow-md">
+                <img className="w-full h-full object-cover" alt="clean contemporary bathroom" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAN8ADW9H0mJ0RF_aitbOBZrnt6SUNqYHtb7Xuw-iZTTbNRjG5m8yuWOQt4AEdfIxJIRECcxtR75BfjZq3q3FnHlBeWj5D6fC_gws4xzHtPA6oPyAXw_UBTTQ7BmfaVnRw2wMzGKoxAxllgaGbAKr0ji3l3sRkT16DvIGupqTtQL2rZuQ2IV3qJRjdlxFzIdX4TBIDpMJthHXB2n3iBOVNt3JBsobZM_0GFFQoDPZkUj-2B2uaIukWH5jV-W3Iiug59zBrFaQxBLfqw" />
+              </div>
+              <div className="aspect-square rounded-2xl overflow-hidden cursor-pointer hover:ring-2 ring-blue-600 transition-all shadow-md">
+                <img className="w-full h-full object-cover" alt="cozy common area" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKqRmOmTQdmXTuBy6ZOQ2v06oQHmTanJNCv4wusghymjCtax5AtDh5Fj9joWgm0Q1FaJeyDI-PLfJMFq767_-N73MAQ7s2AacBu2LVCr-0zphZRRPgVBJtXudBbu77pDkXjzI3vTAe-jNbp7hozO-_0iGgzzRbsnjNxXaxySLT_Y0sZJ_6xp-4SqHHUxnYpPSoqlzagIm7NnrIo4b79a6MvySGJjgaDmmDDUXYI_r0SgvmICScu-gzxxtGqSiYjgVXr3-Eg0BGKvwf" />
+              </div>
             </div>
           </div>
-          <div className="grid grid-cols-3 gap-4">
-            <div className="aspect-square rounded-2xl overflow-hidden cursor-pointer hover:ring-2 ring-blue-600 transition-all shadow-md">
-              <img className="w-full h-full object-cover" alt="sleek modern kitchenette" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAD9_78edkWGErtPfIlAkfSf4hN-fESFqnjNXJiX60cG5zwj0Oj2uGxuqxyNPylH52PPXoYc9r1RMReCVI7XmoF_5Z7NX6i_4QVmr6ws1U1U2OcUjW2uLNRxffpLbOhAEdKoDe4FRX-SWj-lq5vUqAp9W5zaPH3Pa6eM1r2pGQ0e08RrP7ReTpTVc9IZqadSWFrURMdQDZA_nuH2H55E0wbHJHgAxmUzkvlel98mo2Vi3MjDey0aXNGT-ylnlXZiZW4fHLC3H_f4Hg1" />
-            </div>
-            <div className="aspect-square rounded-2xl overflow-hidden cursor-pointer hover:ring-2 ring-blue-600 transition-all shadow-md">
-              <img className="w-full h-full object-cover" alt="clean contemporary bathroom" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAN8ADW9H0mJ0RF_aitbOBZrnt6SUNqYHtb7Xuw-iZTTbNRjG5m8yuWOQt4AEdfIxJIRECcxtR75BfjZq3q3FnHlBeWj5D6fC_gws4xzHtPA6oPyAXw_UBTTQ7BmfaVnRw2wMzGKoxAxllgaGbAKr0ji3l3sRkT16DvIGupqTtQL2rZuQ2IV3qJRjdlxFzIdX4TBIDpMJthHXB2n3iBOVNt3JBsobZM_0GFFQoDPZkUj-2B2uaIukWH5jV-W3Iiug59zBrFaQxBLfqw" />
-            </div>
-            <div className="aspect-square rounded-2xl overflow-hidden cursor-pointer hover:ring-2 ring-blue-600 transition-all shadow-md">
-              <img className="w-full h-full object-cover" alt="cozy common area" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKqRmOmTQdmXTuBy6ZOQ2v06oQHmTanJNCv4wusghymjCtax5AtDh5Fj9joWgm0Q1FaJeyDI-PLfJMFq767_-N73MAQ7s2AacBu2LVCr-0zphZRRPgVBJtXudBbu77pDkXjzI3vTAe-jNbp7hozO-_0iGgzzRbsnjNxXaxySLT_Y0sZJ_6xp-4SqHHUxnYpPSoqlzagIm7NnrIo4b79a6MvySGJjgaDmmDDUXYI_r0SgvmICScu-gzxxtGqSiYjgVXr3-Eg0BGKvwf" />
-            </div>
+
+          {/* Mobile View: Horizontal Snap Carousel */}
+          <div className="md:hidden flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 custom-scrollbar">
+            {[
+              "https://lh3.googleusercontent.com/aida-public/AB6AXuC6kwxMXfOSgxcWir6NewPzV_Jim0gPZf21ni2RrJe_JP9v5HHZBIJArCvpnKQiMF75Iivwu_P1ompk9-uXYEFz-zk1RprDCd8Og38pWmxqnJsTT85pFmtePwfRl4T8t_M-GaPLMtCRjxbg34rC57l__gFvbRWpuexxwW_fgiArDCESGiCtj77J3P0VWsBFIHATnBU1fDbA4208hQa5xUpt6ne1llRLztRKRKexTMSc8QqmmUMkVEPMSUOimriHrn58XnmbFKHsj0-n",
+              "https://lh3.googleusercontent.com/aida-public/AB6AXuAD9_78edkWGErtPfIlAkfSf4hN-fESFqnjNXJiX60cG5zwj0Oj2uGxuqxyNPylH52PPXoYc9r1RMReCVI7XmoF_5Z7NX6i_4QVmr6ws1U1U2OcUjW2uLNRxffpLbOhAEdKoDe4FRX-SWj-lq5vUqAp9W5zaPH3Pa6eM1r2pGQ0e08RrP7ReTpTVc9IZqadSWFrURMdQDZA_nuH2H55E0wbHJHgAxmUzkvlel98mo2Vi3MjDey0aXNGT-ylnlXZiZW4fHLC3H_f4Hg1",
+              "https://lh3.googleusercontent.com/aida-public/AB6AXuAN8ADW9H0mJ0RF_aitbOBZrnt6SUNqYHtb7Xuw-iZTTbNRjG5m8yuWOQt4AEdfIxJIRECcxtR75BfjZq3q3FnHlBeWj5D6fC_gws4xzHtPA6oPyAXw_UBTTQ7BmfaVnRw2wMzGKoxAxllgaGbAKr0ji3l3sRkT16DvIGupqTtQL2rZuQ2IV3qJRjdlxFzIdX4TBIDpMJthHXB2n3iBOVNt3JBsobZM_0GFFQoDPZkUj-2B2uaIukWH5jV-W3Iiug59zBrFaQxBLfqw",
+              "https://lh3.googleusercontent.com/aida-public/AB6AXuCKqRmOmTQdmXTuBy6ZOQ2v06oQHmTanJNCv4wusghymjCtax5AtDh5Fj9joWgm0Q1FaJeyDI-PLfJMFq767_-N73MAQ7s2AacBu2LVCr-0zphZRRPgVBJtXudBbu77pDkXjzI3vTAe-jNbp7hozO-_0iGgzzRbsnjNxXaxySLT_Y0sZJ_6xp-4SqHHUxnYpPSoqlzagIm7NnrIo4b79a6MvySGJjgaDmmDDUXYI_r0SgvmICScu-gzxxtGqSiYjgVXr3-Eg0BGKvwf"
+            ].map((src, i) => (
+              <div key={i} className="relative min-w-full aspect-[4/3] rounded-[2rem] overflow-hidden snap-center shadow-md border border-white/20 dark:border-slate-700/50">
+                <img className="w-full h-full object-cover" src={src} alt={`property view ${i+1}`} />
+                {i === 0 && (
+                  <div className="absolute top-4 left-4 flex gap-2">
+                    <span className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md px-3 py-1.5 rounded-full text-[10px] font-bold tracking-wider text-blue-800 dark:text-blue-400 shadow-sm flex items-center gap-1.5 border border-white/50 dark:border-slate-700">
+                      <LuStar className="fill-blue-500 w-3.5 h-3.5" /> PREMIUM
+                    </span>
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         </section>
 
@@ -205,12 +229,12 @@ const AnnexDetailsPage = () => {
                 <p className="text-base font-bold text-slate-900 dark:text-white">Mr. Aruna Silva</p>
               </div>
             </div>
-            <div className="flex items-center gap-3 w-full sm:w-auto">
-              <button className="flex-1 sm:flex-none bg-blue-800 hover:bg-blue-900 text-white px-6 py-3 rounded-full font-bold shadow-lg shadow-blue-800/20 transition-all flex items-center justify-center gap-2 active:scale-95">
-                <LuPhone className="text-xl" /> Call Now
+            <div className="grid grid-cols-2 gap-3 w-full sm:w-[320px]">
+              <button className="bg-blue-800 hover:bg-blue-900 text-white py-3.5 rounded-full font-bold shadow-lg shadow-blue-800/20 transition-all flex items-center justify-center gap-2 active:scale-95 text-sm md:text-base">
+                <LuPhone className="text-xl shrink-0" /> Call Now
               </button>
-              <button className="flex-1 sm:flex-none bg-[#075E54] dark:bg-[#128C7E] hover:brightness-110 text-white px-6 py-3 rounded-full font-bold shadow-lg shadow-emerald-600/20 transition-all flex items-center justify-center gap-2 active:scale-95">
-                <LuMessageCircle className="text-xl fill-current" /> WhatsApp
+              <button className="bg-[#075E54] dark:bg-[#128C7E] hover:brightness-110 text-white py-3.5 rounded-full font-bold shadow-lg shadow-emerald-600/20 transition-all flex items-center justify-center gap-2 active:scale-95 text-sm md:text-base">
+                <LuMessageCircle className="text-xl shrink-0 fill-current" /> WhatsApp
               </button>
             </div>
           </div>
