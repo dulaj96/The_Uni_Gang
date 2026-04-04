@@ -61,8 +61,6 @@ const Annex = () => {
   const handleViewAllAds = () => {
     setIsNavigating(true);
     setTimeout(() => {
-      // Navigate to the AnnexList page and ensure scrolling to top
-      window.scrollTo(0, 0);
       navigate('/annex-list');
       // The state reset happens after navigation, usually not strictly required 
       // if unmounted, but good practice if Annex stays mounted in background
