@@ -64,7 +64,7 @@ const Annex = () => {
       navigate('/annex-list');
       // The state reset happens after navigation, usually not strictly required 
       // if unmounted, but good practice if Annex stays mounted in background
-      setTimeout(() => setIsNavigating(false), 100); 
+      setTimeout(() => setIsNavigating(false), 100);
     }, 2000); // 2 seconds loading delay
   };
 
@@ -74,20 +74,18 @@ const Annex = () => {
       <div className="container mx-auto px-4 md:px-6 lg:px-10 max-w-7xl pt-12 pb-10">
         {/* Header Section */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="mb-20 flex flex-col md:flex-row md:items-center justify-between gap-10"
+          className="text-center mb-20"
         >
-          <div className="max-w-2xl">
-            <h2 className="text-5xl md:text-7xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.1] mb-6">
-              Find Your <br /> Perfect <span className="text-blue-800 italic">Stay</span>
-            </h2>
-            <p className="text-xl text-slate-500 dark:text-slate-400 leading-relaxed font-light">
-              Premium student accommodations curated for excellence. Discover annexes near your university that feel like home.
-            </p>
-          </div>
+          <h2 className="text-4xl md:text-6xl font-extrabold text-slate-900 dark:text-white mb-6 tracking-tight">
+            Find Your Perfect <span className="text-blue-800 italic">Annex</span>
+          </h2>
+          <p className="text-lg text-slate-500 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
+            Premium student accommodations curated for excellence. Discover annexes near your university that feel like home.
+          </p>
         </motion.div>
 
         {/* Filters & Actions Section */}

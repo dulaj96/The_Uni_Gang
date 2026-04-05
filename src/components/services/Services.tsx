@@ -136,7 +136,7 @@ const Services = () => {
           className="text-center mb-20"
         >
           <h2 className="text-4xl md:text-6xl font-extrabold text-slate-900 dark:text-white mb-6 tracking-tight">
-            Our <span className="text-primary italic">Antigravity</span> Services
+            Our Uni Gang<span className="text-primary italic">  Services</span>
           </h2>
           <p className="text-lg text-slate-500 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
             Floating above the competition with cutting-edge digital solutions tailored for the Sri Lankan student ecosystem.

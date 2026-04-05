@@ -7,30 +7,61 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, Link } from "react-router-dom";
 
 // Mock Data Array for Annex Advertisements
-const DUMMY_ANNEXES = Array.from({ length: 15 }).map((_, i) => ({
-    id: i + 1,
-    title: `Student Suite ${i + 1}`,
-    location: i % 2 === 0 ? 'Colombo 07, Colombo' : 'Malabe, Colombo',
-    price: 15000 + (i * 1000),
-    image: [
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuDTdj_osJPm_miTm1ZdA7n9ABpR8K7MnkN_DJf-7RXT57gl84Wy7eB92EUQe8YDsQixPfJya1khvz1Xvq2arDrUdO83Hj04QsR020gnFPoTUXfW-ffrArcfSG_Xw6o3YwW6cZgM9ELhaMJ9TfYsKPMoRgCB8eeuOp0RCC_fc_jiw9EPGkkS6V52Bn8wwcT1M8VXtWe1LsG-PCF0Rzla-olJHYsRk-sMcqYHM9J2Y7JQUZGu0ACvl1Ya6RAcKO5FP1a2ITY03nBSmHPA",
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuAoH1pH1dd9-h7NZ92GLC57pa3-K1G0bNX_ymlwtYu_YUfuDEifNAtTps-g8FnWUueg2dB2gxui4jTXx9qWRyc-6wAcXsDL3Ltxg7D-pQakTA0u-YBfc84b57-Cpiq5cBK3RNuBUaFyqhxVrfTimthYuhcSASM46rUG8SnhbjeOpWYectwygWw9ohtQTKU4A7sOXuHNRUH5sO23YqRT1YloeC4NUoBUomnCggQ4BZnLHSJ_SeoWb5uriWqsIbI8cFMTUHiyDBH4mNe6",
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuCe3ZfDrLSw7m9dDvbS_1c-Qjg7OBIbRZ0h_apGsGFYLAh3xzFiFmL-pB88eY4S0w5nhRFLxOtSW-_wDBoI7PCndjkYBTI3VRPaDN4YsjQpfGMNngOU-EDJT2sMO-6EoXMxwa7ja3N6wTzvai2rphC3KXwP2cSWDkMdvCaZM7vbINDWiqUaWIsvnTZ5GyMZ89VGhAA9rXJKJCcp7wTf_MbTn8tbecRiLGgZfQNosvi22G1vi-BZ0VSGj8nmrEIIwy2dagLhSwa1ozam"
-    ][i % 3],
-    verified: i % 3 !== 0,
-    beds: (i % 3) + 1,
-    bath: i % 2 === 0 ? 'Private Bath' : 'Shared Bath',
-    perk: i % 2 === 0 ? 'High-Speed WiFi' : 'Kitchen Access',
-}));
+const DUMMY_ANNEXES = Array.from({ length: 15 }).map((_, i) => {
+    const uniList = ['University of Colombo', 'SLIIT', 'NSBM'];
+    
+    return {
+        id: i + 1,
+        title: `Student Suite ${i + 1}`,
+        location: i % 2 === 0 ? 'Colombo 07, Colombo' : 'Malabe, Colombo',
+        university: uniList[i % 3], // Add university to mock data
+        price: 15000 + (i * 1000),
+        image: [
+            "https://lh3.googleusercontent.com/aida-public/AB6AXuDTdj_osJPm_miTm1ZdA7n9ABpR8K7MnkN_DJf-7RXT57gl84Wy7eB92EUQe8YDsQixPfJya1khvz1Xvq2arDrUdO83Hj04QsR020gnFPoTUXfW-ffrArcfSG_Xw6o3YwW6cZgM9ELhaMJ9TfYsKPMoRgCB8eeuOp0RCC_fc_jiw9EPGkkS6V52Bn8wwcT1M8VXtWe1LsG-PCF0Rzla-olJHYsRk-sMcqYHM9J2Y7JQUZGu0ACvl1Ya6RAcKO5FP1a2ITY03nBSmHPA",
+            "https://lh3.googleusercontent.com/aida-public/AB6AXuAoH1pH1dd9-h7NZ92GLC57pa3-K1G0bNX_ymlwtYu_YUfuDEifNAtTps-g8FnWUueg2dB2gxui4jTXx9qWRyc-6wAcXsDL3Ltxg7D-pQakTA0u-YBfc84b57-Cpiq5cBK3RNuBUaFyqhxVrfTimthYuhcSASM46rUG8SnhbjeOpWYectwygWw9ohtQTKU4A7sOXuHNRUH5sO23YqRT1YloeC4NUoBUomnCggQ4BZnLHSJ_SeoWb5uriWqsIbI8cFMTUHiyDBH4mNe6",
+            "https://lh3.googleusercontent.com/aida-public/AB6AXuCe3ZfDrLSw7m9dDvbS_1c-Qjg7OBIbRZ0h_apGsGFYLAh3xzFiFmL-pB88eY4S0w5nhRFLxOtSW-_wDBoI7PCndjkYBTI3VRPaDN4YsjQpfGMNngOU-EDJT2sMO-6EoXMxwa7ja3N6wTzvai2rphC3KXwP2cSWDkMdvCaZM7vbINDWiqUaWIsvnTZ5GyMZ89VGhAA9rXJKJCcp7wTf_MbTn8tbecRiLGgZfQNosvi22G1vi-BZ0VSGj8nmrEIIwy2dagLhSwa1ozam"
+        ][i % 3],
+        verified: i % 3 !== 0,
+        beds: (i % 3) + 1,
+        bath: i % 2 === 0 ? 'Private Bath' : 'Shared Bath',
+        perk: i % 2 === 0 ? 'High-Speed WiFi' : 'Kitchen Access',
+    };
+});
 
 const AnnexList = () => {
     const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(1);
     const [favorites, setFavorites] = useState<number[]>([]);
 
+    const [searchTerm, setSearchTerm] = useState("");
+    const [selectedUni, setSelectedUni] = useState("All Universities");
+    const [appliedFilters, setAppliedFilters] = useState({ term: "", uni: "All Universities" });
+
+    const handleSearchClick = () => {
+        setAppliedFilters({ term: searchTerm, uni: selectedUni });
+        setCurrentPage(1);
+    };
+
+    const isSearchDisabled = selectedUni !== "All Universities";
+    const isUniDisabled = searchTerm.trim() !== "";
+
     const itemsPerPage = 12;
-    const totalPages = Math.ceil(DUMMY_ANNEXES.length / itemsPerPage);
-    const paginatedData = DUMMY_ANNEXES.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+    const filteredAnnexes = DUMMY_ANNEXES.filter((annex) => {
+        if (appliedFilters.term) {
+            const query = appliedFilters.term.toLowerCase();
+            return annex.title.toLowerCase().includes(query) || 
+                   annex.location.toLowerCase().includes(query) ||
+                   annex.university.toLowerCase().includes(query);
+        }
+        if (appliedFilters.uni !== "All Universities") {
+            return annex.university === appliedFilters.uni;
+        }
+        return true;
+    });
+
+    const totalPages = Math.max(1, Math.ceil(filteredAnnexes.length / itemsPerPage));
+    const paginatedData = filteredAnnexes.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
@@ -156,12 +187,15 @@ const AnnexList = () => {
                 >
                     <div className="max-w-4xl mx-auto p-2 glass-card bg-white/45 dark:bg-slate-900/45 backdrop-blur-xl rounded-[2.5rem] shadow-[0_20px_40px_rgba(0,63,221,0.08)] flex flex-col md:flex-row gap-2 border border-white/50 dark:border-slate-800/50">
                         {/* Search Input */}
-                        <div className="flex-1 flex items-center px-6 gap-3">
+                        <div className={`flex-1 flex items-center px-6 gap-3 transition-opacity ${isSearchDisabled ? 'opacity-50' : 'opacity-100'}`}>
                             <LuSearch className="text-slate-400 dark:text-slate-500 text-xl flex-shrink-0" />
                             <input
                                 className="w-full bg-transparent border-none focus:ring-0 focus:outline-none text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 py-4 font-medium"
                                 placeholder="Search by University, City..."
                                 type="text"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                disabled={isSearchDisabled}
                             />
                         </div>
 
@@ -169,18 +203,26 @@ const AnnexList = () => {
                         <div className="h-10 w-[1px] bg-slate-200 dark:bg-slate-700 hidden md:block self-center"></div>
 
                         {/* University Dropdown */}
-                        <div className="flex-none md:w-64 flex items-center px-6 gap-3 relative">
+                        <div className={`flex-none md:w-64 flex items-center px-6 gap-3 relative transition-opacity ${isUniDisabled ? 'opacity-50' : 'opacity-100'}`}>
                             <LuGraduationCap className="text-slate-400 dark:text-slate-500 text-xl flex-shrink-0" />
-                            <select className="w-full bg-transparent border-none focus:ring-0 focus:outline-none text-slate-900 dark:text-white font-medium cursor-pointer appearance-none">
-                                <option className="text-slate-900 dark:bg-slate-800">All Universities</option>
-                                <option className="text-slate-900 dark:bg-slate-800">SLIIT</option>
-                                <option className="text-slate-900 dark:bg-slate-800">NSBM</option>
-                                <option className="text-slate-900 dark:bg-slate-800">University of Colombo</option>
+                            <select 
+                                className="w-full bg-transparent border-none focus:ring-0 focus:outline-none text-slate-900 dark:text-white font-medium cursor-pointer appearance-none"
+                                value={selectedUni}
+                                onChange={(e) => setSelectedUni(e.target.value)}
+                                disabled={isUniDisabled}
+                            >
+                                <option className="text-slate-900 dark:bg-slate-800" value="All Universities">All Universities</option>
+                                <option className="text-slate-900 dark:bg-slate-800" value="SLIIT">SLIIT</option>
+                                <option className="text-slate-900 dark:bg-slate-800" value="NSBM">NSBM</option>
+                                <option className="text-slate-900 dark:bg-slate-800" value="University of Colombo">University of Colombo</option>
                             </select>
                         </div>
 
                         {/* Search Button */}
-                        <button className="bg-blue-800 hover:bg-blue-900 text-white px-8 py-4 rounded-[2rem] font-bold transition-all flex items-center justify-center gap-2 group shadow-lg shadow-blue-800/20 flex-shrink-0">
+                        <button 
+                            onClick={handleSearchClick}
+                            className="bg-blue-800 hover:bg-blue-900 text-white px-8 py-4 rounded-[2rem] font-bold transition-all flex items-center justify-center gap-2 group shadow-lg shadow-blue-800/20 flex-shrink-0"
+                        >
                             Search Now
                             <LuArrowRight className="group-hover:translate-x-1 transition-transform text-lg" />
                         </button>

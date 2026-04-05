@@ -140,14 +140,15 @@ const Contact = () => {
 
             <div className="max-w-7xl mx-auto">
                 <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
                     transition={{ duration: 0.8 }}
-                    className="space-y-4 mb-20"
+                    className="text-center mb-20"
                 >
-                    <h1 className="text-5xl md:text-7xl font-extrabold tracking-tighter text-slate-900 dark:text-white leading-[1] font-plus-jakarta">
+                    <h2 className="text-4xl md:text-6xl font-extrabold text-slate-900 dark:text-white mb-6 tracking-tight">
                         Contact <span className="text-primary italic">The Uni Gang</span>
-                    </h1>
+                    </h2>
                 </motion.div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-stretch mb-32 px-4 md:px-8">

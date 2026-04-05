@@ -151,17 +151,18 @@ const Events = () => {
 
             <div className="max-w-7xl mx-auto px-4 md:px-8">
                 {/* Header Section */}
-                <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8">
+                <div className="flex flex-col items-center justify-center mb-20 gap-8">
                     <motion.div
-                        initial={{ opacity: 0, x: -50 }}
-                        whileInView={{ opacity: 1, x: 0 }}
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.8 }}
+                        className="text-center mb-10"
                     >
-                        <h2 className="text-5xl md:text-7xl font-black text-slate-900 dark:text-white tracking-tighter leading-none mb-6">
-                            Campus <span className="text-primary italic">Events</span>
+                        <h2 className="text-4xl md:text-6xl font-extrabold text-slate-900 dark:text-white mb-6 tracking-tight">
+                            Latest University <span className="text-primary italic">Events</span>
                         </h2>
-                        <p className="text-xl text-slate-500 dark:text-slate-400 font-medium max-w-xl">
+                        <p className="text-lg text-slate-500 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
                             Witness the pulse of university life. From tech summits to cultural galas, never miss a moment that matters.
                         </p>
                     </motion.div>
@@ -170,7 +171,7 @@ const Events = () => {
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        className="flex flex-col md:flex-row gap-4 w-full md:w-auto"
+                        className="flex flex-col md:flex-row gap-4 w-full md:w-auto justify-center"
                     >
                         {['Upcoming', 'Create ur Event'].map((label, i) => (
                             <motion.button

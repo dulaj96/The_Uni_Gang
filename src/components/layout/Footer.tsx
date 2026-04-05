@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 import { FaFacebook, FaInstagram, FaTwitter, FaLinkedin } from 'react-icons/fa';
+import { motion } from 'framer-motion';
+import { LuSparkles } from 'react-icons/lu';
 
 const Footer = () => {
   return (
@@ -13,8 +15,7 @@ const Footer = () => {
               The <span className="text-brand-600">Uni Gang</span>
             </h3>
             <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-6">
-              Your trusted platform for finding the best student accommodations closer to your university. Secure, reliable, and student-first. Stay with us for more features!
-            </p>
+              Powering the Future of University Life. From finding your perfect home to launching your professional digital presence, we provide a seamless ecosystem for students. Your housing, your career, and your campus—unified in one smart platform.            </p>
           </div>
 
           {/* Quick Links */}
@@ -64,9 +65,35 @@ const Footer = () => {
           <p className="text-slate-400 text-sm">
             &copy; {new Date().getFullYear()} The Uni Gang. All rights reserved.
           </p>
-          <p className="text-slate-400 text-sm mt-2 md:mt-0">
-            Made with ❤️ for students.
-          </p>
+
+          <div className="flex items-center gap-1.5 text-slate-400 text-sm mt-2 md:mt-0 font-medium">
+            <span>Engineered with</span>
+
+            {/* Animated Lucide Sparkle Icon */}
+            <motion.div
+              animate={{
+                scale: [1, 1.2, 1],
+                rotate: [0, 10, -10, 0], // පොඩි rotate එකක් දැම්මා තවත් real පේන්න
+                opacity: [0.6, 1, 0.6],
+                filter: [
+                  "drop-shadow(0 0 0px rgba(59, 130, 246, 0))",
+                  "drop-shadow(0 0 10px rgba(59, 130, 246, 0.6))",
+                  "drop-shadow(0 0 0px rgba(59, 130, 246, 0))"
+                ]
+              }}
+              transition={{
+                duration: 3, // ටිකක් slow කරා ලස්සනට පේන්න
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+              // ... motion.div එක ඇතුළේ className එකට මේක දාන්න
+              className="flex items-center justify-center text-amber-500 dark:text-amber-400"
+            >
+              <LuSparkles className="text-lg" />
+            </motion.div>
+
+            <span>for the University Community</span>
+          </div>
         </div>
       </div>
     </footer>
