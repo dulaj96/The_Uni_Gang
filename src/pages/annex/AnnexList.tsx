@@ -226,7 +226,7 @@ const AnnexList = () => {
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, scale: 0.9 }}
                                 transition={{ duration: 0.5, delay: index * 0.05 }}
-                                className="group glass-card bg-white/45 dark:bg-slate-900/40 border border-white/60 dark:border-slate-800 rounded-[2.5rem] p-4 hover:shadow-[0_40px_80px_-20px_rgba(0,63,221,0.12)] transition-shadow duration-500"
+                                className="group glass-card bg-white/45 dark:bg-slate-900/60 border border-white/60 dark:border-slate-700/50 rounded-[2.5rem] p-4 hover:shadow-[0_40px_80px_-20px_rgba(0,63,221,0.12)] transition-shadow duration-500"
                             >
                                 <div className="relative h-[280px] rounded-[2rem] overflow-hidden mb-6">
                                     <img

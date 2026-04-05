@@ -292,7 +292,7 @@ const Header = () => {
 
         {/* Mobile Menu Toggle */}
         <button
-          className="md:hidden text-slate-800 dark:text-white focus:outline-none p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+          className="md:hidden flex items-center justify-center p-2.5 rounded-2xl bg-white/50 dark:bg-slate-800/50 backdrop-blur-md text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 shadow-sm border border-slate-200/50 dark:border-slate-700/50 transition-all active:scale-95"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         >
           {isMobileMenuOpen ? <LuX className="w-7 h-7" /> : <LuMenu className="w-7 h-7" />}

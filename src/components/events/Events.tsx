@@ -170,7 +170,7 @@ const Events = () => {
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        className="flex gap-4"
+                        className="flex flex-col md:flex-row gap-4 w-full md:w-auto"
                     >
                         {['Upcoming', 'Create ur Event'].map((label, i) => (
                             <motion.button
@@ -178,7 +178,7 @@ const Events = () => {
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                                 // Text color එකත් ලා නිල් පාටට (Sky/Cyan) match වෙන්න වෙනස් කළා
-                                className="group relative flex items-center gap-3 px-8 py-4 premium-glass rounded-2xl transition-all shadow-lg shadow-black/5 hover:bg-white/30 dark:hover:bg-slate-800/30 overflow-hidden text-sky-900 dark:text-sky-300"
+                                className="group relative flex items-center justify-center gap-3 px-6 py-4 md:px-8 md:py-4 premium-glass rounded-2xl w-full md:w-auto transition-all shadow-lg shadow-black/5 hover:bg-white/30 dark:hover:bg-slate-800/30 overflow-hidden text-sky-900 dark:text-sky-300"
                             >
 
                                 {/* 🌀 Glowing Electric Blue Gradient Trace Effect 👇 */}
@@ -264,7 +264,7 @@ const Events = () => {
                     {[...eventsList, ...eventsList, ...eventsList].map((event, idx) => (
                         <div
                             key={`${event.id}-${idx}`}
-                            className="flex-none w-[320px] md:w-[380px] snap-start"
+                            className="flex-none w-[280px] md:w-[380px] snap-start"
                             // Card එකක් උඩට cursor එක ආවම scroll එක නවත්තන්න
                             onMouseEnter={() => setIsHovered(true)}
                         >
@@ -272,7 +272,7 @@ const Events = () => {
                                 <div className="premium-glass p-4 rounded-[2.5rem] shadow-2xl group hover:-translate-y-2 transition-all duration-500 bg-white/50 dark:bg-slate-900/50 backdrop-blur-md border border-white/20">
 
                                     {/* Image Container */}
-                                    <div className="relative h-[480px] rounded-[2rem] overflow-hidden mb-6">
+                                    <div className="relative h-[360px] md:h-[480px] rounded-[2rem] overflow-hidden mb-6">
                                         <img
                                             src={event.image}
                                             alt={event.title}
@@ -329,8 +329,8 @@ const Events = () => {
             </div>
 
             {/* Premium Stats Section */}
-            <div className="max-w-7xl mx-auto px-4 md:px-8 mt-24">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="max-w-7xl mx-auto px-4 md:px-8 mt-16 md:mt-24">
+                <div className="grid grid-cols-3 gap-3 md:gap-8">
                     {stats.map((stat, i) => (
                         <motion.div
                             key={i}
@@ -338,13 +338,13 @@ const Events = () => {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ delay: i * 0.1 }}
-                            className="premium-glass p-10 rounded-[2.5rem] flex flex-col items-center text-center group cursor-default"
+                            className="premium-glass p-4 md:p-10 rounded-2xl md:rounded-[2.5rem] flex flex-col items-center text-center group cursor-default"
                         >
-                            <div className="w-16 h-16 bg-white dark:bg-slate-800 rounded-2xl shadow-xl flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-white transition-all duration-500">
-                                <span className="material-symbols-outlined text-3xl font-bold">{stat.icon}</span>
+                            <div className="w-10 h-10 md:w-16 md:h-16 bg-white dark:bg-slate-800 rounded-xl md:rounded-2xl shadow-xl flex items-center justify-center mb-3 md:mb-6 group-hover:bg-primary group-hover:text-white transition-all duration-500">
+                                <span className="material-symbols-outlined text-xl md:text-3xl font-bold">{stat.icon}</span>
                             </div>
-                            <h4 className="text-4xl font-black text-slate-900 dark:text-white mb-2">{stat.value}</h4>
-                            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">{stat.label}</p>
+                            <h4 className="text-xl md:text-4xl font-black text-slate-900 dark:text-white mb-1 md:mb-2">{stat.value}</h4>
+                            <p className="text-[8px] md:text-[10px] font-black uppercase tracking-wider md:tracking-[0.3em] text-slate-400">{stat.label}</p>
                         </motion.div>
                     ))}
                 </div>

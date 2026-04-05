@@ -361,7 +361,7 @@ const Contact = () => {
                 </div>
 
                 {/* Stats */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
                     {stats.map((s, i) => (
                         <motion.div
                             key={i}
@@ -371,16 +371,16 @@ const Contact = () => {
                             transition={{ duration: 0.5, delay: i * 0.1 }}
                         >
                             <TiltCard>
-                                <div className="premium-glass p-10 rounded-[3.5rem] text-center group transition-all duration-500 hover:shadow-2xl flex flex-col items-center">
+                                <div className="premium-glass p-6 md:p-8 rounded-[2.5rem] md:rounded-[3.5rem] text-center group transition-all duration-500 hover:shadow-2xl flex flex-col items-center">
                                     <motion.div
                                         whileHover={{ rotate: 360 }}
                                         transition={{ duration: 1 }}
-                                        className="w-20 h-20 rounded-3xl bg-white dark:bg-slate-900 shadow-xl flex items-center justify-center text-primary text-4xl mb-8 group-hover:bg-primary group-hover:text-white transition-colors"
+                                        className="w-14 h-14 md:w-20 md:h-20 rounded-2xl md:rounded-3xl bg-white dark:bg-slate-900 shadow-xl flex items-center justify-center text-primary text-2xl md:text-4xl mb-4 md:mb-8 group-hover:bg-primary group-hover:text-white transition-colors"
                                     >
                                         {s.icon}
                                     </motion.div>
-                                    <h4 className="text-4xl lg:text-5xl font-black text-slate-900 dark:text-white mb-3 tracking-tighter">{s.value}</h4>
-                                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 group-hover:text-primary transition-colors">{s.label}</p>
+                                    <h4 className="text-2xl md:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white mb-2 md:mb-3 tracking-tighter">{s.value}</h4>
+                                    <p className="text-[8px] md:text-[10px] font-black uppercase tracking-wider md:tracking-[0.3em] text-slate-400 group-hover:text-primary transition-colors">{s.label}</p>
                                 </div>
                             </TiltCard>
                         </motion.div>

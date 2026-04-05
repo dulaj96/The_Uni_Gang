@@ -179,7 +179,7 @@ const Annex = () => {
                       <span className="text-sm font-medium">{listing.location}</span>
                     </div>
 
-                    <div className="mt-auto flex items-center justify-between">
+                    <div className="mt-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                       <div className="flex flex-col">
                         <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400 mb-1">Monthly Fee</span>
                         <span className="text-2xl font-extrabold text-blue-800 dark:text-blue-400">
@@ -189,7 +189,8 @@ const Annex = () => {
                       <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="text-sm bg-white/80 dark:bg-slate-800/80 hover:bg-blue-800 hover:text-white dark:hover:bg-blue-800 text-blue-800 dark:text-blue-300 border border-blue-100 dark:border-slate-700 px-6 py-3 rounded-2xl font-bold text-sm transition-all shadow-sm"
+                        onClick={() => navigate(`/annex/${listing.id}`)}
+                        className="w-full md:w-auto text-sm bg-white/80 dark:bg-slate-800/80 hover:bg-blue-800 hover:text-white dark:hover:bg-blue-800 text-blue-800 dark:text-blue-300 border border-blue-100 dark:border-slate-700 px-6 py-3 rounded-2xl font-bold transition-all shadow-sm flex items-center justify-center"
                       >
                         View Details
                       </motion.button>

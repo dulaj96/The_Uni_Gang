@@ -5,7 +5,7 @@ import {
   LuMessageCircle, LuX,
   LuCircleCheckBig
 } from 'react-icons/lu';
-import SEO from '../components/SEO';
+import SEO from '../../components/SEO';
 import { useEffect } from 'react';
 
 const AnnexDetailsPage = () => {
@@ -49,40 +49,42 @@ const AnnexDetailsPage = () => {
         <section className="w-full md:w-[45%] p-6 md:p-10 flex flex-col gap-6 bg-white/30 dark:bg-slate-950/30 overflow-y-auto custom-scrollbar md:overflow-hidden">
           {/* Desktop Image Grid */}
           <div className="hidden md:flex flex-col gap-6">
-            <div className="relative group rounded-[2rem] overflow-hidden aspect-[4/5] shadow-xl border border-white/20 dark:border-slate-700/50">
+            <div className="relative group rounded-[2rem] overflow-hidden aspect-[4/5] shadow-xl">
               <img
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                data-alt="luxury modern student studio room with large windows, minimalist desk, aesthetic lighting, and organized bookshelf in soft morning light"
                 alt="luxury modern student studio room"
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6kwxMXfOSgxcWir6NewPzV_Jim0gPZf21ni2RrJe_JP9v5HHZBIJArCvpnKQiMF75Iivwu_P1ompk9-uXYEFz-zk1RprDCd8Og38pWmxqnJsTT85pFmtePwfRl4T8t_M-GaPLMtCRjxbg34rC57l__gFvbRWpuexxwW_fgiArDCESGiCtj77J3P0VWsBFIHATnBU1fDbA4208hQa5xUpt6ne1llRLztRKRKexTMSc8QqmmUMkVEPMSUOimriHrn58XnmbFKHsj0-n"
               />
               <div className="absolute top-6 left-6 flex gap-2">
-                <span className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md px-4 py-2 rounded-full text-xs font-bold tracking-wider text-blue-800 dark:text-blue-400 shadow-sm flex items-center gap-1.5 border border-white/50 dark:border-slate-700">
-                  <LuStar className="fill-blue-500" /> PREMIUM
+                <span className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md px-4 py-2 rounded-full text-xs font-bold tracking-wider text-blue-800 dark:text-blue-400 shadow-sm flex items-center gap-1">
+                  <span className="material-symbols-outlined text-sm text-blue-500" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                  PREMIUM
                 </span>
               </div>
             </div>
             <div className="grid grid-cols-3 gap-4">
               <div className="aspect-square rounded-2xl overflow-hidden cursor-pointer hover:ring-2 ring-blue-600 transition-all shadow-md">
-                <img className="w-full h-full object-cover" alt="sleek modern kitchenette" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAD9_78edkWGErtPfIlAkfSf4hN-fESFqnjNXJiX60cG5zwj0Oj2uGxuqxyNPylH52PPXoYc9r1RMReCVI7XmoF_5Z7NX6i_4QVmr6ws1U1U2OcUjW2uLNRxffpLbOhAEdKoDe4FRX-SWj-lq5vUqAp9W5zaPH3Pa6eM1r2pGQ0e08RrP7ReTpTVc9IZqadSWFrURMdQDZA_nuH2H55E0wbHJHgAxmUzkvlel98mo2Vi3MjDey0aXNGT-ylnlXZiZW4fHLC3H_f4Hg1" />
+                <img className="w-full h-full object-cover" data-alt="sleek modern kitchenette with white cabinets, induction hob, and stainless steel microwave in a bright studio" alt="sleek modern kitchenette" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAD9_78edkWGErtPfIlAkfSf4hN-fESFqnjNXJiX60cG5zwj0Oj2uGxuqxyNPylH52PPXoYc9r1RMReCVI7XmoF_5Z7NX6i_4QVmr6ws1U1U2OcUjW2uLNRxffpLbOhAEdKoDe4FRX-SWj-lq5vUqAp9W5zaPH3Pa6eM1r2pGQ0e08RrP7ReTpTVc9IZqadSWFrURMdQDZA_nuH2H55E0wbHJHgAxmUzkvlel98mo2Vi3MjDey0aXNGT-ylnlXZiZW4fHLC3H_f4Hg1" />
               </div>
               <div className="aspect-square rounded-2xl overflow-hidden cursor-pointer hover:ring-2 ring-blue-600 transition-all shadow-md">
-                <img className="w-full h-full object-cover" alt="clean contemporary bathroom" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAN8ADW9H0mJ0RF_aitbOBZrnt6SUNqYHtb7Xuw-iZTTbNRjG5m8yuWOQt4AEdfIxJIRECcxtR75BfjZq3q3FnHlBeWj5D6fC_gws4xzHtPA6oPyAXw_UBTTQ7BmfaVnRw2wMzGKoxAxllgaGbAKr0ji3l3sRkT16DvIGupqTtQL2rZuQ2IV3qJRjdlxFzIdX4TBIDpMJthHXB2n3iBOVNt3JBsobZM_0GFFQoDPZkUj-2B2uaIukWH5jV-W3Iiug59zBrFaQxBLfqw" />
+                <img className="w-full h-full object-cover" data-alt="clean contemporary bathroom with marble tiles, glass shower partition, and high-end fixtures" alt="clean contemporary bathroom" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAN8ADW9H0mJ0RF_aitbOBZrnt6SUNqYHtb7Xuw-iZTTbNRjG5m8yuWOQt4AEdfIxJIRECcxtR75BfjZq3q3FnHlBeWj5D6fC_gws4xzHtPA6oPyAXw_UBTTQ7BmfaVnRw2wMzGKoxAxllgaGbAKr0ji3l3sRkT16DvIGupqTtQL2rZuQ2IV3qJRjdlxFzIdX4TBIDpMJthHXB2n3iBOVNt3JBsobZM_0GFFQoDPZkUj-2B2uaIukWH5jV-W3Iiug59zBrFaQxBLfqw" />
               </div>
               <div className="aspect-square rounded-2xl overflow-hidden cursor-pointer hover:ring-2 ring-blue-600 transition-all shadow-md">
-                <img className="w-full h-full object-cover" alt="cozy common area" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKqRmOmTQdmXTuBy6ZOQ2v06oQHmTanJNCv4wusghymjCtax5AtDh5Fj9joWgm0Q1FaJeyDI-PLfJMFq767_-N73MAQ7s2AacBu2LVCr-0zphZRRPgVBJtXudBbu77pDkXjzI3vTAe-jNbp7hozO-_0iGgzzRbsnjNxXaxySLT_Y0sZJ_6xp-4SqHHUxnYpPSoqlzagIm7NnrIo4b79a6MvySGJjgaDmmDDUXYI_r0SgvmICScu-gzxxtGqSiYjgVXr3-Eg0BGKvwf" />
+                <img className="w-full h-full object-cover" data-alt="cozy common area for students with colorful bean bags, wooden flooring, and a large TV screen" alt="cozy common area" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKqRmOmTQdmXTuBy6ZOQ2v06oQHmTanJNCv4wusghymjCtax5AtDh5Fj9joWgm0Q1FaJeyDI-PLfJMFq767_-N73MAQ7s2AacBu2LVCr-0zphZRRPgVBJtXudBbu77pDkXjzI3vTAe-jNbp7hozO-_0iGgzzRbsnjNxXaxySLT_Y0sZJ_6xp-4SqHHUxnYpPSoqlzagIm7NnrIo4b79a6MvySGJjgaDmmDDUXYI_r0SgvmICScu-gzxxtGqSiYjgVXr3-Eg0BGKvwf" />
               </div>
             </div>
           </div>
 
           {/* Mobile View: Horizontal Snap Carousel */}
-          <div className="md:hidden flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 custom-scrollbar">
+          <div className="md:hidden flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 custom-scrollbar min-h-[350px]">
             {[
               "https://lh3.googleusercontent.com/aida-public/AB6AXuC6kwxMXfOSgxcWir6NewPzV_Jim0gPZf21ni2RrJe_JP9v5HHZBIJArCvpnKQiMF75Iivwu_P1ompk9-uXYEFz-zk1RprDCd8Og38pWmxqnJsTT85pFmtePwfRl4T8t_M-GaPLMtCRjxbg34rC57l__gFvbRWpuexxwW_fgiArDCESGiCtj77J3P0VWsBFIHATnBU1fDbA4208hQa5xUpt6ne1llRLztRKRKexTMSc8QqmmUMkVEPMSUOimriHrn58XnmbFKHsj0-n",
               "https://lh3.googleusercontent.com/aida-public/AB6AXuAD9_78edkWGErtPfIlAkfSf4hN-fESFqnjNXJiX60cG5zwj0Oj2uGxuqxyNPylH52PPXoYc9r1RMReCVI7XmoF_5Z7NX6i_4QVmr6ws1U1U2OcUjW2uLNRxffpLbOhAEdKoDe4FRX-SWj-lq5vUqAp9W5zaPH3Pa6eM1r2pGQ0e08RrP7ReTpTVc9IZqadSWFrURMdQDZA_nuH2H55E0wbHJHgAxmUzkvlel98mo2Vi3MjDey0aXNGT-ylnlXZiZW4fHLC3H_f4Hg1",
               "https://lh3.googleusercontent.com/aida-public/AB6AXuAN8ADW9H0mJ0RF_aitbOBZrnt6SUNqYHtb7Xuw-iZTTbNRjG5m8yuWOQt4AEdfIxJIRECcxtR75BfjZq3q3FnHlBeWj5D6fC_gws4xzHtPA6oPyAXw_UBTTQ7BmfaVnRw2wMzGKoxAxllgaGbAKr0ji3l3sRkT16DvIGupqTtQL2rZuQ2IV3qJRjdlxFzIdX4TBIDpMJthHXB2n3iBOVNt3JBsobZM_0GFFQoDPZkUj-2B2uaIukWH5jV-W3Iiug59zBrFaQxBLfqw",
               "https://lh3.googleusercontent.com/aida-public/AB6AXuCKqRmOmTQdmXTuBy6ZOQ2v06oQHmTanJNCv4wusghymjCtax5AtDh5Fj9joWgm0Q1FaJeyDI-PLfJMFq767_-N73MAQ7s2AacBu2LVCr-0zphZRRPgVBJtXudBbu77pDkXjzI3vTAe-jNbp7hozO-_0iGgzzRbsnjNxXaxySLT_Y0sZJ_6xp-4SqHHUxnYpPSoqlzagIm7NnrIo4b79a6MvySGJjgaDmmDDUXYI_r0SgvmICScu-gzxxtGqSiYjgVXr3-Eg0BGKvwf"
             ].map((src, i) => (
-              <div key={i} className="relative min-w-full aspect-[2/3] rounded-[2rem] overflow-hidden snap-center shadow-md border border-white/20 dark:border-slate-700/50">
+              <div key={i} className="relative min-w-[90%] w-full h-[400px] flex-shrink-0 rounded-[2rem] overflow-hidden snap-center shadow-md border border-white/20 dark:border-slate-700/50">
                 <img className="w-full h-full object-cover" src={src} alt={`property view ${i + 1}`} />
                 {i === 0 && (
                   <div className="absolute top-4 left-4 flex gap-2">

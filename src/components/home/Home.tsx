@@ -1,4 +1,4 @@
-import { LuGraduationCap, LuActivity, LuUsers, LuBook, LuGlobe } from 'react-icons/lu';
+import { LuGraduationCap, LuActivity, LuUsers, LuBook, LuGlobe, LuShoppingBag } from 'react-icons/lu';
 import { FaApple, FaGooglePlay } from 'react-icons/fa';
 
 const HomePage = () => {
@@ -19,22 +19,31 @@ const HomePage = () => {
               </p>
             </div>
 
-            <div className="flex flex-wrap gap-5 pt-6 animate-fade-up [animation-delay:200ms]">
-              <button className="group relative flex items-center justify-center gap-4 px-8 py-4 bg-gradient-to-b from-white/40 to-white/10 backdrop-blur-[32px] border border-white/50 border-t-white/80 border-l-white/70 rounded-[1.5rem] shadow-[inset_0_1px_1px_rgba(255,255,255,0.8),_inset_0_0_20px_rgba(255,255,255,0.2),_0_12px_40px_rgba(0,0,0,0.08)] hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.9),_inset_0_0_20px_rgba(255,255,255,0.3),_0_16px_40px_rgba(220,38,38,0.2)] transition-all duration-300 hover:-translate-y-1 hover:scale-[1.03] active:scale-95 overflow-hidden">
+            <div className="flex flex-wrap items-center gap-3 md:gap-5 pt-6 animate-fade-up [animation-delay:200ms]">
+              <button className="group relative flex items-center justify-center gap-3 px-6 py-3 bg-gradient-to-b from-white/40 to-white/10 backdrop-blur-[32px] border border-white/50 border-t-white/80 border-l-white/70 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] active:scale-95 overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-brand-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 mix-blend-overlay"></div>
-                <FaApple className="text-slate-800 text-[2rem] relative z-10 transition-transform group-hover:scale-105 duration-300 drop-shadow-sm" />
+                <FaApple className="text-slate-800 text-3xl relative z-10 transition-transform group-hover:scale-105 duration-300 drop-shadow-sm" />
                 <div className="text-left relative z-10">
-                  <p className="text-[10px] uppercase tracking-[0.2em] text-slate-600 font-bold leading-none mb-1">Download on</p>
-                  <p className="text-xl font-black tracking-tight text-slate-900 leading-none">App Store</p>
+                  <p className="text-[9px] uppercase tracking-[0.2em] text-slate-600 font-bold leading-none mb-1">Download on</p>
+                  <p className="text-lg font-black tracking-tight text-slate-900 leading-none">App Store</p>
                 </div>
               </button>
 
-              <button className="group relative flex items-center justify-center gap-4 px-8 py-4 bg-gradient-to-b from-white/40 to-white/10 backdrop-blur-[32px] border border-white/50 border-t-white/80 border-l-white/70 rounded-[1.5rem] shadow-[inset_0_1px_1px_rgba(255,255,255,0.8),_inset_0_0_20px_rgba(255,255,255,0.2),_0_12px_40px_rgba(0,0,0,0.08)] hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.9),_inset_0_0_20px_rgba(255,255,255,0.3),_0_16px_40px_rgba(79,70,229,0.2)] transition-all duration-300 hover:-translate-y-1 hover:scale-[1.03] active:scale-95 overflow-hidden">
+              <button className="group relative flex items-center justify-center gap-3 px-6 py-3 bg-gradient-to-b from-white/40 to-white/10 backdrop-blur-[32px] border border-white/50 border-t-white/80 border-l-white/70 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] active:scale-95 overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-l from-indigo-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 mix-blend-overlay"></div>
-                <FaGooglePlay className="text-slate-800 text-[1.8rem] relative z-10 transition-transform group-hover:scale-105 duration-300 drop-shadow-sm" />
+                <FaGooglePlay className="text-slate-800 text-3xl relative z-10 transition-transform group-hover:scale-105 duration-300 drop-shadow-sm" />
                 <div className="text-left relative z-10">
-                  <p className="text-[10px] uppercase tracking-[0.2em] text-slate-600 font-bold leading-none mb-1">Get it on</p>
-                  <p className="text-xl font-black tracking-tight text-slate-900 leading-none">Google Play</p>
+                  <p className="text-[9px] uppercase tracking-[0.2em] text-slate-600 font-bold leading-none mb-1">Get it on</p>
+                  <p className="text-lg font-black tracking-tight text-slate-900 leading-none">Google Play</p>
+                </div>
+              </button>
+
+              <button className="group relative flex items-center justify-center gap-3 px-6 py-3 bg-gradient-to-b from-white/40 to-white/10 backdrop-blur-[32px] border border-white/50 border-t-white/80 border-l-white/70 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] active:scale-95 overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-l from-red-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 mix-blend-overlay"></div>
+                <LuShoppingBag className="text-slate-800 text-3xl relative z-10 transition-transform group-hover:scale-105 duration-300 drop-shadow-sm" />
+                <div className="text-left relative z-10">
+                  <p className="text-[9px] uppercase tracking-[0.2em] text-slate-600 font-bold leading-none mb-1">Explore it on</p>
+                  <p className="text-lg font-black tracking-tight text-slate-900 leading-none">AppGallery</p>
                 </div>
               </button>
             </div>
@@ -53,35 +62,35 @@ const HomePage = () => {
             </div>
 
             {/* Floating Glass Status Cards */}
-            <div className="absolute -top-8 -right-4 lg:-right-12 glass-card p-4 rounded-3xl shadow-xl flex items-center gap-4 z-20 animate-[float_4s_ease-in-out_infinite]">
-              <div className="w-12 h-12 rounded-full bg-brand-100 flex items-center justify-center">
-                <LuActivity className="text-brand-600 text-xl" />
+            <div className="absolute -top-8 -right-4 lg:-right-12 glass-card bg-white/40 dark:bg-slate-800/80 p-4 rounded-3xl shadow-xl border border-white/50 dark:border-slate-700/50 flex items-center gap-4 z-20 animate-[float_4s_ease-in-out_infinite] backdrop-blur-xl">
+              <div className="w-12 h-12 rounded-full bg-brand-100 dark:bg-brand-900/30 flex items-center justify-center">
+                <LuActivity className="text-brand-600 dark:text-brand-400 text-xl" />
               </div>
               <div className="hidden sm:block">
-                <p className="text-xs font-bold text-slate-500 uppercase tracking-tighter">Live Campus Pulse</p>
-                <p className="text-lg font-extrabold text-slate-900">Active Now</p>
+                <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-tighter">Live Campus Pulse</p>
+                <p className="text-lg font-extrabold text-slate-900 dark:text-white">Active Now</p>
               </div>
             </div>
 
-            <div className="absolute -bottom-10 -left-4 lg:-left-12 glass-card p-4 rounded-3xl shadow-xl flex items-center gap-4 z-20 animate-[float_5s_ease-in-out_infinite_reverse]">
-              <div className="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center">
-                <LuUsers className="text-indigo-600 text-xl" />
+            <div className="absolute -bottom-10 -left-4 lg:-left-12 glass-card bg-white/40 dark:bg-slate-800/80 p-4 rounded-3xl shadow-xl border border-white/50 dark:border-slate-700/50 flex items-center gap-4 z-20 animate-[float_5s_ease-in-out_infinite_reverse] backdrop-blur-xl">
+              <div className="w-12 h-12 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center">
+                <LuUsers className="text-indigo-600 dark:text-indigo-400 text-xl" />
               </div>
               <div className="hidden sm:block">
-                <p className="text-xs font-bold text-slate-500 uppercase tracking-tighter">Student Stats</p>
-                <p className="text-lg font-extrabold text-slate-900">12k+ Global</p>
+                <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-tighter">Student Stats</p>
+                <p className="text-lg font-extrabold text-slate-900 dark:text-white">12k+ Global</p>
               </div>
             </div>
 
             {/* Decorative Floating 3D Icons */}
-            <div className="absolute top-1/4 -left-8 sm:-left-16 w-16 h-16 rounded-2xl glass-card flex items-center justify-center shadow-lg transform -rotate-12 z-20 animate-[float_6s_ease-in-out_infinite]">
-              <LuBook className="text-brand-600 text-3xl" />
+            <div className="absolute top-1/4 -left-8 sm:-left-16 w-16 h-16 rounded-2xl glass-card bg-white/40 dark:bg-slate-800/80 border border-white/50 dark:border-slate-700/50 flex items-center justify-center shadow-lg transform -rotate-12 z-20 animate-[float_6s_ease-in-out_infinite] backdrop-blur-xl">
+              <LuBook className="text-brand-600 dark:text-brand-400 text-3xl" />
             </div>
-            <div className="absolute bottom-1/4 -right-6 sm:-right-12 w-20 h-20 rounded-full glass-card flex items-center justify-center shadow-lg transform rotate-12 bg-white/80 z-20 animate-[float_4.5s_ease-in-out_infinite]">
-              <LuGraduationCap className="text-indigo-600 text-4xl" />
+            <div className="absolute bottom-1/4 -right-6 sm:-right-12 w-20 h-20 rounded-full glass-card bg-white/80 dark:bg-slate-800/90 border border-white/50 dark:border-slate-700/50 flex items-center justify-center shadow-lg transform rotate-12 z-20 animate-[float_4.5s_ease-in-out_infinite] backdrop-blur-xl">
+              <LuGraduationCap className="text-indigo-600 dark:text-indigo-400 text-4xl" />
             </div>
-            <div className="absolute top-10 right-4 sm:right-10 w-12 h-12 rounded-full glass-card flex items-center justify-center shadow-md z-20 animate-[float_5.5s_ease-in-out_infinite_reverse]">
-              <LuGlobe className="text-brand-400 text-2xl" />
+            <div className="absolute top-10 right-4 sm:right-10 w-12 h-12 rounded-full glass-card bg-white/40 dark:bg-slate-800/80 border border-white/50 dark:border-slate-700/50 flex items-center justify-center shadow-md z-20 animate-[float_5.5s_ease-in-out_infinite_reverse] backdrop-blur-xl">
+              <LuGlobe className="text-brand-400 dark:text-brand-400 text-2xl" />
             </div>
 
             {/* Ambient Glows */}
