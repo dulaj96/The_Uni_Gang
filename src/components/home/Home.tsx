@@ -20,32 +20,32 @@ const HomePage = () => {
             </div>
 
             <div className="flex flex-wrap items-center gap-3 md:gap-5 pt-6 animate-fade-up [animation-delay:200ms]">
-              <button className="group relative flex items-center justify-center gap-3 px-6 py-3 bg-gradient-to-b from-white/40 to-white/10 backdrop-blur-[32px] border border-white/50 border-t-white/80 border-l-white/70 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] active:scale-95 overflow-hidden">
+              <a href="#" className="group relative flex items-center justify-center gap-3 px-6 py-3 bg-gradient-to-b from-white/40 to-white/10 backdrop-blur-[32px] border border-white/50 border-t-white/80 border-l-white/70 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] active:scale-95 overflow-hidden text-slate-800 dark:text-white">
                 <div className="absolute inset-0 bg-gradient-to-r from-brand-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 mix-blend-overlay"></div>
-                <FaApple className="text-slate-800 text-3xl relative z-10 transition-transform group-hover:scale-105 duration-300 drop-shadow-sm" />
+                <FaApple className="text-3xl relative z-10 transition-transform group-hover:scale-105 duration-300 drop-shadow-sm" />
                 <div className="text-left relative z-10">
-                  <p className="text-[9px] uppercase tracking-[0.2em] text-slate-600 font-bold leading-none mb-1">Download on</p>
-                  <p className="text-lg font-black tracking-tight text-slate-900 leading-none">App Store</p>
+                  <p className="text-[9px] uppercase tracking-[0.2em] text-slate-600 dark:text-slate-300 font-bold leading-none mb-1">Download on</p>
+                  <p className="text-lg font-black tracking-tight leading-none">App Store</p>
                 </div>
-              </button>
+              </a>
 
-              <button className="group relative flex items-center justify-center gap-3 px-6 py-3 bg-gradient-to-b from-white/40 to-white/10 backdrop-blur-[32px] border border-white/50 border-t-white/80 border-l-white/70 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] active:scale-95 overflow-hidden">
+              <a href="#" className="group relative flex items-center justify-center gap-3 px-6 py-3 bg-gradient-to-b from-white/40 to-white/10 backdrop-blur-[32px] border border-white/50 border-t-white/80 border-l-white/70 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] active:scale-95 overflow-hidden text-slate-800 dark:text-white">
                 <div className="absolute inset-0 bg-gradient-to-l from-indigo-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 mix-blend-overlay"></div>
-                <FaGooglePlay className="text-slate-800 text-3xl relative z-10 transition-transform group-hover:scale-105 duration-300 drop-shadow-sm" />
+                <FaGooglePlay className="text-3xl relative z-10 transition-transform group-hover:scale-105 duration-300 drop-shadow-sm" />
                 <div className="text-left relative z-10">
-                  <p className="text-[9px] uppercase tracking-[0.2em] text-slate-600 font-bold leading-none mb-1">Get it on</p>
-                  <p className="text-lg font-black tracking-tight text-slate-900 leading-none">Google Play</p>
+                  <p className="text-[9px] uppercase tracking-[0.2em] text-slate-600 dark:text-slate-300 font-bold leading-none mb-1">Get it on</p>
+                  <p className="text-lg font-black tracking-tight leading-none">Google Play</p>
                 </div>
-              </button>
+              </a>
 
-              <button className="group relative flex items-center justify-center gap-3 px-6 py-3 bg-gradient-to-b from-white/40 to-white/10 backdrop-blur-[32px] border border-white/50 border-t-white/80 border-l-white/70 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] active:scale-95 overflow-hidden">
+              <a href="#" className="group relative flex items-center justify-center gap-3 px-6 py-3 bg-gradient-to-b from-white/40 to-white/10 backdrop-blur-[32px] border border-white/50 border-t-white/80 border-l-white/70 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] active:scale-95 overflow-hidden text-slate-800 dark:text-white">
                 <div className="absolute inset-0 bg-gradient-to-l from-red-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 mix-blend-overlay"></div>
-                <LuShoppingBag className="text-slate-800 text-3xl relative z-10 transition-transform group-hover:scale-105 duration-300 drop-shadow-sm" />
+                <LuShoppingBag className="text-3xl relative z-10 transition-transform group-hover:scale-105 duration-300 drop-shadow-sm" />
                 <div className="text-left relative z-10">
-                  <p className="text-[9px] uppercase tracking-[0.2em] text-slate-600 font-bold leading-none mb-1">Explore it on</p>
-                  <p className="text-lg font-black tracking-tight text-slate-900 leading-none">AppGallery</p>
+                  <p className="text-[9px] uppercase tracking-[0.2em] text-slate-600 dark:text-slate-300 font-bold leading-none mb-1">Explore it on</p>
+                  <p className="text-lg font-black tracking-tight leading-none">AppGallery</p>
                 </div>
-              </button>
+              </a>
             </div>
           </div>
 

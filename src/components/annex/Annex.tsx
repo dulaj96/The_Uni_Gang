@@ -179,20 +179,20 @@ const Annex = () => {
                       <span className="text-sm font-medium">{listing.location}</span>
                     </div>
 
-                    <div className="mt-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                    <div className="mt-auto pt-4 flex flex-row items-end justify-between gap-2 border-t border-slate-100 dark:border-slate-800/50">
                       <div className="flex flex-col">
-                        <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400 mb-1">Monthly Fee</span>
-                        <span className="text-2xl font-extrabold text-blue-800 dark:text-blue-400">
-                          <span>Rs.</span>{listing.price}<span className="text-sm font-medium text-slate-400 ml-1">/mo</span>
+                        <span className="text-[9px] font-semibold uppercase tracking-[0.2em] text-slate-400 mb-0.5">Monthly Fee</span>
+                        <span className="text-xl md:text-2xl font-extrabold text-blue-800 dark:text-blue-400 leading-none">
+                          <span className="text-xs mr-0.5">Rs.</span>{listing.price}
                         </span>
                       </div>
                       <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => navigate(`/annex/${listing.id}`)}
-                        className="w-full md:w-auto text-sm bg-white/80 dark:bg-slate-800/80 hover:bg-blue-800 hover:text-white dark:hover:bg-blue-800 text-blue-800 dark:text-blue-300 border border-blue-100 dark:border-slate-700 px-6 py-3 rounded-2xl font-bold transition-all shadow-sm flex items-center justify-center"
+                        className="w-auto text-[11px] md:text-sm bg-blue-50 dark:bg-slate-800/80 hover:bg-blue-800 hover:text-white dark:hover:bg-blue-800 text-blue-800 dark:text-blue-300 border border-blue-100 dark:border-slate-700 px-4 md:px-6 py-2.5 rounded-xl font-bold transition-all shadow-sm flex items-center justify-center"
                       >
-                        View Details
+                        Details
                       </motion.button>
                     </div>
                   </div>
