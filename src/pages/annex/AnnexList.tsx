@@ -226,7 +226,8 @@ const AnnexList = () => {
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, scale: 0.9 }}
                                 transition={{ duration: 0.5, delay: index * 0.05 }}
-                                className="group glass-card bg-white/45 dark:bg-slate-900/60 border border-white/60 dark:border-slate-700/50 rounded-[2.5rem] p-4 hover:shadow-[0_40px_80px_-20px_rgba(0,63,221,0.12)] transition-shadow duration-500"
+                                // Main container colors updated to match your main screen
+                                className="group relative h-full bg-white/45 dark:bg-slate-900/45 backdrop-blur-[24px] border border-white/40 dark:border-slate-800 rounded-[2.5rem] p-4 hover:shadow-[0_40px_80px_-20px_rgba(0,63,221,0.12)] transition-all duration-500 flex flex-col"
                             >
                                 <div className="relative h-[280px] rounded-[2rem] overflow-hidden mb-6">
                                     <img
@@ -234,41 +235,61 @@ const AnnexList = () => {
                                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                         src={item.image}
                                     />
+
+                                    {/* Verified Badge Colors */}
                                     {item.verified && (
-                                        <div className="absolute top-4 left-4 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm border border-white/20">
-                                            <span className="material-symbols-outlined text-green-600 text-[16px]" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
+                                        <div className="absolute top-4 left-4 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm border border-white/20 dark:border-slate-700/50">
+                                            <span className="material-symbols-outlined text-green-600 dark:text-green-400 text-[16px]" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
                                             <span className="text-[10px] font-extrabold uppercase tracking-widest text-slate-800 dark:text-slate-200">Verified</span>
                                         </div>
                                     )}
+
+                                    {/* Favorite Button Colors */}
                                     <button
-                                        onClick={() => toggleFavorite(item.id)}
-                                        className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/90 dark:bg-slate-800/90 backdrop-blur-md flex items-center justify-center transition-all hover:scale-110 shadow-sm border border-white/20"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            toggleFavorite(item.id);
+                                        }}
+                                        className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/80 dark:bg-slate-800/80 backdrop-blur-md flex items-center justify-center transition-all hover:scale-110 shadow-sm border border-white/20 dark:border-slate-700/50"
                                     >
                                         <LuHeart className={`text-xl transition-colors ${favorites.includes(item.id) ? 'fill-red-500 text-red-500' : 'text-slate-400 dark:text-slate-300'}`} />
                                     </button>
                                 </div>
-                                <div className="px-3 space-y-4">
+
+                                <div className="px-3 space-y-4 flex-grow flex flex-col">
                                     <div className="flex justify-between items-start">
                                         <div>
-                                            <h3 className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-blue-800 dark:group-hover:text-blue-400 transition-colors uppercase tracking-tight">{item.title}</h3>
-                                            <p className="text-slate-500 dark:text-slate-400 text-sm flex items-center gap-1 mt-1">
+                                            <h3 className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-blue-800 dark:group-hover:text-blue-400 transition-colors uppercase tracking-tight">
+                                                {item.title}
+                                            </h3>
+                                            <p className="text-slate-500 dark:text-slate-400 text-sm flex items-center gap-1 mt-1 font-medium">
                                                 <LuMapPin className="text-[14px] text-blue-800/60 dark:text-blue-400/60" />
                                                 {item.location}
                                             </p>
                                         </div>
                                         <div className="text-right">
                                             <span className="text-2xl font-black text-blue-800 dark:text-blue-400">Rs.{item.price}</span>
-                                            <span className="text-[10px] text-slate-400 font-bold block uppercase tracking-widest">per month</span>
+                                            <span className="text-[9px] text-slate-400 dark:text-slate-500 font-bold block uppercase tracking-widest">per month</span>
                                         </div>
                                     </div>
-                                    <div className="flex items-center gap-4 py-4 border-y border-slate-200/50 dark:border-slate-800/50">
-                                        <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 text-sm font-medium"><LuBedDouble className="text-lg text-slate-400" /> {item.beds} Bed</div>
-                                        <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 text-sm font-medium"><LuShowerHead className="text-lg text-slate-400" /> {item.bath}</div>
-                                        <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 text-sm font-medium"><LuWifi className="text-lg text-slate-400" /> WiFi</div>
+
+                                    {/* Amenities Row Colors */}
+                                    <div className="flex items-center gap-4 py-4 border-y border-slate-200/50 dark:border-slate-800/50 mt-auto">
+                                        <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 text-sm font-medium">
+                                            <LuBedDouble className="text-lg text-slate-400 dark:text-slate-500" /> {item.beds} Bed
+                                        </div>
+                                        <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 text-sm font-medium">
+                                            <LuShowerHead className="text-lg text-slate-400 dark:text-slate-500" /> {item.bath}
+                                        </div>
+                                        <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 text-sm font-medium">
+                                            <LuWifi className="text-lg text-slate-400 dark:text-slate-500" /> WiFi
+                                        </div>
                                     </div>
-                                    <button 
+
+                                    {/* Action Button Colors - Matches your main screen button style */}
+                                    <button
                                         onClick={() => navigate(`/annex/${item.id}`)}
-                                        className="w-full bg-blue-800 text-white py-4 rounded-3xl font-bold tracking-tight shadow-md shadow-blue-800/20 hover:bg-blue-900 transition-all active:scale-95"
+                                        className="w-full bg-blue-50 dark:bg-slate-800/80 hover:bg-blue-800 hover:text-white dark:hover:bg-blue-800 text-blue-800 dark:text-blue-300 border border-blue-100 dark:border-slate-700 py-4 rounded-[1.5rem] font-bold tracking-tight transition-all active:scale-95 shadow-sm"
                                     >
                                         View Details
                                     </button>
