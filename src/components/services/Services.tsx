@@ -1,5 +1,5 @@
-import React from 'react';
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from 'framer-motion';
 import {
   LuLayoutDashboard,
   LuSmartphone,
@@ -7,7 +7,9 @@ import {
   LuSearch,
   LuCheck,
   LuPalette,
-  LuCamera
+  LuCamera,
+  LuX,
+  LuSend
 } from 'react-icons/lu';
 
 interface ServiceItem {
@@ -119,6 +121,26 @@ const TiltCard = ({ children, className }: { children: React.ReactNode, classNam
 };
 
 const Services = () => {
+  const [selectedService, setSelectedService] = useState<ServiceItem | null>(null);
+
+  // 2. WhatsApp message generate function 
+  const handleWhatsAppSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const formData = new FormData(e.target as HTMLFormElement);
+    const phone = formData.get('phone');
+    const brief = formData.get('brief');
+    const deadline = formData.get('deadline');
+    const budget = formData.get('budget');
+
+    const message = `*Project Request: ${selectedService?.title}*%0A%0A` +
+      `*WhatsApp:* ${phone}%0A` +
+      `*Brief:* ${brief}%0A` +
+      `*Deadline:* ${deadline}%0A` +
+      `*Budget:* ${budget}`;
+
+    window.open(`https://wa.me/94724478148?text=${message}`, '_blank');
+  };
+
   return (
     <section id="services" className="relative pt-12 pb-10 bg-slate-150 font-sans overflow-hidden">
       {/* Background Decorative Elements */}
@@ -225,6 +247,7 @@ const Services = () => {
 
                 <div className="pt-8">
                   <motion.button
+                    onClick={() => setSelectedService(service)}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     className="px-8 py-4 bg-primary text-white font-bold rounded-2xl shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/40 transition-all uppercase tracking-wider text-sm"
@@ -237,6 +260,126 @@ const Services = () => {
           ))}
         </div>
       </div>
+
+      {/* 4. Popup Modal Implementation */}
+      <AnimatePresence>
+        {selectedService && (
+          <>
+            {/* Background Overlay - Blur එක වැඩි කරා */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedService(null)}
+              className="fixed inset-0 z-[100] bg-slate-950/40 backdrop-blur-xl" // High blur for premium look
+            />
+
+            {/* Modal Card */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 30 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 30 }}
+              transition={{ type: "spring", duration: 0.5, bounce: 0.3 }}
+              className="fixed inset-0 z-[101] flex items-center justify-center p-4 pointer-events-none"
+            >
+              <div className="w-full max-w-xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl rounded-[2.5rem] p-10 shadow-[0_32px_64px_-15px_rgba(0,0,0,0.3)] border border-white/40 dark:border-white/10 pointer-events-auto relative overflow-hidden">
+
+                {/* Background Decorative Blobs - Modal එක ඇතුළේ තියෙන ලස්සනට */}
+                <div className="absolute -top-24 -right-24 w-48 h-48 bg-primary/10 blur-3xl rounded-full pointer-events-none" />
+                <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-indigo-500/10 blur-3xl rounded-full pointer-events-none" />
+
+                {/* Close Button - Clean circle with hover effect */}
+                <button
+                  onClick={() => setSelectedService(null)}
+                  className="absolute top-8 right-8 p-2.5 rounded-full bg-slate-200/50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 hover:bg-primary hover:text-white transition-all duration-300"
+                >
+                  <LuX size={18} />
+                </button>
+
+                {/* Header Section - More Spacing and Bold Icon */}
+                <div className="relative flex flex-col items-center text-center mb-10">
+                  <motion.div
+                    initial={{ rotate: -10, scale: 0.8 }}
+                    animate={{ rotate: 0, scale: 1 }}
+                    className={`p-5 rounded-3xl bg-gradient-to-tr ${selectedService.gradient} text-primary text-4xl mb-4 shadow-inner`}
+                  >
+                    {selectedService.icon}
+                  </motion.div>
+                  <h4 className="text-3xl font-black tracking-tight dark:text-white uppercase">
+                    {selectedService.title}
+                  </h4>
+                  <div className="h-1.5 w-12 bg-primary rounded-full mt-3 mb-2" />
+                  <p className="text-slate-500 dark:text-slate-400 font-medium">
+                    Ready to start your project? Fill in the details below.
+                  </p>
+                </div>
+
+                <form onSubmit={handleWhatsAppSubmit} className="space-y-5 relative">
+                  {/* Input Group with floating label style feel */}
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-primary uppercase tracking-[0.2em] ml-1">Contact Details</label>
+                    <div className="relative group">
+                      <input
+                        name="phone"
+                        required
+                        type="text"
+                        placeholder="WhatsApp Number (e.g. +94 77 123 4567)"
+                        className="w-full p-4 pl-5 rounded-2xl bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all duration-300 placeholder:text-slate-400"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-primary uppercase tracking-[0.2em] ml-1">Project Scope</label>
+                    <textarea
+                      name="brief"
+                      required
+                      placeholder={`Tell us about your ${selectedService.title} requirements...`}
+                      rows={3}
+                      className="w-full p-5 rounded-2xl bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all duration-300 resize-none placeholder:text-slate-400"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-5">
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black text-primary uppercase tracking-[0.2em] ml-1">Target Date</label>
+                      <input
+                        name="deadline"
+                        required
+                        type="date"
+                        className="w-full p-4 rounded-2xl bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-sm dark:text-slate-300"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black text-primary uppercase tracking-[0.2em] ml-1">Estimated Budget</label>
+                      <input
+                        name="budget"
+                        placeholder="LKR 10,000+"
+                        className="w-full p-4 rounded-2xl bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-sm placeholder:text-slate-400"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Submit Button - Gradient with Shine effect */}
+                  <motion.button
+                    whileHover={{ scale: 1.02, y: -2 }}
+                    whileTap={{ scale: 0.98 }}
+                    type="submit"
+                    className="w-full py-5 bg-gradient-to-r from-primary to-indigo-600 text-white font-black rounded-2xl shadow-[0_20px_40px_-10px_rgba(var(--primary-rgb),0.3)] flex items-center justify-center gap-3 mt-6 uppercase tracking-widest text-sm"
+                  >
+                    <LuSend size={20} className="animate-pulse" />
+                    Initialize Project
+                  </motion.button>
+
+                  <p className="text-center text-[10px] text-slate-400 uppercase tracking-widest pt-2">
+                    Instant reply via WhatsApp secure line
+                  </p>
+                </form>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </section>
   );
 };

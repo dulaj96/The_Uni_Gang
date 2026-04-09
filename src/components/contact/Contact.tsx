@@ -64,10 +64,10 @@ const feedbacks: Feedback[] = [
 ];
 
 const stats = [
-    { icon: <LuMonitor />, value: "50+", label: "Web Apps Developed" },
-    { icon: <LuSearch />, value: "120+", label: "SEO Projects" },
-    { icon: <LuCalendarDays />, value: "200+", label: "Events Displayed" },
-    { icon: <LuUsers />, value: "5000+", label: "Happy Clients" }
+    { icon: <LuMonitor />, value: "45+", label: "Web, Apps Developed" },
+    { icon: <LuSearch />, value: "20+", label: "SEO Projects" },
+    { icon: <LuCalendarDays />, value: "60+", label: "Events Displayed" },
+    { icon: <LuUsers />, value: "150+", label: "Happy Clients" }
 ];
 
 const TestimonialCard = ({ feedback }: { feedback: Feedback }) => {
@@ -166,8 +166,8 @@ const Contact = () => {
 
                                 <div className="space-y-10 flex-grow">
                                     {[
-                                        { icon: LuMail, label: "Email Endpoint", value: "hello@theunigang.com" },
-                                        { icon: LuPhone, label: "Direct Hotline", value: "+94 77 123 4567" },
+                                        { icon: LuMail, label: "Email Endpoint", value: "uniganglk@gmail.com" },
+                                        { icon: LuPhone, label: "Direct Hotline", value: "+94 72 447 8148" },
                                         { icon: LuMapPin, label: "Our Base", value: "Colombo, Sri Lanka" }
                                     ].map((item, i) => (
                                         <motion.div

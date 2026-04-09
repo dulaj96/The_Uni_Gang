@@ -1,5 +1,7 @@
-import { LuGraduationCap, LuActivity, LuUsers, LuBook, LuGlobe } from 'react-icons/lu';
-import PremiumTraceButton from '../ui/PremiumTraceButton';
+import { LuGraduationCap, LuActivity, LuUsers, LuBook, LuGlobe, LuApple } from 'react-icons/lu';
+import { SiGoogleplay, SiHuawei } from 'react-icons/si';
+import { motion } from 'framer-motion';
+// import PremiumTraceButton from '../ui/PremiumTraceButton';
 
 const Hero = () => {
   return (
@@ -17,25 +19,25 @@ const Hero = () => {
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-5 pt-6 animate-fade-up [animation-delay:200ms]">
-            <PremiumTraceButton 
-              index={1}
-              icon={<span className="material-symbols-outlined">east</span>}
-              onClick={() => {
-                const el = document.getElementById('annex');
-                el?.scrollIntoView({ behavior: 'smooth' });
-              }}
-            >
-              View all ads
-            </PremiumTraceButton>
-
-            <PremiumTraceButton 
-              index={2}
-              icon={<span className="material-symbols-outlined">auto_awesome</span>}
-              onClick={() => window.location.href = '/post-ad'}
-            >
-              Post an annex ad
-            </PremiumTraceButton>
+          <div className="flex flex-wrap gap-4 pt-6 animate-fade-up [animation-delay:200ms]">
+            <AppStoreButton 
+              icon={<LuApple className="text-2xl" />}
+              label="Download on the"
+              store="App Store"
+              href="#"
+            />
+            <AppStoreButton 
+              icon={<SiGoogleplay className="text-xl" />}
+              label="Get it on"
+              store="Google Play"
+              href="#"
+            />
+            <AppStoreButton 
+              icon={<SiHuawei className="text-xl" />}
+              label="Explore it on"
+              store="AppGallery"
+              href="#"
+            />
           </div>
         </div>
 
@@ -97,5 +99,30 @@ const Hero = () => {
     </section>
   );
 };
+
+const AppStoreButton = ({ icon, label, store, href }: { icon: React.ReactNode; label: string; store: string; href: string }) => (
+  <motion.a
+    href={href}
+    whileHover={{ y: -4, scale: 1.02 }}
+    whileTap={{ scale: 0.98 }}
+    className="group relative flex items-center gap-3 px-6 py-3 rounded-2xl bg-white/10 dark:bg-slate-900/10 backdrop-blur-xl border border-white/20 dark:border-slate-800/20 shadow-lg hover:shadow-xl hover:bg-white/20 dark:hover:bg-slate-800/30 transition-all duration-300 overflow-hidden"
+  >
+    {/* Animated background glow */}
+    <div className="absolute inset-0 bg-gradient-to-r from-brand-600/10 to-indigo-600/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+    
+    <div className="relative z-10 text-slate-800 dark:text-white group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">
+      {icon}
+    </div>
+    
+    <div className="relative z-10 flex flex-col items-start leading-none">
+      <span className="text-[10px] uppercase tracking-wider font-semibold text-slate-500 dark:text-slate-400 mb-1">
+        {label}
+      </span>
+      <span className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">
+        {store}
+      </span>
+    </div>
+  </motion.a>
+);
 
 export default Hero;
