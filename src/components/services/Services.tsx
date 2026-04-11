@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from 'framer-motion';
 import {
   LuLayoutDashboard,
@@ -9,7 +9,8 @@ import {
   LuPalette,
   LuCamera,
   LuX,
-  LuSend
+  LuSend,
+  LuCircleCheck
 } from 'react-icons/lu';
 
 interface ServiceItem {
@@ -122,23 +123,40 @@ const TiltCard = ({ children, className }: { children: React.ReactNode, classNam
 
 const Services = () => {
   const [selectedService, setSelectedService] = useState<ServiceItem | null>(null);
+  const [showToast, setShowToast] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (showToast) {
+      const timer = setTimeout(() => setShowToast(false), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [showToast]);
 
   // 2. WhatsApp message generate function 
   const handleWhatsAppSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
-    const phone = formData.get('phone');
-    const brief = formData.get('brief');
-    const deadline = formData.get('deadline');
-    const budget = formData.get('budget');
+    setIsSubmitting(true);
 
-    const message = `*Project Request: ${selectedService?.title}*%0A%0A` +
-      `*WhatsApp:* ${phone}%0A` +
-      `*Brief:* ${brief}%0A` +
-      `*Deadline:* ${deadline}%0A` +
-      `*Budget:* ${budget}`;
+    setTimeout(() => {
+      const formData = new FormData(e.target as HTMLFormElement);
+      const phone = formData.get('phone');
+      const brief = formData.get('brief');
+      const deadline = formData.get('deadline');
+      const budget = formData.get('budget');
 
-    window.open(`https://wa.me/94724478148?text=${message}`, '_blank');
+      const message = `*Project Request: ${selectedService?.title}*%0A%0A` +
+        `*WhatsApp:* ${phone}%0A` +
+        `*Brief:* ${brief}%0A` +
+        `*Deadline:* ${deadline}%0A` +
+        `*Budget:* ${budget}`;
+
+      window.open(`https://wa.me/94724478148?text=${message}`, '_blank');
+
+      setIsSubmitting(false);
+      setSelectedService(null);
+      setShowToast(true);
+    }, 800);
   };
 
   return (
@@ -378,8 +396,8 @@ const Services = () => {
                           Contact Connection
                         </label>
                         <motion.input
-                          whileFocus={{ 
-                            scale: 1.02, 
+                          whileFocus={{
+                            scale: 1.02,
                             boxShadow: "0 0 25px rgba(0, 63, 221, 0.15)",
                             borderColor: "#003fdd"
                           }}
@@ -402,8 +420,8 @@ const Services = () => {
                           Project DNA
                         </label>
                         <motion.textarea
-                          whileFocus={{ 
-                            scale: 1.02, 
+                          whileFocus={{
+                            scale: 1.02,
                             boxShadow: "0 0 25px rgba(0, 63, 221, 0.15)",
                             borderColor: "#003fdd"
                           }}
@@ -451,10 +469,10 @@ const Services = () => {
                       <motion.div
                         variants={{
                           hidden: { opacity: 0, y: 30, scale: 0.95, rotate: -2 },
-                          visible: { 
-                            opacity: 1, 
-                            y: 0, 
-                            scale: 1, 
+                          visible: {
+                            opacity: 1,
+                            y: 0,
+                            scale: 1,
                             rotate: 0,
                             transition: { type: "spring", damping: 15 }
                           }
@@ -472,7 +490,7 @@ const Services = () => {
                           className="group relative w-full py-5 bg-gradient-to-r from-primary via-blue-600 to-primary bg-[length:200%_auto] hover:bg-right transition-all duration-700 text-white font-black rounded-2xl flex items-center justify-center gap-4 uppercase tracking-[0.2em] text-xs sm:text-sm overflow-hidden"
                         >
                           {/* Premium Shine Effect */}
-                          <motion.div 
+                          <motion.div
                             animate={{
                               x: ["-100%", "200%"],
                             }}
@@ -482,10 +500,12 @@ const Services = () => {
                               ease: "easeInOut",
                               repeatDelay: 1
                             }}
-                            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12 pointer-events-none" 
+                            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12 pointer-events-none"
                           />
                           <LuSend size={20} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform relative z-10" />
-                          <span className="relative z-10">Initialize Project</span>
+                          <span className="relative z-10">
+                            {isSubmitting ? 'Transmitting...' : 'Initialize Project'}
+                          </span>
                         </motion.button>
                       </motion.div>
 
@@ -498,6 +518,48 @@ const Services = () => {
               </div>
             </div>
           </>
+        )}
+      </AnimatePresence>
+
+      {/* 5. Progress Toast Notification */}
+      <AnimatePresence>
+        {showToast && (
+          <motion.div
+            initial={{ opacity: 0, y: 50, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            transition={{ type: "spring", stiffness: 400, damping: 25 }}
+            className="fixed bottom-6 right-6 z-[200] w-80 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-white/40 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden p-4 flex items-start gap-4"
+          >
+            {/* Icon */}
+            <div className="bg-emerald-500/20 text-emerald-500 rounded-full p-2 mt-0.5">
+              <LuCircleCheck size={20} />
+            </div>
+
+            {/* Content */}
+            <div className="flex-1">
+              <h4 className="text-slate-900 dark:text-white font-bold text-sm">Transmission Successful!</h4>
+              <p className="text-slate-500 dark:text-slate-400 text-xs mt-1 leading-relaxed">
+                Project DNA secured. We will contact you via WhatsApp shortly.
+              </p>
+            </div>
+
+            {/* Close Button */}
+            <button
+              onClick={() => setShowToast(false)}
+              className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+            >
+              <LuX size={16} />
+            </button>
+
+            {/* Progress Bar */}
+            <motion.div
+              initial={{ width: "100%" }}
+              animate={{ width: "0%" }}
+              transition={{ duration: 5, ease: "linear" }}
+              className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-emerald-400 to-emerald-500"
+            />
+          </motion.div>
         )}
       </AnimatePresence>
     </section>
