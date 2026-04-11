@@ -265,118 +265,238 @@ const Services = () => {
       <AnimatePresence>
         {selectedService && (
           <>
-            {/* Background Overlay - Blur එක වැඩි කරා */}
+            {/* Background Overlay */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setSelectedService(null)}
-              className="fixed inset-0 z-[100] bg-slate-950/40 backdrop-blur-xl" // High blur for premium look
+              className="fixed inset-0 z-[100] bg-slate-950/60 backdrop-blur-xl"
             />
 
-            {/* Modal Card */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 30 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 30 }}
-              transition={{ type: "spring", duration: 0.5, bounce: 0.3 }}
-              className="fixed inset-0 z-[101] flex items-center justify-center p-4 pointer-events-none"
-            >
-              <div className="w-full max-w-xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl rounded-[2.5rem] p-10 shadow-[0_32px_64px_-15px_rgba(0,0,0,0.3)] border border-white/40 dark:border-white/10 pointer-events-auto relative overflow-hidden">
-
-                {/* Background Decorative Blobs - Modal එක ඇතුළේ තියෙන ලස්සනට */}
-                <div className="absolute -top-24 -right-24 w-48 h-48 bg-primary/10 blur-3xl rounded-full pointer-events-none" />
-                <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-indigo-500/10 blur-3xl rounded-full pointer-events-none" />
-
-                {/* Close Button - Clean circle with hover effect */}
-                <button
-                  onClick={() => setSelectedService(null)}
-                  className="absolute top-8 right-8 p-2.5 rounded-full bg-slate-200/50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 hover:bg-primary hover:text-white transition-all duration-300"
+            {/* Modal Container - Handles scrolling on small screens */}
+            <div className="fixed inset-0 z-[101] overflow-y-auto pointer-events-none">
+              <div className="min-h-full flex items-center justify-center p-4 sm:p-6">
+                {/* Modal Card */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9, y: 30 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.9, y: 30 }}
+                  transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                  className="w-full max-w-xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl rounded-[1.5rem] sm:rounded-[2.5rem] p-6 sm:p-10 shadow-[0_32px_64px_-15px_rgba(0,0,0,0.4)] border border-white/40 dark:border-white/10 pointer-events-auto relative overflow-hidden"
                 >
-                  <LuX size={18} />
-                </button>
-
-                {/* Header Section - More Spacing and Bold Icon */}
-                <div className="relative flex flex-col items-center text-center mb-10">
+                  {/* Background Decorative Blobs - More Organic Motion */}
                   <motion.div
-                    initial={{ rotate: -10, scale: 0.8 }}
-                    animate={{ rotate: 0, scale: 1 }}
-                    className={`p-5 rounded-3xl bg-gradient-to-tr ${selectedService.gradient} text-primary text-4xl mb-4 shadow-inner`}
+                    animate={{
+                      x: [0, 50, -20, 40, 0],
+                      y: [0, -60, 40, -30, 0],
+                      scale: [1, 1.25, 0.95, 1.1, 1],
+                      rotate: [0, 90, 180, 270, 360],
+                    }}
+                    transition={{
+                      duration: 20,
+                      repeat: Infinity,
+                      ease: "linear"
+                    }}
+                    className="absolute -top-24 -right-24 w-64 h-64 bg-primary/20 blur-3xl rounded-full pointer-events-none"
+                  />
+                  <motion.div
+                    animate={{
+                      x: [0, -60, 30, -40, 0],
+                      y: [0, 40, -50, 20, 0],
+                      scale: [1, 1.15, 0.85, 1.2, 1],
+                      rotate: [360, 270, 180, 90, 0],
+                    }}
+                    transition={{
+                      duration: 25,
+                      repeat: Infinity,
+                      ease: "linear",
+                      delay: 2
+                    }}
+                    className="absolute -bottom-24 -left-24 w-64 h-64 bg-indigo-500/20 blur-3xl rounded-full pointer-events-none"
+                  />
+
+                  {/* Close Button */}
+                  <button
+                    onClick={() => setSelectedService(null)}
+                    className="absolute top-4 right-4 sm:top-8 sm:right-8 p-2.5 rounded-full bg-slate-200/50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 hover:bg-primary hover:text-white hover:rotate-90 transition-all duration-500 z-10"
+                    aria-label="Close modal"
                   >
-                    {selectedService.icon}
+                    <LuX size={18} />
+                  </button>
+
+                  {/* Staggered Content Animation */}
+                  <motion.div
+                    variants={{
+                      hidden: { opacity: 0 },
+                      visible: {
+                        opacity: 1,
+                        transition: {
+                          staggerChildren: 0.12,
+                          delayChildren: 0.2
+                        }
+                      }
+                    }}
+                    initial="hidden"
+                    animate="visible"
+                  >
+                    {/* Header Section */}
+                    <motion.div
+                      variants={{
+                        hidden: { opacity: 0, y: 20 },
+                        visible: { opacity: 1, y: 0 }
+                      }}
+                      className="relative flex flex-col items-center text-center mb-8 sm:mb-12"
+                    >
+                      <motion.div
+                        initial={{ rotate: -15, scale: 0.5, opacity: 0 }}
+                        animate={{ rotate: 0, scale: 1, opacity: 1 }}
+                        transition={{ type: "spring", damping: 15, delay: 0.2 }}
+                        className={`p-5 sm:p-6 rounded-[2rem] bg-gradient-to-tr ${selectedService.gradient} text-primary text-3xl sm:text-5xl mb-6 shadow-[inset_0_2px_10px_rgba(255,255,255,0.2)] ring-1 ring-white/20`}
+                      >
+                        {selectedService.icon}
+                      </motion.div>
+                      <h4 className="text-2xl sm:text-4xl font-black tracking-tight dark:text-white uppercase">
+                        {selectedService.title}
+                      </h4>
+                      <div className="h-1.5 w-16 bg-primary rounded-full mt-4 mb-3" />
+                      <p className="text-sm sm:text-lg text-slate-500 dark:text-slate-400 font-medium max-w-sm leading-relaxed">
+                        Ready to launch your vision? Let's get started.
+                      </p>
+                    </motion.div>
+
+                    <form onSubmit={handleWhatsAppSubmit} className="space-y-5 sm:space-y-6 relative">
+                      {/* Form Fields with Staggered Entry and Focus Effects */}
+                      <motion.div
+                        variants={{
+                          hidden: { opacity: 0, x: -20 },
+                          visible: { opacity: 1, x: 0 }
+                        }}
+                        className="space-y-2"
+                      >
+                        <label className="text-[10px] sm:text-[11px] font-black text-primary uppercase tracking-[0.3em] ml-1">
+                          Contact Connection
+                        </label>
+                        <motion.input
+                          whileFocus={{ 
+                            scale: 1.02, 
+                            boxShadow: "0 0 25px rgba(0, 63, 221, 0.15)",
+                            borderColor: "#003fdd"
+                          }}
+                          name="phone"
+                          required
+                          type="text"
+                          placeholder="WhatsApp Number"
+                          className="w-full px-5 py-4 sm:p-5 rounded-2xl bg-white/40 dark:bg-slate-950/40 border border-slate-200/60 dark:border-slate-800/60 focus:border-primary focus:ring-8 focus:ring-primary/5 outline-none transition-all duration-300 placeholder:text-slate-400 backdrop-blur-sm"
+                        />
+                      </motion.div>
+
+                      <motion.div
+                        variants={{
+                          hidden: { opacity: 0, x: -20 },
+                          visible: { opacity: 1, x: 0 }
+                        }}
+                        className="space-y-2"
+                      >
+                        <label className="text-[10px] sm:text-[11px] font-black text-primary uppercase tracking-[0.3em] ml-1">
+                          Project DNA
+                        </label>
+                        <motion.textarea
+                          whileFocus={{ 
+                            scale: 1.02, 
+                            boxShadow: "0 0 25px rgba(0, 63, 221, 0.15)",
+                            borderColor: "#003fdd"
+                          }}
+                          name="brief"
+                          required
+                          placeholder={`Requirements for ${selectedService.title}...`}
+                          rows={3}
+                          className="w-full px-5 py-4 sm:p-6 rounded-2xl bg-white/40 dark:bg-slate-950/40 border border-slate-200/60 dark:border-slate-800/60 focus:border-primary focus:ring-8 focus:ring-primary/5 outline-none transition-all duration-300 resize-none placeholder:text-slate-400 backdrop-blur-sm"
+                        />
+                      </motion.div>
+
+                      <motion.div
+                        variants={{
+                          hidden: { opacity: 0, x: -20 },
+                          visible: { opacity: 1, x: 0 }
+                        }}
+                        className="grid grid-cols-1 sm:grid-cols-2 gap-5"
+                      >
+                        <div className="space-y-2">
+                          <label className="text-[10px] sm:text-[11px] font-black text-primary uppercase tracking-[0.3em] ml-1">
+                            Launch Date
+                          </label>
+                          <motion.input
+                            whileFocus={{ scale: 1.01 }}
+                            name="deadline"
+                            required
+                            type="date"
+                            className="w-full px-5 py-4 sm:p-5 rounded-2xl bg-white/40 dark:bg-slate-950/40 border border-slate-200/60 dark:border-slate-800/60 focus:border-primary focus:ring-8 focus:ring-primary/5 outline-none transition-all text-sm dark:text-slate-300 backdrop-blur-sm"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-[10px] sm:text-[11px] font-black text-primary uppercase tracking-[0.3em] ml-1">
+                            Fuel (Budget)
+                          </label>
+                          <motion.input
+                            whileFocus={{ scale: 1.01 }}
+                            name="budget"
+                            placeholder="LKR 10,000+"
+                            className="w-full px-5 py-4 sm:p-5 rounded-2xl bg-white/40 dark:bg-slate-950/40 border border-slate-200/60 dark:border-slate-800/60 focus:border-primary focus:ring-8 focus:ring-primary/5 outline-none transition-all text-sm placeholder:text-slate-400 backdrop-blur-sm"
+                          />
+                        </div>
+                      </motion.div>
+
+                      {/* Submit Button with Advanced Hover */}
+                      <motion.div
+                        variants={{
+                          hidden: { opacity: 0, y: 30, scale: 0.95, rotate: -2 },
+                          visible: { 
+                            opacity: 1, 
+                            y: 0, 
+                            scale: 1, 
+                            rotate: 0,
+                            transition: { type: "spring", damping: 15 }
+                          }
+                        }}
+                        className="pt-4"
+                      >
+                        <motion.button
+                          whileHover={{
+                            scale: 1.02,
+                            y: -4,
+                            boxShadow: "0 25px 50px -12px rgba(0, 63, 221, 0.5)"
+                          }}
+                          whileTap={{ scale: 0.98 }}
+                          type="submit"
+                          className="group relative w-full py-5 bg-gradient-to-r from-primary via-blue-600 to-primary bg-[length:200%_auto] hover:bg-right transition-all duration-700 text-white font-black rounded-2xl flex items-center justify-center gap-4 uppercase tracking-[0.2em] text-xs sm:text-sm overflow-hidden"
+                        >
+                          {/* Premium Shine Effect */}
+                          <motion.div 
+                            animate={{
+                              x: ["-100%", "200%"],
+                            }}
+                            transition={{
+                              duration: 3,
+                              repeat: Infinity,
+                              ease: "easeInOut",
+                              repeatDelay: 1
+                            }}
+                            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12 pointer-events-none" 
+                          />
+                          <LuSend size={20} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform relative z-10" />
+                          <span className="relative z-10">Initialize Project</span>
+                        </motion.button>
+                      </motion.div>
+
+                      <p className="text-center text-[9px] sm:text-[10px] text-slate-500 uppercase tracking-[0.4em] pt-4 font-bold opacity-70">
+                        Secure Transmission Active
+                      </p>
+                    </form>
                   </motion.div>
-                  <h4 className="text-3xl font-black tracking-tight dark:text-white uppercase">
-                    {selectedService.title}
-                  </h4>
-                  <div className="h-1.5 w-12 bg-primary rounded-full mt-3 mb-2" />
-                  <p className="text-slate-500 dark:text-slate-400 font-medium">
-                    Ready to start your project? Fill in the details below.
-                  </p>
-                </div>
-
-                <form onSubmit={handleWhatsAppSubmit} className="space-y-5 relative">
-                  {/* Input Group with floating label style feel */}
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black text-primary uppercase tracking-[0.2em] ml-1">Contact Details</label>
-                    <div className="relative group">
-                      <input
-                        name="phone"
-                        required
-                        type="text"
-                        placeholder="WhatsApp Number (e.g. +94 77 123 4567)"
-                        className="w-full p-4 pl-5 rounded-2xl bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all duration-300 placeholder:text-slate-400"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black text-primary uppercase tracking-[0.2em] ml-1">Project Scope</label>
-                    <textarea
-                      name="brief"
-                      required
-                      placeholder={`Tell us about your ${selectedService.title} requirements...`}
-                      rows={3}
-                      className="w-full p-5 rounded-2xl bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all duration-300 resize-none placeholder:text-slate-400"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-5">
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-black text-primary uppercase tracking-[0.2em] ml-1">Target Date</label>
-                      <input
-                        name="deadline"
-                        required
-                        type="date"
-                        className="w-full p-4 rounded-2xl bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-sm dark:text-slate-300"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-black text-primary uppercase tracking-[0.2em] ml-1">Estimated Budget</label>
-                      <input
-                        name="budget"
-                        placeholder="LKR 10,000+"
-                        className="w-full p-4 rounded-2xl bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-sm placeholder:text-slate-400"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Submit Button - Gradient with Shine effect */}
-                  <motion.button
-                    whileHover={{ scale: 1.02, y: -2 }}
-                    whileTap={{ scale: 0.98 }}
-                    type="submit"
-                    className="w-full py-5 bg-gradient-to-r from-primary to-indigo-600 text-white font-black rounded-2xl shadow-[0_20px_40px_-10px_rgba(var(--primary-rgb),0.3)] flex items-center justify-center gap-3 mt-6 uppercase tracking-widest text-sm"
-                  >
-                    <LuSend size={20} className="animate-pulse" />
-                    Initialize Project
-                  </motion.button>
-
-                  <p className="text-center text-[10px] text-slate-400 uppercase tracking-widest pt-2">
-                    Instant reply via WhatsApp secure line
-                  </p>
-                </form>
+                </motion.div>
               </div>
-            </motion.div>
+            </div>
           </>
         )}
       </AnimatePresence>
