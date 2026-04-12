@@ -2,6 +2,8 @@ import { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LuX, LuSend, LuCircleCheck, LuCloudUpload, LuCalendar } from 'react-icons/lu';
 import TiltCard from '../ui/TiltCard.tsx';
+import PageLoader from '../ui/PageLoader';
+import { useNavigate } from 'react-router-dom';
 
 const eventsList = [
     {
@@ -111,8 +113,10 @@ const FloatingSymbol = ({ symbol, index }: { symbol: string, index: number }) =>
 );
 
 const Events = () => {
+    const navigate = useNavigate();
     const scrollRef = useRef<HTMLDivElement>(null);
     const [isHovered, setIsHovered] = useState(false);
+    const [isNavigating, setIsNavigating] = useState(false);
 
     // Modal State
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -142,6 +146,14 @@ const Events = () => {
             return () => clearTimeout(timer);
         }
     }, [showToast]);
+
+    const handleUpcomingClick = () => {
+        setIsNavigating(true);
+        setTimeout(() => {
+            navigate('/event-list');
+            setTimeout(() => setIsNavigating(false), 100);
+        }, 2000);
+    };
 
     // Handle Form Submit
     const handleEventSubmit = (e: React.FormEvent) => {
@@ -204,6 +216,7 @@ const Events = () => {
 
     return (
         <section id="events" className="relative pt-12 pb-10 bg-slate-150 overflow-hidden">
+            <PageLoader isLoading={isNavigating} message="Loading upcoming events..." />
             {/* Antigravity Floating Background Symbols */}
             <FloatingSymbol symbol="✧" index={0} />
             <FloatingSymbol symbol="✦" index={1} />
@@ -237,7 +250,7 @@ const Events = () => {
                         {['Upcoming', 'Create ur Event'].map((label, i) => (
                             <motion.button
                                 key={label}
-                                onClick={label === 'Create ur Event' ? () => setIsModalOpen(true) : undefined}
+                                onClick={label === 'Create ur Event' ? () => setIsModalOpen(true) : label === 'Upcoming' ? handleUpcomingClick : undefined}
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                                 // Text color එකත් ලා නිල් පාටට (Sky/Cyan) match වෙන්න වෙනස් කළා

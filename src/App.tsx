@@ -21,6 +21,7 @@ import WhatsAppButton from './components/whatsAppButton/WhatsAppButton';
 import SEO from './components/SEO';
 import './App.css';
 import AnnexList from './pages/annex/AnnexList';
+import EventList from './pages/events/EventList';
 
 function App() {
   return (
@@ -63,6 +64,9 @@ function App() {
 
         {/* AnnexList using SubLayout */}
         <Route path="/annex-list" element={<SubLayout><AnnexList /></SubLayout>} />
+
+        {/* EventList using SubLayout */}
+        <Route path="/event-list" element={<SubLayout><EventList /></SubLayout>} />
       </Routes>
 
       <WhatsAppButton />
