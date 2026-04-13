@@ -133,7 +133,7 @@ const EventList = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("All");
     const [selectedEvent, setSelectedEvent] = useState<typeof DUMMY_EVENTS[0] | null>(null);
-    const [isScrolled, setIsScrolled] = useState(false);
+    const [, setIsScrolled] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => setIsScrolled(window.scrollY > 50);

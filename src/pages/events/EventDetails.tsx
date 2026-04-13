@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-    LuX, LuCalendar, LuMapPin, LuClock, LuGraduationCap,
+    LuX, LuCalendar, LuMapPin, LuGraduationCap,
     LuTicket, LuZap, LuShare2, LuMessageCircle, LuSparkles, LuStar
 } from "react-icons/lu";
 
