@@ -35,9 +35,9 @@ const Footer = () => {
           <div>
             <h4 className="font-semibold text-slate-800 mb-6">Support</h4>
             <ul className="space-y-3">
-              <li><Link to="#" className="text-slate-500 hover:text-brand-600 transition-colors text-sm font-medium">Privacy Policy</Link></li>
-              <li><Link to="#" className="text-slate-500 hover:text-brand-600 transition-colors text-sm font-medium">Terms of Service</Link></li>
-              <li><Link to="#" className="text-slate-500 hover:text-brand-600 transition-colors text-sm font-medium">FAQ</Link></li>
+              <li><Link to="/privacy-policy" className="text-slate-500 hover:text-brand-600 transition-colors text-sm font-medium">Privacy Policy</Link></li>
+              <li><Link to="/terms-of-service" className="text-slate-500 hover:text-brand-600 transition-colors text-sm font-medium">Terms of Service</Link></li>
+              <li><Link to="/faq" className="text-slate-500 hover:text-brand-600 transition-colors text-sm font-medium">FAQ</Link></li>
             </ul>
           </div>
 

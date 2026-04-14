@@ -128,9 +128,27 @@ const TestimonialCard = ({ feedback }: { feedback: Feedback }) => {
 };
 
 const Contact = () => {
-    const [activeTab, setActiveTab] = useState<'contact' | 'feedback'>('contact');
+    const [activeTab, setActiveTab] = useState<'contact' | 'feedback'>('feedback');
     const [rating, setRating] = useState(0);
     const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+
+    // Form states
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [inquiryType, setInquiryType] = useState('');
+    const [message, setMessage] = useState('');
+
+    const handleSendInquiry = () => {
+        if (!name.trim() || !email.trim() || !inquiryType || !message.trim()) {
+            alert("Please fill all fields");
+            return;
+        }
+        const waNumber = '94724478148';
+        const typeStr = inquiryType ? `*Type:* ${inquiryType}` : '*Type:* General Inquiry / Problem';
+        const text = `*New Contact Request*\n\n*Name:* ${name}\n*Email:* ${email}\n${typeStr}\n\n*Message:*\n${message}`;
+        window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(text)}`, '_blank');
+        setName(''); setEmail(''); setInquiryType(''); setMessage('');
+    };
 
     return (
         <section id="contact" className="relative pt-12 pb-10 bg-slate-150 font-sans overflow-hidden">
@@ -160,52 +178,50 @@ const Contact = () => {
                         transition={{ duration: 0.8 }}
                         className="lg:col-span-5"
                     >
-                        <TiltCard className="h-full">
-                            <div className="bg-white/10 dark:bg-slate-900/40 backdrop-blur-2xl p-10 md:p-12 rounded-[2.5rem] border border-white/30 dark:border-slate-800 shadow-2xl h-full flex flex-col">
-                                <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-12 tracking-tight">Reach Out To Us</h3>
+                        <div className="bg-white/10 dark:bg-slate-900/40 backdrop-blur-2xl p-10 md:p-12 rounded-[2.5rem] border border-white/30 dark:border-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] h-full flex flex-col transition-all duration-500 hover:border-primary/30">
+                            <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-12 tracking-tight">Reach Out To Us</h3>
 
-                                <div className="space-y-10 flex-grow">
-                                    {[
-                                        { icon: LuMail, label: "Email Endpoint", value: "uniganglk@gmail.com" },
-                                        { icon: LuPhone, label: "Direct Hotline", value: "+94 72 447 8148" },
-                                        { icon: LuMapPin, label: "Our Base", value: "Colombo, Sri Lanka" }
-                                    ].map((item, i) => (
+                            <div className="space-y-10 flex-grow">
+                                {[
+                                    { icon: LuMail, label: "Email Endpoint", value: "uniganglk@gmail.com" },
+                                    { icon: LuPhone, label: "Direct Hotline", value: "+94 72 447 8148" },
+                                    { icon: LuMapPin, label: "Our Base", value: "Colombo, Sri Lanka" }
+                                ].map((item, i) => (
+                                    <motion.div
+                                        key={i}
+                                        whileHover={{ x: 10 }}
+                                        className="flex gap-6 items-center group cursor-pointer"
+                                    >
                                         <motion.div
-                                            key={i}
-                                            whileHover={{ x: 10 }}
-                                            className="flex gap-6 items-center group cursor-pointer"
+                                            animate={{ y: [0, -5, 0] }}
+                                            transition={{ duration: 3, repeat: Infinity, delay: i * 0.5 }}
+                                            className="w-14 h-14 rounded-2xl bg-white/20 dark:bg-slate-800/30 backdrop-blur-md border border-white/20 shadow-sm flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300"
                                         >
-                                            <motion.div
-                                                animate={{ y: [0, -5, 0] }}
-                                                transition={{ duration: 3, repeat: Infinity, delay: i * 0.5 }}
-                                                className="w-14 h-14 rounded-2xl bg-white/20 dark:bg-slate-800/30 backdrop-blur-md border border-white/20 shadow-sm flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300"
-                                            >
-                                                <item.icon className="text-2xl" />
-                                            </motion.div>
-                                            <div>
-                                                <p className="text-[10px] font-bold uppercase tracking-widest text-primary/60 mb-1">{item.label}</p>
-                                                <p className="text-lg font-semibold text-slate-800 dark:text-slate-200">{item.value}</p>
-                                            </div>
+                                            <item.icon className="text-2xl" />
                                         </motion.div>
-                                    ))}
-                                </div>
-
-                                <motion.div
-                                    whileInView={{ opacity: [0, 1], y: [20, 0] }}
-                                    className="mt-16 p-8 rounded-[2rem] bg-white/5 dark:bg-slate-800/20 backdrop-blur-lg border border-white/10 dark:border-slate-700/30 overflow-hidden relative"
-                                >
-                                    <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2"></div>
-                                    <div className="flex items-center gap-3 mb-4">
-                                        <span className="relative flex h-3 w-3">
-                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                                            <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-                                        </span>
-                                        <span className="text-xs font-bold uppercase tracking-widest text-slate-500">Online Now</span>
-                                    </div>
-                                    <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">Typical response time: <span className="text-primary font-bold">~2 Hours</span></p>
-                                </motion.div>
+                                        <div>
+                                            <p className="text-[10px] font-bold uppercase tracking-widest text-primary/60 mb-1">{item.label}</p>
+                                            <p className="text-lg font-semibold text-slate-800 dark:text-slate-200">{item.value}</p>
+                                        </div>
+                                    </motion.div>
+                                ))}
                             </div>
-                        </TiltCard>
+
+                            <motion.div
+                                whileInView={{ opacity: [0, 1], y: [20, 0] }}
+                                className="mt-16 p-8 rounded-[2rem] bg-white/5 dark:bg-slate-800/20 backdrop-blur-lg border border-white/10 dark:border-slate-700/30 overflow-hidden relative"
+                            >
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2"></div>
+                                <div className="flex items-center gap-3 mb-4">
+                                    <span className="relative flex h-3 w-3">
+                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                        <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                                    </span>
+                                    <span className="text-xs font-bold uppercase tracking-widest text-slate-500">Online Now</span>
+                                </div>
+                                <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">Typical response time: <span className="text-primary font-bold">~2 Hours</span></p>
+                            </motion.div>
+                        </div>
                     </motion.div>
 
                     {/* Pro Dual Form */}
@@ -216,116 +232,122 @@ const Contact = () => {
                         transition={{ duration: 0.8 }}
                         className="lg:col-span-7"
                     >
-                        <TiltCard className="h-full">
-                            <div className="relative h-full rounded-[2.5rem] overflow-hidden border border-white/40 dark:border-slate-800/50 shadow-2xl bg-white/30 dark:bg-slate-900/40 backdrop-blur-3xl p-8 flex flex-col">
-                                <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-white/80 dark:via-slate-700/50 to-transparent" />
+                        <div className="relative h-full rounded-[2.5rem] overflow-hidden border border-white/40 dark:border-slate-800/50 shadow-[0_8px_40px_rgb(0,0,0,0.06)] dark:shadow-[0_8px_40px_rgb(0,0,0,0.2)] bg-white/30 dark:bg-slate-900/40 backdrop-blur-3xl p-8 flex flex-col transition-all duration-500 hover:border-primary/20">
+                            <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-white/80 dark:via-slate-700/50 to-transparent" />
 
-                                <div className="flex gap-2 p-1.5 rounded-3xl border border-white/40 dark:border-slate-800 mb-8 bg-white/20 dark:bg-slate-900/20 backdrop-blur-md">
-                                    <button
-                                        onClick={() => setActiveTab('contact')}
-                                        className={`flex-1 py-4 rounded-[1.25rem] text-[11px] font-bold uppercase tracking-widest transition-all duration-500 relative ${activeTab === 'contact' ? 'text-primary' : 'text-slate-400 hover:text-slate-600'}`}
-                                    >
-                                        {activeTab === 'contact' && <motion.div layoutId="tab-pill" className="absolute inset-0 bg-white/90 dark:bg-slate-800 rounded-[1.25rem] shadow-xl border border-white dark:border-slate-700"></motion.div>}
-                                        <span className="relative z-10">Request Service</span>
-                                    </button>
-                                    <button
-                                        onClick={() => setActiveTab('feedback')}
-                                        className={`flex-1 py-4 rounded-[1.25rem] text-[11px] font-bold uppercase tracking-widest transition-all duration-500 relative ${activeTab === 'feedback' ? 'text-[#E91E63]' : 'text-slate-400 hover:text-slate-600'}`}
-                                    >
-                                        {activeTab === 'feedback' && <motion.div layoutId="tab-pill" className="absolute inset-0 bg-white/90 dark:bg-slate-800 rounded-[1.25rem] shadow-xl border border-white dark:border-slate-700"></motion.div>}
-                                        <span className="relative z-10">Client Feedback</span>
-                                    </button>
-                                </div>
-
-                                <AnimatePresence mode="wait">
-                                    <motion.div
-                                        key={activeTab}
-                                        initial={{ opacity: 0, y: 20 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: -20 }}
-                                        transition={{ duration: 0.4 }}
-                                        className="flex flex-col gap-4 flex-grow"
-                                    >
-                                        {activeTab === 'contact' ? (
-                                            <>
-                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                    <input type="text" placeholder="Full Name" className="w-full px-6 py-4 rounded-2xl text-sm font-medium bg-white/40 dark:bg-slate-800/40 border border-white/60 dark:border-slate-700/50 focus:border-primary outline-none transition-all shadow-inner" />
-                                                    <input type="email" placeholder="Email Address" className="w-full px-6 py-4 rounded-2xl text-sm font-medium bg-white/40 dark:bg-slate-800/40 border border-white/60 dark:border-slate-700/50 focus:border-primary outline-none transition-all shadow-inner" />
-                                                </div>
-                                                <div className="relative">
-                                                    <select className="w-full px-6 py-4 rounded-2xl text-sm font-medium bg-white/40 dark:bg-slate-800/40 border border-white/60 dark:border-slate-700/50 focus:border-primary outline-none appearance-none cursor-pointer shadow-inner text-slate-500">
-                                                        <option disabled selected>Select Service Interest</option>
-                                                        <option>Custom Web Application</option>
-                                                        <option>Growth SEO & Analytics</option>
-                                                        <option>Digital Interface Redesign</option>
-                                                        <option>Campus Ecosystem Integration</option>
-                                                    </select>
-                                                    <LuChevronDown className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-                                                </div>
-                                                <textarea rows={5} placeholder="Project Brief / Message" className="w-full px-6 py-4 rounded-2xl text-sm font-medium bg-white/40 dark:bg-slate-800/40 border border-white/60 dark:border-slate-700/50 focus:border-primary outline-none resize-none shadow-inner" />
-                                                <motion.button
-                                                    whileHover={{ scale: 1.02, y: -2 }}
-                                                    whileTap={{ scale: 0.98 }}
-                                                    className="w-full py-4 mt-auto rounded-2xl text-white text-[11px] font-black uppercase tracking-[0.2em] shadow-xl bg-gradient-to-r from-blue-700 to-indigo-900 flex items-center justify-center gap-3"
-                                                >
-                                                    Send Inquiry <LuSend size={14} />
-                                                </motion.button>
-                                            </>
-                                        ) : (
-                                            <>
-                                                <div className="flex items-center gap-6 p-6 rounded-2xl bg-white/20 dark:bg-slate-800/40 border border-white/40 dark:border-slate-700/50">
-                                                    <label className="relative cursor-pointer group">
-                                                        <input
-                                                            type="file"
-                                                            accept="image/*"
-                                                            className="sr-only"
-                                                            onChange={(e) => {
-                                                                if (e.target.files && e.target.files[0]) {
-                                                                    setAvatarPreview(URL.createObjectURL(e.target.files[0]));
-                                                                }
-                                                            }}
-                                                        />
-                                                        <motion.div
-                                                            whileHover={{ scale: 1.05 }}
-                                                            className="w-16 h-16 rounded-3xl border-2 border-dashed border-slate-400 flex items-center justify-center bg-white/40 dark:bg-slate-800/40"
-                                                        >
-                                                            {avatarPreview ? <img src={avatarPreview} alt="Avatar" className="w-full h-full object-cover rounded-3xl" /> : <LuUser className="text-slate-400 size-6" />}
-                                                            <div className="absolute -bottom-1 -right-1 bg-[#E91E63] text-white text-[8px] font-black px-1.5 py-0.5 rounded-lg shadow-lg">UP</div>
-                                                        </motion.div>
-                                                    </label>
-                                                    <div>
-                                                        <p className="text-sm font-bold text-slate-800 dark:text-white uppercase tracking-wider">Profile Avatar</p>
-                                                        <p className="text-[10px] text-slate-500 font-medium">JPG/PNG · Max 5MB · Auto-crops to 1:1</p>
-                                                    </div>
-                                                </div>
-                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                    <input type="text" placeholder="Your Name" className="w-full px-6 py-4 rounded-2xl text-sm font-medium bg-white/40 dark:bg-slate-800/40 border border-white/60 dark:border-slate-700/50 focus:border-[#E91E63] outline-none shadow-inner" />
-                                                    <input type="text" placeholder="Club / University" className="w-full px-6 py-4 rounded-2xl text-sm font-medium bg-white/40 dark:bg-slate-800/40 border border-white/60 dark:border-slate-700/50 focus:border-[#E91E63] outline-none shadow-inner" />
-                                                </div>
-                                                <div className="flex flex-col items-center gap-4 p-6 rounded-2xl bg-white/20 dark:bg-slate-800/40 border border-white/40 dark:border-slate-700/50">
-                                                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Rate Your Experience</p>
-                                                    <div className="flex gap-3">
-                                                        {[1, 2, 3, 4, 5].map((i) => (
-                                                            <motion.button key={i} whileHover={{ scale: 1.2 }} whileTap={{ scale: 0.9 }} onClick={() => setRating(i)} className={`text-4xl transition-colors ${i <= rating ? 'text-[#FFD700]' : 'text-slate-200 dark:text-slate-700'}`}>
-                                                                <LuStar fill={i <= rating ? 'currentColor' : 'none'} />
-                                                            </motion.button>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                                <textarea rows={3} placeholder="Tell others how it went..." className="w-full px-6 py-4 rounded-2xl text-sm font-medium bg-white/40 dark:bg-slate-800/40 border border-white/60 dark:border-slate-700/50 focus:border-[#E91E63] outline-none resize-none shadow-inner" />
-                                                <motion.button
-                                                    whileHover={{ scale: 1.02, y: -2 }}
-                                                    whileTap={{ scale: 0.98 }}
-                                                    className="w-full py-4 mt-auto rounded-2xl text-white text-[11px] font-black uppercase tracking-[0.2em] shadow-xl bg-gradient-to-r from-[#E91E63] to-[#880E4F] flex items-center justify-center gap-3"
-                                                >
-                                                    Post Feedback <LuMessageSquareQuote size={14} />
-                                                </motion.button>
-                                            </>
-                                        )}
-                                    </motion.div>
-                                </AnimatePresence>
+                            <div className="flex gap-2 p-1.5 rounded-3xl border border-white/40 dark:border-slate-800 mb-8 bg-white/20 dark:bg-slate-900/20 backdrop-blur-md">
+                                <button
+                                    onClick={() => setActiveTab('feedback')}
+                                    className={`flex-1 py-4 rounded-[1.25rem] text-[11px] font-bold uppercase tracking-widest transition-all duration-500 relative ${activeTab === 'feedback' ? 'text-[#E91E63]' : 'text-slate-400 hover:text-slate-600'}`}
+                                >
+                                    {activeTab === 'feedback' && <motion.div layoutId="tab-pill" className="absolute inset-0 bg-white/90 dark:bg-slate-800 rounded-[1.25rem] shadow-xl border border-white dark:border-slate-700"></motion.div>}
+                                    <span className="relative z-10">Client Feedback</span>
+                                </button>
+                                <button
+                                    onClick={() => setActiveTab('contact')}
+                                    className={`flex-1 py-4 rounded-[1.25rem] text-[11px] font-bold uppercase tracking-widest transition-all duration-500 relative ${activeTab === 'contact' ? 'text-primary' : 'text-slate-400 hover:text-slate-600'}`}
+                                >
+                                    {activeTab === 'contact' && <motion.div layoutId="tab-pill" className="absolute inset-0 bg-white/90 dark:bg-slate-800 rounded-[1.25rem] shadow-xl border border-white dark:border-slate-700"></motion.div>}
+                                    <span className="relative z-10">Report Problem</span>
+                                </button>
                             </div>
-                        </TiltCard>
+
+                            <AnimatePresence mode="wait">
+                                <motion.div
+                                    key={activeTab}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -20 }}
+                                    transition={{ duration: 0.4 }}
+                                    className="flex flex-col gap-4 flex-grow"
+                                >
+                                    {activeTab === 'contact' ? (
+                                        <>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+                                                <div className="group">
+                                                    <input required value={name} onChange={(e) => setName(e.target.value)} type="text" placeholder="Full Name" className="w-full px-6 py-4 rounded-[1.25rem] text-sm font-semibold bg-white/50 dark:bg-slate-800/50 backdrop-blur-md border-[1.5px] border-white/60 dark:border-slate-700 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] group-hover:bg-white/70 dark:group-hover:bg-slate-800/70 text-slate-800 dark:text-slate-100 placeholder:text-slate-400" />
+                                                </div>
+                                                <div className="group">
+                                                    <input required value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="Email Address" className="w-full px-6 py-4 rounded-[1.25rem] text-sm font-semibold bg-white/50 dark:bg-slate-800/50 backdrop-blur-md border-[1.5px] border-white/60 dark:border-slate-700 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] group-hover:bg-white/70 dark:group-hover:bg-slate-800/70 text-slate-800 dark:text-slate-100 placeholder:text-slate-400" />
+                                                </div>
+                                            </div>
+                                            <div className="relative group mb-5">
+                                                <select required value={inquiryType} onChange={(e) => setInquiryType(e.target.value)} className="w-full px-6 py-4 rounded-[1.25rem] text-sm font-semibold bg-white/50 dark:bg-slate-800/50 backdrop-blur-md border-[1.5px] border-white/60 dark:border-slate-700 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none appearance-none cursor-pointer shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] group-hover:bg-white/70 dark:group-hover:bg-slate-800/70 text-slate-700 dark:text-slate-200">
+                                                    <option disabled value="">Select Inquiry or Problem Type</option>
+                                                    <option value="General Inquiry">General Inquiry</option>
+                                                    <option value="Report a Bug / Problem">Report a Bug / Problem</option>
+                                                    <option value="Request a New Service / Dev">Request a New Service / Dev</option>
+                                                    <option value="Accommodation Listing Help">Accommodation Listing Help</option>
+                                                    <option value="Event Posting Help">Event Posting Help</option>
+                                                </select>
+                                                <LuChevronDown className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none group-focus-within:text-primary transition-colors" />
+                                            </div>
+                                            <div className="group mb-6">
+                                                <textarea required value={message} onChange={(e) => setMessage(e.target.value)} rows={5} placeholder="Tell us about your problem, question, or request..." className="w-full px-6 py-4 rounded-[1.25rem] text-sm font-semibold bg-white/50 dark:bg-slate-800/50 backdrop-blur-md border-[1.5px] border-white/60 dark:border-slate-700 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none resize-none shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] group-hover:bg-white/70 dark:group-hover:bg-slate-800/70 text-slate-800 dark:text-slate-100 placeholder:text-slate-400" />
+                                            </div>
+                                            <motion.button
+                                                onClick={handleSendInquiry}
+                                                whileHover={{ scale: 1.02, y: -2, boxShadow: "0 20px 40px -10px rgba(79, 70, 229, 0.4)" }}
+                                                whileTap={{ scale: 0.98 }}
+                                                className="w-full mt-auto py-4 rounded-[1.25rem] text-white text-[11px] font-black uppercase tracking-[0.2em] bg-gradient-to-r from-blue-600 to-primary flex items-center justify-center gap-3 transition-all"
+                                            >
+                                                Send Message <LuSend size={14} />
+                                            </motion.button>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <div className="flex items-center gap-6 p-6 rounded-2xl bg-white/20 dark:bg-slate-800/40 border border-white/40 dark:border-slate-700/50">
+                                                <label className="relative cursor-pointer group">
+                                                    <input
+                                                        type="file"
+                                                        accept="image/*"
+                                                        className="sr-only"
+                                                        onChange={(e) => {
+                                                            if (e.target.files && e.target.files[0]) {
+                                                                setAvatarPreview(URL.createObjectURL(e.target.files[0]));
+                                                            }
+                                                        }}
+                                                    />
+                                                    <motion.div
+                                                        whileHover={{ scale: 1.05 }}
+                                                        className="w-16 h-16 rounded-3xl border-2 border-dashed border-slate-400 flex items-center justify-center bg-white/40 dark:bg-slate-800/40"
+                                                    >
+                                                        {avatarPreview ? <img src={avatarPreview} alt="Avatar" className="w-full h-full object-cover rounded-3xl" /> : <LuUser className="text-slate-400 size-6" />}
+                                                        <div className="absolute -bottom-1 -right-1 bg-[#E91E63] text-white text-[8px] font-black px-1.5 py-0.5 rounded-lg shadow-lg">UP</div>
+                                                    </motion.div>
+                                                </label>
+                                                <div>
+                                                    <p className="text-sm font-bold text-slate-800 dark:text-white uppercase tracking-wider">Profile Avatar</p>
+                                                    <p className="text-[10px] text-slate-500 font-medium">JPG/PNG · Max 5MB · Auto-crops to 1:1</p>
+                                                </div>
+                                            </div>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                <input required type="text" placeholder="Your Name" className="w-full px-6 py-4 rounded-2xl text-sm font-medium bg-white/40 dark:bg-slate-800/40 border border-white/60 dark:border-slate-700/50 focus:border-[#E91E63] outline-none shadow-inner" />
+                                                <input required type="text" placeholder="Club / University" className="w-full px-6 py-4 rounded-2xl text-sm font-medium bg-white/40 dark:bg-slate-800/40 border border-white/60 dark:border-slate-700/50 focus:border-[#E91E63] outline-none shadow-inner" />
+                                            </div>
+                                            <div className="flex flex-col items-center gap-4 p-6 rounded-2xl bg-white/20 dark:bg-slate-800/40 border border-white/40 dark:border-slate-700/50">
+                                                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Rate Your Experience</p>
+                                                <div className="flex gap-3">
+                                                    {[1, 2, 3, 4, 5].map((i) => (
+                                                        <motion.button key={i} whileHover={{ scale: 1.2 }} whileTap={{ scale: 0.9 }} onClick={() => setRating(i)} className={`text-4xl transition-colors ${i <= rating ? 'text-[#FFD700]' : 'text-slate-200 dark:text-slate-700'}`}>
+                                                            <LuStar fill={i <= rating ? 'currentColor' : 'none'} />
+                                                        </motion.button>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                            <textarea required rows={3} placeholder="Tell your Feedback..." className="w-full px-6 py-4 rounded-2xl text-sm font-medium bg-white/40 dark:bg-slate-800/40 border border-white/60 dark:border-slate-700/50 focus:border-[#E91E63] outline-none resize-none shadow-inner" />
+                                            <motion.button
+                                                whileHover={{ scale: 1.02, y: -2 }}
+                                                whileTap={{ scale: 0.98 }}
+                                                className="w-full py-4 mt-auto rounded-2xl text-white text-[11px] font-black uppercase tracking-[0.2em] shadow-xl bg-gradient-to-r from-[#E91E63] to-[#880E4F] flex items-center justify-center gap-3"
+                                            >
+                                                Post Feedback <LuMessageSquareQuote size={14} />
+                                            </motion.button>
+                                        </>
+                                    )}
+                                </motion.div>
+                            </AnimatePresence>
+                        </div>
                     </motion.div>
                 </div>
 

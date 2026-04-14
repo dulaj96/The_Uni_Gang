@@ -22,6 +22,9 @@ import SEO from './components/SEO';
 import './App.css';
 import AnnexList from './pages/annex/AnnexList';
 import EventList from './pages/events/EventList';
+import PrivacyPolicy from './pages/privacyPolicy/PrivacyPolicy';
+import Terms from './pages/terms/Terms';
+import FAQ from './pages/f&q/F&Q';
 
 function App() {
   return (
@@ -67,6 +70,15 @@ function App() {
 
         {/* EventList using SubLayout */}
         <Route path="/event-list" element={<SubLayout><EventList /></SubLayout>} />
+
+        {/* Privacy Policy using SubLayout */}
+        <Route path="/privacy-policy" element={<SubLayout><PrivacyPolicy /></SubLayout>} />
+
+        {/* Terms of Service using SubLayout */}
+        <Route path="/terms-of-service" element={<SubLayout><Terms /></SubLayout>} />
+
+        {/* FAQ using SubLayout */}
+        <Route path="/faq" element={<SubLayout><FAQ /></SubLayout>} />
       </Routes>
 
       <WhatsAppButton />

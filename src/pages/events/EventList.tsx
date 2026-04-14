@@ -218,7 +218,7 @@ const EventList = () => {
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 1 }}
-                        className="relative hidden lg:block"
+                        className="relative mt-12 lg:mt-0"
                     >
                         <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 rounded-[3rem] blur-3xl animate-pulse" />
 
