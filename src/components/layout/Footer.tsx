@@ -11,7 +11,7 @@ const Footer = () => {
 
           {/* Brand Column */}
           <div className="md:col-span-1">
-            <h3 className="text-xl font-bold text-slate-900 mb-4">
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-4">
               The <span className="text-brand-600">Uni Gang</span>
             </h3>
             <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-6">
@@ -20,7 +20,7 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h4 className="font-semibold text-slate-800 mb-6">Quick Links</h4>
+            <h4 className="font-semibold text-slate-800 dark:text-white mb-6">Quick Links</h4>
             <ul className="space-y-3">
               <li><Link to="/" className="text-slate-500 hover:text-brand-600 transition-colors text-sm font-medium">Home</Link></li>
               <li><Link to="/find-accommodation" className="text-slate-500 hover:text-brand-600 transition-colors text-sm font-medium">Find Annex</Link></li>
@@ -33,7 +33,7 @@ const Footer = () => {
 
           {/* Legal / Info */}
           <div>
-            <h4 className="font-semibold text-slate-800 mb-6">Support</h4>
+            <h4 className="font-semibold text-slate-800 dark:text-white mb-6">Support</h4>
             <ul className="space-y-3">
               <li><Link to="/privacy-policy" className="text-slate-500 hover:text-brand-600 transition-colors text-sm font-medium">Privacy Policy</Link></li>
               <li><Link to="/terms-of-service" className="text-slate-500 hover:text-brand-600 transition-colors text-sm font-medium">Terms of Service</Link></li>
