@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import AuthCard from '../components/auth/AuthCard';
-import AnnexForm from '../components/annex/AnnexForm';
-import MyAdsList from '../components/annex/MyAdsList';
+import AnnexAdForm from './annex/AnnexAdForm';
+import MyAdsList from './annex/MyAdsList';
 import annex1 from '../assets/annex1.jpg'
 import annex2 from '../assets/annex2.jpg'
 import { LuPlus, LuLayoutDashboard, LuLogOut } from 'react-icons/lu';
@@ -145,7 +145,7 @@ const PostAdPage = () => {
 
       <div>
         {currentView === 'postAdForm' && (
-          <AnnexForm
+          <AnnexAdForm
             initialData={editingAd}
             onSubmit={handleAnnexFormSubmit}
             onCancel={() => setCurrentView('myAds')}

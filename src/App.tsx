@@ -16,7 +16,7 @@ import FindAccommodationPage from './pages/FindAccommodationPage';
 import PostAdPage from './pages/PostAdPage';
 import ContactUsPage from './pages/ContactUsPage';
 import AnnexDetailsPage from './pages/annex/AnnexDetailsPage';
-import ProfilePage from './pages/ProfilePage';
+import ProfilePage from './pages/profile/Profile';
 import WhatsAppButton from './components/whatsAppButton/WhatsAppButton';
 import SEO from './components/SEO';
 import './App.css';
