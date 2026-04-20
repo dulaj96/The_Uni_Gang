@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   LuUser, LuMail, LuPhone, LuBuilding, LuLock, LuCamera, LuPencil, LuSave, 
-  LuEye, LuEyeOff, LuCircleCheck, LuFacebook, LuLinkedin, LuBookmark, 
+  LuEye, LuEyeOff, LuFacebook, LuLinkedin, LuBookmark, 
   LuMessageSquare, LuActivity, LuChevronRight, LuShieldCheck, LuSparkles
 } from 'react-icons/lu';
 import { motion, AnimatePresence } from 'framer-motion';
