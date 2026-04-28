@@ -40,8 +40,8 @@ const STEPS = [
 ];
 
 interface AnnexFormProps {
-  initialData?: any;
-  onSubmit: (data: any, isEditing: boolean) => void;
+  initialData?: Record<string, unknown>;
+  onSubmit: (data: Record<string, unknown>, isEditing: boolean) => void;
   onCancel: () => void;
   isEditing: boolean;
 }
@@ -66,7 +66,7 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
   });
 
   const onNext = async () => {
-    const fieldsToValidate: any = [];
+    const fieldsToValidate: (keyof FormValues)[] = [];
     if (currentStep === 0) fieldsToValidate.push('title', 'monthlyRent', 'securityDeposit', 'houseRules');
     if (currentStep === 1) fieldsToValidate.push('amenities');
     if (currentStep === 3) fieldsToValidate.push('proximityHub', 'contactName', 'contactPhone');

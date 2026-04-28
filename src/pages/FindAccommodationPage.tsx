@@ -23,10 +23,14 @@ const dummyAnnexes: Annex[] = Array.from({ length: 20 }, (_, i) => ({
   rating: (4 + Math.random()).toFixed(1)
 }));
 
+import PremiumPageLoader from '../components/ui/PremiumPageLoader';
+import { motion, AnimatePresence } from 'framer-motion';
+
 const FindAccommodationPage = () => {
   const [universities, setUniversities] = useState<University[]>([]);
   const [selectedUniversity, setSelectedUniversity] = useState<string>('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [loading, setLoading] = useState(true);
 
   // Pagination
   const [allAnnexes, setAllAnnexes] = useState<Annex[]>([]);
@@ -36,6 +40,9 @@ const FindAccommodationPage = () => {
   useEffect(() => {
     setUniversities(universitiesData);
     setAllAnnexes(dummyAnnexes);
+    
+    const timer = setTimeout(() => setLoading(false), 1200);
+    return () => clearTimeout(timer);
   }, []);
 
   const filteredAnnexes = allAnnexes.filter(annex =>
@@ -51,13 +58,23 @@ const FindAccommodationPage = () => {
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 min-h-[600px]">
+      <PremiumPageLoader isLoading={loading} message="Scouting the best annexes for you..." />
+      
       <SEO
         title="Find Student Accommodation & Annexes - The Uni Gang"
         description="Search through hundreds of verified annexes and rooms for university students. Filter by location, price, and facilities."
       />
-      {/* Header / Filter Section */}
-      <section className="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 p-6 md:p-8">
+
+      <AnimatePresence>
+        {!loading && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            {/* Header / Filter Section */}
+            <section className="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 p-6 md:p-8">
         <div className="flex flex-col md:flex-row gap-6 items-end md:items-center">
           <div className="flex-grow space-y-2 w-full">
             <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 ml-1">Search or Filter by University</label>
@@ -170,6 +187,9 @@ const FindAccommodationPage = () => {
           </button>
         </div>
       )}
+      </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

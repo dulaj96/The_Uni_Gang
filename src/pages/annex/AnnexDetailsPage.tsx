@@ -6,33 +6,49 @@ import {
   LuCircleCheckBig
 } from 'react-icons/lu';
 import SEO from '../../components/SEO';
-import { useEffect } from 'react';
+import PremiumPageLoader from '../../components/ui/PremiumPageLoader';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useState } from 'react';
 
 const AnnexDetailsPage = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
 
   // Scroll to top when opening the modal (helps centering)
   useEffect(() => {
     window.scrollTo(0, 0);
     // Lock background scroll when this page is open
     document.body.style.overflow = 'hidden';
+
+    const timer = setTimeout(() => setLoading(false), 1000);
+    
     return () => {
       document.body.style.overflow = 'auto';
+      clearTimeout(timer);
     };
   }, []);
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8 font-sans">
+      <PremiumPageLoader isLoading={loading} message="Polishing the details..." />
+
       <SEO
         title="Modern Studio near UOM - Annex Details"
         description="Luxury modern student studio room with large windows, minimalist desk, aesthetic lighting, and organized bookshelf."
       />
 
-      {/* Modal Backdrop / Container */}
-      <div
-        className="absolute inset-0 bg-slate-900/40 dark:bg-slate-950/80 backdrop-blur-md cursor-pointer"
-        onClick={() => navigate(-1)}
-      ></div>
+      <AnimatePresence>
+        {!loading && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="contents"
+          >
+            {/* Modal Backdrop / Container */}
+            <div
+              className="absolute inset-0 bg-slate-900/40 dark:bg-slate-950/80 backdrop-blur-md cursor-pointer"
+              onClick={() => navigate(-1)}
+            ></div>
 
       {/* Main Modal */}
       <main className="relative z-10 w-full max-w-6xl bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl rounded-[2.5rem] shadow-[0_40px_100px_rgba(0,63,221,0.12)] border border-white/50 dark:border-slate-700/50 overflow-hidden flex flex-col md:flex-row h-[90vh] md:max-h-[850px] animate-in fade-in zoom-in duration-300">
@@ -246,11 +262,13 @@ const AnnexDetailsPage = () => {
               </button>
             </div>
           </div>
-
         </section>
       </main>
-    </div>
-  );
+    </motion.div>
+  )}
+</AnimatePresence>
+</div>
+);
 };
 
 export default AnnexDetailsPage;

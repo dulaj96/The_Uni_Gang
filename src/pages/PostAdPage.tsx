@@ -40,6 +40,9 @@ const dummyMyAds: Annex[] = [
   }
 ];
 
+import PremiumPageLoader from '../components/ui/PremiumPageLoader';
+import { motion, AnimatePresence } from 'framer-motion';
+
 const PostAdPage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentView, setCurrentView] = useState<'postAdForm' | 'myAds'>('postAdForm');
@@ -47,6 +50,7 @@ const PostAdPage = () => {
   const [myAds, setMyAds] = useState<Annex[]>(dummyMyAds);
   const [searchParams] = useSearchParams();
   const tab = searchParams.get('tab');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem('userToken');
@@ -54,6 +58,9 @@ const PostAdPage = () => {
       setIsLoggedIn(true);
       setCurrentView('postAdForm');
     }
+    
+    const timer = setTimeout(() => setLoading(false), 1000);
+    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
@@ -102,65 +109,89 @@ const PostAdPage = () => {
     }
   };
 
-  if (!isLoggedIn) {
-    return (
-      <div className="min-h-[80vh] flex flex-col justify-center items-center py-10 px-4">
-        <SEO
-          title="Post Your Annex Advertisement - The Uni Gang"
-          description="Landlords and students: Post your boarding place or annex advertisement for free and reach thousands of students."
-        />
-        <AuthCard onAuthSuccess={handleAuthSuccess} />
-      </div>
-    );
-  }
-
   return (
-    <div className="max-w-5xl mx-auto space-y-8">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors duration-500 pb-20">
+      <PremiumPageLoader isLoading={loading} message="Authenticating..." />
+      
       <SEO
         title="Post Your Annex Advertisement - The Uni Gang"
         description="Landlords and students: Post your boarding place or annex advertisement for free and reach thousands of students."
       />
-      {/* Dashboard Nav */}
-      <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-2 flex justify-center sm:justify-between items-center">
-        <div className="flex bg-slate-100 dark:bg-slate-700/50 p-1 rounded-xl">
-          <button
-            onClick={() => { setCurrentView('postAdForm'); setEditingAd(null); }}
-            className={`flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-bold transition-all ${currentView === 'postAdForm' ? 'bg-white dark:bg-slate-800 text-brand-600 dark:text-brand-400 shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
-              }`}
-          >
-            <LuPlus className="w-4 h-4" /> Post New Ad
-          </button>
-          <button
-            onClick={() => { setCurrentView('myAds'); setEditingAd(null); }}
-            className={`flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-bold transition-all ${currentView === 'myAds' ? 'bg-white dark:bg-slate-800 text-brand-600 dark:text-brand-400 shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
-              }`}
-          >
-            <LuLayoutDashboard className="w-4 h-4" /> Manage Ads
-          </button>
-        </div>
-        <button onClick={handleLogout} className="hidden sm:flex items-center gap-2 px-4 py-2 text-slate-500 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 font-medium transition-colors text-sm">
-          <LuLogOut className="w-4 h-4" /> Sign Out
-        </button>
-      </div>
 
-      <div>
-        {currentView === 'postAdForm' && (
-          <AnnexAdForm
-            initialData={editingAd}
-            onSubmit={handleAnnexFormSubmit}
-            onCancel={() => setCurrentView('myAds')}
-            isEditing={!!editingAd}
-          />
-        )}
+      <AnimatePresence mode="wait">
+        {!loading && (
+          <motion.div
+            key={isLoggedIn ? 'dashboard' : 'auth'}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.5 }}
+            className="max-w-7xl mx-auto px-4 md:px-8 pt-24"
+          >
+            {!isLoggedIn ? (
+              <div className="flex flex-col justify-center items-center py-10">
+                <AuthCard onAuthSuccess={handleAuthSuccess} />
+              </div>
+            ) : (
+              <div className="space-y-8">
+                {/* Dashboard Nav */}
+                <div className="bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl rounded-[2.5rem] shadow-xl border border-white/20 dark:border-slate-800 p-2 flex flex-col sm:flex-row justify-between items-center gap-4">
+                  <div className="flex bg-slate-200/50 dark:bg-slate-800/50 p-1.5 rounded-2xl w-full sm:w-auto">
+                    <button
+                      onClick={() => { setCurrentView('postAdForm'); setEditingAd(null); }}
+                      className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-black uppercase tracking-widest transition-all ${currentView === 'postAdForm' 
+                        ? 'bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-lg' 
+                        : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
+                        }`}
+                    >
+                      <LuPlus className="w-4 h-4" /> Post New
+                    </button>
+                    <button
+                      onClick={() => { setCurrentView('myAds'); setEditingAd(null); }}
+                      className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-black uppercase tracking-widest transition-all ${currentView === 'myAds' 
+                        ? 'bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-lg' 
+                        : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
+                        }`}
+                    >
+                      <LuLayoutDashboard className="w-4 h-4" /> My Ads
+                    </button>
+                  </div>
+                  <button 
+                    onClick={handleLogout} 
+                    className="flex items-center gap-2 px-8 py-3 bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 hover:bg-red-600 hover:text-white font-black uppercase tracking-widest text-[10px] rounded-2xl transition-all shadow-sm border border-red-100 dark:border-red-900/50 active:scale-95"
+                  >
+                    <LuLogOut className="w-4 h-4" /> Sign Out
+                  </button>
+                </div>
 
-        {currentView === 'myAds' && (
-          <MyAdsList
-            ads={myAds}
-            onEdit={(ad: Annex) => { setEditingAd(ad); setCurrentView('postAdForm'); }}
-            onDelete={handleDeleteAd}
-          />
+                <motion.div
+                  key={currentView + (editingAd?.id || 'new')}
+                  initial={{ opacity: 0, scale: 0.98 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  {currentView === 'postAdForm' && (
+                    <AnnexAdForm
+                      initialData={editingAd}
+                      onSubmit={handleAnnexFormSubmit}
+                      onCancel={() => setCurrentView('myAds')}
+                      isEditing={!!editingAd}
+                    />
+                  )}
+
+                  {currentView === 'myAds' && (
+                    <MyAdsList
+                      ads={myAds}
+                      onEdit={(ad: Annex) => { setEditingAd(ad); setCurrentView('postAdForm'); }}
+                      onDelete={handleDeleteAd}
+                    />
+                  )}
+                </motion.div>
+              </div>
+            )}
+          </motion.div>
         )}
-      </div>
+      </AnimatePresence>
     </div>
   );
 };

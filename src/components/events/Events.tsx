@@ -1,9 +1,10 @@
 import { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LuX, LuSend, LuCircleCheck, LuCloudUpload, LuCalendar } from 'react-icons/lu';
+import { LuX, LuSend, LuCircleCheck, LuCloudUpload, LuCalendar, LuChevronRight, LuSparkles } from 'react-icons/lu';
 import TiltCard from '../ui/TiltCard.tsx';
-import PageLoader from '../ui/PageLoader';
+import PremiumPageLoader from '../ui/PremiumPageLoader';
 import { useNavigate } from 'react-router-dom';
+import PremiumTraceButton from '../ui/PremiumTraceButton';
 
 const eventsList = [
     {
@@ -216,7 +217,7 @@ const Events = () => {
 
     return (
         <section id="events" className="relative pt-12 pb-10 bg-slate-150 overflow-hidden">
-            <PageLoader isLoading={isNavigating} message="Loading upcoming events..." />
+            <PremiumPageLoader isLoading={isNavigating} message="Fetching upcoming events..." />
             {/* Antigravity Floating Background Symbols */}
             <FloatingSymbol symbol="✧" index={0} />
             <FloatingSymbol symbol="✦" index={1} />
@@ -247,82 +248,22 @@ const Events = () => {
                         viewport={{ once: true }}
                         className="flex flex-col md:flex-row gap-4 w-full md:w-auto justify-center"
                     >
-                        {['Upcoming', 'Create ur Event'].map((label, i) => (
-                            <motion.button
-                                key={label}
-                                onClick={label === 'Create ur Event' ? () => setIsModalOpen(true) : label === 'Upcoming' ? handleUpcomingClick : undefined}
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                // Text color එකත් ලා නිල් පාටට (Sky/Cyan) match වෙන්න වෙනස් කළා
-                                className="group relative flex items-center justify-center gap-3 px-6 py-4 md:px-8 md:py-4 premium-glass rounded-2xl w-full md:w-auto transition-all shadow-lg shadow-black/5 hover:bg-white/30 dark:hover:bg-slate-800/30 overflow-hidden text-sky-900 dark:text-sky-300"
-                            >
+                        <PremiumTraceButton
+                            index={0}
+                            onClick={handleUpcomingClick}
+                            isLoading={isNavigating}
+                            icon={<LuChevronRight />}
+                        >
+                            Upcoming
+                        </PremiumTraceButton>
 
-                                {/* 🌀 Glowing Electric Blue Gradient Trace Effect 👇 */}
-                                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                                    <svg className="w-full h-full">
-                                        <defs>
-                                            {/* දිලිසෙන ලා නිල් පාට gradient එක */}
-                                            <linearGradient id={`blue-gradient-${i}`} x1="0%" y1="0%" x2="100%" y2="100%">
-                                                <stop offset="0%" stopColor="#f0f9ff" />   {/* ඉතාම ලා නිල් (ප්‍රකාශ ගතිය වැඩි කරනවා) */}
-                                                <stop offset="50%" stopColor="#38bdf8" />  {/* ලා නිල් (Sky Blue) */}
-                                                <stop offset="100%" stopColor="#0ea5e9" /> {/* තද නිල් */}
-                                            </linearGradient>
-                                        </defs>
-
-                                        {/* 1. Outer Glow Layer (Lighted effect එක සඳහා - මේක ටිකක් වැඩියෙන් blur කළා) */}
-                                        <motion.rect
-                                            x="1"
-                                            y="1"
-                                            width="calc(100% - 2px)"
-                                            height="calc(100% - 2px)"
-                                            fill="none"
-                                            stroke={`url(#blue-gradient-${i})`}
-                                            strokeWidth="6"
-                                            rx="16"
-                                            strokeDasharray="400 600"
-                                            style={{ filter: 'blur(5px)', opacity: 0.8 }}
-                                            animate={{
-                                                strokeDashoffset: [0, -1000],
-                                            }}
-                                            transition={{
-                                                repeat: Infinity,
-                                                duration: 5,
-                                                ease: "linear",
-                                            }}
-                                        />
-
-                                        {/* 2. Sharp Inner Layer (පැහැදිලි line එක සඳහා) */}
-                                        <motion.rect
-                                            x="1"
-                                            y="1"
-                                            width="calc(100% - 2px)"
-                                            height="calc(100% - 2px)"
-                                            fill="none"
-                                            stroke={`url(#blue-gradient-${i})`}
-                                            strokeWidth="2.5"
-                                            rx="16"
-                                            strokeDasharray="400 600"
-                                            animate={{
-                                                strokeDashoffset: [0, -1000],
-                                            }}
-                                            transition={{
-                                                repeat: Infinity,
-                                                duration: 5,
-                                                ease: "linear",
-                                            }}
-                                        />
-                                    </svg>
-                                </div>
-
-                                {/* Button content */}
-                                <span className="font-bold tracking-tight uppercase text-sm tracking-widest relative z-10">
-                                    {label}
-                                </span>
-                                <span className="material-symbols-outlined font-bold text-xl group-hover:translate-x-1 transition-transform relative z-10">
-                                    {i === 0 ? 'east' : 'auto_awesome'}
-                                </span>
-                            </motion.button>
-                        ))}
+                        <PremiumTraceButton
+                            index={1}
+                            onClick={() => setIsModalOpen(true)}
+                            icon={<LuSparkles />}
+                        >
+                            Create ur Event
+                        </PremiumTraceButton>
                     </motion.div>
                 </div>
             </div>

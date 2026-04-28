@@ -6,8 +6,25 @@ import {
     LuTicket, LuZap, LuShare2, LuMessageCircle, LuSparkles, LuStar
 } from "react-icons/lu";
 
+
+interface EventData {
+    id: number;
+    title: string;
+    image: string;
+    uni: string;
+    faculty: string;
+    description: string;
+    date: string;
+    time: string;
+    contact: string;
+    category: string;
+    location: string;
+    extra: string;
+    requirements: string;
+}
+
 interface EventDetailsProps {
-    event: any; // Type should ideally be shared, but using any for now to match DUMMY_EVENTS
+    event: EventData | null;
     isOpen: boolean;
     onClose: () => void;
 }

@@ -4,10 +4,20 @@ import { FaWhatsapp } from 'react-icons/fa6';
 import SEO from '../components/SEO';
 import toast from 'react-hot-toast';
 
+import PremiumPageLoader from '../components/ui/PremiumPageLoader';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect } from 'react';
+
 const ContactUsPage = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 1000);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,11 +29,21 @@ const ContactUsPage = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 md:px-8 py-8">
+    <div className="max-w-6xl mx-auto px-4 md:px-8 py-8 min-h-[600px]">
+      <PremiumPageLoader isLoading={loading} message="Connecting you to support..." />
+      
       <SEO
         title="Contact Us - The Uni Gang Support"
         description="Have questions? Contact The Uni Gang team for support with finding accommodation or posting advertisements."
       />
+
+      <AnimatePresence>
+        {!loading && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
       <div className="text-center mb-16">
         <h1 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-6">Get in Touch</h1>
         <p className="text-xl text-slate-500 dark:text-slate-400 max-w-2xl mx-auto">
@@ -127,6 +147,9 @@ const ContactUsPage = () => {
           </div>
         </div>
       </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

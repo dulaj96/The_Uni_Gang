@@ -3,7 +3,6 @@ import { LuHeart, LuMapPin, LuSearch, LuMail, LuUser } from 'react-icons/lu';
 import TiltCard from '../ui/TiltCard.tsx';
 import PremiumTraceButton from '../ui/PremiumTraceButton';
 import { useNavigate } from 'react-router-dom';
-import PageLoader from '../ui/PageLoader';
 import { useState } from 'react';
 
 const listings = [
@@ -70,7 +69,6 @@ const Annex = () => {
 
   return (
     <div className="relative z-10 font-sans pb-8 md:pb-0">
-      <PageLoader isLoading={isNavigating} message="Loading premium properties..." />
       <div className="container mx-auto px-4 md:px-6 lg:px-10 max-w-7xl pt-12 pb-10">
         {/* Header Section */}
         <motion.div

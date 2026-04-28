@@ -1,4 +1,5 @@
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
     LuScale,
     LuLayers,
@@ -9,9 +10,16 @@ import {
     LuShieldAlert,
     LuMail
 } from 'react-icons/lu';
+import PremiumPageLoader from '../../components/ui/PremiumPageLoader';
 
 const Terms = () => {
+    const [loading, setLoading] = useState(true);
     const lastUpdated = "April 2026";
+
+    useEffect(() => {
+        const timer = setTimeout(() => setLoading(false), 800);
+        return () => clearTimeout(timer);
+    }, []);
 
     const sections = [
         {
@@ -136,158 +144,170 @@ const Terms = () => {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-10 pb-20 px-4 md:px-8 transition-colors duration-500 relative overflow-hidden">
-            {/* Ambient Animated Backgrounds */}
-            <motion.div
-                animate={{
-                    scale: [1, 1.2, 1],
-                    rotate: [0, 90, 0],
-                    opacity: [0.3, 0.5, 0.3]
-                }}
-                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                className="fixed top-0 right-0 w-[600px] h-[600px] bg-indigo-500/10 rounded-full blur-[150px] pointer-events-none -translate-y-1/3 translate-x-1/3"
-            />
-            <motion.div
-                animate={{
-                    scale: [1, 1.5, 1],
-                    rotate: [0, -90, 0],
-                    opacity: [0.2, 0.4, 0.2]
-                }}
-                transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-                className="fixed bottom-0 left-0 w-[600px] h-[600px] bg-purple-500/10 rounded-full blur-[150px] pointer-events-none translate-y-1/3 -translate-x-1/3"
-            />
-
-            <div className="max-w-4xl mx-auto relative z-10">
-                {/* Header */}
-                <motion.div
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, ease: "easeOut" }}
-                    className="text-center mb-16 space-y-6"
-                >
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors duration-500 relative overflow-hidden">
+            <PremiumPageLoader isLoading={loading} message="Reviewing terms..." />
+            
+            <AnimatePresence>
+                {!loading && (
                     <motion.div
-                        whileHover={{ scale: 1.05 }}
-                        className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/40 dark:bg-slate-900/40 text-indigo-700 dark:text-indigo-300 text-xs font-black uppercase tracking-widest border border-indigo-200/50 dark:border-indigo-800/50 backdrop-blur-xl shadow-lg"
-                    >
-                        <motion.div
-                            animate={{ rotate: [0, 15, -15, 0] }}
-                            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-                        >
-                            <LuScale size={18} />
-                        </motion.div>
-                        The Uni Gang Legal
-                    </motion.div>
-
-                    <h1 className="text-5xl md:text-7xl font-black text-slate-900 dark:text-white tracking-tighter">
-                        Terms of <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">Service</span>
-                    </h1>
-
-                    <motion.p
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        transition={{ delay: 0.5 }}
-                        className="text-slate-500 dark:text-slate-400 font-medium"
+                        exit={{ opacity: 0 }}
                     >
-                        Last Updated: <span className="font-bold text-slate-700 dark:text-slate-300 px-3 py-1 rounded-lg bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border border-slate-200 dark:border-slate-700">{lastUpdated}</span>
-                    </motion.p>
-                </motion.div>
-
-                {/* Content Cards */}
-                <motion.div
-                    variants={containerVariants}
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true, margin: "-100px" }}
-                    className="space-y-8 relative"
-                >
-                    {/* Connecting UI Line */}
-                    <div className="absolute left-[39px] sm:left-[51px] top-10 bottom-10 w-px bg-gradient-to-b from-indigo-500/0 via-indigo-500/30 to-purple-500/0 hidden md:block"></div>
-
-                    {sections.map((section) => (
+                        {/* Ambient Animated Backgrounds */}
                         <motion.div
-                            key={section.id}
-                            variants={cardVariants}
-                            whileHover={{ scale: 1.02, y: -5 }}
-                            className="group relative bg-white/40 dark:bg-slate-900/40 backdrop-blur-2xl border border-white/60 dark:border-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] rounded-[2rem] p-6 md:p-10 transition-all duration-500 hover:border-indigo-500/40 hover:shadow-[0_20px_40px_rgb(79,70,229,0.1)]"
-                        >
-                            {/* Card Inner Glow */}
-                            <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent dark:from-white/5 dark:to-transparent rounded-[2rem] pointer-events-none" />
+                            animate={{
+                                scale: [1, 1.2, 1],
+                                rotate: [0, 90, 0],
+                                opacity: [0.3, 0.5, 0.3]
+                            }}
+                            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                            className="fixed top-0 right-0 w-[600px] h-[600px] bg-indigo-500/10 rounded-full blur-[150px] pointer-events-none -translate-y-1/3 translate-x-1/3"
+                        />
+                        <motion.div
+                            animate={{
+                                scale: [1, 1.5, 1],
+                                rotate: [0, -90, 0],
+                                opacity: [0.2, 0.4, 0.2]
+                            }}
+                            transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+                            className="fixed bottom-0 left-0 w-[600px] h-[600px] bg-purple-500/10 rounded-full blur-[150px] pointer-events-none translate-y-1/3 -translate-x-1/3"
+                        />
 
-                            <div className="flex items-start gap-5 md:gap-8 relative z-10">
+                        <div className="max-w-4xl mx-auto relative z-10 pt-10 pb-20">
+                            {/* Header */}
+                            <motion.div
+                                initial={{ opacity: 0, y: -20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.8, ease: "easeOut" }}
+                                className="text-center mb-16 space-y-6"
+                            >
                                 <motion.div
-                                    whileHover={{ rotate: 10, scale: 1.1 }}
-                                    className="hidden sm:flex mt-1 w-14 h-14 justify-center items-center rounded-2xl bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/30 dark:to-purple-900/30 border border-indigo-100 dark:border-indigo-800/50 text-indigo-600 dark:text-indigo-400 flex-shrink-0 shadow-inner group-hover:text-purple-600 transition-colors"
+                                    whileHover={{ scale: 1.05 }}
+                                    className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/40 dark:bg-slate-900/40 text-indigo-700 dark:text-indigo-300 text-xs font-black uppercase tracking-widest border border-indigo-200/50 dark:border-indigo-800/50 backdrop-blur-xl shadow-lg"
                                 >
-                                    <section.icon size={26} />
+                                    <motion.div
+                                        animate={{ rotate: [0, 15, -15, 0] }}
+                                        transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+                                    >
+                                        <LuScale size={18} />
+                                    </motion.div>
+                                    The Uni Gang Legal
                                 </motion.div>
 
-                                <div className="space-y-4 w-full">
-                                    <div className="flex items-center gap-4">
-                                        <div className="sm:hidden w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/30 dark:to-purple-900/30 border border-indigo-100 dark:border-indigo-800/50 flex items-center justify-center text-indigo-600 flex-shrink-0 shadow-inner">
-                                            <section.icon size={20} />
+                                <h1 className="text-5xl md:text-7xl font-black text-slate-900 dark:text-white tracking-tighter">
+                                    Terms of <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">Service</span>
+                                </h1>
+
+                                <motion.p
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ delay: 0.5 }}
+                                    className="text-slate-500 dark:text-slate-400 font-medium"
+                                >
+                                    Last Updated: <span className="font-bold text-slate-700 dark:text-slate-300 px-3 py-1 rounded-lg bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border border-slate-200 dark:border-slate-700">{lastUpdated}</span>
+                                </motion.p>
+                            </motion.div>
+
+                            {/* Content Cards */}
+                            <motion.div
+                                variants={containerVariants}
+                                initial="hidden"
+                                whileInView="visible"
+                                viewport={{ once: true, margin: "-100px" }}
+                                className="space-y-8 relative"
+                            >
+                                {/* Connecting UI Line */}
+                                <div className="absolute left-[39px] sm:left-[51px] top-10 bottom-10 w-px bg-gradient-to-b from-indigo-500/0 via-indigo-500/30 to-purple-500/0 hidden md:block"></div>
+
+                                {sections.map((section) => (
+                                    <motion.div
+                                        key={section.id}
+                                        variants={cardVariants}
+                                        whileHover={{ scale: 1.02, y: -5 }}
+                                        className="group relative bg-white/40 dark:bg-slate-900/40 backdrop-blur-2xl border border-white/60 dark:border-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] rounded-[2rem] p-6 md:p-10 transition-all duration-500 hover:border-indigo-500/40 hover:shadow-[0_20px_40px_rgb(79,70,229,0.1)]"
+                                    >
+                                        {/* Card Inner Glow */}
+                                        <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent dark:from-white/5 dark:to-transparent rounded-[2rem] pointer-events-none" />
+
+                                        <div className="flex items-start gap-5 md:gap-8 relative z-10">
+                                            <motion.div
+                                                whileHover={{ rotate: 10, scale: 1.1 }}
+                                                className="hidden sm:flex mt-1 w-14 h-14 justify-center items-center rounded-2xl bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/30 dark:to-purple-900/30 border border-indigo-100 dark:border-indigo-800/50 text-indigo-600 dark:text-indigo-400 flex-shrink-0 shadow-inner group-hover:text-purple-600 transition-colors"
+                                            >
+                                                <section.icon size={26} />
+                                            </motion.div>
+
+                                            <div className="space-y-4 w-full">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="sm:hidden w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/30 dark:to-purple-900/30 border border-indigo-100 dark:border-indigo-800/50 flex items-center justify-center text-indigo-600 flex-shrink-0 shadow-inner">
+                                                        <section.icon size={20} />
+                                                    </div>
+                                                    <h3 className="text-2xl md:text-3xl font-extrabold text-slate-800 dark:text-slate-100 tracking-tight group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                                                        {section.title}
+                                                    </h3>
+                                                </div>
+                                                <div className="text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
+                                                    {section.content}
+                                                </div>
+                                            </div>
                                         </div>
-                                        <h3 className="text-2xl md:text-3xl font-extrabold text-slate-800 dark:text-slate-100 tracking-tight group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-                                            {section.title}
-                                        </h3>
+                                    </motion.div>
+                                ))}
+                            </motion.div>
+
+                            {/* Call to Action - Contact */}
+                            <motion.div
+                                initial={{ opacity: 0, y: 50 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ type: "spring", stiffness: 80, damping: 20 }}
+                                className="mt-20 bg-gradient-to-br from-indigo-600 to-purple-800 rounded-[3rem] p-10 md:p-14 text-center text-white shadow-[0_20px_50px_rgba(79,70,229,0.3)] relative overflow-hidden group"
+                            >
+                                {/* Animated Overlay Shapes */}
+                                <motion.div
+                                    animate={{ x: [-20, 20, -20], y: [-20, 20, -20] }}
+                                    transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                                    className="absolute -top-20 -right-20 w-64 h-64 bg-white/10 rounded-full blur-3xl pointer-events-none"
+                                />
+                                <motion.div
+                                    animate={{ x: [20, -20, 20], y: [20, -20, 20] }}
+                                    transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+                                    className="absolute -bottom-20 -left-20 w-80 h-80 bg-purple-400/20 rounded-full blur-3xl pointer-events-none"
+                                />
+
+                                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] mix-blend-overlay opacity-10"></div>
+
+                                <div className="relative z-10 space-y-8 flex flex-col items-center">
+                                    <motion.div
+                                        whileHover={{ rotate: 180, scale: 1.1 }}
+                                        transition={{ duration: 0.5 }}
+                                        className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-xl border border-white/30 flex items-center justify-center shadow-2xl"
+                                    >
+                                        <LuMail size={36} />
+                                    </motion.div>
+
+                                    <div>
+                                        <h2 className="text-4xl md:text-5xl font-black mb-4 tracking-tight">Need further clarification?</h2>
+                                        <p className="text-indigo-100 font-medium max-w-lg mx-auto text-lg leading-relaxed">
+                                            If you require assistance understanding these terms, please contact our legal and support team.
+                                        </p>
                                     </div>
-                                    <div className="text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
-                                        {section.content}
-                                    </div>
+
+                                    <motion.a
+                                        whileHover={{ scale: 1.05, y: -3, boxShadow: "0 20px 40px -10px rgba(0,0,0,0.3)" }}
+                                        whileTap={{ scale: 0.95 }}
+                                        href="mailto:legal@theunigang.com"
+                                        className="inline-flex items-center gap-3 bg-white text-indigo-700 hover:text-purple-800 px-10 py-5 rounded-full font-black uppercase tracking-[0.2em] text-sm transition-all shadow-xl"
+                                    >
+                                        Contact Legal <LuMail size={18} />
+                                    </motion.a>
                                 </div>
-                            </div>
-                        </motion.div>
-                    ))}
-                </motion.div>
-
-                {/* Call to Action - Contact */}
-                <motion.div
-                    initial={{ opacity: 0, y: 50 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ type: "spring", stiffness: 80, damping: 20 }}
-                    className="mt-20 bg-gradient-to-br from-indigo-600 to-purple-800 rounded-[3rem] p-10 md:p-14 text-center text-white shadow-[0_20px_50px_rgba(79,70,229,0.3)] relative overflow-hidden group"
-                >
-                    {/* Animated Overlay Shapes */}
-                    <motion.div
-                        animate={{ x: [-20, 20, -20], y: [-20, 20, -20] }}
-                        transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-                        className="absolute -top-20 -right-20 w-64 h-64 bg-white/10 rounded-full blur-3xl pointer-events-none"
-                    />
-                    <motion.div
-                        animate={{ x: [20, -20, 20], y: [20, -20, 20] }}
-                        transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-                        className="absolute -bottom-20 -left-20 w-80 h-80 bg-purple-400/20 rounded-full blur-3xl pointer-events-none"
-                    />
-
-                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] mix-blend-overlay opacity-10"></div>
-
-                    <div className="relative z-10 space-y-8 flex flex-col items-center">
-                        <motion.div
-                            whileHover={{ rotate: 180, scale: 1.1 }}
-                            transition={{ duration: 0.5 }}
-                            className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-xl border border-white/30 flex items-center justify-center shadow-2xl"
-                        >
-                            <LuMail size={36} />
-                        </motion.div>
-
-                        <div>
-                            <h2 className="text-4xl md:text-5xl font-black mb-4 tracking-tight">Need further clarification?</h2>
-                            <p className="text-indigo-100 font-medium max-w-lg mx-auto text-lg leading-relaxed">
-                                If you require assistance understanding these terms, please contact our legal and support team.
-                            </p>
+                            </motion.div>
                         </div>
-
-                        <motion.a
-                            whileHover={{ scale: 1.05, y: -3, boxShadow: "0 20px 40px -10px rgba(0,0,0,0.3)" }}
-                            whileTap={{ scale: 0.95 }}
-                            href="mailto:legal@theunigang.com"
-                            className="inline-flex items-center gap-3 bg-white text-indigo-700 hover:text-purple-800 px-10 py-5 rounded-full font-black uppercase tracking-[0.2em] text-sm transition-all shadow-xl"
-                        >
-                            Contact Legal <LuMail size={18} />
-                        </motion.a>
-                    </div>
-                </motion.div>
-            </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };

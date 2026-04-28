@@ -36,7 +36,7 @@ const Header = () => {
 
   // Intersection Observer for ScrollSpy
   useEffect(() => {
-    const sectionIds = ['home', 'annex', 'services', 'events', 'stats', 'contact'];
+    const sectionIds = ['home', 'annex', 'services', 'events', 'blogs', 'stats', 'contact'];
 
     const observerOptions = {
       root: null,
@@ -128,8 +128,8 @@ const Header = () => {
 
   // Click outside to close dropdown
   useEffect(() => {
-    const handleClickOutside = (event: any) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsProfileDropdownOpen(false);
       }
     };
@@ -154,6 +154,7 @@ const Header = () => {
     { name: 'Annex', path: '/#annex', id: 'annex' },
     { name: 'Services', path: '/#services', id: 'services' },
     { name: 'Events', path: '/#events', id: 'events' },
+    { name: 'Blogs', path: '/#blogs', id: 'blogs' },
     { name: 'Contact', path: '/#contact', id: 'contact' },
   ];
 
@@ -179,29 +180,53 @@ const Header = () => {
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-1 bg-slate-100/30 dark:bg-slate-800/30 backdrop-blur-md px-2 py-1.5 rounded-full border border-white/20 dark:border-slate-700/30 shadow-inner">
           {navLinks.map((link) => {
-            const isActive = activeSection === link.id;
+            const isActive = activeSection === link.id || location.pathname === link.path;
+            const isAnchor = link.path.startsWith('/#');
 
             return (
-              <motion.a
+              <motion.div
                 key={link.id}
-                href={link.path}
-                onClick={(e) => scrollToSection(e, link.path)}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className={`relative px-5 py-2 rounded-full text-sm font-semibold transition-colors duration-300 ${isActive
-                  ? 'text-white'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400'
-                  }`}
+                className="relative"
               >
-                {isActive && (
-                  <motion.div
-                    layoutId="activeSection"
-                    className="absolute inset-0 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-full shadow-lg shadow-blue-500/40 -z-10"
-                    transition={{ type: "spring", duration: 0.6 }}
-                  />
+                {isAnchor ? (
+                  <a
+                    href={link.path}
+                    onClick={(e) => scrollToSection(e, link.path)}
+                    className={`px-5 py-2 rounded-full text-sm font-semibold transition-colors duration-300 block ${isActive
+                      ? 'text-white'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400'
+                      }`}
+                  >
+                    {isActive && (
+                      <motion.div
+                        layoutId="activeSection"
+                        className="absolute inset-0 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-full shadow-lg shadow-blue-500/40 -z-10"
+                        transition={{ type: "spring", duration: 0.6 }}
+                      />
+                    )}
+                    {link.name}
+                  </a>
+                ) : (
+                  <Link
+                    to={link.path}
+                    className={`px-5 py-2 rounded-full text-sm font-semibold transition-colors duration-300 block ${isActive
+                      ? 'text-white'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400'
+                      }`}
+                  >
+                    {isActive && (
+                      <motion.div
+                        layoutId="activeSection"
+                        className="absolute inset-0 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-full shadow-lg shadow-blue-500/40 -z-10"
+                        transition={{ type: "spring", duration: 0.6 }}
+                      />
+                    )}
+                    {link.name}
+                  </Link>
                 )}
-                {link.name}
-              </motion.a>
+              </motion.div>
             );
           })}
         </nav>
@@ -298,81 +323,157 @@ const Header = () => {
           {isMobileMenuOpen ? <LuX className="w-7 h-7" /> : <LuMenu className="w-7 h-7" />}
         </button>
 
-        {/* Mobile Navigation Overlay */}
-        {/* Mobile Navigation Overlay */}
+        {/* Premium Mobile Navigation Overlay */}
         <AnimatePresence>
           {isMobileMenuOpen && (
             <motion.div
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed inset-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl z-40 flex flex-col items-center justify-center space-y-8 md:hidden"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-40 md:hidden overflow-hidden"
             >
-              {/* Theme Toggle (Mobile) */}
-              <button
-                onClick={toggleTheme}
-                className="absolute top-6 right-6 p-2 rounded-full text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              {/* Backdrop Blur Layer */}
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="absolute inset-0 bg-white/40 dark:bg-slate-950/40 backdrop-blur-3xl"
+                onClick={() => setIsMobileMenuOpen(false)}
+              />
+
+              {/* Menu Card */}
+              <motion.div
+                initial={{ x: '100%', borderRadius: '100% 0 0 100%' }}
+                animate={{ x: 0, borderRadius: 0 }}
+                exit={{ x: '100%', borderRadius: '100% 0 0 100%' }}
+                transition={{ type: "spring", damping: 30, stiffness: 200 }}
+                className="absolute right-0 top-0 bottom-0 w-[85%] bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl border-l border-white/20 dark:border-slate-800 shadow-[-20px_0_50px_rgba(0,0,0,0.1)] p-8 flex flex-col"
               >
-                {theme === 'dark' ? <LuSun className="w-6 h-6" /> : <LuMoon className="w-6 h-6" />}
-              </button>
+                {/* Decorative Elements */}
+                <div className="absolute top-[-10%] right-[-10%] w-64 h-64 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute bottom-[10%] left-[-10%] w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
 
-              {/* Mobile Links */}
-              <div className="flex flex-col items-center space-y-6 w-full px-8">
-                {navLinks.map((link) => {
-                  const isActive = activeSection === link.id;
-                  return (
-                    <motion.a
-                      key={link.id}
-                      href={link.path}
-                      onClick={(e) => scrollToSection(e, link.path)}
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                      className={`relative text-2xl font-bold transition-all duration-300 ${isActive
-                        ? 'text-blue-600 dark:text-blue-400'
-                        : 'text-slate-800 dark:text-white'
-                        }`}
-                    >
-                      {isActive && (
-                        <motion.div
-                          layoutId="mobileActive"
-                          className="absolute -left-6 top-1/2 -translate-y-1/2 w-2 h-8 bg-blue-600 rounded-full"
-                        />
-                      )}
-                      {link.name}
-                    </motion.a>
-                  );
-                })}
-
-                <div className="w-24 h-1 bg-slate-100 dark:bg-slate-800 rounded-full my-4"></div>
-
-                {isLoggedIn ? (
-                  <div className="flex flex-col items-center space-y-4 w-full">
-                    <div className="flex items-center gap-3 bg-slate-50 dark:bg-slate-800 px-6 py-3 rounded-2xl w-full justify-center">
-                      {userProfilePic ? (
-                        <img src={userProfilePic} alt="Profile" className="w-10 h-10 rounded-full object-cover" />
-                      ) : (
-                        <LuUser className="w-8 h-8 text-slate-400" />
-                      )}
-                      <div className="text-left">
-                        <p className="text-sm font-bold text-slate-800 dark:text-white">{userName}</p>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">Logged In</p>
-                      </div>
-                    </div>
-                    <Link to="/profile" onClick={() => setIsMobileMenuOpen(false)} className="w-full text-center py-3 text-slate-600 dark:text-slate-300 font-medium">Profile</Link>
-                    <Link to="/post-ad?tab=myAds" onClick={() => setIsMobileMenuOpen(false)} className="w-full text-center py-3 text-slate-600 dark:text-slate-300 font-medium">My Ads</Link>
-                    <button onClick={handleLogout} className="text-red-500 font-medium mt-4">Log Out</button>
-                  </div>
-                ) : (
-                  <Link
-                    to="/post-ad"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="w-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white text-lg font-bold py-4 rounded-xl shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2"
-                  >
-                    Sign In / Register
+                {/* Close & Theme Toggle Header */}
+                <div className="flex items-center justify-between mb-12 relative z-10">
+                  <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-2">
+                    <img src={logo} alt="Logo" className="w-8 h-8 rounded-full border border-blue-500" />
+                    <span className="font-black text-slate-900 dark:text-white tracking-tighter uppercase text-sm">The Uni Gang</span>
                   </Link>
-                )}
-              </div>
+                  <button
+                    onClick={toggleTheme}
+                    className="p-3 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 transition-all active:scale-90"
+                  >
+                    {theme === 'dark' ? <LuSun className="w-5 h-5" /> : <LuMoon className="w-5 h-5" />}
+                  </button>
+                </div>
+
+                {/* Navigation Links with Staggered Animation */}
+                <div className="flex-1 space-y-2 overflow-y-auto custom-scrollbar relative z-10">
+                  {navLinks.map((link, index) => {
+                    const isActive = activeSection === link.id || location.pathname === link.path;
+                    const isAnchor = link.path.startsWith('/#');
+
+                    return (
+                      <motion.div
+                        key={link.id}
+                        initial={{ x: 50, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        transition={{ delay: 0.1 + index * 0.05 }}
+                      >
+                        {isAnchor ? (
+                          <a
+                            href={link.path}
+                            onClick={(e) => {
+                              scrollToSection(e, link.path);
+                              setIsMobileMenuOpen(false);
+                            }}
+                            className={`group flex items-center justify-between p-4 rounded-2xl transition-all ${
+                              isActive 
+                                ? 'bg-blue-600 text-white shadow-xl shadow-blue-500/30' 
+                                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                            }`}
+                          >
+                            <span className="text-xl font-black uppercase tracking-widest">{link.name}</span>
+                            <LuArrowRight className={`w-5 h-5 transition-transform ${isActive ? 'translate-x-0 opacity-100' : '-translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100'}`} />
+                          </a>
+                        ) : (
+                          <Link
+                            to={link.path}
+                            onClick={() => setIsMobileMenuOpen(false)}
+                            className={`group flex items-center justify-between p-4 rounded-2xl transition-all ${
+                              isActive 
+                                ? 'bg-blue-600 text-white shadow-xl shadow-blue-500/30' 
+                                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                            }`}
+                          >
+                            <span className="text-xl font-black uppercase tracking-widest">{link.name}</span>
+                            <LuArrowRight className={`w-5 h-5 transition-transform ${isActive ? 'translate-x-0 opacity-100' : '-translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100'}`} />
+                          </Link>
+                        )}
+                      </motion.div>
+                    );
+                  })}
+                </div>
+
+                {/* Footer Section: Auth/Profile */}
+                <div className="mt-8 pt-8 border-t border-slate-100 dark:border-slate-800 relative z-10">
+                  {isLoggedIn ? (
+                    <motion.div
+                      initial={{ y: 20, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      transition={{ delay: 0.5 }}
+                      className="space-y-4"
+                    >
+                      <div className="flex items-center gap-4 p-4 rounded-3xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700">
+                        {userProfilePic ? (
+                          <img src={userProfilePic} alt="Profile" className="w-12 h-12 rounded-full object-cover border-2 border-white dark:border-slate-700" />
+                        ) : (
+                          <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 flex items-center justify-center">
+                            <LuUser className="w-6 h-6" />
+                          </div>
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <p className="font-bold text-slate-900 dark:text-white truncate">{userName}</p>
+                          <p className="text-xs text-slate-500">Student Explorer</p>
+                        </div>
+                        <button onClick={handleLogout} className="p-3 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-xl transition-colors">
+                          <LuLogOut className="w-5 h-5" />
+                        </button>
+                      </div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <Link 
+                          to="/profile" 
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className="flex items-center justify-center gap-2 p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50"
+                        >
+                          <LuUser size={18} /> Profile
+                        </Link>
+                        <Link 
+                          to="/post-ad?tab=myAds" 
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className="flex items-center justify-center gap-2 p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50"
+                        >
+                          <LuLayoutDashboard size={18} /> Ads
+                        </Link>
+                      </div>
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      initial={{ y: 20, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      transition={{ delay: 0.5 }}
+                    >
+                      <Link
+                        to="/post-ad"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="w-full flex items-center justify-center gap-3 p-5 rounded-[2rem] bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black uppercase tracking-widest text-xs shadow-2xl shadow-blue-500/30 hover:scale-[1.02] active:scale-95 transition-all"
+                      >
+                        Join the Gang <LuArrowRight size={18} />
+                      </Link>
+                    </motion.div>
+                  )}
+                </div>
+              </motion.div>
             </motion.div>
           )}
         </AnimatePresence>

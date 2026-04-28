@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
 import { LuUser, LuMail, LuLock, LuArrowRight } from 'react-icons/lu';
 import { dispatchAuthUpdate } from '../../utils/authEvents';
 import toast from 'react-hot-toast';
+import PremiumPageLoader from '../ui/PremiumPageLoader';
 
 interface AuthCardProps {
     onAuthSuccess: () => void;
@@ -81,101 +83,119 @@ const AuthCard: React.FC<AuthCardProps> = ({ onAuthSuccess }) => {
     };
 
     return (
-        <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-xl overflow-hidden max-w-md w-full border border-slate-100 dark:border-slate-700">
-            <div className="p-8 pb-6">
-                <div className="text-center mb-8">
-                    <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
-                        {isRegistering ? 'Create Account' : 'Welcome Back'}
+        <div className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-3xl rounded-[2.5rem] shadow-2xl overflow-hidden max-w-md w-full border border-white/20 dark:border-slate-800 relative">
+            <PremiumPageLoader isLoading={loading} message={isRegistering ? "Creating your account..." : "Securing access..."} />
+            
+            <div className="p-10 pb-8">
+                <div className="text-center mb-10">
+                    <motion.div
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ duration: 0.5 }}
+                        className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-xl shadow-blue-500/20"
+                    >
+                        <LuLock className="text-2xl text-white" />
+                    </motion.div>
+                    <h2 className="text-4xl font-black text-slate-900 dark:text-white mb-2 tracking-tighter uppercase">
+                        {isRegistering ? 'Join Us' : 'Welcome'}
                     </h2>
-                    <p className="text-slate-500 dark:text-slate-400">
-                        {isRegistering ? 'Join The Uni Gang today' : 'Please sign in to continue'}
+                    <p className="text-slate-500 dark:text-slate-400 font-medium uppercase tracking-widest text-[10px]">
+                        {isRegistering ? 'The future of campus life' : 'Sign in to your portal'}
                     </p>
                 </div>
 
                 {message && (
-                    <div className={`p-4 rounded-xl mb-6 text-sm font-medium ${message.type === 'error' ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600'}`}>
+                    <motion.div 
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className={`p-4 rounded-2xl mb-8 text-xs font-black uppercase tracking-widest text-center ${message.type === 'error' ? 'bg-red-50 text-red-600 border border-red-100' : 'bg-green-50 text-green-600 border border-green-100'}`}
+                    >
                         {message.text}
-                    </div>
+                    </motion.div>
                 )}
 
-                <form onSubmit={isRegistering ? handleRegister : handleLogin} className="space-y-4">
+                <form onSubmit={isRegistering ? handleRegister : handleLogin} className="space-y-5">
                     {isRegistering && (
-                        <div className="relative">
-                            <LuUser className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                        <div className="relative group">
+                            <LuUser className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
                             <input
                                 type="text"
-                                className="w-full pl-12 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all text-slate-800 dark:text-white"
-                                placeholder="Full Name"
+                                className="w-full pl-14 pr-6 py-4 bg-slate-50/50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all text-slate-800 dark:text-white font-bold placeholder:text-slate-400"
+                                placeholder="Display Name"
                                 value={authName}
                                 onChange={(e) => setAuthName(e.target.value)}
                                 required
                             />
                         </div>
                     )}
-                    <div className="relative">
-                        <LuMail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <div className="relative group">
+                        <LuMail className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
                         <input
                             type="email"
-                            className="w-full pl-12 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all text-slate-800 dark:text-white"
+                            className="w-full pl-14 pr-6 py-4 bg-slate-50/50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all text-slate-800 dark:text-white font-bold placeholder:text-slate-400"
                             placeholder="Email Address"
                             value={authEmail}
                             onChange={(e) => setAuthEmail(e.target.value)}
                             required
                         />
                     </div>
-                    <div className="relative">
-                        <LuLock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <div className="relative group">
+                        <LuLock className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
                         <input
                             type="password"
-                            className="w-full pl-12 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all text-slate-800 dark:text-white"
-                            placeholder="Password"
+                            className="w-full pl-14 pr-6 py-4 bg-slate-50/50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all text-slate-800 dark:text-white font-bold placeholder:text-slate-400"
+                            placeholder="Security Key"
                             value={authPassword}
                             onChange={(e) => setAuthPassword(e.target.value)}
                             required
                         />
                     </div>
 
-                    <button
+                    <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
                         type="submit"
                         disabled={loading}
-                        className="w-full bg-brand-600 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-brand-200 hover:bg-brand-700 hover:shadow-xl transition-all flex items-center justify-center gap-2 group"
+                        className="w-full bg-blue-600 text-white font-black py-4 rounded-2xl shadow-xl shadow-blue-600/20 hover:bg-blue-700 transition-all flex items-center justify-center gap-3 group uppercase tracking-widest text-xs"
                     >
                         {loading ? 'Processing...' : (isRegistering ? 'Sign Up' : 'Sign In')}
                         {!loading && <LuArrowRight className="group-hover:translate-x-1 transition-transform" />}
-                    </button>
+                    </motion.button>
                 </form>
 
-                <div className="relative my-8">
+                <div className="relative my-10">
                     <div className="absolute inset-0 flex items-center">
-                        <div className="w-full border-t border-slate-100 dark:border-slate-700"></div>
+                        <div className="w-full border-t border-slate-100 dark:border-slate-800"></div>
                     </div>
-                    <div className="relative flex justify-center text-xs uppercase tracking-wider">
-                        <span className="px-4 bg-white dark:bg-slate-800 text-slate-400">Or continue with</span>
+                    <div className="relative flex justify-center text-[10px] uppercase tracking-[0.2em] font-black">
+                        <span className="px-6 bg-white dark:bg-[#0f172a] text-slate-400">Security Gate</span>
                     </div>
                 </div>
 
                 <div className="flex justify-center">
                     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-                        <GoogleLogin
-                            onSuccess={handleGoogleSuccess}
-                            onError={handleGoogleFailure}
-                            theme="filled_black"
-                            shape="pill"
-                            size="large"
-                            width="100%"
-                        />
+                        <div className="w-full overflow-hidden rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 transition-transform hover:scale-[1.02]">
+                            <GoogleLogin
+                                onSuccess={handleGoogleSuccess}
+                                onError={handleGoogleFailure}
+                                theme="filled_black"
+                                shape="square"
+                                size="large"
+                                width="100%"
+                            />
+                        </div>
                     </GoogleOAuthProvider>
                 </div>
             </div>
 
-            <div className="bg-slate-50 dark:bg-slate-900/50 p-4 text-center border-t border-slate-100 dark:border-slate-700">
-                <p className="text-slate-600 dark:text-slate-400 text-sm">
-                    {isRegistering ? 'Already have an account?' : "Don't have an account?"}
+            <div className="bg-slate-50/50 dark:bg-slate-900/40 p-6 text-center border-t border-white/20 dark:border-slate-800">
+                <p className="text-slate-500 dark:text-slate-400 text-xs font-medium">
+                    {isRegistering ? 'Already a member?' : "New to the gang?"}
                     <button
                         onClick={() => setIsRegistering(!isRegistering)}
-                        className="ml-2 font-bold text-brand-600 hover:text-brand-700"
+                        className="ml-2 font-black text-blue-600 hover:text-blue-700 uppercase tracking-widest text-[10px]"
                     >
-                        {isRegistering ? 'Log In' : 'Register now'}
+                        {isRegistering ? 'Sign In' : 'Join Now'}
                     </button>
                 </p>
             </div>

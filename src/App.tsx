@@ -8,7 +8,7 @@ import Hero from './components/home/Hero';
 import FeaturedAnnexes from './components/annex/Annex';
 import Services from './components/services/Services';
 import Events from './components/events/Events';
-
+import Blogs from './components/blogs/Blogs';
 import Contact from './components/contact/Contact';
 
 // Pages Imports
@@ -25,6 +25,11 @@ import EventList from './pages/events/EventList';
 import PrivacyPolicy from './pages/privacyPolicy/PrivacyPolicy';
 import Terms from './pages/terms/Terms';
 import FAQ from './pages/f&q/F&Q';
+
+// Blogs Imports
+import BlogList from './pages/blogs/BlogList';
+import BlogDetail from './pages/blogs/BlogDetail';
+import SubmitBlog from './pages/blogs/SubmitBlog';
 
 function App() {
   return (
@@ -51,6 +56,7 @@ function App() {
                   <div id="feed" className="min-h-[10px]"></div>
                   <Services />
                   <Events />
+                  <div id="blogs"><Blogs /></div>
                   <Contact />
                 </div>
               </div>
@@ -79,6 +85,11 @@ function App() {
 
         {/* FAQ using SubLayout */}
         <Route path="/faq" element={<SubLayout><FAQ /></SubLayout>} />
+
+        {/* Blogs Routes */}
+        <Route path="/blogs" element={<Layout><BlogList /></Layout>} />
+        <Route path="/blogs/:slug" element={<Layout><BlogDetail /></Layout>} />
+        <Route path="/submit-blog" element={<Layout><SubmitBlog /></Layout>} />
       </Routes>
 
       <WhatsAppButton />
