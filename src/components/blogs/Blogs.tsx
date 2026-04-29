@@ -88,7 +88,7 @@ const Blogs = () => {
   };
 
   return (
-    <section id="blogs" className="relative py-32 bg-slate-50 dark:bg-[#020617] overflow-hidden">
+    <section id="blogs" className="relative py-32 bg-slate-150 dark:bg-[#020617] overflow-hidden">
       <PremiumPageLoader isLoading={isNavigating} message="Opening the blog archive..." />
       {/* 🌌 High-End Mesh Gradient Background */}
       <div className="absolute inset-0 pointer-events-none">
@@ -198,10 +198,10 @@ const Blogs = () => {
 
 
           {/* Right Side: Modern 3D Visual Collage & Metrics (lg:col-span-5) */}
-          <div className="lg:col-span-5 flex flex-col items-center justify-center gap-12">
+          <div className="lg:col-span-5 flex flex-col items-center lg:items-start gap-12">
 
             {/* Modern 3D Visual Collage */}
-            <div className="relative h-[500px] flex items-center justify-center w-full max-w-sm lg:max-w-md mx-auto">
+            <div className="relative h-[500px] flex items-center justify-center w-full max-w-sm lg:max-w-md mx-auto lg:mx-0">
 
               {/* Background Decorative Rings */}
               <div className="absolute inset-0 flex items-center justify-center opacity-20">
@@ -246,10 +246,10 @@ const Blogs = () => {
 
                   {/* Floating "Live" Article Card */}
                   <motion.div
-                    initial={{ x: -60, opacity: 0 }}
+                    initial={{ x: 60, opacity: 0 }}
                     whileInView={{ x: 0, opacity: 1 }}
                     transition={{ delay: 0.8 }}
-                    className="absolute -left-10 top-1/2 -translate-y-1/2 w-64 bg-white dark:bg-slate-800 rounded-3xl shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] border border-slate-100 dark:border-slate-700 p-5 hidden xl:block z-30"
+                    className="absolute -right-8 top-1/2 -translate-y-1/2 w-56 bg-white dark:bg-slate-800 rounded-3xl shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] border border-slate-100 dark:border-slate-700 p-4 hidden xl:block z-30"
                   >
                     <div className="flex items-center gap-3 mb-4">
                       <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white">
@@ -295,7 +295,7 @@ const Blogs = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
-              className="flex w-full justify-center gap-12"
+              className="flex w-full justify-center lg:justify-start gap-12"
             >
               <div className="text-center lg:text-left">
                 <div className="text-4xl lg:text-5xl font-black text-slate-900 dark:text-white mb-2">500<span className="text-blue-600">+</span></div>

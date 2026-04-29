@@ -30,9 +30,13 @@ const BlogCard: React.FC<BlogCardProps> = ({ blog, isFeatured = false }) => {
       {/* Image Container */}
       <div className={`relative overflow-hidden ${isFeatured ? 'h-64 md:h-full' : 'h-48'}`}>
         <img
-          src={blog.featuredImage}
+          src={blog.featuredImage || 'https://images.unsplash.com/photo-1517842645767-c639042777db?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'}
           alt={blog.title}
           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+          onError={(e) => {
+            const target = e.target as HTMLImageElement;
+            target.src = 'https://images.unsplash.com/photo-1517842645767-c639042777db?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80';
+          }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
       </div>

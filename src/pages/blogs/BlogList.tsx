@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
-import { LuSearch, LuTrendingUp, LuArrowLeft, LuSparkles, LuMic } from 'react-icons/lu';
+import { LuSearch, LuTrendingUp, LuArrowLeft, LuSparkles } from 'react-icons/lu';
 import { api } from '../../api';
 import { Blog, Contributor, BlogCategory } from '../../types/blog';
 import BlogCard from './ArticleCard';
@@ -85,102 +85,86 @@ const BlogList: React.FC = () => {
             </div>
 
             {/* Hero Section */}
-            <section className="relative pt-12 pb-16 px-4 md:px-8 max-w-7xl mx-auto z-10">
-              <div className="grid lg:grid-cols-2 gap-12 items-center">
-                <motion.div
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8 }}
-                  className="space-y-8"
-                >
-                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-100/50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs font-black uppercase tracking-widest border border-blue-200/50 dark:border-blue-800/50">
-                    <LuSparkles className="animate-pulse" /> Intellectual Pulse
-                  </div>
-                  <h1 className="text-6xl md:text-8xl font-black text-slate-900 dark:text-white leading-[0.9] tracking-tighter">
-                    Campus <br />
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Blogs.</span>
-                  </h1>
-                  <p className="text-xl text-slate-500 dark:text-slate-400 max-w-lg leading-relaxed font-medium">
-                    Share and discover campus stories, career advice, and tech tips from fellow students across the nation.
-                  </p>
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 1 }}
-                  className="relative hidden lg:block"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-indigo-500/20 rounded-[3rem] blur-3xl animate-pulse" />
-                  <div className="relative rounded-[3rem] overflow-hidden border border-white/30 dark:border-white/10 shadow-2xl bg-white/10 backdrop-blur-md p-12 text-center space-y-6">
-                    <div className="w-20 h-20 bg-blue-600 rounded-3xl flex items-center justify-center mx-auto shadow-xl">
-                      <LuMic className="text-3xl text-white" />
-                    </div>
-                    <h3 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tighter">Share Your Story</h3>
-                    <Link to="/submit-blog" className="inline-block bg-white dark:bg-slate-900 px-8 py-3 rounded-2xl font-bold border border-slate-200 dark:border-slate-800 shadow-lg hover:bg-blue-50 transition-colors">
-                      Start Writing
-                    </Link>
-                  </div>
-                </motion.div>
-              </div>
+            <section className="relative pt-20 pb-16 px-4 md:px-8 max-w-7xl mx-auto z-10 text-center">
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+                className="max-w-3xl mx-auto space-y-8"
+              >
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-100/50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs font-black uppercase tracking-widest border border-blue-200/50 dark:border-blue-800/50">
+                  <LuSparkles className="animate-pulse" /> Intellectual Pulse
+                </div>
+                <h1 className="text-5xl md:text-7xl font-black text-slate-900 dark:text-white leading-[1.1] tracking-tight">
+                  Campus <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 italic">Stories.</span>
+                </h1>
+                <p className="text-lg text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
+                  Share and discover campus experiences, career advice, and tech breakthroughs from fellow students across the nation.
+                </p>
+                <div className="flex items-center justify-center gap-4 pt-4">
+                  <Link to="/submit-blog" className="px-8 py-4 bg-blue-600 text-white rounded-full font-bold shadow-xl shadow-blue-600/30 hover:bg-blue-700 transition-colors inline-flex items-center gap-2">
+                    Start Writing
+                  </Link>
+                </div>
+              </motion.div>
             </section>
 
-            {/* Blogs Grid Section */}
-            <div className="container mx-auto max-w-7xl px-4 md:px-8 relative z-10">
+            {/* Main Content Area */}
+            <div className="container mx-auto max-w-7xl px-4 md:px-8 relative z-10 space-y-16">
+              
+              {/* Featured Blog - Full Width Banner */}
+              {featuredBlog && (
+                <div className="pt-4">
+                  <h2 className="mb-6 flex items-center gap-2 text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tighter">
+                    <LuTrendingUp className="text-blue-600" /> Spotlight Story
+                  </h2>
+                  <BlogCard blog={featuredBlog} isFeatured={true} />
+                </div>
+              )}
+
+              {/* Filters & Search - Full Width Bar */}
+              <div className="flex flex-col md:flex-row items-center justify-between gap-6 py-6 border-b border-slate-200/50 dark:border-slate-800/50">
+                <div className="flex flex-wrap items-center gap-3">
+                  <button
+                    onClick={() => setSelectedCategory('All')}
+                    className={`rounded-full px-6 py-3 text-xs font-black uppercase tracking-widest transition-all ${selectedCategory === 'All'
+                      ? 'bg-blue-600 text-white shadow-xl shadow-blue-500/30'
+                      : 'bg-white/50 dark:bg-slate-900/50 text-slate-500 border border-slate-200 dark:border-slate-800 hover:bg-white transition-colors'
+                      }`}
+                  >
+                    All
+                  </button>
+                  {CATEGORIES.map(cat => (
+                    <button
+                      key={cat}
+                      onClick={() => setSelectedCategory(cat)}
+                      className={`rounded-full px-6 py-3 text-xs font-black uppercase tracking-widest transition-all ${selectedCategory === cat
+                        ? 'bg-blue-600 text-white shadow-xl shadow-blue-500/30'
+                        : 'bg-white/50 dark:bg-slate-900/50 text-slate-500 border border-slate-200 dark:border-slate-800 hover:bg-white transition-colors'
+                        }`}
+                    >
+                      {cat}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="relative w-full md:w-80">
+                  <LuSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <input
+                    type="text"
+                    placeholder="Search blogs..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full rounded-2xl border border-slate-200 bg-white/50 py-4 pl-12 pr-6 text-sm font-semibold focus:border-blue-500 focus:outline-none dark:border-slate-800 dark:bg-slate-900/50 dark:text-white transition-all"
+                  />
+                </div>
+              </div>
+
+              {/* Grid for Remaining Blogs & Sidebar */}
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-
-                {/* Left Column: Blogs */}
-                <div className="lg:col-span-8 space-y-16">
-
-                  {/* Featured Blog */}
-                  {featuredBlog && (
-                    <div>
-                      <h2 className="mb-8 flex items-center gap-2 text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tighter">
-                        <LuTrendingUp className="text-blue-600" /> Featured Blog
-                      </h2>
-                      <BlogCard blog={featuredBlog} isFeatured={true} />
-                    </div>
-                  )}
-
-                  {/* Filters & Search */}
-                  <div className="flex flex-col md:flex-row items-center justify-between gap-6 py-8 border-y border-slate-200/50 dark:border-slate-800/50">
-                    <div className="flex flex-wrap items-center gap-3">
-                      <button
-                        onClick={() => setSelectedCategory('All')}
-                        className={`rounded-full px-6 py-3 text-xs font-black uppercase tracking-widest transition-all ${selectedCategory === 'All'
-                          ? 'bg-blue-600 text-white shadow-xl shadow-blue-500/30'
-                          : 'bg-white/50 dark:bg-slate-900/50 text-slate-500 border border-slate-200 dark:border-slate-800 hover:bg-white transition-colors'
-                          }`}
-                      >
-                        All
-                      </button>
-                      {CATEGORIES.map(cat => (
-                        <button
-                          key={cat}
-                          onClick={() => setSelectedCategory(cat)}
-                          className={`rounded-full px-6 py-3 text-xs font-black uppercase tracking-widest transition-all ${selectedCategory === cat
-                            ? 'bg-blue-600 text-white shadow-xl shadow-blue-500/30'
-                            : 'bg-white/50 dark:bg-slate-900/50 text-slate-500 border border-slate-200 dark:border-slate-800 hover:bg-white transition-colors'
-                            }`}
-                        >
-                          {cat}
-                        </button>
-                      ))}
-                    </div>
-
-                    <div className="relative w-full md:w-80">
-                      <LuSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
-                      <input
-                        type="text"
-                        placeholder="Search blogs..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full rounded-2xl border border-slate-200 bg-white/50 py-4 pl-12 pr-6 text-sm font-semibold focus:border-blue-500 focus:outline-none dark:border-slate-800 dark:bg-slate-900/50 dark:text-white transition-all"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Blogs Grid */}
+                
+                {/* Left Column: Remaining Blogs */}
+                <div className="lg:col-span-8">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     {filteredBlogs.map(blog => (
                       <BlogCard key={blog.id} blog={blog} />
