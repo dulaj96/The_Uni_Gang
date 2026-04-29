@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import logo from '../../assets/logoImage.jpg';
 
 
-import { LuMenu, LuX, LuUser, LuLogOut, LuLayoutDashboard, LuSun, LuMoon, LuBell } from 'react-icons/lu';
+import { LuMenu, LuX, LuUser, LuLogOut, LuLayoutDashboard, LuSun, LuMoon, LuBell, LuArrowRight } from 'react-icons/lu';
 import { useTheme } from '../../context/ThemeContext';
 import { dispatchAuthUpdate, listenToAuthUpdate } from '../../utils/authEvents';
 import toast from 'react-hot-toast';

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Annex } from '../../types/annex';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -40,7 +41,7 @@ const STEPS = [
 ];
 
 interface AnnexFormProps {
-  initialData?: Record<string, unknown>;
+  initialData?: Annex;
   onSubmit: (data: Record<string, unknown>, isEditing: boolean) => void;
   onCancel: () => void;
   isEditing: boolean;
@@ -53,15 +54,15 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
   const { register, handleSubmit, control, formState: { errors }, trigger } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: initialData?.title || '',
+      title: initialData?.title ?? '',
       monthlyRent: initialData?.price ? initialData.price.replace(/\D/g, '') : '',
-      securityDeposit: initialData?.deposit || '',
-      houseRules: initialData?.rules?.join(', ') || '',
-      amenities: initialData?.amenities || [],
-      proximityHub: initialData?.proximity || '',
-      googleMapsUrl: initialData?.mapUrl || '',
-      contactName: initialData?.contactName || '',
-      contactPhone: initialData?.contactPhone || '',
+      securityDeposit: '',
+      houseRules: initialData?.features?.join(', ') ?? '',
+      amenities: [],
+      proximityHub: '',
+      googleMapsUrl: '',
+      contactName: initialData?.contactName ?? '',
+      contactPhone: initialData?.contactPhone ?? '',
     }
   });
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { LuImage, LuType, LuLayoutDashboard, LuCheck, LuArrowRight, LuArrowLeft, LuSend, LuSparkles, LuGlobe } from 'react-icons/lu';
 import { useNavigate } from 'react-router-dom';
 import SEO from '../../components/SEO';

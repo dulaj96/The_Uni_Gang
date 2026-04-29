@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion, useScroll, useSpring, AnimatePresence } from 'framer-motion';
-import { LuArrowLeft, LuClock, LuCalendar, LuThumbsUp, LuShare2, LuEye } from 'react-icons/lu';
+import { LuArrowLeft, LuClock, LuCalendar, LuThumbsUp, LuShare2 } from 'react-icons/lu';
 import { api } from '../../api';
 import { Blog } from '../../types/blog';
 import SEO from '../../components/SEO';

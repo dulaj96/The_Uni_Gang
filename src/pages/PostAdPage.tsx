@@ -172,7 +172,7 @@ const PostAdPage = () => {
                 >
                   {currentView === 'postAdForm' && (
                     <AnnexAdForm
-                      initialData={editingAd}
+                      initialData={editingAd ?? undefined}
                       onSubmit={handleAnnexFormSubmit}
                       onCancel={() => setCurrentView('myAds')}
                       isEditing={!!editingAd}

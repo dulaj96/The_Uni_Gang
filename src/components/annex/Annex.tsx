@@ -55,7 +55,7 @@ const listings = [
 
 const Annex = () => {
   const navigate = useNavigate();
-  const [isNavigating, setIsNavigating] = useState(false);
+  const [, setIsNavigating] = useState(false);
 
   const handleViewAllAds = () => {
     setIsNavigating(true);
