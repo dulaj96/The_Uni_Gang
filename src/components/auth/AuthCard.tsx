@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
-import { jwtDecode } from 'jwt-decode';
+import { useGoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
+import { FcGoogle } from 'react-icons/fc';
 import { LuUser, LuMail, LuLock, LuArrowRight } from 'react-icons/lu';
 import { dispatchAuthUpdate } from '../../utils/authEvents';
 import toast from 'react-hot-toast';
@@ -12,6 +12,44 @@ interface AuthCardProps {
 }
 
 const GOOGLE_CLIENT_ID = '750632401016-kr68r15hln088k0mt7nrshlnc0nrn1t5.apps.googleusercontent.com';
+
+const GoogleSignInButton = ({ onSuccess, onFailure, setLoading }: { 
+    onSuccess: (userData: any, token: string) => void, 
+    onFailure: () => void,
+    setLoading: (loading: boolean) => void
+}) => {
+    const login = useGoogleLogin({
+        onSuccess: async (tokenResponse) => {
+            setLoading(true);
+            try {
+                const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+                    headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
+                });
+                const userInfo = await res.json();
+                onSuccess(userInfo, tokenResponse.access_token);
+            } catch (error) {
+                console.error('Google Auth Error:', error);
+                onFailure();
+            } finally {
+                setLoading(false);
+            }
+        },
+        onError: onFailure,
+    });
+
+    return (
+        <motion.button
+            whileHover={{ scale: 1.02, y: -2 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => login()}
+            type="button"
+            className="w-full bg-white dark:bg-slate-900/40 backdrop-blur-md border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-black py-4 rounded-2xl shadow-xl shadow-slate-200/5 dark:shadow-slate-950/20 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all flex items-center justify-center gap-3 group uppercase tracking-widest text-[10px]"
+        >
+            <FcGoogle className="text-xl group-hover:scale-110 transition-transform duration-300" />
+            <span>Continue with Google</span>
+        </motion.button>
+    );
+};
 
 const AuthCard: React.FC<AuthCardProps> = ({ onAuthSuccess }) => {
     const [isRegistering, setIsRegistering] = useState(false);
@@ -49,33 +87,16 @@ const AuthCard: React.FC<AuthCardProps> = ({ onAuthSuccess }) => {
         }, 1000);
     };
 
-    const handleGoogleSuccess = (response: { credential?: string }) => {
-        setLoading(true);
-        try {
-            const credentialResponse = response;
-            const decodedUser: { 
-                name: string; 
-                picture: string; 
-                given_name: string; 
-                family_name: string; 
-                email: string; 
-            } = jwtDecode(credentialResponse.credential!);
-            localStorage.setItem('userToken', credentialResponse.credential!);
-            localStorage.setItem('userName', decodedUser.name);
-            localStorage.setItem('userProfilePicture', decodedUser.picture);
-            localStorage.setItem('userFirstName', decodedUser.given_name);
-            localStorage.setItem('userLastName', decodedUser.family_name);
-            localStorage.setItem('userEmail', decodedUser.email);
-            dispatchAuthUpdate();
-            onAuthSuccess();
-            toast.success(`Welcome back, ${decodedUser.name}!`);
-        } catch (error) {
-            console.error('Login Failed', error);
-            setMessage({ text: 'Login Failed. Please Try Again.', type: 'error' });
-            toast.error('Google login failed.');
-        } finally {
-            setLoading(false);
-        }
+    const handleGoogleSuccess = (userData: any, token: string) => {
+        localStorage.setItem('userToken', token);
+        localStorage.setItem('userName', userData.name);
+        localStorage.setItem('userProfilePicture', userData.picture);
+        localStorage.setItem('userFirstName', userData.given_name);
+        localStorage.setItem('userLastName', userData.family_name);
+        localStorage.setItem('userEmail', userData.email);
+        dispatchAuthUpdate();
+        onAuthSuccess();
+        toast.success(`Welcome back, ${userData.name}!`);
     };
 
     const handleGoogleFailure = () => {
@@ -174,16 +195,11 @@ const AuthCard: React.FC<AuthCardProps> = ({ onAuthSuccess }) => {
 
                 <div className="flex justify-center">
                     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-                        <div className="w-full overflow-hidden rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 transition-transform hover:scale-[1.02]">
-                            <GoogleLogin
-                                onSuccess={handleGoogleSuccess}
-                                onError={handleGoogleFailure}
-                                theme="filled_black"
-                                shape="square"
-                                size="large"
-                                width="100%"
-                            />
-                        </div>
+                        <GoogleSignInButton
+                            onSuccess={handleGoogleSuccess}
+                            onFailure={handleGoogleFailure}
+                            setLoading={setLoading}
+                        />
                     </GoogleOAuthProvider>
                 </div>
             </div>

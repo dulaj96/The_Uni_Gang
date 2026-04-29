@@ -116,7 +116,7 @@ const Blogs = () => {
           className="text-center mb-20"
         >
           <h2 className="text-4xl md:text-6xl font-extrabold text-slate-900 dark:text-white mb-6 tracking-tight">
-            The Collective <span className="text-blue-800 italic">Wisdom.</span>
+            Campus <span className="text-blue-800 italic">Blogs</span>
           </h2>
           <p className="text-lg text-slate-500 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
             Beyond the lecture halls lies a wealth of experience. Our Blogs section is the definitive space for Sri Lankan students to document their journey, share technical breakthroughs, and inspire the next generation.

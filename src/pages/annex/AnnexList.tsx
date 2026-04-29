@@ -9,7 +9,7 @@ import { useNavigate, Link } from "react-router-dom";
 // Mock Data Array for Annex Advertisements
 const DUMMY_ANNEXES = Array.from({ length: 15 }).map((_, i) => {
     const uniList = ['University of Colombo', 'SLIIT', 'NSBM'];
-    
+
     return {
         id: i + 1,
         title: `Student Suite ${i + 1}`,
@@ -59,9 +59,9 @@ const AnnexList = () => {
     const filteredAnnexes = DUMMY_ANNEXES.filter((annex) => {
         if (appliedFilters.term) {
             const query = appliedFilters.term.toLowerCase();
-            return annex.title.toLowerCase().includes(query) || 
-                   annex.location.toLowerCase().includes(query) ||
-                   annex.university.toLowerCase().includes(query);
+            return annex.title.toLowerCase().includes(query) ||
+                annex.location.toLowerCase().includes(query) ||
+                annex.university.toLowerCase().includes(query);
         }
         if (appliedFilters.uni !== "All Universities") {
             return annex.university === appliedFilters.uni;
@@ -223,7 +223,7 @@ const AnnexList = () => {
                                     {/* University Dropdown */}
                                     <div className={`flex-none md:w-64 flex items-center px-6 gap-3 relative transition-opacity ${isUniDisabled ? 'opacity-50' : 'opacity-100'}`}>
                                         <LuGraduationCap className="text-slate-400 dark:text-slate-500 text-xl flex-shrink-0" />
-                                        <select 
+                                        <select
                                             className="w-full bg-transparent border-none focus:ring-0 focus:outline-none text-slate-900 dark:text-white font-medium cursor-pointer appearance-none"
                                             value={selectedUni}
                                             onChange={(e) => setSelectedUni(e.target.value)}
@@ -237,7 +237,7 @@ const AnnexList = () => {
                                     </div>
 
                                     {/* Search Button */}
-                                    <button 
+                                    <button
                                         onClick={handleSearchClick}
                                         className="bg-blue-800 hover:bg-blue-900 text-white px-8 py-4 rounded-[2rem] font-bold transition-all flex items-center justify-center gap-2 group shadow-lg shadow-blue-800/20 flex-shrink-0"
                                     >
@@ -327,10 +327,6 @@ const AnnexList = () => {
                                                             {item.location}
                                                         </p>
                                                     </div>
-                                                    <div className="text-right">
-                                                        <span className="text-2xl font-black text-blue-800 dark:text-blue-400">Rs.{item.price}</span>
-                                                        <span className="text-[9px] text-slate-400 dark:text-slate-500 font-bold block uppercase tracking-widest">per month</span>
-                                                    </div>
                                                 </div>
 
                                                 {/* Amenities Row Colors */}
@@ -347,12 +343,22 @@ const AnnexList = () => {
                                                 </div>
 
                                                 {/* Action Button Colors - Matches your main screen button style */}
-                                                <button
-                                                    onClick={() => navigate(`/annex/${item.id}`)}
-                                                    className="w-full bg-blue-50 dark:bg-slate-800/80 hover:bg-blue-800 hover:text-white dark:hover:bg-blue-800 text-blue-800 dark:text-blue-300 border border-blue-100 dark:border-slate-700 py-4 rounded-[1.5rem] font-bold tracking-tight transition-all active:scale-95 shadow-sm"
-                                                >
-                                                    View Details
-                                                </button>
+                                                <div className="mt-auto pt-4 flex flex-row items-end justify-between gap-2 border-t border-slate-100 dark:border-slate-800/50">
+                                                    <div className="flex flex-col">
+                                                        <span className="text-[9px] font-semibold uppercase tracking-[0.2em] text-slate-400 mb-0.5">Monthly Fee</span>
+                                                        <span className="text-xl md:text-2xl font-extrabold text-blue-800 dark:text-blue-400 leading-none">
+                                                            <span className="text-xs mr-0.5">Rs.</span>{item.price}
+                                                        </span>
+                                                    </div>
+                                                    <motion.button
+                                                        whileHover={{ scale: 1.05 }}
+                                                        whileTap={{ scale: 0.95 }}
+                                                        onClick={() => navigate(`/annex/${item.id}`)}
+                                                        className="w-auto text-[11px] md:text-sm bg-blue-50 dark:bg-slate-800/80 hover:bg-blue-800 hover:text-white dark:hover:bg-blue-800 text-blue-800 dark:text-blue-300 border border-blue-100 dark:border-slate-700 px-4 md:px-6 py-2.5 rounded-xl font-bold transition-all shadow-sm flex items-center justify-center"
+                                                    >
+                                                        Details
+                                                    </motion.button>
+                                                </div>
                                             </div>
                                         </motion.div>
                                     ))}
