@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
-import { LuSearch, LuTrendingUp, LuArrowLeft, LuSparkles, LuMic, LuClock, LuQuote } from 'react-icons/lu';
+import { LuSearch, LuTrendingUp, LuArrowLeft, LuSparkles, LuPenTool, LuMessageSquare, LuBookOpen } from 'react-icons/lu';
 import { api } from '../../api';
 import { Blog, Contributor, BlogCategory } from '../../types/blog';
 import BlogCard from './ArticleCard';
@@ -9,8 +9,6 @@ import ContributorLeaderboard from './ContributorLeaderboard';
 import SEO from '../../components/SEO';
 import PremiumPageLoader from '../../components/ui/PremiumPageLoader';
 import TiltCard from '../../components/ui/TiltCard';
-
-const CATEGORIES: BlogCategory[] = ['Campus Life', 'Career Advice', 'Exam Tips', 'Technology'];
 
 const FloatingIcon = ({ icon: Icon, index }: { icon: React.ComponentType, index: number }) => (
   <motion.div
@@ -37,6 +35,8 @@ const FloatingIcon = ({ icon: Icon, index }: { icon: React.ComponentType, index:
     <Icon />
   </motion.div>
 );
+
+const CATEGORIES: BlogCategory[] = ['Campus Life', 'Career Advice', 'Exam Tips', 'Technology'];
 
 const BlogList: React.FC = () => {
   const navigate = useNavigate();
@@ -82,7 +82,7 @@ const BlogList: React.FC = () => {
         description="Share and discover campus stories, career advice, and tech tips from fellow students."
       />
 
-      <PremiumPageLoader isLoading={loading} message="Curating student stories..." />
+      <PremiumPageLoader isLoading={loading} message="Loading Blogs..." />
 
       <AnimatePresence>
         {!loading && (
@@ -134,14 +134,14 @@ const BlogList: React.FC = () => {
                   <div className="flex flex-wrap gap-4 pt-4">
                     <div className="flex -space-x-3">
                       {[1, 2, 3, 4].map(i => (
-                        <img key={i} src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${i + 20}`} className="w-12 h-12 rounded-full border-4 border-white dark:border-slate-950 object-cover bg-slate-100" alt="avatar" />
+                        <img key={i} src={`https://i.pravatar.cc/100?u=${i + 20}`} className="w-12 h-12 rounded-full border-4 border-white dark:border-slate-900 object-cover" alt="avatar" />
                       ))}
-                      <div className="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center border-4 border-white dark:border-slate-950 text-white text-xs font-black">
-                        +500
+                      <div className="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center border-4 border-white dark:border-slate-900 text-white text-xs font-black">
+                        +5K
                       </div>
                     </div>
                     <div className="flex flex-col justify-center">
-                      <span className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-tighter leading-none">Shared Insights</span>
+                      <span className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-tighter leading-none">Joined the gang</span>
                       <span className="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest mt-1">Active Bloggers</span>
                     </div>
                   </div>
@@ -151,15 +151,15 @@ const BlogList: React.FC = () => {
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 1 }}
-                  className="relative hidden lg:block"
+                  className="relative mt-12 lg:mt-0"
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-indigo-500/20 rounded-[3rem] blur-3xl animate-pulse" />
 
-                  {/* Floating Icons */}
-                  <FloatingIcon icon={LuMic} index={0} />
-                  <FloatingIcon icon={LuQuote} index={1} />
-                  <FloatingIcon icon={LuTrendingUp} index={2} />
-                  <FloatingIcon icon={LuSparkles} index={3} />
+                  {/* Floating Dynamic Icons */}
+                  <FloatingIcon icon={LuPenTool} index={0} />
+                  <FloatingIcon icon={LuSparkles} index={1} />
+                  <FloatingIcon icon={LuMessageSquare} index={2} />
+                  <FloatingIcon icon={LuBookOpen} index={3} />
 
                   <TiltCard>
                     <div className="relative rounded-[3rem] overflow-hidden border border-white/30 dark:border-white/10 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] bg-white/10 backdrop-blur-sm p-6">
@@ -169,27 +169,20 @@ const BlogList: React.FC = () => {
                         transition={{ duration: 0.5 }}
                       >
                         <img
-                          src={featuredBlog?.featuredImage || "https://images.unsplash.com/photo-1517842645767-c639042777db?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"}
+                          src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=1200"
                           className="w-full h-full object-cover"
-                          alt="Featured Blog"
+                          alt="Blogging"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent" />
 
                         <div className="absolute bottom-10 left-10 right-10 space-y-4">
-                          <div className="bg-white/20 backdrop-blur-md px-4 py-2 rounded-full w-fit border border-white/30 text-white">
-                            <span className="text-xs font-black uppercase tracking-widest">Featured Story</span>
+                          <div className="bg-white/20 backdrop-blur-md px-4 py-2 rounded-full w-fit border border-white/30">
+                            <span className="text-xs font-black text-white uppercase tracking-widest">Share Your Voice</span>
                           </div>
-                          <h3 className="text-4xl font-black text-white uppercase tracking-tighter line-clamp-2">
-                            {featuredBlog?.title || "Unleash Your Voice"}
-                          </h3>
-                          <div className="flex items-center gap-6 text-white/80 font-bold">
-                            <div className="flex items-center gap-2">
-                              <LuClock className="text-blue-400" /> {featuredBlog?.readTime || "5 min read"}
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <LuTrendingUp className="text-blue-400" /> {featuredBlog?.views || "1.5k"} Views
-                            </div>
-                          </div>
+                          <h3 className="text-4xl font-black text-white uppercase tracking-tighter">Your Story Matters</h3>
+                          <Link to="/submit-blog" className="inline-block bg-white dark:bg-slate-900 px-8 py-3 rounded-2xl font-bold border border-slate-200 dark:border-slate-800 shadow-lg hover:bg-blue-50 transition-colors">
+                            Start Writing
+                          </Link>
                         </div>
                       </motion.div>
                     </div>
