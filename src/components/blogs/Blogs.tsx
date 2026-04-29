@@ -88,7 +88,7 @@ const Blogs = () => {
   };
 
   return (
-    <section id="blogs" className="relative py-32 bg-slate-150 dark:bg-[#020617] overflow-hidden">
+    <section id="blogs" className="relative py-32 bg-slate-50 dark:bg-[#020617] overflow-hidden">
       <PremiumPageLoader isLoading={isNavigating} message="Opening the blog archive..." />
       {/* 🌌 High-End Mesh Gradient Background */}
       <div className="absolute inset-0 pointer-events-none">
@@ -166,7 +166,7 @@ const Blogs = () => {
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center mt-12">
           {/* Left Side: Latest Blogs Grid (lg:col-span-7) */}
           <div className="lg:col-span-7 flex flex-col w-full h-full justify-center">
-            <motion.div
+            {/* <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -179,7 +179,7 @@ const Blogs = () => {
               <span onClick={handleExploreFeed} className="text-blue-600 font-bold text-sm cursor-pointer hover:underline flex items-center gap-1 transition-all">
                 View All <span className="material-symbols-outlined text-[16px]">east</span>
               </span>
-            </motion.div>
+            </motion.div> */}
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {latestBlogs.slice(0, 2).map((blog, idx) => (
@@ -198,28 +198,10 @@ const Blogs = () => {
 
 
           {/* Right Side: Modern 3D Visual Collage & Metrics (lg:col-span-5) */}
-          <div className="lg:col-span-5 flex flex-col items-center lg:items-start gap-12">
-
-            {/* Quick Metrics */}
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-              className="flex w-full justify-center lg:justify-start gap-12"
-            >
-              <div className="text-center lg:text-left">
-                <div className="text-4xl lg:text-5xl font-black text-slate-900 dark:text-white mb-2">500<span className="text-blue-600">+</span></div>
-                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Thought Pieces</div>
-              </div>
-              <div className="text-center lg:text-left">
-                <div className="text-4xl lg:text-5xl font-black text-slate-900 dark:text-white mb-2">15<span className="text-indigo-600">k</span></div>
-                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Active Peers</div>
-              </div>
-            </motion.div>
+          <div className="lg:col-span-5 flex flex-col items-center justify-center gap-12">
 
             {/* Modern 3D Visual Collage */}
-            <div className="relative h-[500px] flex items-center justify-center w-full max-w-sm lg:max-w-md mx-auto lg:mx-0">
+            <div className="relative h-[500px] flex items-center justify-center w-full max-w-sm lg:max-w-md mx-auto">
 
               {/* Background Decorative Rings */}
               <div className="absolute inset-0 flex items-center justify-center opacity-20">
@@ -264,10 +246,10 @@ const Blogs = () => {
 
                   {/* Floating "Live" Article Card */}
                   <motion.div
-                    initial={{ x: 60, opacity: 0 }}
+                    initial={{ x: -60, opacity: 0 }}
                     whileInView={{ x: 0, opacity: 1 }}
                     transition={{ delay: 0.8 }}
-                    className="absolute -right-8 top-1/2 -translate-y-1/2 w-56 bg-white dark:bg-slate-800 rounded-3xl shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] border border-slate-100 dark:border-slate-700 p-4 hidden xl:block z-30"
+                    className="absolute -left-10 top-1/2 -translate-y-1/2 w-64 bg-white dark:bg-slate-800 rounded-3xl shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] border border-slate-100 dark:border-slate-700 p-5 hidden xl:block z-30"
                   >
                     <div className="flex items-center gap-3 mb-4">
                       <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white">
@@ -275,7 +257,7 @@ const Blogs = () => {
                       </div>
                       <div>
                         <div className="text-[8px] font-black text-blue-600 uppercase">Top Blogger</div>
-                        <div className="text-xs font-bold text-slate-900 dark:text-white">Alex Perera</div>
+                        <div className="text-xs font-bold text-slate-900 dark:text-white">Mithun Bandara</div>
                       </div>
                     </div>
                     <div className="space-y-2">
@@ -307,11 +289,26 @@ const Blogs = () => {
                 />
               ))}
             </div>
+            {/* Quick Metrics */}
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="flex w-full justify-center gap-12"
+            >
+              <div className="text-center lg:text-left">
+                <div className="text-4xl lg:text-5xl font-black text-slate-900 dark:text-white mb-2">500<span className="text-blue-600">+</span></div>
+                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Thought Pieces</div>
+              </div>
+              <div className="text-center lg:text-left">
+                <div className="text-4xl lg:text-5xl font-black text-slate-900 dark:text-white mb-2">15<span className="text-indigo-600">k</span></div>
+                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Active Peers</div>
+              </div>
+            </motion.div>
 
           </div>
-
         </div>
-
       </div>
     </section>
   );
