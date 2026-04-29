@@ -11,7 +11,7 @@ const PrivacyPolicy = () => {
     const lastUpdated = "April 2026";
 
     useEffect(() => {
-        const timer = setTimeout(() => setLoading(false), 800);
+        const timer = setTimeout(() => setLoading(false), 300);
         return () => clearTimeout(timer);
     }, []);
 

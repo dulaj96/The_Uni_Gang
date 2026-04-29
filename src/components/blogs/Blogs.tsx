@@ -84,7 +84,7 @@ const Blogs = () => {
     setTimeout(() => {
       navigate('/blogs');
       setTimeout(() => setIsNavigating(false), 500);
-    }, 2000);
+    }, 300);
   };
 
   return (

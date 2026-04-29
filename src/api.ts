@@ -88,7 +88,7 @@ export const api = {
       setTimeout(() => {
         const blogs = JSON.parse(localStorage.getItem(BLOGS_KEY) || '[]');
         resolve(blogs);
-      }, 800);
+      }, 300);
     });
   },
 
@@ -98,7 +98,7 @@ export const api = {
       setTimeout(() => {
         const blogs = JSON.parse(localStorage.getItem(BLOGS_KEY) || '[]');
         resolve(blogs.find((b: Blog) => b.slug === slug));
-      }, 500);
+      }, 200);
     });
   },
 
@@ -118,7 +118,7 @@ export const api = {
         blogs.unshift(newBlog);
         localStorage.setItem(BLOGS_KEY, JSON.stringify(blogs));
         resolve(newBlog);
-      }, 1000);
+      }, 400);
     });
   },
 
@@ -129,7 +129,7 @@ export const api = {
       setTimeout(() => {
         const contributors = JSON.parse(localStorage.getItem(CONTRIBUTORS_KEY) || '[]');
         resolve(contributors.sort((a: Contributor, b: Contributor) => b.totalLikes - a.totalLikes));
-      }, 600);
+      }, 250);
     });
   }
 };

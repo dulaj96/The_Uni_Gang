@@ -42,7 +42,7 @@ const AnnexList = () => {
 
     useEffect(() => {
         // Simulating data fetch
-        const timer = setTimeout(() => setLoading(false), 1500);
+        const timer = setTimeout(() => setLoading(false), 300);
         return () => clearTimeout(timer);
     }, []);
 

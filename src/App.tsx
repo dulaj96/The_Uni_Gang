@@ -69,7 +69,9 @@ function App() {
         <Route path="/post-ad" element={<Layout><PostAdPage /></Layout>} />
         <Route path="/contact-us" element={<Layout><ContactUsPage /></Layout>} />
         <Route path="/annex/:id" element={<Layout><AnnexDetailsPage /></Layout>} />
-        <Route path="/profile" element={<Layout><ProfilePage /></Layout>} />
+
+        {/* Profile using SubLayout */}
+        <Route path="/profile" element={<SubLayout><ProfilePage /></SubLayout>} />
 
         {/* AnnexList using SubLayout */}
         <Route path="/annex-list" element={<SubLayout><AnnexList /></SubLayout>} />

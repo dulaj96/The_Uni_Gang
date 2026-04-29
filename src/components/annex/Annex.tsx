@@ -64,7 +64,7 @@ const Annex = () => {
       // The state reset happens after navigation, usually not strictly required 
       // if unmounted, but good practice if Annex stays mounted in background
       setTimeout(() => setIsNavigating(false), 100);
-    }, 2000); // 2 seconds loading delay
+    }, 300); // Reduced delay
   };
 
   return (

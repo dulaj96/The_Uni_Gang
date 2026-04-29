@@ -153,7 +153,7 @@ const Events = () => {
         setTimeout(() => {
             navigate('/event-list');
             setTimeout(() => setIsNavigating(false), 100);
-        }, 2000);
+        }, 300);
     };
 
     // Handle Form Submit

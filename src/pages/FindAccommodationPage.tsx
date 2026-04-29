@@ -41,7 +41,7 @@ const FindAccommodationPage = () => {
     setUniversities(universitiesData);
     setAllAnnexes(dummyAnnexes);
     
-    const timer = setTimeout(() => setLoading(false), 1200);
+    const timer = setTimeout(() => setLoading(false), 300);
     return () => clearTimeout(timer);
   }, []);
 

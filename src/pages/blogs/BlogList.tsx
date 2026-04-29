@@ -60,7 +60,7 @@ const BlogList: React.FC = () => {
       } catch (error) {
         console.error('Error fetching blogs:', error);
       } finally {
-        setTimeout(() => setLoading(false), 800);
+        setTimeout(() => setLoading(false), 100);
       }
     };
     fetchData();

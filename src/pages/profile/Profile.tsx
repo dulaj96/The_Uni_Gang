@@ -68,7 +68,7 @@ const Profile = () => {
       rewardPoints: 1250
     });
 
-    const timer = setTimeout(() => setLoading(false), 1200);
+    const timer = setTimeout(() => setLoading(false), 300);
     return () => clearTimeout(timer);
   }, []);
 

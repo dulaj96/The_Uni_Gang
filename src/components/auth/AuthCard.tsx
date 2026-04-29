@@ -70,7 +70,7 @@ const AuthCard: React.FC<AuthCardProps> = ({ onAuthSuccess }) => {
             onAuthSuccess();
             setLoading(false);
             toast.success('Welcome back!');
-        }, 1000);
+        }, 400);
     };
 
     const handleRegister = (e: React.FormEvent) => {
@@ -84,7 +84,7 @@ const AuthCard: React.FC<AuthCardProps> = ({ onAuthSuccess }) => {
             onAuthSuccess();
             setLoading(false);
             toast.success('Account created successfully!');
-        }, 1000);
+        }, 400);
     };
 
     const handleGoogleSuccess = (userData: any, token: string) => {

@@ -20,7 +20,7 @@ const AnnexDetailsPage = () => {
     // Lock background scroll when this page is open
     document.body.style.overflow = 'hidden';
 
-    const timer = setTimeout(() => setLoading(false), 1000);
+    const timer = setTimeout(() => setLoading(false), 300);
     
     return () => {
       document.body.style.overflow = 'auto';
