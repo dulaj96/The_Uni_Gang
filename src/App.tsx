@@ -87,9 +87,9 @@ function App() {
         <Route path="/faq" element={<SubLayout><FAQ /></SubLayout>} />
 
         {/* Blogs Routes */}
-        <Route path="/blogs" element={<Layout><BlogList /></Layout>} />
-        <Route path="/blogs/:slug" element={<Layout><BlogDetail /></Layout>} />
-        <Route path="/submit-blog" element={<Layout><SubmitBlog /></Layout>} />
+        <Route path="/blogs" element={<SubLayout><BlogList /></ SubLayout>} />
+        <Route path="/blogs/:slug" element={<SubLayout><BlogDetail /></SubLayout>} />
+        <Route path="/submit-blog" element={<SubLayout><SubmitBlog /></SubLayout>} />
       </Routes>
 
       <WhatsAppButton />
