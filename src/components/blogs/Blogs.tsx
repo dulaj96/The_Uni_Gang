@@ -164,12 +164,44 @@ const Blogs = () => {
         </motion.div>
 
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center mt-12">
-          
-          {/* Left Side: Modern 3D Visual Collage & Metrics (lg:col-span-5) */}
+          {/* Left Side: Latest Blogs Grid (lg:col-span-7) */}
+          <div className="lg:col-span-7 flex flex-col w-full h-full justify-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="flex items-center justify-between mb-8"
+            >
+              <h3 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                Latest <span className="text-blue-800 italic">Entries</span>
+              </h3>
+              <span onClick={handleExploreFeed} className="text-blue-600 font-bold text-sm cursor-pointer hover:underline flex items-center gap-1 transition-all">
+                View All <span className="material-symbols-outlined text-[16px]">east</span>
+              </span>
+            </motion.div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              {latestBlogs.slice(0, 2).map((blog, idx) => (
+                <motion.div
+                  key={blog.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: idx * 0.1 }}
+                >
+                  <BlogCard blog={blog} />
+                </motion.div>
+              ))}
+            </div>
+          </div>
+
+
+          {/* Right Side: Modern 3D Visual Collage & Metrics (lg:col-span-5) */}
           <div className="lg:col-span-5 flex flex-col items-center lg:items-start gap-12">
-            
+
             {/* Quick Metrics */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: -20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -275,39 +307,7 @@ const Blogs = () => {
                 />
               ))}
             </div>
-            
-          </div>
 
-          {/* Right Side: Latest Blogs Grid (lg:col-span-7) */}
-          <div className="lg:col-span-7 flex flex-col w-full h-full justify-center">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-              className="flex items-center justify-between mb-8"
-            >
-              <h3 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-                Latest <span className="text-blue-800 italic">Entries</span>
-              </h3>
-              <span onClick={handleExploreFeed} className="text-blue-600 font-bold text-sm cursor-pointer hover:underline flex items-center gap-1 transition-all">
-                 View All <span className="material-symbols-outlined text-[16px]">east</span>
-              </span>
-            </motion.div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {latestBlogs.slice(0, 2).map((blog, idx) => (
-                <motion.div
-                  key={blog.id}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8, delay: idx * 0.1 }}
-                >
-                  <BlogCard blog={blog} />
-                </motion.div>
-              ))}
-            </div>
           </div>
 
         </div>
