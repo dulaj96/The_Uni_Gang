@@ -1,5 +1,5 @@
-import { motion } from 'framer-motion';
-import { LuHeart, LuMapPin, LuSearch, LuMail, LuUser } from 'react-icons/lu';
+import { motion, AnimatePresence } from 'framer-motion';
+import { LuHeart, LuMapPin, LuSearch, LuMail, LuUser, LuBedDouble, LuShowerHead, LuWifi } from 'react-icons/lu';
 import TiltCard from '../ui/TiltCard.tsx';
 import PremiumTraceButton from '../ui/PremiumTraceButton';
 import { useNavigate } from 'react-router-dom';
@@ -10,6 +10,9 @@ const listings = [
     id: 1,
     title: 'Modern Studio',
     badge: 'Verified',
+    verified: true,
+    beds: 1,
+    bath: 1,
     location: 'Cambridge University Area',
     price: '8500',
     image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCh951Jlg7MYbwvFzfJf9upLeDfG_7Zn2pxRhQRkUFXZLsgg6fe-19GvCcDuQ89oo_VW3op_CpB0gYzDr2p7o-QTKru_nxRDTo1q03bXgTtldFoL6KbziUtCTZPYWKYty3d3lWUdSdiYjq1pVqZ53hy_TLud2KjoiQZbe_wjq8DVVrwc4bdY1N6r5Cie8o_HjM1CCRbe0MwQVZjfYc1xoctsW_-XHTilHavIHcUD5NS1QUr0cbQ8icxRdq1m70xy85GevMZ11OQOgYE',
@@ -19,6 +22,9 @@ const listings = [
     id: 2,
     title: 'Luxury Penthouse',
     badge: 'New',
+    verified: false,
+    beds: 2,
+    bath: 2,
     location: 'Oxford Campus Perimeter',
     price: '12000',
     image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBiIOA7KFhadnrPIQmskl2smwqS_ThYh_Zqw416OFDYG-7QYmMrxJ7A4xuWzfJAJhi_ObDtF7uyYmI-jdCUZhpLlPrxnTXewrOOJ2mO3yxs_Z7AGVsNrTham7WPNUejfKkskU94jDOe2L37ocgMYinRXlnMxutfTgCzmFiBkLFl-ygpKJ5-8sE56-Zil7_isB0Q9QPZ_mg67lm2rWy0t3jFeexVZFpEu-dieR9TGdS8Fhep-GBOa29njPEv_Vv_iYvferTCSbWdDspa',
@@ -28,6 +34,9 @@ const listings = [
     id: 3,
     title: 'Cozy Guest Wing',
     badge: 'Popular',
+    verified: true,
+    beds: 1,
+    bath: 1,
     location: 'LSE Central District',
     price: '6500',
     image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB37Gaa4eoeEvPdFKFh_GkOhKKM7UohB1P3fOUlxuTmrLPvZvjueRwYcTc0nm0Vt13tWwAFMcMJKq6CduU-2uHwhynldc-ivj9y94oN4AyVKAhHBq3zgrMbr1SatRyK9bJGPlCgzcUBM0UjdtM9-OmyfUSDgVUHKuFIQv2nmxMVBfsRAGKFuw4TDL59_HhO3PpK-7rSIojSLhmOzl36Jpow-kYfdObigOtCSpv_0HRTshjDjzbWxxesPoXvABqqXB7LLMGWuVeVOtLN',
@@ -37,6 +46,9 @@ const listings = [
     id: 4,
     title: 'The Nordic Suite',
     badge: 'Premium',
+    verified: true,
+    beds: 3,
+    bath: 2,
     location: 'UCL Bloomsbury',
     price: '9000',
     image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC3MJ-NzKv7_3gb-d37tcATpL8bMJDBhpfcJlbBUXKnW--J60iaFFJOv5-kPqswcrXhSHF9VppUCv-y1rWfeN_M8pa4C5xnP2oEEYqDq3jc7na52NZ0YmUefERnqS1TTeGebaQyfRGNihD9iLrUkMynV0OiXsb7Djp5DaNhanTdaLMBCLuOYLbNwtm08KNQ2QVAIYzXZAJURZ-WJNPRHm0rxBJq1Ve0p86cBpKLm6-DDEd8xCU2jJjopIVC15YHL_1sXrXWsAlh9tjl',
@@ -46,6 +58,9 @@ const listings = [
     id: 5,
     title: 'Creative Loft',
     badge: 'Artist Friendly',
+    verified: false,
+    beds: 1,
+    bath: 1,
     location: 'Central Saint Martins',
     price: '11000',
     image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBcwCaOqu16b-uvO7GErYZ2kBxrzEF14kSgnKyOvVrj8N7VIvFEMGMjtFQ4FrZbl0bZamoRi3kEw3zaDjV2QrsBRdpP7C2BbhEHXTlWJlWX2Ph0CM4zh1Vlng3nbeXQPDe85y1UW7hOCYJNG4-h_FAdbXa3sBcsPqeC5cMkzTBxfFzZM4rlSX_mDbZzLNnfPmawbweVRmOMRf3-kbhIW_98ZPJLVo_C4pDgddnBLr2O2BEz-kUMwQkFsXsZiyFIICuAypgcoBcUsHiB',
@@ -56,6 +71,11 @@ const listings = [
 const Annex = () => {
   const navigate = useNavigate();
   const [, setIsNavigating] = useState(false);
+  const [favorites, setFavorites] = useState<number[]>([]);
+
+  const toggleFavorite = (id: number) => {
+    setFavorites(prev => prev.includes(id) ? prev.filter(fav => fav !== id) : [...prev, id]);
+  };
 
   const handleViewAllAds = () => {
     setIsNavigating(true);
@@ -127,173 +147,184 @@ const Annex = () => {
         </motion.div>
 
         {/* Bento Grid of Annex Listings */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-          {listings.map((listing) => (
-            <motion.div
-              key={listing.id}
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.6, delay: listing.delay }}
-            >
-              <TiltCard className="h-full">
-                <motion.div
-                  animate={{ y: [0, -8, 0] }}
-                  transition={{
-                    duration: 4 + Math.random() * 2,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }}
-                  className="h-full bg-white/45 dark:bg-slate-900/45 backdrop-blur-[24px] border border-white/40 dark:border-slate-800 rounded-[2.5rem] overflow-hidden shadow-2xl group flex flex-col"
-                >
-                  <div className="relative h-72 overflow-hidden m-4 rounded-[2rem]">
-                    <img
-                      alt={listing.title}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                      src={listing.image}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <motion.div
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                      className="absolute top-5 right-5 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md p-3 rounded-full text-blue-800 cursor-pointer shadow-sm border border-white/20"
-                    >
-                      <LuHeart className="text-xl" />
-                    </motion.div>
-                  </div>
+        <motion.div
+          layout
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10"
+        >
+          <AnimatePresence mode="popLayout">
+            {listings.map((listing, index) => (
+              <motion.div
+                key={listing.id}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.6, delay: listing.delay || index * 0.05 }}
+              >
+                <TiltCard className="h-full">
+                  {/* Official Floating Premium Container */}
+                  <motion.div
+                    animate={{ y: [0, -8, 0] }}
+                    transition={{
+                      duration: 4 + Math.random() * 2,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }}
+                    className="group relative h-full bg-white/45 dark:bg-slate-900/45 backdrop-blur-[24px] border border-white/40 dark:border-slate-800 rounded-[2.5rem] p-4 hover:shadow-[0_40px_80px_-20px_rgba(0,63,221,0.12)] transition-all duration-500 flex flex-col"
+                  >
+                    {/* Image Section with Official Layout */}
+                    <div className="relative h-[280px] rounded-[2rem] overflow-hidden mb-6">
+                      <img
+                        alt={listing.title}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        src={listing.image}
+                      />
 
-                  <div className="px-8 pb-10 pt-4 flex-grow flex flex-col">
-                    <div className="flex justify-between items-start mb-3">
-                      <h3 className="text-2xl font-bold text-slate-800 dark:text-white group-hover:text-blue-800 transition-colors uppercase tracking-tight">{listing.title}</h3>
-                      <span className="bg-blue-50 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest border border-blue-100 dark:border-blue-800/50">
-                        {listing.badge}
-                      </span>
-                    </div>
+                      {/* Verified Badge */}
+                      {listing.verified && (
+                        <div className="absolute top-4 left-4 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm border border-white/20 dark:border-slate-700/50">
+                          <span className="material-symbols-outlined text-green-600 dark:text-green-400 text-[16px]" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
+                          <span className="text-[10px] font-extrabold uppercase tracking-widest text-slate-800 dark:text-slate-200">Verified</span>
+                        </div>
+                      )}
 
-                    <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 mb-8">
-                      <LuMapPin className="text-blue-800/60 text-lg" />
-                      <span className="text-sm font-medium">{listing.location}</span>
-                    </div>
-
-                    <div className="mt-auto pt-4 flex flex-row items-end justify-between gap-2 border-t border-slate-100 dark:border-slate-800/50">
-                      <div className="flex flex-col">
-                        <span className="text-[9px] font-semibold uppercase tracking-[0.2em] text-slate-400 mb-0.5">Monthly Fee</span>
-                        <span className="text-xl md:text-2xl font-extrabold text-blue-800 dark:text-blue-400 leading-none">
-                          <span className="text-xs mr-0.5">Rs.</span>{listing.price}
-                        </span>
-                      </div>
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => navigate(`/annex/${listing.id}`)}
-                        className="w-auto text-[11px] md:text-sm bg-blue-50 dark:bg-slate-800/80 hover:bg-blue-800 hover:text-white dark:hover:bg-blue-800 text-blue-800 dark:text-blue-300 border border-blue-100 dark:border-slate-700 px-4 md:px-6 py-2.5 rounded-xl font-bold transition-all shadow-sm flex items-center justify-center"
+                      {/* Favorite Button */}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleFavorite(listing.id);
+                        }}
+                        className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/80 dark:bg-slate-800/80 backdrop-blur-md flex items-center justify-center transition-all hover:scale-110 shadow-sm border border-white/20 dark:border-slate-700/50"
                       >
-                        Details
-                      </motion.button>
+                        <LuHeart className={`text-xl transition-colors ${favorites.includes(listing.id) ? 'fill-red-500 text-red-500' : 'text-slate-400 dark:text-slate-300'}`} />
+                      </button>
                     </div>
-                  </div>
+
+                    {/* Content Details */}
+                    <div className="px-3 space-y-4 flex-grow flex flex-col">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h3 className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-blue-800 dark:group-hover:text-blue-400 transition-colors uppercase tracking-tight">
+                            {listing.title}
+                          </h3>
+                          <p className="text-slate-500 dark:text-slate-400 text-sm flex items-center gap-1 mt-1 font-medium">
+                            <LuMapPin className="text-[14px] text-blue-800/60 dark:text-blue-400/60" />
+                            {listing.location}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Amenities Row (Added from Official Design) */}
+                      <div className="flex items-center gap-4 py-4 border-y border-slate-200/50 dark:border-slate-800/50 mt-auto">
+                        <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 text-sm font-medium">
+                          <LuBedDouble className="text-lg text-slate-400 dark:text-slate-500" /> {listing.beds || 0} Bed
+                        </div>
+                        <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 text-sm font-medium">
+                          <LuShowerHead className="text-lg text-slate-400 dark:text-slate-500" /> {listing.bath || 0} Bath
+                        </div>
+                        <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 text-sm font-medium">
+                          <LuWifi className="text-lg text-slate-400 dark:text-slate-500" /> WiFi
+                        </div>
+                      </div>
+
+                      {/* Action Button & Pricing Row */}
+                      <div className="mt-auto pt-4 flex flex-row items-end justify-between gap-2 border-t border-slate-100 dark:border-slate-800/50">
+                        <div className="flex flex-col">
+                          <span className="text-[9px] font-semibold uppercase tracking-[0.2em] text-slate-400 mb-0.5">Monthly Fee</span>
+                          <span className="text-xl md:text-2xl font-extrabold text-blue-800 dark:text-blue-400 leading-none">
+                            <span className="text-xs mr-0.5">Rs.</span>{listing.price}
+                          </span>
+                        </div>
+                        <motion.button
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          onClick={() => navigate(`/annex/${listing.id}`)}
+                          className="w-auto text-[11px] md:text-sm bg-blue-50 dark:bg-slate-800/80 hover:bg-blue-800 hover:text-white dark:hover:bg-blue-800 text-blue-800 dark:text-blue-300 border border-blue-100 dark:border-slate-700 px-4 md:px-6 py-2.5 rounded-xl font-bold transition-all shadow-sm flex items-center justify-center"
+                        >
+                          Details
+                        </motion.button>
+                      </div>
+                    </div>
+                  </motion.div>
+                </TiltCard>
+              </motion.div>
+            ))}
+
+            {/* Promo CTA Card - Safely Retained & Perfectly Aligned */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              whileInView={{ opacity: 1, scale: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+            >
+              <TiltCard className="h-full group overflow-hidden rounded-[2.5rem] shadow-2xl relative">
+                <motion.div
+                  className="absolute inset-0 z-0"
+                  whileHover={{ scale: 1.1 }}
+                  transition={{ duration: 1.5, ease: "easeOut" }}
+                >
+                  <img
+                    src="/images/property_listing_cta.png"
+                    alt="Property Listing"
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-blue-900/60 backdrop-blur-[2px] group-hover:bg-blue-900/40 transition-colors duration-700"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-blue-950 via-blue-900/20 to-transparent"></div>
                 </motion.div>
+
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out z-10"></div>
+
+                <div className="relative z-20 h-full p-10 flex flex-col justify-center items-center text-center text-white">
+                  <motion.div
+                    animate={{
+                      y: [0, -10, 0],
+                      rotate: [0, 2, -2, 0],
+                      scale: [1, 1.05, 1]
+                    }}
+                    transition={{
+                      duration: 5,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }}
+                    className="w-20 h-20 bg-white/10 rounded-2xl flex items-center justify-center mb-8 backdrop-blur-xl border border-white/30 shadow-2xl"
+                  >
+                    <span className="material-symbols-outlined text-5xl opacity-90 text-white">add_business</span>
+                  </motion.div>
+
+                  <h3 className="text-3xl md:text-4xl font-extrabold mb-5 leading-tight tracking-tight">
+                    Listing your <br /> <span className="text-blue-300">own property?</span>
+                  </h3>
+
+                  <p className="text-blue-50/90 mb-10 text-lg font-light leading-relaxed max-w-[280px]">
+                    Reach thousands of students searching for their next home away from home.
+                  </p>
+
+                  <motion.button
+                    whileHover={{
+                      scale: 1.05,
+                      boxShadow: "0 0 30px rgba(255,255,255,0.3)",
+                      backgroundColor: "#f8fafc"
+                    }}
+                    whileTap={{ scale: 0.95 }}
+                    className="bg-white text-blue-900 px-10 py-4 rounded-2xl font-bold shadow-2xl flex items-center gap-3 group/btn hover:text-blue-800 transition-all"
+                  >
+                    <span>Get Started Free</span>
+                    <motion.span
+                      animate={{ x: [0, 5, 0] }}
+                      transition={{ repeat: Infinity, duration: 1.5 }}
+                    >
+                      <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                    </motion.span>
+                  </motion.button>
+
+                  <div className="mt-6 flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-bold text-blue-200/60">
+                    <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
+                    Join 500+ Local Landlords
+                  </div>
+                </div>
               </TiltCard>
             </motion.div>
-          ))}
-
-          {/* Promo CTA Card - Redesigned with Image & Glassmorphism */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-            whileInView={{ opacity: 1, scale: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-          >
-            <TiltCard className="h-full group overflow-hidden rounded-[2.5rem] shadow-2xl relative">
-              {/* Background Image with Scaling Effect */}
-              <motion.div
-                className="absolute inset-0 z-0"
-                whileHover={{ scale: 1.1 }}
-                transition={{ duration: 1.5, ease: "easeOut" }}
-              >
-                <img
-                  src="/images/property_listing_cta.png"
-                  alt="Property Listing"
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-blue-900/60 backdrop-blur-[2px] group-hover:bg-blue-900/40 transition-colors duration-700"></div>
-                <div className="absolute inset-0 bg-gradient-to-t from-blue-950 via-blue-900/20 to-transparent"></div>
-              </motion.div>
-
-              {/* Dynamic Shine Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out z-10"></div>
-
-              {/* Content Container with Glassmorphism */}
-              <div className="relative z-20 h-full p-10 flex flex-col justify-center items-center text-center text-white">
-                <motion.div
-                  animate={{
-                    y: [0, -10, 0],
-                    rotate: [0, 2, -2, 0],
-                    scale: [1, 1.05, 1]
-                  }}
-                  transition={{
-                    duration: 5,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }}
-                  className="w-20 h-20 bg-white/10 rounded-2xl flex items-center justify-center mb-8 backdrop-blur-xl border border-white/30 shadow-2xl"
-                >
-                  <span className="material-symbols-outlined text-5xl opacity-90 text-white">add_business</span>
-                </motion.div>
-
-                <motion.h3
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 }}
-                  className="text-3xl md:text-4xl font-extrabold mb-5 leading-tight tracking-tight"
-                >
-                  Listing your <br /> <span className="text-blue-300">own property?</span>
-                </motion.h3>
-
-                <motion.p
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
-                  className="text-blue-50/90 mb-10 text-lg font-light leading-relaxed max-w-[280px]"
-                >
-                  Reach thousands of students searching for their next home away from home.
-                </motion.p>
-
-                <motion.button
-                  whileHover={{
-                    scale: 1.05,
-                    boxShadow: "0 0 30px rgba(255,255,255,0.3)",
-                    backgroundColor: "#f8fafc"
-                  }}
-                  whileTap={{ scale: 0.95 }}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.5 }}
-                  className="bg-white text-blue-900 px-10 py-4 rounded-2xl font-bold shadow-2xl flex items-center gap-3 group/btn hover:text-blue-800 transition-all"
-                >
-                  <span>Get Started Free</span>
-                  <motion.span
-                    animate={{ x: [0, 5, 0] }}
-                    transition={{ repeat: Infinity, duration: 1.5 }}
-                  >
-                    <span className="material-symbols-outlined text-sm">arrow_forward</span>
-                  </motion.span>
-                </motion.button>
-
-                {/* Bottom Badge for urgency/trust */}
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  transition={{ delay: 0.7 }}
-                  className="mt-6 flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-bold text-blue-200/60"
-                >
-                  <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
-                  Join 500+ Local Landlords
-                </motion.div>
-              </div>
-            </TiltCard>
-          </motion.div>
-        </div>
+          </AnimatePresence>
+        </motion.div>
       </div>
 
       {/* Bottom Navigation Bar (Mobile Only) */}
