@@ -1,84 +1,176 @@
 import { useState, useEffect } from "react";
 import {
     LuArrowRight, LuGraduationCap, LuSearch, LuArrowLeft, LuPlus,
-    LuHeart, LuMapPin, LuBedDouble, LuShowerHead, LuWifi
+    LuHeart, LuMapPin, LuBedDouble, LuShowerHead, LuWifi, LuMap
 } from "react-icons/lu";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, Link } from "react-router-dom";
-
-// Mock Data Array for Annex Advertisements
-const DUMMY_ANNEXES = Array.from({ length: 15 }).map((_, i) => {
-    const uniList = ['University of Colombo', 'SLIIT', 'NSBM'];
-
-    return {
-        id: i + 1,
-        title: `Student Suite ${i + 1}`,
-        location: i % 2 === 0 ? 'Colombo 07, Colombo' : 'Malabe, Colombo',
-        university: uniList[i % 3], // Add university to mock data
-        price: 15000 + (i * 1000),
-        image: [
-            "https://lh3.googleusercontent.com/aida-public/AB6AXuDTdj_osJPm_miTm1ZdA7n9ABpR8K7MnkN_DJf-7RXT57gl84Wy7eB92EUQe8YDsQixPfJya1khvz1Xvq2arDrUdO83Hj04QsR020gnFPoTUXfW-ffrArcfSG_Xw6o3YwW6cZgM9ELhaMJ9TfYsKPMoRgCB8eeuOp0RCC_fc_jiw9EPGkkS6V52Bn8wwcT1M8VXtWe1LsG-PCF0Rzla-olJHYsRk-sMcqYHM9J2Y7JQUZGu0ACvl1Ya6RAcKO5FP1a2ITY03nBSmHPA",
-            "https://lh3.googleusercontent.com/aida-public/AB6AXuAoH1pH1dd9-h7NZ92GLC57pa3-K1G0bNX_ymlwtYu_YUfuDEifNAtTps-g8FnWUueg2dB2gxui4jTXx9qWRyc-6wAcXsDL3Ltxg7D-pQakTA0u-YBfc84b57-Cpiq5cBK3RNuBUaFyqhxVrfTimthYuhcSASM46rUG8SnhbjeOpWYectwygWw9ohtQTKU4A7sOXuHNRUH5sO23YqRT1YloeC4NUoBUomnCggQ4BZnLHSJ_SeoWb5uriWqsIbI8cFMTUHiyDBH4mNe6",
-            "https://lh3.googleusercontent.com/aida-public/AB6AXuCe3ZfDrLSw7m9dDvbS_1c-Qjg7OBIbRZ0h_apGsGFYLAh3xzFiFmL-pB88eY4S0w5nhRFLxOtSW-_wDBoI7PCndjkYBTI3VRPaDN4YsjQpfGMNngOU-EDJT2sMO-6EoXMxwa7ja3N6wTzvai2rphC3KXwP2cSWDkMdvCaZM7vbINDWiqUaWIsvnTZ5GyMZ89VGhAA9rXJKJCcp7wTf_MbTn8tbecRiLGgZfQNosvi22G1vi-BZ0VSGj8nmrEIIwy2dagLhSwa1ozam"
-        ][i % 3],
-        verified: i % 3 !== 0,
-        beds: (i % 3) + 1,
-        bath: i % 2 === 0 ? 'Private Bath' : 'Shared Bath',
-        perk: i % 2 === 0 ? 'High-Speed WiFi' : 'Kitchen Access',
-    };
-});
-
+import universitiesData from "../../constants/annex/Universities.json";
 import PremiumPageLoader from "../../components/ui/PremiumPageLoader";
+
+// Dynamic Leaflet map rendering component using dynamic CDN script injections
+const LeafletListMap = ({ items, centerUniId }: { items: any[], centerUniId: string }) => {
+    useEffect(() => {
+        // Load Leaflet styles and scripts dynamically
+        if (!document.getElementById('leaflet-css')) {
+            const css = document.createElement('link');
+            css.id = 'leaflet-css';
+            css.rel = 'stylesheet';
+            css.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+            document.head.appendChild(css);
+        }
+        if (!document.getElementById('leaflet-js')) {
+            const js = document.createElement('script');
+            js.id = 'leaflet-js';
+            js.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+            document.body.appendChild(js);
+            js.onload = () => initMap();
+        } else {
+            initMap();
+        }
+
+        let map: any;
+        function initMap() {
+            if (!(window as any).L) return;
+            const L = (window as any).L;
+            
+            const container = L.DomUtil.get('list-map-canvas');
+            if (container != null) {
+                container._leaflet_id = null; // Prevent dual rendering errors
+            }
+
+            // Defaults center
+            let centerLat = 6.7969;
+            let centerLng = 79.9018;
+
+            if (centerUniId && centerUniId !== "All Universities") {
+                const campusCoords: Record<string, [number, number]> = {
+                    "1": [6.9016, 79.8589],   // Colombo
+                    "2": [7.2549, 80.5925],   // Peradeniya
+                    "3": [6.9062, 79.9018],   // USJ
+                    "4": [6.9740, 79.9160],   // Kelaniya
+                    "5": [6.7969, 79.9018],   // Moratuwa
+                    "12": [6.7136, 80.7872],  // Sabaragamuwa (SUSL)
+                };
+                if (campusCoords[centerUniId]) {
+                    [centerLat, centerLng] = campusCoords[centerUniId];
+                }
+            }
+
+            map = L.map('list-map-canvas').setView([centerLat, centerLng], 14);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            // Seed University Marker
+            if (centerUniId && centerUniId !== "All Universities") {
+                L.marker([centerLat, centerLng], {
+                    icon: L.divIcon({
+                        className: 'custom-div-icon',
+                        html: "<div style='background-color:#1e40af; color:white; padding:5px 10px; border-radius:10px; font-weight:bold; font-size:10px; border:2px solid white; box-shadow:0 10px 15px rgba(0,0,0,0.1);'>CAMPUS</div>",
+                        iconSize: [60, 30]
+                    })
+                }).addTo(map);
+            }
+
+            // Map Listing pins
+            items.forEach((item: any) => {
+                if (item.latitude && item.longitude) {
+                    const price = item.price;
+                    const marker = L.marker([parseFloat(item.latitude), parseFloat(item.longitude)]).addTo(map);
+                    marker.bindPopup(`
+                        <div style="font-family:sans-serif; padding:5px; max-width:200px;">
+                            <h4 style="margin:0 0 5px 0; color:#1e40af; font-weight:bold; font-size:12px;">${item.title}</h4>
+                            <p style="margin:0 0 5px 0; font-size:10px; color:#666;">${item.address}</p>
+                            <p style="margin:0 0 5px 0; font-size:10px; font-weight:bold; color:#22c55e;">${item.distanceToUni ? `${item.distanceToUni} km from campus` : ''}</p>
+                            <p style="margin:0 0 5px 0; font-weight:black; color:#1e40af; font-size:12px;">Rs. ${price}</p>
+                            <button onclick="window.location.href='/annex/${item.id}'" style="width:100%; display:inline-block; margin-top:5px; font-size:10px; font-weight:bold; background-color:#1e40af; color:white; border:none; padding:5px; border-radius:5px; cursor:pointer;">View Details</button>
+                        </div>
+                    `);
+                }
+            });
+        }
+    }, [items, centerUniId]);
+
+    return (
+        <div 
+            id="list-map-canvas" 
+            className="w-full h-[520px] rounded-[2.5rem] shadow-2xl border border-white/40 dark:border-slate-800 relative z-10"
+        />
+    );
+};
 
 const AnnexList = () => {
     const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(1);
-    const [favorites, setFavorites] = useState<number[]>([]);
+    const [favorites, setFavorites] = useState<string[]>([]);
+    const [mapView, setMapView] = useState(false);
 
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedUni, setSelectedUni] = useState("All Universities");
-    const [appliedFilters, setAppliedFilters] = useState({ term: "", uni: "All Universities" });
+    const [maxDistance, setMaxDistance] = useState("Any Distance");
     const [loading, setLoading] = useState(true);
+    const [annexes, setAnnexes] = useState<any[]>([]);
+
+    const fetchAnnexes = async () => {
+        setLoading(true);
+        try {
+            const queryParams = new URLSearchParams();
+            if (selectedUni !== "All Universities") {
+                queryParams.append("universityId", selectedUni);
+            }
+            if (maxDistance !== "Any Distance" && selectedUni !== "All Universities") {
+                queryParams.append("maxDistance", maxDistance);
+            }
+
+            const response = await fetch(`http://localhost:5000/api/annexes?${queryParams.toString()}`);
+            const data = await response.json();
+            
+            // Search locally by search keyword supporting title, address, university, or distance
+            let filtered = data;
+            if (searchTerm.trim() !== "") {
+                const query = searchTerm.toLowerCase();
+                const numericQuery = parseFloat(query);
+                const isNumeric = !isNaN(numericQuery);
+
+                filtered = data.filter((item: any) => {
+                    const matchesTitle = item.title?.toLowerCase().includes(query);
+                    const matchesAddress = item.address?.toLowerCase().includes(query);
+                    const matchesUniName = item.university?.name?.toLowerCase().includes(query);
+                    const matchesUniLoc = item.university?.location?.toLowerCase().includes(query);
+                    const matchesDistance = isNumeric && item.distanceToUni && parseFloat(item.distanceToUni) <= numericQuery;
+
+                    return matchesTitle || matchesAddress || matchesUniName || matchesUniLoc || matchesDistance;
+                });
+            }
+            setAnnexes(filtered);
+        } catch (error) {
+            console.error("Error loading annexes:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        // Simulating data fetch
-        const timer = setTimeout(() => setLoading(false), 300);
-        return () => clearTimeout(timer);
-    }, []);
+        fetchAnnexes();
+    }, [selectedUni, maxDistance]);
 
     const handleSearchClick = () => {
-        setAppliedFilters({ term: searchTerm, uni: selectedUni });
+        fetchAnnexes();
         setCurrentPage(1);
     };
 
-    const isSearchDisabled = selectedUni !== "All Universities";
-    const isUniDisabled = searchTerm.trim() !== "";
-
     const itemsPerPage = 12;
-
-    const filteredAnnexes = DUMMY_ANNEXES.filter((annex) => {
-        if (appliedFilters.term) {
-            const query = appliedFilters.term.toLowerCase();
-            return annex.title.toLowerCase().includes(query) ||
-                annex.location.toLowerCase().includes(query) ||
-                annex.university.toLowerCase().includes(query);
-        }
-        if (appliedFilters.uni !== "All Universities") {
-            return annex.university === appliedFilters.uni;
-        }
-        return true;
-    });
-
-    const totalPages = Math.max(1, Math.ceil(filteredAnnexes.length / itemsPerPage));
-    const paginatedData = filteredAnnexes.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    const totalPages = Math.max(1, Math.ceil(annexes.length / itemsPerPage));
+    const paginatedData = annexes.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
-        // Scroll back to the grid smoothly
         document.getElementById('listing-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     };
 
-    const toggleFavorite = (id: number) => {
+    const toggleFavorite = (id: string) => {
         setFavorites(prev =>
             prev.includes(id) ? prev.filter(fId => fId !== id) : [...prev, id]
         );
@@ -86,7 +178,7 @@ const AnnexList = () => {
 
     return (
         <div className="relative z-10 font-sans pb-8 md:pb-0">
-            <PremiumPageLoader isLoading={loading} message="Finding the best spots near you..." />
+            <PremiumPageLoader isLoading={loading} message="Scouting the best annexes for you..." />
 
             <AnimatePresence>
                 {!loading && (
@@ -203,17 +295,16 @@ const AnnexList = () => {
                                 transition={{ delay: 0.3 }}
                                 className="mt-16 relative z-20"
                             >
-                                <div className="max-w-4xl mx-auto p-2 glass-card bg-white/45 dark:bg-slate-900/45 backdrop-blur-xl rounded-[2.5rem] shadow-[0_20px_40px_rgba(0,63,221,0.08)] flex flex-col md:flex-row gap-2 border border-white/50 dark:border-slate-800/50">
+                                <div className="max-w-5xl mx-auto p-2 glass-card bg-white/45 dark:bg-slate-900/45 backdrop-blur-xl rounded-[2.5rem] shadow-[0_20px_40px_rgba(0,63,221,0.08)] flex flex-col md:flex-row gap-2 border border-white/50 dark:border-slate-800/50">
                                     {/* Search Input */}
-                                    <div className={`flex-1 flex items-center px-6 gap-3 transition-opacity ${isSearchDisabled ? 'opacity-50' : 'opacity-100'}`}>
+                                    <div className="flex-1 flex items-center px-6 gap-3">
                                         <LuSearch className="text-slate-400 dark:text-slate-500 text-xl flex-shrink-0" />
                                         <input
                                             className="w-full bg-transparent border-none focus:ring-0 focus:outline-none text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 py-4 font-medium"
-                                            placeholder="Search by University, City..."
+                                            placeholder="Search by university, address, or distance (e.g. '1.5' or 'Moratuwa')..."
                                             type="text"
                                             value={searchTerm}
                                             onChange={(e) => setSearchTerm(e.target.value)}
-                                            disabled={isSearchDisabled}
                                         />
                                     </div>
 
@@ -221,20 +312,43 @@ const AnnexList = () => {
                                     <div className="h-10 w-[1px] bg-slate-200 dark:bg-slate-700 hidden md:block self-center"></div>
 
                                     {/* University Dropdown */}
-                                    <div className={`flex-none md:w-64 flex items-center px-6 gap-3 relative transition-opacity ${isUniDisabled ? 'opacity-50' : 'opacity-100'}`}>
+                                    <div className="flex-none md:w-64 flex items-center px-6 gap-3 relative">
                                         <LuGraduationCap className="text-slate-400 dark:text-slate-500 text-xl flex-shrink-0" />
                                         <select
                                             className="w-full bg-transparent border-none focus:ring-0 focus:outline-none text-slate-900 dark:text-white font-medium cursor-pointer appearance-none"
                                             value={selectedUni}
-                                            onChange={(e) => setSelectedUni(e.target.value)}
-                                            disabled={isUniDisabled}
+                                            onChange={(e) => {
+                                                setSelectedUni(e.target.value);
+                                                if (e.target.value === "All Universities") setMaxDistance("Any Distance");
+                                            }}
                                         >
                                             <option className="text-slate-900 dark:bg-slate-800" value="All Universities">All Universities</option>
-                                            <option className="text-slate-900 dark:bg-slate-800" value="SLIIT">SLIIT</option>
-                                            <option className="text-slate-900 dark:bg-slate-800" value="NSBM">NSBM</option>
-                                            <option className="text-slate-900 dark:bg-slate-800" value="University of Colombo">University of Colombo</option>
+                                            {universitiesData.map(uni => (
+                                                <option key={uni.id} value={uni.id} className="text-slate-900 dark:bg-slate-800">{uni.name}</option>
+                                            ))}
                                         </select>
                                     </div>
+
+                                    {/* Distance Dropdown (Sleek proximity loader visible when Uni is selected) */}
+                                    {selectedUni !== "All Universities" && (
+                                        <>
+                                            <div className="h-10 w-[1px] bg-slate-200 dark:bg-slate-700 hidden md:block self-center"></div>
+                                            <div className="flex-none md:w-48 flex items-center px-6 gap-3 relative">
+                                                <span className="text-slate-400 dark:text-slate-500 text-[18px]">📍</span>
+                                                <select
+                                                    className="w-full bg-transparent border-none focus:ring-0 focus:outline-none text-slate-900 dark:text-white font-medium cursor-pointer appearance-none"
+                                                    value={maxDistance}
+                                                    onChange={(e) => setMaxDistance(e.target.value)}
+                                                >
+                                                    <option className="text-slate-900 dark:bg-slate-800" value="Any Distance">Any Distance</option>
+                                                    <option className="text-slate-900 dark:bg-slate-800" value="1">Within 1 km</option>
+                                                    <option className="text-slate-900 dark:bg-slate-800" value="2">Within 2 km</option>
+                                                    <option className="text-slate-900 dark:bg-slate-800" value="3">Within 3 km</option>
+                                                    <option className="text-slate-900 dark:bg-slate-800" value="5">Within 5 km</option>
+                                                </select>
+                                            </div>
+                                        </>
+                                    )}
 
                                     {/* Search Button */}
                                     <button
@@ -257,113 +371,138 @@ const AnnexList = () => {
                                 </div>
 
                                 <div className="flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto">
-                                    {/* Post Ad Button moved here */}
+                                    {/* Toggle Map View button next to Post Ad */}
+                                    <button
+                                        onClick={() => setMapView(!mapView)}
+                                        className="flex items-center justify-center gap-2 px-6 py-3 bg-white/50 dark:bg-slate-900/50 backdrop-blur-md rounded-full text-slate-700 dark:text-slate-300 font-bold border border-white/40 dark:border-slate-800 hover:bg-blue-50 dark:hover:bg-slate-800 transition-all hover:scale-105 active:scale-95 shadow-sm w-full sm:w-auto"
+                                    >
+                                        <LuMap /> {mapView ? "Show Grid View" : "Show Map View"}
+                                    </button>
+
                                     <Link
                                         to="/post-ad"
-                                        className="flex items-center justify-center gap-2 px-6 py-3 bg-blue-800 text-white rounded-full font-bold shadow-lg shadow-blue-800/30 hover:bg-blue-900 transition-all hover:-translate-y-0.5 w-full sm:w-auto"
+                                        className="flex items-center justify-center gap-2 px-6 py-3 bg-blue-800 text-white rounded-full font-bold shadow-lg shadow-blue-800/30 hover:bg-blue-900 transition-all hover:scale-105 active:scale-95 w-full sm:w-auto"
                                     >
                                         <LuPlus /> Post Advertisement
                                     </Link>
 
                                     {/* Pagination Context Info */}
                                     <div className="text-sm font-semibold text-slate-500 bg-white/40 dark:bg-slate-900/40 px-4 py-3 rounded-full border border-slate-200 dark:border-slate-800 w-full sm:w-auto text-center">
-                                        Showing {((currentPage - 1) * itemsPerPage) + 1} - {Math.min(currentPage * itemsPerPage, DUMMY_ANNEXES.length)} of {DUMMY_ANNEXES.length}
+                                        Showing {annexes.length > 0 ? ((currentPage - 1) * itemsPerPage) + 1 : 0} - {Math.min(currentPage * itemsPerPage, annexes.length)} of {annexes.length}
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Animated Grid */}
-                            <motion.div
-                                layout
-                                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10"
-                            >
-                                <AnimatePresence mode="popLayout">
-                                    {paginatedData.map((item, index) => (
-                                        <motion.div
-                                            key={item.id}
-                                            layout
-                                            initial={{ opacity: 0, y: 40 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            exit={{ opacity: 0, scale: 0.9 }}
-                                            transition={{ duration: 0.5, delay: index * 0.05 }}
-                                            // Main container colors updated to match your main screen
-                                            className="group relative h-full bg-white/45 dark:bg-slate-900/45 backdrop-blur-[24px] border border-white/40 dark:border-slate-800 rounded-[2.5rem] p-4 hover:shadow-[0_40px_80px_-20px_rgba(0,63,221,0.12)] transition-all duration-500 flex flex-col"
-                                        >
-                                            <div className="relative h-[280px] rounded-[2rem] overflow-hidden mb-6">
-                                                <img
-                                                    alt={item.title}
-                                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                                    src={item.image}
-                                                />
-
-                                                {/* Verified Badge Colors */}
-                                                {item.verified && (
-                                                    <div className="absolute top-4 left-4 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm border border-white/20 dark:border-slate-700/50">
-                                                        <span className="material-symbols-outlined text-green-600 dark:text-green-400 text-[16px]" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
-                                                        <span className="text-[10px] font-extrabold uppercase tracking-widest text-slate-800 dark:text-slate-200">Verified</span>
-                                                    </div>
-                                                )}
-
-                                                {/* Favorite Button Colors */}
-                                                <button
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        toggleFavorite(item.id);
-                                                    }}
-                                                    className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/80 dark:bg-slate-800/80 backdrop-blur-md flex items-center justify-center transition-all hover:scale-110 shadow-sm border border-white/20 dark:border-slate-700/50"
+                            {/* Render Map View or Grid View based on Toggle */}
+                            {mapView ? (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 30 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.5 }}
+                                    className="mb-10"
+                                >
+                                    <LeafletListMap items={annexes} centerUniId={selectedUni} />
+                                </motion.div>
+                            ) : (
+                                /* Animated Grid */
+                                <motion.div
+                                    layout
+                                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10"
+                                >
+                                    <AnimatePresence mode="popLayout">
+                                        {paginatedData.map((item, index) => {
+                                            // Handle images mapping correctly
+                                            const coverImage = item.images && item.images.length > 0 
+                                                ? `http://localhost:5000${item.images[0].imageUrl}` 
+                                                : "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=800";
+                                                
+                                            return (
+                                                <motion.div
+                                                    key={item.id}
+                                                    layout
+                                                    initial={{ opacity: 0, y: 40 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    exit={{ opacity: 0, scale: 0.9 }}
+                                                    transition={{ duration: 0.5, delay: index * 0.05 }}
+                                                    className="group relative h-full bg-white/45 dark:bg-slate-900/45 backdrop-blur-[24px] border border-white/40 dark:border-slate-800 rounded-[2.5rem] p-4 hover:shadow-[0_40px_80px_-20px_rgba(0,63,221,0.12)] transition-all duration-500 flex flex-col"
                                                 >
-                                                    <LuHeart className={`text-xl transition-colors ${favorites.includes(item.id) ? 'fill-red-500 text-red-500' : 'text-slate-400 dark:text-slate-300'}`} />
-                                                </button>
-                                            </div>
+                                                    <div className="relative h-[280px] rounded-[2rem] overflow-hidden mb-6">
+                                                        <img
+                                                            alt={item.title}
+                                                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                                            src={coverImage}
+                                                        />
 
-                                            <div className="px-3 space-y-4 flex-grow flex flex-col">
-                                                <div className="flex justify-between items-start">
-                                                    <div>
-                                                        <h3 className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-blue-800 dark:group-hover:text-blue-400 transition-colors uppercase tracking-tight">
-                                                            {item.title}
-                                                        </h3>
-                                                        <p className="text-slate-500 dark:text-slate-400 text-sm flex items-center gap-1 mt-1 font-medium">
-                                                            <LuMapPin className="text-[14px] text-blue-800/60 dark:text-blue-400/60" />
-                                                            {item.location}
-                                                        </p>
-                                                    </div>
-                                                </div>
+                                                        {/* Verified Badge */}
+                                                        {item.status === 'Approved' && (
+                                                            <div className="absolute top-4 left-4 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm border border-white/20 dark:border-slate-700/50">
+                                                                <span className="material-symbols-outlined text-green-600 dark:text-green-400 text-[16px]" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
+                                                                <span className="text-[10px] font-extrabold uppercase tracking-widest text-slate-800 dark:text-slate-200">Verified</span>
+                                                            </div>
+                                                        )}
 
-                                                {/* Amenities Row Colors */}
-                                                <div className="flex items-center gap-4 py-4 border-y border-slate-200/50 dark:border-slate-800/50 mt-auto">
-                                                    <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 text-sm font-medium">
-                                                        <LuBedDouble className="text-lg text-slate-400 dark:text-slate-500" /> {item.beds} Bed
+                                                        {/* Favorite Button */}
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                toggleFavorite(item.id);
+                                                            }}
+                                                            className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/80 dark:bg-slate-800/80 backdrop-blur-md flex items-center justify-center transition-all hover:scale-110 shadow-sm border border-white/20 dark:border-slate-700/50"
+                                                        >
+                                                            <LuHeart className={`text-xl transition-colors ${favorites.includes(item.id) ? 'fill-red-500 text-red-500' : 'text-slate-400 dark:text-slate-300'}`} />
+                                                        </button>
                                                     </div>
-                                                    <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 text-sm font-medium">
-                                                        <LuShowerHead className="text-lg text-slate-400 dark:text-slate-500" /> {item.bath}
-                                                    </div>
-                                                    <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 text-sm font-medium">
-                                                        <LuWifi className="text-lg text-slate-400 dark:text-slate-500" /> WiFi
-                                                    </div>
-                                                </div>
 
-                                                {/* Action Button Colors - Matches your main screen button style */}
-                                                <div className="mt-auto pt-4 flex flex-row items-end justify-between gap-2 border-t border-slate-100 dark:border-slate-800/50">
-                                                    <div className="flex flex-col">
-                                                        <span className="text-[9px] font-semibold uppercase tracking-[0.2em] text-slate-400 mb-0.5">Monthly Fee</span>
-                                                        <span className="text-xl md:text-2xl font-extrabold text-blue-800 dark:text-blue-400 leading-none">
-                                                            <span className="text-xs mr-0.5">Rs.</span>{item.price}
-                                                        </span>
+                                                    <div className="px-3 space-y-4 flex-grow flex flex-col">
+                                                        <div className="flex justify-between items-start">
+                                                            <div>
+                                                                <h3 className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-blue-800 dark:group-hover:text-blue-400 transition-colors uppercase tracking-tight line-clamp-1">
+                                                                    {item.title}
+                                                                </h3>
+                                                                <p className="text-slate-500 dark:text-slate-400 text-xs flex items-center gap-1 mt-1 font-medium line-clamp-1">
+                                                                    <LuMapPin className="text-[14px] text-blue-800/60 dark:text-blue-400/60 flex-shrink-0" />
+                                                                    {item.address} {item.distanceToUni && `(📍 ${item.distanceToUni} km to campus)`}
+                                                                </p>
+                                                            </div>
+                                                        </div>
+
+                                                        {/* Amenities Row */}
+                                                        <div className="flex items-center gap-4 py-4 border-y border-slate-200/50 dark:border-slate-800/50 mt-auto">
+                                                            <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 text-sm font-medium">
+                                                                <LuBedDouble className="text-lg text-slate-400 dark:text-slate-500" /> {item.beds} Beds
+                                                            </div>
+                                                            <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 text-sm font-medium">
+                                                                <LuShowerHead className="text-lg text-slate-400 dark:text-slate-500" /> {item.bath || "Shared Bath"}
+                                                            </div>
+                                                            <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 text-sm font-medium">
+                                                                <LuWifi className="text-lg text-slate-400 dark:text-slate-500" /> Wi-Fi
+                                                            </div>
+                                                        </div>
+
+                                                        {/* Action Button */}
+                                                        <div className="mt-auto pt-4 flex flex-row items-end justify-between gap-2 border-t border-slate-100 dark:border-slate-800/50">
+                                                            <div className="flex flex-col">
+                                                                <span className="text-[9px] font-semibold uppercase tracking-[0.2em] text-slate-400 mb-0.5">Monthly Fee</span>
+                                                                <span className="text-xl md:text-2xl font-extrabold text-blue-800 dark:text-blue-400 leading-none">
+                                                                    <span className="text-xs mr-0.5">Rs.</span>{parseFloat(item.price).toLocaleString()}
+                                                                </span>
+                                                            </div>
+                                                            <motion.button
+                                                                whileHover={{ scale: 1.05 }}
+                                                                whileTap={{ scale: 0.95 }}
+                                                                onClick={() => navigate(`/annex/${item.id}`)}
+                                                                className="w-auto text-[11px] md:text-sm bg-blue-50 dark:bg-slate-800/80 hover:bg-blue-800 hover:text-white dark:hover:bg-blue-800 text-blue-800 dark:text-blue-300 border border-blue-100 dark:border-slate-700 px-4 md:px-6 py-2.5 rounded-xl font-bold transition-all shadow-sm flex items-center justify-center"
+                                                            >
+                                                                Details
+                                                            </motion.button>
+                                                        </div>
                                                     </div>
-                                                    <motion.button
-                                                        whileHover={{ scale: 1.05 }}
-                                                        whileTap={{ scale: 0.95 }}
-                                                        onClick={() => navigate(`/annex/${item.id}`)}
-                                                        className="w-auto text-[11px] md:text-sm bg-blue-50 dark:bg-slate-800/80 hover:bg-blue-800 hover:text-white dark:hover:bg-blue-800 text-blue-800 dark:text-blue-300 border border-blue-100 dark:border-slate-700 px-4 md:px-6 py-2.5 rounded-xl font-bold transition-all shadow-sm flex items-center justify-center"
-                                                    >
-                                                        Details
-                                                    </motion.button>
-                                                </div>
-                                            </div>
-                                        </motion.div>
-                                    ))}
-                                </AnimatePresence>
-                            </motion.div>
+                                                </motion.div>
+                                            );
+                                        })}
+                                    </AnimatePresence>
+                                </motion.div>
+                            )}
 
                             {/* Glass Pagination System */}
                             {totalPages > 1 && (

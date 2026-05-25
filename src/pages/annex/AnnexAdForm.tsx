@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { Annex } from '../../types/annex';
+import React, { useState, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -9,15 +8,102 @@ import {
   LuWifi, LuBath, LuSnowflake, LuCar, LuUtensils, LuZap, LuCheck,
   LuUpload, LuX, LuGraduationCap
 } from 'react-icons/lu';
+import universitiesData from '../../constants/annex/Universities.json';
+
+// Clickable Leaflet Map Picker Component utilizing dynamic script loading
+const LeafletAdMapPicker = ({ universityId, lat, lng, onCoordsChange }: {
+  universityId: string, lat: number, lng: number, onCoordsChange: (lat: number, lng: number) => void
+}) => {
+  useEffect(() => {
+    if (!document.getElementById('leaflet-css')) {
+      const css = document.createElement('link');
+      css.id = 'leaflet-css';
+      css.rel = 'stylesheet';
+      css.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+      document.head.appendChild(css);
+    }
+    if (!document.getElementById('leaflet-js')) {
+      const js = document.createElement('script');
+      js.id = 'leaflet-js';
+      js.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+      document.body.appendChild(js);
+      js.onload = () => initMap();
+    } else {
+      initMap();
+    }
+
+    let map: any;
+    let marker: any;
+
+    function initMap() {
+      if (!(window as any).L) return;
+      const L = (window as any).L;
+
+      const container = L.DomUtil.get('details-map-picker-canvas');
+      if (container != null) {
+        container._leaflet_id = null; // Prevent double rendering canvas issues
+      }
+
+      // Predefined campus coordinates
+      const campusCoords: Record<string, [number, number]> = {
+        "1": [6.9016, 79.8589],   // Colombo
+        "2": [7.2549, 80.5925],   // Peradeniya
+        "3": [6.9062, 79.9018],   // USJ
+        "4": [6.9740, 79.9160],   // Kelaniya
+        "5": [6.7969, 79.9018],   // Moratuwa
+        "12": [6.7136, 80.7872],  // Sabaragamuwa (SUSL)
+      };
+
+      let initialLat = lat || 6.7969;
+      let initialLng = lng || 79.9018;
+
+      if (universityId && campusCoords[universityId] && !lat) {
+        [initialLat, initialLng] = campusCoords[universityId];
+      }
+
+      map = L.map('details-map-picker-canvas').setView([initialLat, initialLng], 14);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+      }).addTo(map);
+
+      // Draggable property pin marker
+      marker = L.marker([initialLat, initialLng], { draggable: true }).addTo(map);
+      
+      marker.on('dragend', function (event: any) {
+        const marker = event.target;
+        const position = marker.getLatLng();
+        onCoordsChange(parseFloat(position.lat.toFixed(6)), parseFloat(position.lng.toFixed(6)));
+      });
+
+      map.on('click', function (e: any) {
+        const { lat, lng } = e.latlng;
+        marker.setLatLng([lat, lng]);
+        onCoordsChange(parseFloat(lat.toFixed(6)), parseFloat(lng.toFixed(6)));
+      });
+    }
+  }, [universityId]);
+
+  return (
+    <div 
+      id="details-map-picker-canvas" 
+      className="w-full h-[260px] rounded-[1.8rem] border border-white/40 dark:border-slate-800 relative z-10"
+    />
+  );
+};
 
 const formSchema = z.object({
   title: z.string().min(5, "Title must be at least 5 characters"),
   monthlyRent: z.string().min(1, "Monthly rent is required"),
   securityDeposit: z.string().min(1, "Security deposit is required"),
-  houseRules: z.string().min(1, "House rules are required (e.g. No Smoking)"),
+  address: z.string().min(5, "Exact address is required"),
+  universityId: z.string().min(1, "Selecting a university campus is required"),
+  beds: z.string().min(1, "Beds capacity is required"),
+  bath: z.string().min(1, "Bathroom type is required"),
+  houseRules: z.string().min(1, "House rules are required (e.g. Girls Only)"),
   amenities: z.array(z.string()).min(1, "Select at least one amenity"),
-  proximityHub: z.string().min(1, "Distance to university is required"),
-  googleMapsUrl: z.string().url("Must be a valid URL").optional().or(z.literal('')),
+  latitude: z.number().min(-90).max(90),
+  longitude: z.number().min(-180).max(180),
   contactName: z.string().min(2, "Name is required"),
   contactPhone: z.string().min(10, "Valid phone number required"),
 });
@@ -25,12 +111,12 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 const AMENITIES_LIST = [
-  { id: 'wifi', label: 'High-speed Wifi', icon: LuWifi, col: 'text-blue-500' },
-  { id: 'bath', label: 'Attached Bath', icon: LuBath, col: 'text-teal-500' },
-  { id: 'ac', label: 'Air Conditioning', icon: LuSnowflake, col: 'text-red-500' },
-  { id: 'parking', label: 'Safe Parking', icon: LuCar, col: 'text-orange-500' },
-  { id: 'kitchen', label: 'Equipped Kitchen', icon: LuUtensils, col: 'text-indigo-500' },
-  { id: 'power', label: 'Power Backup', icon: LuZap, col: 'text-yellow-500' },
+  { id: 'WiFi', label: 'High-speed Wifi', icon: LuWifi, col: 'text-blue-500' },
+  { id: 'Attached Bath', label: 'Attached Bath', icon: LuBath, col: 'text-teal-500' },
+  { id: 'A/C', label: 'Air Conditioning', icon: LuSnowflake, col: 'text-red-500' },
+  { id: 'Safe Parking', label: 'Safe Parking', icon: LuCar, col: 'text-orange-500' },
+  { id: 'Kitchen', label: 'Equipped Kitchen', icon: LuUtensils, col: 'text-indigo-500' },
+  { id: 'Power Backup', label: 'Power Backup', icon: LuZap, col: 'text-yellow-500' },
 ];
 
 const STEPS = [
@@ -41,7 +127,7 @@ const STEPS = [
 ];
 
 interface AnnexFormProps {
-  initialData?: Annex;
+  initialData?: any;
   onSubmit: (data: Record<string, unknown>, isEditing: boolean) => void;
   onCancel: () => void;
   isEditing: boolean;
@@ -51,26 +137,34 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
   const [currentStep, setCurrentStep] = useState(0);
   const [images, setImages] = useState<File[]>([]);
 
-  const { register, handleSubmit, control, formState: { errors }, trigger } = useForm<FormValues>({
+  const { register, handleSubmit, control, setValue, watch, formState: { errors }, trigger } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: initialData?.title ?? '',
-      monthlyRent: initialData?.price ? initialData.price.replace(/\D/g, '') : '',
-      securityDeposit: '',
-      houseRules: initialData?.features?.join(', ') ?? '',
-      amenities: [],
-      proximityHub: '',
-      googleMapsUrl: '',
-      contactName: initialData?.contactName ?? '',
-      contactPhone: initialData?.contactPhone ?? '',
+      monthlyRent: initialData?.price ? String(initialData.price).replace(/\D/g, '') : '',
+      securityDeposit: initialData?.securityDeposit ?? '',
+      address: initialData?.address ?? '',
+      universityId: initialData?.universityId ? String(initialData.universityId) : '',
+      beds: initialData?.beds ? String(initialData.beds) : '1',
+      bath: initialData?.bath ?? 'Private Bath',
+      houseRules: initialData?.features?.map((f: any) => f.featureName).join(', ') ?? '',
+      amenities: initialData?.features?.map((f: any) => f.featureName) ?? [],
+      latitude: initialData?.latitude ? parseFloat(initialData.latitude) : 6.7969,
+      longitude: initialData?.longitude ? parseFloat(initialData.longitude) : 79.9018,
+      contactName: initialData?.owner?.name ?? initialData?.contactName ?? '',
+      contactPhone: initialData?.owner?.phone ?? initialData?.contactPhone ?? '',
     }
   });
 
+  const selectedUni = watch('universityId');
+  const latVal = watch('latitude');
+  const lngVal = watch('longitude');
+
   const onNext = async () => {
     const fieldsToValidate: (keyof FormValues)[] = [];
-    if (currentStep === 0) fieldsToValidate.push('title', 'monthlyRent', 'securityDeposit', 'houseRules');
+    if (currentStep === 0) fieldsToValidate.push('title', 'monthlyRent', 'securityDeposit', 'address', 'beds', 'bath', 'houseRules');
     if (currentStep === 1) fieldsToValidate.push('amenities');
-    if (currentStep === 3) fieldsToValidate.push('proximityHub', 'contactName', 'contactPhone');
+    if (currentStep === 3) fieldsToValidate.push('universityId', 'latitude', 'longitude', 'contactName', 'contactPhone');
 
     const isStepValid = await trigger(fieldsToValidate);
     if (isStepValid) {
@@ -92,17 +186,17 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
   };
 
   const submitForm = (data: FormValues) => {
-    onSubmit({ ...data, images }, isEditing);
+    onSubmit({ ...data, newImages: images }, isEditing);
   };
 
   return (
-    <div className="bg-white/70 dark:bg-slate-900/70 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_20px_60px_rgba(0,0,0,0.05)] border border-white/50 dark:border-slate-700/50 overflow-hidden w-full max-w-4xl mx-auto my-8 font-sans">
+    <div className="bg-white/70 dark:bg-slate-900/70 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_20px_60px_rgba(0,0,0,0.05)] border border-white/50 dark:border-slate-700/50 overflow-hidden w-full max-w-4xl mx-auto my-8 font-sans relative z-10">
 
       {/* Header */}
       <div className="px-8 py-8 md:px-12 md:py-10 border-b border-slate-200/50 dark:border-slate-800/50 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 dark:from-slate-800/50 dark:to-slate-900/50">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-black text-slate-800 dark:text-white tracking-tight">
+            <h1 className="text-3xl font-black text-slate-800 dark:text-white tracking-tight leading-none">
               {isEditing ? 'Update Listing' : 'List Property'}
             </h1>
             <p className="text-sm font-semibold text-blue-600 dark:text-blue-400 mt-2 uppercase tracking-widest">
@@ -144,7 +238,7 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
               initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
               className="space-y-6"
             >
-              <h2 className="text-xl font-bold text-slate-800 dark:text-white mb-6">General Specs</h2>
+              <h2 className="text-xl font-bold text-slate-800 dark:text-white mb-6">General Specifications</h2>
               <div className="space-y-4">
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Ad Title</label>
@@ -159,10 +253,35 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
                     {errors.monthlyRent && <p className="text-red-500 text-sm mt-1">{errors.monthlyRent.message}</p>}
                   </div>
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Key Money (Months)</label>
+                    <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Security Deposit (Key Money)</label>
                     <input {...register('securityDeposit')} placeholder="e.g. 4 Months" className="w-full px-5 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 font-medium outline-none transition-all dark:text-white" />
                     {errors.securityDeposit && <p className="text-red-500 text-sm mt-1">{errors.securityDeposit.message}</p>}
                   </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Beds Capacity</label>
+                    <select {...register('beds')} className="w-full px-5 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold outline-none cursor-pointer">
+                      <option value="1">1 Bed</option>
+                      <option value="2">2 Beds</option>
+                      <option value="3">3 Beds</option>
+                      <option value="4">4+ Beds</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Bathroom Type</label>
+                    <select {...register('bath')} className="w-full px-5 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold outline-none cursor-pointer">
+                      <option value="Private Bath">Private Bath</option>
+                      <option value="Shared Bath">Shared Bath</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Exact Property Address</label>
+                  <input {...register('address')} placeholder="e.g. No 45, Bandaranayake Mawatha, Moratuwa" className="w-full px-5 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 font-medium outline-none transition-all dark:text-white" />
+                  {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address.message}</p>}
                 </div>
 
                 <div>
@@ -207,7 +326,7 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
                               {amenity.label}
                             </span>
                           </div>
-                        )
+                        );
                       })}
                     </>
                   )}
@@ -252,31 +371,57 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
             </motion.div>
           )}
 
-          {/* STEP 4: Location */}
+          {/* STEP 4: Location Map Picker & Contact */}
           {currentStep === 3 && (
             <motion.div
               key="step4"
               initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
               className="space-y-6"
             >
-              <h2 className="text-xl font-bold text-slate-800 dark:text-white mb-6">Location & Contact</h2>
+              <h2 className="text-xl font-bold text-slate-800 dark:text-white mb-6">Location & Landlord Coordinates</h2>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Distance to University</label>
-                  <div className="relative">
-                    <LuGraduationCap className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg" />
-                    <input {...register('proximityHub')} placeholder="e.g. 400m from UoM" className="w-full pl-12 pr-5 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 focus:border-blue-500 font-medium outline-none transition-all dark:text-white" />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Select Target University Campus</label>
+                    <div className="relative">
+                      <LuGraduationCap className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg" />
+                      <select {...register('universityId')} className="w-full pl-12 pr-5 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold outline-none cursor-pointer appearance-none">
+                        <option value="">Select University</option>
+                        {universitiesData.map(uni => (
+                          <option key={uni.id} value={uni.id}>{uni.name}</option>
+                        ))}
+                      </select>
+                    </div>
+                    {errors.universityId && <p className="text-red-500 text-sm mt-1">{errors.universityId.message}</p>}
                   </div>
-                  {errors.proximityHub && <p className="text-red-500 text-sm mt-1">{errors.proximityHub.message}</p>}
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">Latitude</label>
+                      <input type="number" step="any" readonly {...register('latitude', { valueAsNumber: true })} className="w-full px-4 py-3 rounded-xl bg-slate-100/50 dark:bg-slate-950/20 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-500 outline-none cursor-not-allowed" />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">Longitude</label>
+                      <input type="number" step="any" readonly {...register('longitude', { valueAsNumber: true })} className="w-full px-4 py-3 rounded-xl bg-slate-100/50 dark:bg-slate-950/20 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-500 outline-none cursor-not-allowed" />
+                    </div>
+                  </div>
+                  <p className="text-[10px] text-blue-600 dark:text-blue-400 font-semibold uppercase tracking-wider">
+                    👉 Select your university, then click/drag on the Leaflet map to capture the exact coordinates of your property automatically.
+                  </p>
                 </div>
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Google Maps Embed URL (Optional)</label>
-                  <div className="relative">
-                    <LuMapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg" />
-                    <input {...register('googleMapsUrl')} placeholder="https://maps.google.com/..." className="w-full pl-12 pr-5 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 focus:border-blue-500 font-medium outline-none transition-all dark:text-white" />
-                  </div>
-                  {errors.googleMapsUrl && <p className="text-red-500 text-sm mt-1">{errors.googleMapsUrl.message}</p>}
+
+                {/* Leaflet Picker Map */}
+                <div className="p-1 rounded-[2rem] border border-white/40 dark:border-slate-700/50 bg-white/40 dark:bg-slate-800/40">
+                  <LeafletAdMapPicker
+                    universityId={selectedUni}
+                    lat={latVal}
+                    lng={lngVal}
+                    onCoordsChange={(lat, lng) => {
+                      setValue('latitude', lat);
+                      setValue('longitude', lng);
+                    }}
+                  />
                 </div>
               </div>
 
@@ -284,11 +429,11 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
                 <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-4">Landlord Info</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <input {...register('contactName')} placeholder="Full Name" className="w-full px-5 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 focus:border-blue-500 font-medium outline-none transition-all dark:text-white" />
+                    <input {...register('contactName')} placeholder="Landlord Full Name" className="w-full px-5 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 focus:border-blue-500 font-medium outline-none transition-all dark:text-white" />
                     {errors.contactName && <p className="text-red-500 text-sm mt-1">{errors.contactName.message}</p>}
                   </div>
                   <div>
-                    <input {...register('contactPhone')} placeholder="WhatsApp / Phone" className="w-full px-5 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 focus:border-blue-500 font-medium outline-none transition-all dark:text-white" />
+                    <input {...register('contactPhone')} placeholder="WhatsApp / Phone (e.g. 0771234567)" className="w-full px-5 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 focus:border-blue-500 font-medium outline-none transition-all dark:text-white" />
                     {errors.contactPhone && <p className="text-red-500 text-sm mt-1">{errors.contactPhone.message}</p>}
                   </div>
                 </div>
@@ -298,7 +443,7 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
         </AnimatePresence>
 
         {/* Footer Navigation */}
-        <div className="flex justify-between mt-12 pt-6 border-t border-slate-200/50 dark:border-slate-800">
+        <div className="flex justify-between mt-12 pt-6 border-t border-slate-200/50 dark:border-slate-800 relative z-10">
           <button
             type="button"
             onClick={onPrev}

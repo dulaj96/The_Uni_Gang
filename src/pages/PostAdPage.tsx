@@ -46,17 +46,36 @@ import { motion, AnimatePresence } from 'framer-motion';
 const PostAdPage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentView, setCurrentView] = useState<'postAdForm' | 'myAds'>('postAdForm');
-  const [editingAd, setEditingAd] = useState<Annex | null>(null);
-  const [myAds, setMyAds] = useState<Annex[]>(dummyMyAds);
+  const [editingAd, setEditingAd] = useState<any | null>(null);
+  const [myAds, setMyAds] = useState<any[]>([]);
   const [searchParams] = useSearchParams();
   const tab = searchParams.get('tab');
   const [loading, setLoading] = useState(true);
+
+  const fetchMyAds = async () => {
+    const token = localStorage.getItem('userToken');
+    if (!token) return;
+    try {
+      const response = await fetch('http://localhost:5000/api/annexes/my-listings', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setMyAds(data);
+      }
+    } catch (err) {
+      console.error('Failed to load my ads:', err);
+    }
+  };
 
   useEffect(() => {
     const token = localStorage.getItem('userToken');
     if (token) {
       setIsLoggedIn(true);
       setCurrentView('postAdForm');
+      fetchMyAds();
     }
     
     const timer = setTimeout(() => setLoading(false), 300);
@@ -64,12 +83,16 @@ const PostAdPage = () => {
   }, []);
 
   useEffect(() => {
-    if (tab === 'myAds') setCurrentView('myAds');
-  }, [tab]);
+    if (tab === 'myAds') {
+      setCurrentView('myAds');
+      fetchMyAds();
+    }
+  }, [tab, isLoggedIn]);
 
   const handleAuthSuccess = () => {
     setIsLoggedIn(true);
     setCurrentView('postAdForm');
+    fetchMyAds();
   };
 
   const handleLogout = () => {
@@ -82,30 +105,90 @@ const PostAdPage = () => {
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleAnnexFormSubmit = (adData: any, isEditing: boolean) => {
-    if (isEditing && editingAd) {
-      setMyAds(myAds.map(ad => ad.id === editingAd.id ? {
-        ...ad,
-        ...adData,
-        images: adData.existingImages.concat(adData.newImages.map((file: File) => URL.createObjectURL(file)))
-      } : ad));
-      toast.success('Ad updated successfully!');
-    } else {
-      const newAd = {
-        ...adData,
-        id: `user_ad_${myAds.length + 1}`,
-        images: adData.newImages.map((file: File) => URL.createObjectURL(file)),
-      };
-      setMyAds([...myAds, newAd]);
-      toast.success('Ad posted successfully!');
+  const handleAnnexFormSubmit = async (adData: any, isEditing: boolean) => {
+    const token = localStorage.getItem('userToken');
+    if (!token) {
+      toast.error('Session expired. Please log in again.');
+      setIsLoggedIn(false);
+      return;
     }
-    setEditingAd(null);
-    setCurrentView('myAds');
+
+    setLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append('title', adData.title);
+      formData.append('description', adData.description || adData.houseRules || 'No description');
+      formData.append('price', adData.monthlyRent);
+      formData.append('address', adData.address);
+      formData.append('beds', adData.beds);
+      formData.append('bath', adData.bath);
+      formData.append('latitude', String(adData.latitude));
+      formData.append('longitude', String(adData.longitude));
+      formData.append('universityId', adData.universityId);
+      
+      const features = adData.amenities || [];
+      formData.append('features', JSON.stringify(features));
+
+      if (adData.newImages && adData.newImages.length > 0) {
+        adData.newImages.forEach((file: File) => {
+          formData.append('images', file);
+        });
+      }
+
+      let response;
+      if (isEditing && editingAd) {
+        toast.error('Edit listings is currently pending backend integration.');
+        setLoading(false);
+        return;
+      } else {
+        response = await fetch('http://localhost:5000/api/annexes', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+          body: formData
+        });
+      }
+
+      if (response.ok) {
+        toast.success(isEditing ? 'Ad updated successfully!' : 'Ad posted successfully! Awaiting admin approval.');
+        await fetchMyAds();
+        setEditingAd(null);
+        setCurrentView('myAds');
+      } else {
+        const err = await response.json();
+        toast.error(err.message || 'Failed to submit advertisement.');
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error('An error occurred during submission.');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleDeleteAd = (adId: string) => {
+  const handleDeleteAd = async (adId: string) => {
+    const token = localStorage.getItem('userToken');
+    if (!token) return;
+
     if (window.confirm('Are you sure you want to delete this ad?')) {
-      setMyAds(myAds.filter(ad => ad.id !== adId));
+      try {
+        const response = await fetch(`http://localhost:5000/api/annexes/${adId}`, {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        if (response.ok) {
+          toast.success('Ad removed successfully!');
+          await fetchMyAds();
+        } else {
+          toast.error('Failed to remove ad.');
+        }
+      } catch (err) {
+        console.error(err);
+        toast.error('Error deleting ad.');
+      }
     }
   };
 

@@ -131,5 +131,65 @@ export const api = {
         resolve(contributors.sort((a: Contributor, b: Contributor) => b.totalLikes - a.totalLikes));
       }, 250);
     });
+  },
+
+  // Annexes & Accommodations Connected to Backend
+  getAnnexes: async (filters?: any): Promise<any[]> => {
+    const queryParams = new URLSearchParams();
+    if (filters) {
+      Object.keys(filters).forEach(key => {
+        if (filters[key] !== undefined && filters[key] !== null && filters[key] !== '') {
+          queryParams.append(key, String(filters[key]));
+        }
+      });
+    }
+    const response = await fetch(`http://localhost:5000/api/annexes?${queryParams.toString()}`);
+    if (!response.ok) throw new Error('Failed to fetch approved listings');
+    return response.json();
+  },
+
+  getAnnexById: async (id: string): Promise<any> => {
+    const response = await fetch(`http://localhost:5000/api/annexes/${id}`);
+    if (!response.ok) throw new Error('Listing not found');
+    return response.json();
+  },
+
+  createAnnex: async (formData: FormData, token: string): Promise<any> => {
+    const response = await fetch(`http://localhost:5000/api/annexes`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+      body: formData
+    });
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.message || 'Failed to submit property');
+    }
+    return response.json();
+  },
+
+  deleteAnnex: async (id: string, token: string): Promise<any> => {
+    const response = await fetch(`http://localhost:5000/api/annexes/${id}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    if (!response.ok) throw new Error('Failed to remove listing');
+    return response.json();
+  },
+
+  submitReview: async (id: string, reviewData: any, token: string): Promise<any> => {
+    const response = await fetch(`http://localhost:5000/api/annexes/${id}/reviews`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify(reviewData)
+    });
+    if (!response.ok) throw new Error('Failed to submit your review');
+    return response.json();
   }
 };
