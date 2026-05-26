@@ -6,122 +6,171 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   LuFileText, LuLayoutDashboard, LuImage, LuMapPin, LuChevronRight, LuChevronLeft,
   LuWifi, LuBath, LuSnowflake, LuCar, LuUtensils, LuZap, LuCheck,
-  LuUpload, LuX, LuGraduationCap
+  LuUpload, LuX, LuGraduationCap, LuAlertCircle
 } from 'react-icons/lu';
 import toast from 'react-hot-toast';
 import universitiesData from '../../constants/annex/Universities.json';
 
-// Clickable Leaflet Map Picker Component utilizing dynamic script loading and refs
-const LeafletAdMapPicker = ({ universityId, lat, lng, onCoordsChange }: {
-  universityId: string, lat: number, lng: number, onCoordsChange: (lat: number, lng: number) => void
+// ─── Complete campus coordinates fallback (all Sri Lankan universities + private institutes) ───
+const CAMPUS_COORDS: Record<string, [number, number]> = {
+  "0":  [7.8731, 80.7718],   // Other / Not Listed → centre of Sri Lanka
+  "1":  [6.9016, 79.8589],   // University of Colombo
+  "2":  [7.2549, 80.5925],   // University of Peradeniya
+  "3":  [6.9062, 79.9018],   // University of Sri Jayewardenepura
+  "4":  [6.9740, 79.9160],   // University of Kelaniya
+  "5":  [6.7969, 79.9018],   // University of Moratuwa
+  "6":  [9.6615, 80.0255],   // University of Jaffna
+  "7":  [5.9745, 80.5491],   // University of Ruhuna
+  "8":  [6.9178, 79.9013],   // Open University of Sri Lanka
+  "9":  [7.7333, 81.6833],   // Eastern University
+  "10": [7.3211, 81.7862],   // South Eastern University
+  "11": [8.3484, 80.4011],   // Rajarata University
+  "12": [6.7136, 80.7872],   // Sabaragamuwa University (SUSL)
+  "13": [7.6050, 80.2143],   // Wayamba University
+  "14": [6.9934, 81.0550],   // Uva Wellassa University
+  "15": [6.9154, 79.8568],   // University of Visual & Performing Arts
+  "16": [7.1000, 79.9980],   // Gampaha Wickramarachchi University
+  "17": [6.7969, 79.9018],   // ITUM
+  "18": [6.9022, 79.8612],   // IIT
+  "19": [6.8241, 80.0361],   // NSBM Green University
+  "20": [6.9148, 79.9729],   // SLIIT
+  "21": [6.9270, 79.8611],   // NIBM
+  "22": [6.9155, 79.8600],   // Aquinas College
+  "23": [6.9167, 79.8500],   // ICBT Campus
+};
+
+// ─── Leaflet Clickable Map Picker ────────────────────────────────────────────────────────────────
+const LeafletAdMapPicker = ({
+  universityId, lat, lng, onCoordsChange
+}: {
+  universityId: string;
+  lat: number;
+  lng: number;
+  onCoordsChange: (lat: number, lng: number) => void;
 }) => {
   const mapRef = useRef<any>(null);
   const markerRef = useRef<any>(null);
+  const initializedRef = useRef(false);
+
+  const getInitialCoords = (uniId: string, currentLat: number, currentLng: number): [number, number] => {
+    // If user has already placed a custom pin, respect that
+    if (currentLat && currentLng && currentLat !== 7.8731 && !CAMPUS_COORDS[uniId]?.every(
+      (v, i) => [currentLat, currentLng][i] === v
+    )) {
+      return [currentLat, currentLng];
+    }
+    // Otherwise center on selected university
+    if (uniId && CAMPUS_COORDS[uniId]) {
+      return CAMPUS_COORDS[uniId];
+    }
+    return [6.9016, 79.8589]; // Default: Colombo
+  };
 
   useEffect(() => {
-    if (!document.getElementById('leaflet-css')) {
-      const css = document.createElement('link');
-      css.id = 'leaflet-css';
-      css.rel = 'stylesheet';
-      css.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
-      document.head.appendChild(css);
-    }
-    if (!document.getElementById('leaflet-js')) {
-      const js = document.createElement('script');
-      js.id = 'leaflet-js';
-      js.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-      document.body.appendChild(js);
-      js.onload = () => initMap();
-    } else {
-      initMap();
-    }
-
-    function initMap() {
+    const loadMap = () => {
       if (!(window as any).L) return;
       const L = (window as any).L;
 
       const container = L.DomUtil.get('details-map-picker-canvas');
-      if (container != null) {
-        container._leaflet_id = null; // Prevent double rendering canvas issues
+      if (container?._leaflet_id) {
+        container._leaflet_id = null;
       }
 
-      // Predefined campus coordinates
-      const campusCoords: Record<string, [number, number]> = {
-        "1": [6.9016, 79.8589],   // Colombo
-        "2": [7.2549, 80.5925],   // Peradeniya
-        "3": [6.9062, 79.9018],   // USJ
-        "4": [6.9740, 79.9160],   // Kelaniya
-        "5": [6.7969, 79.9018],   // Moratuwa
-        "12": [6.7136, 80.7872],  // Sabaragamuwa (SUSL)
-      };
-
-      let initialLat = lat || 6.7969;
-      let initialLng = lng || 79.9018;
-
-      if (universityId && campusCoords[universityId] && !lat) {
-        [initialLat, initialLng] = campusCoords[universityId];
-      }
-
-      // Clean up previous map if it exists to prevent container reuse issues
       if (mapRef.current) {
         mapRef.current.remove();
         mapRef.current = null;
       }
 
+      const [initialLat, initialLng] = getInitialCoords(universityId, lat, lng);
+
       const map = L.map('details-map-picker-canvas').setView([initialLat, initialLng], 14);
       mapRef.current = map;
+      initializedRef.current = true;
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors'
       }).addTo(map);
 
+      // University campus marker (non-draggable, informational)
+      if (universityId && CAMPUS_COORDS[universityId] && universityId !== '0') {
+        const campusIcon = L.divIcon({
+          className: '',
+          html: `<div style="background:#3b82f6;color:white;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,0.3)">🎓 Campus</div>`,
+          iconAnchor: [40, 12]
+        });
+        L.marker(CAMPUS_COORDS[universityId], { icon: campusIcon }).addTo(map);
+      }
+
       // Draggable property pin marker
       const marker = L.marker([initialLat, initialLng], { draggable: true }).addTo(map);
       markerRef.current = marker;
-      
+
       marker.on('dragend', function (event: any) {
-        const marker = event.target;
-        const position = marker.getLatLng();
-        onCoordsChange(parseFloat(position.lat.toFixed(6)), parseFloat(position.lng.toFixed(6)));
+        const pos = event.target.getLatLng();
+        onCoordsChange(parseFloat(pos.lat.toFixed(6)), parseFloat(pos.lng.toFixed(6)));
       });
 
       map.on('click', function (e: any) {
-        const { lat, lng } = e.latlng;
-        marker.setLatLng([lat, lng]);
-        onCoordsChange(parseFloat(lat.toFixed(6)), parseFloat(lng.toFixed(6)));
+        const { lat: clickLat, lng: clickLng } = e.latlng;
+        marker.setLatLng([clickLat, clickLng]);
+        onCoordsChange(parseFloat(clickLat.toFixed(6)), parseFloat(clickLng.toFixed(6)));
       });
+    };
+
+    if (!(window as any).L) {
+      if (!document.getElementById('leaflet-css')) {
+        const css = document.createElement('link');
+        css.id = 'leaflet-css';
+        css.rel = 'stylesheet';
+        css.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+        document.head.appendChild(css);
+      }
+      if (!document.getElementById('leaflet-js')) {
+        const js = document.createElement('script');
+        js.id = 'leaflet-js';
+        js.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+        document.body.appendChild(js);
+        js.onload = loadMap;
+      } else {
+        setTimeout(loadMap, 100);
+      }
+    } else {
+      loadMap();
     }
 
     return () => {
       if (mapRef.current) {
         mapRef.current.remove();
         mapRef.current = null;
+        initializedRef.current = false;
       }
     };
-  }, [universityId]);
+  }, [universityId]); // Re-initialize when university changes
 
   return (
-    <div 
-      id="details-map-picker-canvas" 
-      className="w-full h-[260px] rounded-[1.8rem] border border-white/40 dark:border-slate-800 relative z-10"
+    <div
+      id="details-map-picker-canvas"
+      className="w-full h-[280px] rounded-[1.8rem] border border-white/40 dark:border-slate-800 relative z-10"
     />
   );
 };
 
+// ─── Form Schema ─────────────────────────────────────────────────────────────────────────────────
 const formSchema = z.object({
-  title: z.string().min(5, "Title must be at least 5 characters"),
-  monthlyRent: z.string().min(1, "Monthly rent is required"),
-  securityDeposit: z.string().min(1, "Security deposit is required"),
-  address: z.string().min(5, "Exact address is required"),
-  universityId: z.string().min(1, "Selecting a university campus is required"),
-  beds: z.string().min(1, "Beds capacity is required"),
-  bath: z.string().min(1, "Bathroom type is required"),
-  houseRules: z.string().min(1, "House rules are required (e.g. Girls Only)"),
-  amenities: z.array(z.string()).min(1, "Select at least one amenity"),
+  title: z.string().min(5, 'Title must be at least 5 characters'),
+  monthlyRent: z.string().min(1, 'Monthly rent is required'),
+  securityDeposit: z.string().min(1, 'Security deposit is required'),
+  address: z.string().min(5, 'Exact address is required'),
+  universityId: z.string().min(1, 'Selecting a university or institution is required'),
+  customInstitution: z.string().optional(),
+  beds: z.string().min(1, 'Beds capacity is required'),
+  bath: z.string().min(1, 'Bathroom type is required'),
+  houseRules: z.string().min(1, 'House rules are required (e.g. Girls Only)'),
+  amenities: z.array(z.string()).min(1, 'Select at least one amenity'),
   latitude: z.number().min(-90).max(90),
   longitude: z.number().min(-180).max(180),
-  contactName: z.string().min(2, "Name is required"),
-  contactPhone: z.string().min(10, "Valid phone number required"),
+  contactName: z.string().min(2, 'Name is required'),
+  contactPhone: z.string().min(10, 'Valid phone number required'),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -154,19 +203,23 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
   const [images, setImages] = useState<File[]>([]);
   const [universities, setUniversities] = useState<any[]>([]);
 
-  // Dynamically load universities from database on mount, fallback to static JSON
+  // Load universities — try API first, fall back to static JSON with full lat/lng
   useEffect(() => {
     const loadUniversities = async () => {
       try {
         const res = await fetch('http://localhost:5000/api/annexes/universities');
         if (res.ok) {
           const data = await res.json();
+          // Ensure "Other" option is always available at the end
+          const hasOther = data.some((u: any) => String(u.id) === '0');
+          if (!hasOther) {
+            data.push({ id: '0', name: 'Other / Not Listed', latitude: 7.8731, longitude: 80.7718 });
+          }
           setUniversities(data);
         } else {
           setUniversities(universitiesData);
         }
-      } catch (error) {
-        console.warn('Failed to load universities dynamically, using static fallback:', error);
+      } catch {
         setUniversities(universitiesData);
       }
     };
@@ -181,12 +234,13 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
       securityDeposit: initialData?.securityDeposit ?? '',
       address: initialData?.address ?? '',
       universityId: initialData?.universityId ? String(initialData.universityId) : '',
+      customInstitution: '',
       beds: initialData?.beds ? String(initialData.beds) : '1',
       bath: initialData?.bath ?? 'Private Bath',
       houseRules: initialData?.features?.map((f: any) => f.featureName).join(', ') ?? '',
       amenities: initialData?.features?.map((f: any) => f.featureName) ?? [],
-      latitude: initialData?.latitude ? parseFloat(initialData.latitude) : 6.7969,
-      longitude: initialData?.longitude ? parseFloat(initialData.longitude) : 79.9018,
+      latitude: initialData?.latitude ? parseFloat(initialData.latitude) : 6.9016,
+      longitude: initialData?.longitude ? parseFloat(initialData.longitude) : 79.8589,
       contactName: initialData?.owner?.name ?? initialData?.contactName ?? '',
       contactPhone: initialData?.owner?.phone ?? initialData?.contactPhone ?? '',
     }
@@ -195,30 +249,27 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
   const selectedUni = watch('universityId');
   const latVal = watch('latitude');
   const lngVal = watch('longitude');
+  const isOtherSelected = selectedUni === '0';
 
-  // Automatically update form coordinates when university selection changes to trigger map centering
+  // Re-center map and update coordinates when university selection changes
   useEffect(() => {
-    if (selectedUni && universities.length > 0) {
+    if (!selectedUni) return;
+
+    // First check if the loaded universities list has coordinates
+    if (universities.length > 0) {
       const matchedUni = universities.find(u => String(u.id) === String(selectedUni));
-      if (matchedUni && matchedUni.latitude && matchedUni.longitude) {
-        setValue('latitude', parseFloat(matchedUni.latitude));
-        setValue('longitude', parseFloat(matchedUni.longitude));
-      } else {
-        // Predefined campus coordinates fallback
-        const campusCoords: Record<string, [number, number]> = {
-          "1": [6.9016, 79.8589],   // Colombo
-          "2": [7.2549, 80.5925],   // Peradeniya
-          "3": [6.9062, 79.9018],   // USJ
-          "4": [6.9740, 79.9160],   // Kelaniya
-          "5": [6.7969, 79.9018],   // Moratuwa
-          "12": [6.7136, 80.7872],  // Sabaragamuwa (SUSL)
-        };
-        if (campusCoords[selectedUni]) {
-          const [uniLat, uniLng] = campusCoords[selectedUni];
-          setValue('latitude', uniLat);
-          setValue('longitude', uniLng);
-        }
+      if (matchedUni?.latitude && matchedUni?.longitude) {
+        setValue('latitude', parseFloat(String(matchedUni.latitude)));
+        setValue('longitude', parseFloat(String(matchedUni.longitude)));
+        return;
       }
+    }
+
+    // Fallback to hardcoded coordinate map
+    if (CAMPUS_COORDS[selectedUni]) {
+      const [uniLat, uniLng] = CAMPUS_COORDS[selectedUni];
+      setValue('latitude', uniLat);
+      setValue('longitude', uniLng);
     }
   }, [selectedUni, universities, setValue]);
 
@@ -226,22 +277,24 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
     const fieldsToValidate: (keyof FormValues)[] = [];
     if (currentStep === 0) fieldsToValidate.push('title', 'monthlyRent', 'securityDeposit', 'address', 'beds', 'bath', 'houseRules');
     if (currentStep === 1) fieldsToValidate.push('amenities');
-    if (currentStep === 3) fieldsToValidate.push('universityId', 'latitude', 'longitude', 'contactName', 'contactPhone');
+    if (currentStep === 3) {
+      fieldsToValidate.push('universityId', 'latitude', 'longitude', 'contactName', 'contactPhone');
+      if (isOtherSelected) fieldsToValidate.push('customInstitution');
+    }
 
     const isStepValid = await trigger(fieldsToValidate);
     if (isStepValid) {
-      // Validate image upload range (exactly 1 to 4 images allowed)
       if (currentStep === 2) {
         if (images.length < 1 || images.length > 4) {
           toast.error('Please upload between 1 to 4 images (1 cover photo and up to 3 gallery photos)');
           return;
         }
       }
-      setCurrentStep((prev) => Math.min(prev + 1, STEPS.length - 1));
+      setCurrentStep(prev => Math.min(prev + 1, STEPS.length - 1));
     }
   };
 
-  const onPrev = () => setCurrentStep((prev) => Math.max(prev - 1, 0));
+  const onPrev = () => setCurrentStep(prev => Math.max(prev - 1, 0));
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -249,9 +302,9 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
       setImages(prev => {
         const combined = [...prev, ...filesArray];
         if (combined.length > 4) {
-          toast.error('Maximum of 4 images allowed (1 cover photo and up to 3 gallery photos)');
+          toast.error('Maximum 4 images allowed (1 cover + up to 3 gallery photos)');
         }
-        return combined.slice(0, 4); // strictly limit to 4
+        return combined.slice(0, 4);
       });
     }
   };
@@ -261,9 +314,8 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
   };
 
   const submitForm = (data: FormValues) => {
-    // Final verification of the image upload range
     if (images.length < 1 || images.length > 4) {
-      toast.error('Please upload between 1 to 4 images (1 cover photo and up to 3 gallery photos)');
+      toast.error('Please upload between 1 to 4 images');
       return;
     }
     onSubmit({ ...data, newImages: images }, isEditing);
@@ -295,7 +347,7 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
               className="h-full bg-gradient-to-r from-blue-500 to-indigo-500"
               initial={{ width: 0 }}
               animate={{ width: `${(currentStep / (STEPS.length - 1)) * 100}%` }}
-              transition={{ ease: "easeInOut", duration: 0.5 }}
+              transition={{ ease: 'easeInOut', duration: 0.5 }}
             />
           </div>
           {STEPS.map((step, idx) => (
@@ -311,13 +363,9 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
       <form onSubmit={handleSubmit(submitForm)} className="p-8 md:p-12 relative min-h-[400px]">
         <AnimatePresence mode="wait">
 
-          {/* STEP 1: Specs */}
+          {/* ── STEP 1: General Specs ── */}
           {currentStep === 0 && (
-            <motion.div
-              key="step1"
-              initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
-              className="space-y-6"
-            >
+            <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
               <h2 className="text-xl font-bold text-slate-800 dark:text-white mb-6">General Specifications</h2>
               <div className="space-y-4">
                 <div>
@@ -373,13 +421,9 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
             </motion.div>
           )}
 
-          {/* STEP 2: Amenities */}
+          {/* ── STEP 2: Amenities ── */}
           {currentStep === 1 && (
-            <motion.div
-              key="step2"
-              initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
-              className="space-y-6"
-            >
+            <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
               <h2 className="text-xl font-bold text-slate-800 dark:text-white mb-6">Select Amenities</h2>
               {errors.amenities && <p className="text-red-500 text-sm mb-4">{errors.amenities.message}</p>}
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -388,7 +432,7 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
                   control={control}
                   render={({ field }) => (
                     <>
-                      {AMENITIES_LIST.map((amenity) => {
+                      {AMENITIES_LIST.map(amenity => {
                         const isSelected = field.value.includes(amenity.id);
                         return (
                           <div
@@ -415,35 +459,43 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
             </motion.div>
           )}
 
-          {/* STEP 3: Media Gallery */}
+          {/* ── STEP 3: Media Gallery ── */}
           {currentStep === 2 && (
-            <motion.div
-              key="step3"
-              initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
-              className="space-y-6"
-            >
+            <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
               <h2 className="text-xl font-bold text-slate-800 dark:text-white mb-6">Media Gallery</h2>
-
-              <div className="border-2 border-dashed border-slate-300 dark:border-slate-600 bg-slate-50/50 dark:bg-slate-800/30 rounded-[2rem] p-10 text-center hover:bg-slate-100/50 transition-colors relative group">
-                <input type="file" multiple accept="image/*" onChange={handleImageUpload} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+              
+              <div className={`border-2 border-dashed rounded-[2rem] p-10 text-center relative group transition-colors ${images.length >= 4 ? 'border-slate-200 dark:border-slate-700 bg-slate-100/50 dark:bg-slate-800/20 opacity-60 cursor-not-allowed' : 'border-slate-300 dark:border-slate-600 bg-slate-50/50 dark:bg-slate-800/30 hover:bg-slate-100/50 cursor-pointer'}`}>
+                {images.length < 4 && (
+                  <input type="file" multiple accept="image/*" onChange={handleImageUpload} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+                )}
                 <div className="flex flex-col items-center pointer-events-none">
-                  <div className="w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-blue-600 mb-4 group-hover:scale-110 transition-transform">
+                  <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform ${images.length >= 4 ? 'bg-slate-200 dark:bg-slate-700 text-slate-400' : 'bg-blue-100 dark:bg-blue-900/50 text-blue-600'}`}>
                     <LuUpload size={28} />
                   </div>
-                  <p className="font-bold text-slate-700 dark:text-slate-200">Drag & Drop or Click to Upload</p>
-                  <p className="text-xs text-slate-500 mt-2 font-medium tracking-wide">JPG, PNG (1 Cover photo and up to 3 gallery photos - Range: 1 to 4 images)</p>
+                  <p className="font-bold text-slate-700 dark:text-slate-200">
+                    {images.length >= 4 ? 'Maximum 4 images reached' : 'Drag & Drop or Click to Upload'}
+                  </p>
+                  <p className="text-xs text-slate-500 mt-2 font-medium tracking-wide">
+                    1 Cover photo + up to 3 gallery photos &nbsp;·&nbsp; {images.length}/4 uploaded
+                  </p>
                 </div>
               </div>
 
               {images.length > 0 && (
-                <div className="grid grid-cols-3 md:grid-cols-5 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {images.map((file, idx) => (
                     <div key={idx} className="relative aspect-square rounded-2xl overflow-hidden shadow-md group">
                       <img src={URL.createObjectURL(file)} alt="preview" className="w-full h-full object-cover" />
-                      <button type="button" onClick={() => removeImage(idx)} className="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 text-red-500 flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-50">
+                      <button
+                        type="button"
+                        onClick={() => removeImage(idx)}
+                        className="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 text-red-500 flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-50"
+                      >
                         <LuX size={14} />
                       </button>
-                      {idx === 0 && <span className="absolute bottom-2 left-2 text-[10px] font-bold bg-blue-600 text-white px-2 py-1 rounded-md">COVER</span>}
+                      {idx === 0 && (
+                        <span className="absolute bottom-2 left-2 text-[10px] font-bold bg-blue-600 text-white px-2 py-1 rounded-md">COVER</span>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -451,62 +503,120 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
             </motion.div>
           )}
 
-          {/* STEP 4: Location Map Picker & Contact */}
+          {/* ── STEP 4: Location Map Picker & Contact ── */}
           {currentStep === 3 && (
-            <motion.div
-              key="step4"
-              initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
-              className="space-y-6"
-            >
-              <h2 className="text-xl font-bold text-slate-800 dark:text-white mb-6">Location & Landlord Coordinates</h2>
+            <motion.div key="step4" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
+              <h2 className="text-xl font-bold text-slate-800 dark:text-white mb-6">Location & Contact Details</h2>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
+                  {/* University Dropdown */}
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Select Target University Campus</label>
+                    <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">
+                      Nearest University / Institution
+                    </label>
                     <div className="relative">
-                      <LuGraduationCap className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg" />
-                      <select {...register('universityId')} className="w-full pl-12 pr-5 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold outline-none cursor-pointer appearance-none">
-                        <option value="">Select University</option>
-                        {universities.map(uni => (
-                          <option key={uni.id} value={uni.id}>{uni.name}</option>
-                        ))}
+                      <LuGraduationCap className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg pointer-events-none z-10" />
+                      <select
+                        {...register('universityId')}
+                        className="w-full pl-12 pr-5 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold outline-none cursor-pointer appearance-none"
+                      >
+                        <option value="">— Select University / Institution —</option>
+                        {universities
+                          .filter(u => String(u.id) !== '0')
+                          .map(uni => (
+                            <option key={uni.id} value={String(uni.id)}>{uni.name}</option>
+                          ))
+                        }
+                        <option value="0">🔍 Other / Not Listed</option>
                       </select>
                     </div>
                     {errors.universityId && <p className="text-red-500 text-sm mt-1">{errors.universityId.message}</p>}
                   </div>
 
+                  {/* "Other" custom institution name field */}
+                  <AnimatePresence>
+                    {isOtherSelected && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="p-4 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800/40 rounded-2xl">
+                          <div className="flex items-start gap-3 mb-3">
+                            <LuAlertCircle className="text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" size={16} />
+                            <p className="text-xs text-amber-700 dark:text-amber-400 font-semibold leading-relaxed">
+                              Your institution isn't listed? No problem! Enter its name below and pinpoint your property on the map. Students searching nearby will still find your listing.
+                            </p>
+                          </div>
+                          <input
+                            {...register('customInstitution')}
+                            placeholder="e.g. SLIIT, NSBM, Aquinas, Lanka Nippon..."
+                            className="w-full px-4 py-3 rounded-xl bg-white dark:bg-slate-800 border border-amber-200 dark:border-amber-700 focus:border-amber-400 focus:ring-4 focus:ring-amber-500/10 text-sm font-medium outline-none transition-all dark:text-white"
+                          />
+                          {errors.customInstitution && <p className="text-red-500 text-sm mt-1">{errors.customInstitution.message}</p>}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  {/* Coordinate display (read-only) */}
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">Latitude</label>
-                      <input type="number" step="any" readOnly {...register('latitude', { valueAsNumber: true })} className="w-full px-4 py-3 rounded-xl bg-slate-100/50 dark:bg-slate-950/20 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-500 outline-none cursor-not-allowed" />
+                      <input
+                        type="number"
+                        step="any"
+                        readOnly
+                        {...register('latitude', { valueAsNumber: true })}
+                        className="w-full px-4 py-3 rounded-xl bg-slate-100/50 dark:bg-slate-950/20 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-500 outline-none cursor-not-allowed"
+                      />
                     </div>
                     <div>
                       <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">Longitude</label>
-                      <input type="number" step="any" readOnly {...register('longitude', { valueAsNumber: true })} className="w-full px-4 py-3 rounded-xl bg-slate-100/50 dark:bg-slate-950/20 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-500 outline-none cursor-not-allowed" />
+                      <input
+                        type="number"
+                        step="any"
+                        readOnly
+                        {...register('longitude', { valueAsNumber: true })}
+                        className="w-full px-4 py-3 rounded-xl bg-slate-100/50 dark:bg-slate-950/20 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-500 outline-none cursor-not-allowed"
+                      />
                     </div>
                   </div>
                   <p className="text-[10px] text-blue-600 dark:text-blue-400 font-semibold uppercase tracking-wider">
-                    👉 Select your university, then click/drag on the Leaflet map to capture the exact coordinates of your property automatically.
+                    {isOtherSelected
+                      ? '📍 Pin your property location on the map — students will see it relative to your institution.'
+                      : '👉 Select your university above, then click on the map to pin your exact property location.'}
                   </p>
                 </div>
 
-                {/* Leaflet Picker Map */}
+                {/* Leaflet Map Picker */}
                 <div className="p-1 rounded-[2rem] border border-white/40 dark:border-slate-700/50 bg-white/40 dark:bg-slate-800/40">
-                  <LeafletAdMapPicker
-                    universityId={selectedUni}
-                    lat={latVal}
-                    lng={lngVal}
-                    onCoordsChange={(lat, lng) => {
-                      setValue('latitude', lat);
-                      setValue('longitude', lng);
-                    }}
-                  />
+                  {selectedUni ? (
+                    <LeafletAdMapPicker
+                      universityId={selectedUni}
+                      lat={latVal}
+                      lng={lngVal}
+                      onCoordsChange={(lat, lng) => {
+                        setValue('latitude', lat);
+                        setValue('longitude', lng);
+                      }}
+                    />
+                  ) : (
+                    <div className="w-full h-[280px] rounded-[1.8rem] bg-slate-100 dark:bg-slate-800 flex flex-col items-center justify-center gap-3 text-slate-400">
+                      <LuMapPin size={40} className="opacity-30" />
+                      <p className="text-sm font-semibold text-center px-6">
+                        Select a university above to load the map
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
 
+              {/* Landlord Info */}
               <div className="mt-8 border-t border-slate-200 dark:border-slate-800 pt-8">
-                <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-4">Landlord Info</h3>
+                <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-4">Landlord Contact Info</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <input {...register('contactName')} placeholder="Landlord Full Name" className="w-full px-5 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 focus:border-blue-500 font-medium outline-none transition-all dark:text-white" />

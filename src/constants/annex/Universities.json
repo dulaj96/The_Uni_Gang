@@ -1,74 +1,146 @@
 [
     {
         "id": "1",
-        "name": "University of Colombo"
+        "name": "University of Colombo",
+        "latitude": 6.9016,
+        "longitude": 79.8589
     },
     {
         "id": "2",
-        "name": "University of Peradeniya"
+        "name": "University of Peradeniya",
+        "latitude": 7.2549,
+        "longitude": 80.5925
     },
     {
         "id": "3",
-        "name": "University of Sri Jayewardenepura"
+        "name": "University of Sri Jayewardenepura",
+        "latitude": 6.9062,
+        "longitude": 79.9018
     },
     {
         "id": "4",
-        "name": "University of Kelaniya"
+        "name": "University of Kelaniya",
+        "latitude": 6.9740,
+        "longitude": 79.9160
     },
     {
         "id": "5",
-        "name": "University of Moratuwa"
+        "name": "University of Moratuwa",
+        "latitude": 6.7969,
+        "longitude": 79.9018
     },
     {
         "id": "6",
-        "name": "University of Jaffna"
+        "name": "University of Jaffna",
+        "latitude": 9.6615,
+        "longitude": 80.0255
     },
     {
         "id": "7",
-        "name": "University of Ruhuna"
+        "name": "University of Ruhuna",
+        "latitude": 5.9745,
+        "longitude": 80.5491
     },
     {
         "id": "8",
-        "name": "The Open University of Sri Lanka"
+        "name": "The Open University of Sri Lanka",
+        "latitude": 6.9178,
+        "longitude": 79.9013
     },
     {
         "id": "9",
-        "name": "Eastern University, Sri Lanka"
+        "name": "Eastern University, Sri Lanka",
+        "latitude": 7.7333,
+        "longitude": 81.6833
     },
     {
         "id": "10",
-        "name": "South Eastern University of Sri Lanka"
+        "name": "South Eastern University of Sri Lanka",
+        "latitude": 7.3211,
+        "longitude": 81.7862
     },
     {
         "id": "11",
-        "name": "Rajarata University of Sri Lanka"
+        "name": "Rajarata University of Sri Lanka",
+        "latitude": 8.3484,
+        "longitude": 80.4011
     },
     {
         "id": "12",
-        "name": "Sabaragamuwa University of Sri Lanka"
+        "name": "Sabaragamuwa University of Sri Lanka",
+        "latitude": 6.7136,
+        "longitude": 80.7872
     },
     {
         "id": "13",
-        "name": "Wayamba University of Sri Lanka"
+        "name": "Wayamba University of Sri Lanka",
+        "latitude": 7.6050,
+        "longitude": 80.2143
     },
     {
         "id": "14",
-        "name": "Uva Wellassa University"
+        "name": "Uva Wellassa University",
+        "latitude": 6.9934,
+        "longitude": 81.0550
     },
     {
         "id": "15",
-        "name": "University of the Visual & Performing Arts"
+        "name": "University of the Visual & Performing Arts",
+        "latitude": 6.9154,
+        "longitude": 79.8568
     },
     {
         "id": "16",
-        "name": "Gampaha Wickramarachchi University of Indigenous Medicine"
+        "name": "Gampaha Wickramarachchi University of Indigenous Medicine",
+        "latitude": 7.1000,
+        "longitude": 79.9980
     },
     {
         "id": "17",
-        "name": "Institute of Technology University of Moratuwa"
+        "name": "Institute of Technology University of Moratuwa (ITUM)",
+        "latitude": 6.7969,
+        "longitude": 79.9018
     },
     {
         "id": "18",
-        "name": "Informatics Institute of Technology (IIT)"
+        "name": "Informatics Institute of Technology (IIT)",
+        "latitude": 6.9022,
+        "longitude": 79.8612
+    },
+    {
+        "id": "19",
+        "name": "NSBM Green University",
+        "latitude": 6.8241,
+        "longitude": 80.0361
+    },
+    {
+        "id": "20",
+        "name": "SLIIT (Sri Lanka Institute of Information Technology)",
+        "latitude": 6.9148,
+        "longitude": 79.9729
+    },
+    {
+        "id": "21",
+        "name": "NIBM (National Institute of Business Management)",
+        "latitude": 6.9270,
+        "longitude": 79.8611
+    },
+    {
+        "id": "22",
+        "name": "Aquinas College of Higher Studies",
+        "latitude": 6.9155,
+        "longitude": 79.8600
+    },
+    {
+        "id": "23",
+        "name": "ICBT Campus",
+        "latitude": 6.9167,
+        "longitude": 79.8500
+    },
+    {
+        "id": "0",
+        "name": "Other / Not Listed",
+        "latitude": 7.8731,
+        "longitude": 80.7718
     }
 ]

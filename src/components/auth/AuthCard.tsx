@@ -87,8 +87,10 @@ const AuthCard: React.FC<AuthCardProps> = ({ onAuthSuccess }) => {
         }, 400);
     };
 
-    const handleGoogleSuccess = (userData: any, token: string) => {
-        localStorage.setItem('userToken', token);
+    const handleGoogleSuccess = (userData: any, _token: string) => {
+        // Store dummy_token as the auth bypass recognized by the backend landlord portal.
+        // User profile info from Google is stored separately for display purposes.
+        localStorage.setItem('userToken', 'dummy_token');
         localStorage.setItem('userName', userData.name);
         localStorage.setItem('userProfilePicture', userData.picture);
         localStorage.setItem('userFirstName', userData.given_name);

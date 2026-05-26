@@ -125,6 +125,9 @@ const PostAdPage = () => {
       formData.append('latitude', String(adData.latitude));
       formData.append('longitude', String(adData.longitude));
       formData.append('universityId', adData.universityId);
+      if (adData.customInstitution) {
+        formData.append('customInstitution', adData.customInstitution);
+      }
       
       const features = adData.amenities || [];
       formData.append('features', JSON.stringify(features));
