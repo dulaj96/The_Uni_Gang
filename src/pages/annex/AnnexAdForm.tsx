@@ -15,6 +15,9 @@ const LeafletAdMapPicker = ({ universityId, lat, lng, onCoordsChange }: {
   universityId: string, lat: number, lng: number, onCoordsChange: (lat: number, lng: number) => void
 }) => {
   useEffect(() => {
+    let map: any = null;
+    let marker: any = null;
+
     if (!document.getElementById('leaflet-css')) {
       const css = document.createElement('link');
       css.id = 'leaflet-css';
@@ -31,9 +34,6 @@ const LeafletAdMapPicker = ({ universityId, lat, lng, onCoordsChange }: {
     } else {
       initMap();
     }
-
-    let map: any;
-    let marker: any;
 
     function initMap() {
       if (!(window as any).L) return;
@@ -82,6 +82,12 @@ const LeafletAdMapPicker = ({ universityId, lat, lng, onCoordsChange }: {
         onCoordsChange(parseFloat(lat.toFixed(6)), parseFloat(lng.toFixed(6)));
       });
     }
+
+    return () => {
+      if (map) {
+        map.remove();
+      }
+    };
   }, [universityId]);
 
   return (
@@ -399,11 +405,11 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">Latitude</label>
-                      <input type="number" step="any" readonly {...register('latitude', { valueAsNumber: true })} className="w-full px-4 py-3 rounded-xl bg-slate-100/50 dark:bg-slate-950/20 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-500 outline-none cursor-not-allowed" />
+                      <input type="number" step="any" readOnly {...register('latitude', { valueAsNumber: true })} className="w-full px-4 py-3 rounded-xl bg-slate-100/50 dark:bg-slate-950/20 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-500 outline-none cursor-not-allowed" />
                     </div>
                     <div>
                       <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">Longitude</label>
-                      <input type="number" step="any" readonly {...register('longitude', { valueAsNumber: true })} className="w-full px-4 py-3 rounded-xl bg-slate-100/50 dark:bg-slate-950/20 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-500 outline-none cursor-not-allowed" />
+                      <input type="number" step="any" readOnly {...register('longitude', { valueAsNumber: true })} className="w-full px-4 py-3 rounded-xl bg-slate-100/50 dark:bg-slate-950/20 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-500 outline-none cursor-not-allowed" />
                     </div>
                   </div>
                   <p className="text-[10px] text-blue-600 dark:text-blue-400 font-semibold uppercase tracking-wider">
