@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -10,14 +10,14 @@ import {
 } from 'react-icons/lu';
 import universitiesData from '../../constants/annex/Universities.json';
 
-// Clickable Leaflet Map Picker Component utilizing dynamic script loading
+// Clickable Leaflet Map Picker Component utilizing dynamic script loading and refs
 const LeafletAdMapPicker = ({ universityId, lat, lng, onCoordsChange }: {
   universityId: string, lat: number, lng: number, onCoordsChange: (lat: number, lng: number) => void
 }) => {
-  useEffect(() => {
-    let map: any = null;
-    let marker: any = null;
+  const mapRef = useRef<any>(null);
+  const markerRef = useRef<any>(null);
 
+  useEffect(() => {
     if (!document.getElementById('leaflet-css')) {
       const css = document.createElement('link');
       css.id = 'leaflet-css';
@@ -61,14 +61,22 @@ const LeafletAdMapPicker = ({ universityId, lat, lng, onCoordsChange }: {
         [initialLat, initialLng] = campusCoords[universityId];
       }
 
-      map = L.map('details-map-picker-canvas').setView([initialLat, initialLng], 14);
+      // Clean up previous map if it exists to prevent container reuse issues
+      if (mapRef.current) {
+        mapRef.current.remove();
+        mapRef.current = null;
+      }
+
+      const map = L.map('details-map-picker-canvas').setView([initialLat, initialLng], 14);
+      mapRef.current = map;
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors'
       }).addTo(map);
 
       // Draggable property pin marker
-      marker = L.marker([initialLat, initialLng], { draggable: true }).addTo(map);
+      const marker = L.marker([initialLat, initialLng], { draggable: true }).addTo(map);
+      markerRef.current = marker;
       
       marker.on('dragend', function (event: any) {
         const marker = event.target;
@@ -84,8 +92,9 @@ const LeafletAdMapPicker = ({ universityId, lat, lng, onCoordsChange }: {
     }
 
     return () => {
-      if (map) {
-        map.remove();
+      if (mapRef.current) {
+        mapRef.current.remove();
+        mapRef.current = null;
       }
     };
   }, [universityId]);
