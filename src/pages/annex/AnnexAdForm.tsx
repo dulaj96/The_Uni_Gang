@@ -8,6 +8,7 @@ import {
   LuWifi, LuBath, LuSnowflake, LuCar, LuUtensils, LuZap, LuCheck,
   LuUpload, LuX, LuGraduationCap
 } from 'react-icons/lu';
+import toast from 'react-hot-toast';
 import universitiesData from '../../constants/annex/Universities.json';
 
 // Clickable Leaflet Map Picker Component utilizing dynamic script loading and refs
@@ -151,6 +152,26 @@ interface AnnexFormProps {
 const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel, isEditing }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [images, setImages] = useState<File[]>([]);
+  const [universities, setUniversities] = useState<any[]>([]);
+
+  // Dynamically load universities from database on mount, fallback to static JSON
+  useEffect(() => {
+    const loadUniversities = async () => {
+      try {
+        const res = await fetch('http://localhost:5000/api/annexes/universities');
+        if (res.ok) {
+          const data = await res.json();
+          setUniversities(data);
+        } else {
+          setUniversities(universitiesData);
+        }
+      } catch (error) {
+        console.warn('Failed to load universities dynamically, using static fallback:', error);
+        setUniversities(universitiesData);
+      }
+    };
+    loadUniversities();
+  }, []);
 
   const { register, handleSubmit, control, setValue, watch, formState: { errors }, trigger } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -175,6 +196,32 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
   const latVal = watch('latitude');
   const lngVal = watch('longitude');
 
+  // Automatically update form coordinates when university selection changes to trigger map centering
+  useEffect(() => {
+    if (selectedUni && universities.length > 0) {
+      const matchedUni = universities.find(u => String(u.id) === String(selectedUni));
+      if (matchedUni && matchedUni.latitude && matchedUni.longitude) {
+        setValue('latitude', parseFloat(matchedUni.latitude));
+        setValue('longitude', parseFloat(matchedUni.longitude));
+      } else {
+        // Predefined campus coordinates fallback
+        const campusCoords: Record<string, [number, number]> = {
+          "1": [6.9016, 79.8589],   // Colombo
+          "2": [7.2549, 80.5925],   // Peradeniya
+          "3": [6.9062, 79.9018],   // USJ
+          "4": [6.9740, 79.9160],   // Kelaniya
+          "5": [6.7969, 79.9018],   // Moratuwa
+          "12": [6.7136, 80.7872],  // Sabaragamuwa (SUSL)
+        };
+        if (campusCoords[selectedUni]) {
+          const [uniLat, uniLng] = campusCoords[selectedUni];
+          setValue('latitude', uniLat);
+          setValue('longitude', uniLng);
+        }
+      }
+    }
+  }, [selectedUni, universities, setValue]);
+
   const onNext = async () => {
     const fieldsToValidate: (keyof FormValues)[] = [];
     if (currentStep === 0) fieldsToValidate.push('title', 'monthlyRent', 'securityDeposit', 'address', 'beds', 'bath', 'houseRules');
@@ -183,6 +230,13 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
 
     const isStepValid = await trigger(fieldsToValidate);
     if (isStepValid) {
+      // Validate image upload range (exactly 1 to 4 images allowed)
+      if (currentStep === 2) {
+        if (images.length < 1 || images.length > 4) {
+          toast.error('Please upload between 1 to 4 images (1 cover photo and up to 3 gallery photos)');
+          return;
+        }
+      }
       setCurrentStep((prev) => Math.min(prev + 1, STEPS.length - 1));
     }
   };
@@ -192,7 +246,13 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const filesArray = Array.from(e.target.files);
-      setImages(prev => [...prev, ...filesArray].slice(0, 5)); // max 5
+      setImages(prev => {
+        const combined = [...prev, ...filesArray];
+        if (combined.length > 4) {
+          toast.error('Maximum of 4 images allowed (1 cover photo and up to 3 gallery photos)');
+        }
+        return combined.slice(0, 4); // strictly limit to 4
+      });
     }
   };
 
@@ -201,6 +261,11 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
   };
 
   const submitForm = (data: FormValues) => {
+    // Final verification of the image upload range
+    if (images.length < 1 || images.length > 4) {
+      toast.error('Please upload between 1 to 4 images (1 cover photo and up to 3 gallery photos)');
+      return;
+    }
     onSubmit({ ...data, newImages: images }, isEditing);
   };
 
@@ -366,7 +431,7 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
                     <LuUpload size={28} />
                   </div>
                   <p className="font-bold text-slate-700 dark:text-slate-200">Drag & Drop or Click to Upload</p>
-                  <p className="text-xs text-slate-500 mt-2 font-medium tracking-wide">JPG, PNG (Max 5 images)</p>
+                  <p className="text-xs text-slate-500 mt-2 font-medium tracking-wide">JPG, PNG (1 Cover photo and up to 3 gallery photos - Range: 1 to 4 images)</p>
                 </div>
               </div>
 
@@ -403,7 +468,7 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
                       <LuGraduationCap className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg" />
                       <select {...register('universityId')} className="w-full pl-12 pr-5 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold outline-none cursor-pointer appearance-none">
                         <option value="">Select University</option>
-                        {universitiesData.map(uni => (
+                        {universities.map(uni => (
                           <option key={uni.id} value={uni.id}>{uni.name}</option>
                         ))}
                       </select>
