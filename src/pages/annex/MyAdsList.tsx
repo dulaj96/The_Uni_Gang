@@ -116,7 +116,7 @@ const MyAdsList: React.FC<MyAdsListProps> = ({ ads, onEdit, onDelete }) => {
 
               {/* Price Tag Overlay */}
               <div className="absolute bottom-4 right-4 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md px-4 py-1.5 rounded-full text-xs font-bold text-blue-800 dark:text-blue-400 shadow-sm border border-white/20 dark:border-slate-700/50">
-                Rs. {parseFloat(ad.price.replace(/,/g, '')).toLocaleString()} / mo
+                Rs. {parseFloat(String(ad.price).replace(/,/g, '')).toLocaleString()} / mo
               </div>
             </div>
 
