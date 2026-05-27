@@ -295,13 +295,15 @@ const AnnexList = () => {
                                 transition={{ delay: 0.3 }}
                                 className="mt-16 relative z-20"
                             >
-                                <div className="max-w-5xl mx-auto p-2 glass-card bg-white/45 dark:bg-slate-900/45 backdrop-blur-xl rounded-[2.5rem] shadow-[0_20px_40px_rgba(0,63,221,0.08)] flex flex-col md:flex-row gap-2 border border-white/50 dark:border-slate-800/50">
-                                    {/* Search Input */}
-                                    <div className="flex-1 flex items-center px-6 gap-3">
-                                        <LuSearch className="text-slate-400 dark:text-slate-500 text-xl flex-shrink-0" />
+                                <div className="max-w-5xl mx-auto p-4 bg-white/45 dark:bg-slate-900/45 backdrop-blur-xl rounded-[3rem] shadow-[0_30px_60px_rgba(0,63,221,0.08)] flex flex-col lg:flex-row gap-4 items-center border border-white/50 dark:border-slate-800/50">
+                                    {/* Stand 1: Keyword or Location Search */}
+                                    <div className="flex-1 w-full flex flex-col px-6 py-2 rounded-2xl hover:bg-white/50 dark:hover:bg-slate-800/30 transition-all">
+                                        <label className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400 mb-1 flex items-center gap-1.5">
+                                            <LuSearch className="text-blue-800 dark:text-blue-400" /> Keyword or Location
+                                        </label>
                                         <input
-                                            className="w-full bg-transparent border-none focus:ring-0 focus:outline-none text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 py-4 font-medium"
-                                            placeholder="Search by university, address, or distance (e.g. '1.5' or 'Moratuwa')..."
+                                            className="w-full bg-transparent border-none focus:ring-0 focus:outline-none text-slate-900 dark:text-white font-bold placeholder:text-slate-400 dark:placeholder:text-slate-500 py-1"
+                                            placeholder="e.g. Colombo, attached bath..."
                                             type="text"
                                             value={searchTerm}
                                             onChange={(e) => setSearchTerm(e.target.value)}
@@ -309,51 +311,56 @@ const AnnexList = () => {
                                     </div>
 
                                     {/* Vertical Divider */}
-                                    <div className="h-10 w-[1px] bg-slate-200 dark:bg-slate-700 hidden md:block self-center"></div>
+                                    <div className="h-12 w-[1px] bg-slate-200 dark:bg-slate-700 hidden lg:block self-center"></div>
 
-                                    {/* University Dropdown */}
-                                    <div className="flex-none md:w-64 flex items-center px-6 gap-3 relative">
-                                        <LuGraduationCap className="text-slate-400 dark:text-slate-500 text-xl flex-shrink-0" />
+                                    {/* Stand 2: Nearest Campus */}
+                                    <div className="flex-1 w-full flex flex-col px-6 py-2 rounded-2xl hover:bg-white/50 dark:hover:bg-slate-800/30 transition-all">
+                                        <label className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400 mb-1 flex items-center gap-1.5">
+                                            <LuGraduationCap className="text-blue-800 dark:text-blue-400" /> Nearest Campus
+                                        </label>
                                         <select
-                                            className="w-full bg-transparent border-none focus:ring-0 focus:outline-none text-slate-900 dark:text-white font-medium cursor-pointer appearance-none"
+                                            className="w-full bg-transparent border-none focus:ring-0 focus:outline-none text-slate-900 dark:text-white font-bold cursor-pointer appearance-none py-1"
                                             value={selectedUni}
                                             onChange={(e) => {
                                                 setSelectedUni(e.target.value);
                                                 if (e.target.value === "All Universities") setMaxDistance("Any Distance");
                                             }}
                                         >
-                                            <option className="text-slate-900 dark:bg-slate-800" value="All Universities">All Universities</option>
+                                            <option className="text-slate-900 dark:bg-slate-800 font-bold" value="All Universities">All Universities</option>
                                             {universitiesData.map(uni => (
-                                                <option key={uni.id} value={uni.id} className="text-slate-900 dark:bg-slate-800">{uni.name}</option>
+                                                <option key={uni.id} value={uni.id} className="text-slate-900 dark:bg-slate-800 font-bold">{uni.name}</option>
                                             ))}
                                         </select>
                                     </div>
 
-                                    {/* Distance Dropdown (Sleek proximity loader visible when Uni is selected) */}
-                                    {selectedUni !== "All Universities" && (
-                                        <>
-                                            <div className="h-10 w-[1px] bg-slate-200 dark:bg-slate-700 hidden md:block self-center"></div>
-                                            <div className="flex-none md:w-48 flex items-center px-6 gap-3 relative">
-                                                <span className="text-slate-400 dark:text-slate-500 text-[18px]">📍</span>
-                                                <select
-                                                    className="w-full bg-transparent border-none focus:ring-0 focus:outline-none text-slate-900 dark:text-white font-medium cursor-pointer appearance-none"
-                                                    value={maxDistance}
-                                                    onChange={(e) => setMaxDistance(e.target.value)}
-                                                >
-                                                    <option className="text-slate-900 dark:bg-slate-800" value="Any Distance">Any Distance</option>
-                                                    <option className="text-slate-900 dark:bg-slate-800" value="1">Within 1 km</option>
-                                                    <option className="text-slate-900 dark:bg-slate-800" value="2">Within 2 km</option>
-                                                    <option className="text-slate-900 dark:bg-slate-800" value="3">Within 3 km</option>
-                                                    <option className="text-slate-900 dark:bg-slate-800" value="5">Within 5 km</option>
-                                                </select>
-                                            </div>
-                                        </>
-                                    )}
+                                    {/* Vertical Divider */}
+                                    <div className="h-12 w-[1px] bg-slate-200 dark:bg-slate-700 hidden lg:block self-center"></div>
+
+                                    {/* Stand 3: Proximity Limit */}
+                                    <div className="flex-1 w-full flex flex-col px-6 py-2 rounded-2xl hover:bg-white/50 dark:hover:bg-slate-800/30 transition-all">
+                                        <label className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400 mb-1 flex items-center gap-1.5">
+                                            <span className="text-blue-800 dark:text-blue-400">📍</span> Proximity Limit
+                                        </label>
+                                        <select
+                                            className="w-full bg-transparent border-none focus:ring-0 focus:outline-none text-slate-900 dark:text-white font-bold cursor-pointer appearance-none py-1"
+                                            value={maxDistance}
+                                            onChange={(e) => setMaxDistance(e.target.value)}
+                                            disabled={selectedUni === "All Universities"}
+                                        >
+                                            <option className="text-slate-900 dark:bg-slate-800 font-bold" value="Any Distance">
+                                                {selectedUni === "All Universities" ? "Select Campus First" : "Any Distance"}
+                                            </option>
+                                            <option className="text-slate-900 dark:bg-slate-800 font-bold" value="1">Within 1 km</option>
+                                            <option className="text-slate-900 dark:bg-slate-800 font-bold" value="2">Within 2 km</option>
+                                            <option className="text-slate-900 dark:bg-slate-800 font-bold" value="3">Within 3 km</option>
+                                            <option className="text-slate-900 dark:bg-slate-800 font-bold" value="5">Within 5 km</option>
+                                        </select>
+                                    </div>
 
                                     {/* Search Button */}
                                     <button
                                         onClick={handleSearchClick}
-                                        className="bg-blue-800 hover:bg-blue-900 text-white px-8 py-4 rounded-[2rem] font-bold transition-all flex items-center justify-center gap-2 group shadow-lg shadow-blue-800/20 flex-shrink-0"
+                                        className="w-full lg:w-auto bg-blue-800 hover:bg-blue-900 text-white px-10 py-5 rounded-[2rem] font-black uppercase tracking-widest text-xs transition-all flex items-center justify-center gap-2 group shadow-xl shadow-blue-800/20 flex-shrink-0 hover:scale-105 active:scale-95"
                                     >
                                         Search Now
                                         <LuArrowRight className="group-hover:translate-x-1 transition-transform text-lg" />
