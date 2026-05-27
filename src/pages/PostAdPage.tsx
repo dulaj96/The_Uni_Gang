@@ -3,42 +3,11 @@ import { useSearchParams } from 'react-router-dom';
 import AuthCard from '../components/auth/AuthCard';
 import AnnexAdForm from './annex/AnnexAdForm';
 import MyAdsList from './annex/MyAdsList';
-import annex1 from '../assets/annex1.jpg'
-import annex2 from '../assets/annex2.jpg'
 import { LuPlus, LuLayoutDashboard, LuLogOut } from 'react-icons/lu';
 import { dispatchAuthUpdate } from '../utils/authEvents';
 import SEO from '../components/SEO';
 import toast from 'react-hot-toast';
 import { Annex } from '../types/annex';
-
-const dummyMyAds: Annex[] = [
-  {
-    id: 'user_ad_1',
-    title: 'Annex near Peradeniya',
-    price: '20,000',
-    address: 'No. 10, Flower Road, Colombo 07',
-    images: [annex1],
-    description: 'A comfortable annex with all facilities.',
-    features: ['Single Room', 'Attached Bathroom', 'Furnished'],
-    contactName: 'Kasun',
-    contactPhone: '071-1234567',
-    contactEmail: 'kasun@example.com',
-    university: 'University of Colombo'
-  },
-  {
-    id: 'user_ad_2',
-    title: 'Room for student',
-    price: '18,000',
-    address: 'No. 5, Lake Road, Peradeniya',
-    images: [annex2],
-    description: 'Large room with good ventilation.',
-    features: ['Double Room', 'Shared Bathroom'],
-    contactName: 'Nimal',
-    contactPhone: '077-9876543',
-    contactEmail: 'nimal@example.com',
-    university: 'University of Peradeniya'
-  }
-];
 
 import PremiumPageLoader from '../components/ui/PremiumPageLoader';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -140,9 +109,13 @@ const PostAdPage = () => {
 
       let response;
       if (isEditing && editingAd) {
-        toast.error('Edit listings is currently pending backend integration.');
-        setLoading(false);
-        return;
+        response = await fetch(`http://localhost:5000/api/annexes/${editingAd.id}`, {
+          method: 'PUT',
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+          body: formData
+        });
       } else {
         response = await fetch('http://localhost:5000/api/annexes', {
           method: 'POST',

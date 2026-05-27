@@ -37,7 +37,14 @@ const MyAdsList: React.FC<MyAdsListProps> = ({ ads, onEdit, onDelete }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {ads.map((ad) => {
-        const images = Array.isArray(ad.images) ? ad.images : (ad.images ? [ad.images] : []);
+        const images = Array.isArray(ad.images)
+          ? ad.images.map((img: any) => {
+              if (typeof img === 'object' && img !== null && img.imageUrl) {
+                return `http://localhost:5000${img.imageUrl}`;
+              }
+              return img;
+            })
+          : (ad.images ? [ad.images] : []);
         const currentIndex = currentImageIndices[ad.id] || 0;
 
         return (

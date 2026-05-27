@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   LuFileText, LuLayoutDashboard, LuImage, LuMapPin, LuChevronRight, LuChevronLeft,
   LuWifi, LuBath, LuSnowflake, LuCar, LuUtensils, LuZap, LuCheck,
-  LuUpload, LuX, LuGraduationCap, LuAlertCircle
+  LuUpload, LuX, LuGraduationCap, LuInfo as LuAlertCircle
 } from 'react-icons/lu';
 import toast from 'react-hot-toast';
 import universitiesData from '../../constants/annex/Universities.json';
@@ -285,7 +285,7 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
     const isStepValid = await trigger(fieldsToValidate);
     if (isStepValid) {
       if (currentStep === 2) {
-        if (images.length < 1 || images.length > 4) {
+        if (images.length > 4 || (!isEditing && images.length < 1)) {
           toast.error('Please upload between 1 to 4 images (1 cover photo and up to 3 gallery photos)');
           return;
         }
@@ -314,7 +314,7 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
   };
 
   const submitForm = (data: FormValues) => {
-    if (images.length < 1 || images.length > 4) {
+    if (images.length > 4 || (!isEditing && images.length < 1)) {
       toast.error('Please upload between 1 to 4 images');
       return;
     }
@@ -481,7 +481,7 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
                 </div>
               </div>
 
-              {images.length > 0 && (
+              {images.length > 0 ? (
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {images.map((file, idx) => (
                     <div key={idx} className="relative aspect-square rounded-2xl overflow-hidden shadow-md group">
@@ -499,6 +499,24 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
                     </div>
                   ))}
                 </div>
+              ) : (
+                initialData?.images && initialData.images.length > 0 && (
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {initialData.images.map((img: any, idx: number) => {
+                      const src = typeof img === 'object' && img !== null && img.imageUrl
+                        ? `http://localhost:5000${img.imageUrl}`
+                        : img;
+                      return (
+                        <div key={idx} className="relative aspect-square rounded-2xl overflow-hidden shadow-md group">
+                          <img src={src} alt="existing preview" className="w-full h-full object-cover" />
+                          {idx === 0 && (
+                            <span className="absolute bottom-2 left-2 text-[10px] font-bold bg-green-600 text-white px-2 py-1 rounded-md">CURRENT COVER</span>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )
               )}
             </motion.div>
           )}

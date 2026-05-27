@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   LuStar, LuBadgeCheck, LuWifi, LuBath, LuSnowflake, LuCar, LuUtensils,
-  LuZap, LuGraduationCap, LuMapPin, LuMap, LuPhone,
+  LuZap, LuPhone,
   LuMessageCircle, LuX, LuCircleCheckBig, LuCheck
 } from 'react-icons/lu';
 import SEO from '../../components/SEO';
