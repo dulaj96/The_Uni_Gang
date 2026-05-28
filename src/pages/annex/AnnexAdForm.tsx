@@ -147,6 +147,22 @@ const LeafletAdMapPicker = ({
     };
   }, [universityId]); // Re-initialize when university changes
 
+  // External position observer to allow geocoding pan/markers flyTo
+  useEffect(() => {
+    if (mapRef.current && markerRef.current && lat && lng) {
+      const currentPos = markerRef.current.getLatLng();
+      const currentLatStr = parseFloat(currentPos.lat.toFixed(6));
+      const currentLngStr = parseFloat(currentPos.lng.toFixed(6));
+      const targetLatStr = parseFloat(lat.toFixed(6));
+      const targetLngStr = parseFloat(lng.toFixed(6));
+
+      if (currentLatStr !== targetLatStr || currentLngStr !== targetLngStr) {
+        markerRef.current.setLatLng([lat, lng]);
+        mapRef.current.setView([lat, lng], 16); // Center and zoom in closer on geocoded location
+      }
+    }
+  }, [lat, lng]);
+
   return (
     <div
       id="details-map-picker-canvas"
@@ -202,6 +218,35 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
   const [currentStep, setCurrentStep] = useState(0);
   const [images, setImages] = useState<File[]>([]);
   const [universities, setUniversities] = useState<any[]>([]);
+  const [geocodeQuery, setGeocodeQuery] = useState('');
+  const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [geocodeLoading, setGeocodeLoading] = useState(false);
+
+  const handleGeocodeSearch = async (query: string) => {
+    if (query.trim().length < 3) {
+      toast.error('Please enter at least 3 characters to search.');
+      setSuggestions([]);
+      return;
+    }
+    setGeocodeLoading(true);
+    try {
+      const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&countrycodes=lk`);
+      if (res.ok) {
+        const data = await res.json();
+        setSuggestions(data);
+        if (data.length === 0) {
+          toast.error('No locations found in Sri Lanka. Try a different city or landmark.');
+        }
+      } else {
+        toast.error('Location search failed. Please try again.');
+      }
+    } catch (err) {
+      console.error('Nominatim Geocoding Error:', err);
+      toast.error('Failed to connect to location service.');
+    } finally {
+      setGeocodeLoading(false);
+    }
+  };
 
   // Load universities — try API first, fall back to static JSON with full lat/lng
   useEffect(() => {
@@ -578,6 +623,66 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
                       </motion.div>
                     )}
                   </AnimatePresence>
+
+                  {/* Address Auto-Mapping Geocoder */}
+                  <div className="p-4 bg-blue-50/50 dark:bg-slate-800/30 border border-blue-100/50 dark:border-slate-800/80 rounded-2xl relative z-30">
+                    <label className="block text-xs font-bold uppercase tracking-widest text-blue-600 dark:text-blue-400 mb-2">
+                      📍 Sri Lanka Location Autocomplete (OSM Nominatim)
+                    </label>
+                    <div className="flex gap-2">
+                      <div className="relative flex-grow">
+                        <LuMapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm" />
+                        <input
+                          type="text"
+                          value={geocodeQuery}
+                          onChange={(e) => setGeocodeQuery(e.target.value)}
+                          onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleGeocodeSearch(geocodeQuery); } }}
+                          placeholder="e.g. Katubedda Moratuwa, Pambahinna, SUSL..."
+                          className="w-full pl-10 pr-4 py-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm font-medium outline-none transition-all dark:text-white"
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleGeocodeSearch(geocodeQuery)}
+                        disabled={geocodeLoading}
+                        className="px-6 py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-xs uppercase tracking-wider rounded-xl hover:shadow-lg transition-all active:scale-95 disabled:opacity-50 shrink-0"
+                      >
+                        {geocodeLoading ? 'Searching...' : 'Search'}
+                      </button>
+                    </div>
+
+                    {/* Suggestions Dropdown */}
+                    <AnimatePresence>
+                      {suggestions.length > 0 && (
+                        <motion.div
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                          className="absolute left-0 w-full mt-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl overflow-hidden z-50 max-h-[200px] overflow-y-auto"
+                        >
+                          {suggestions.map((item, idx) => (
+                            <button
+                              key={idx}
+                              type="button"
+                              onClick={() => {
+                                const lat = parseFloat(item.lat);
+                                const lon = parseFloat(item.lon);
+                                setValue('latitude', lat);
+                                setValue('longitude', lon);
+                                setValue('address', item.display_name); // Auto-populate address in form!
+                                setSuggestions([]);
+                                setGeocodeQuery(item.name || item.display_name.split(',')[0]);
+                                toast.success('Location pinned! Drag marker for precise roof adjustment.');
+                              }}
+                              className="w-full text-left px-5 py-3 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-blue-50/50 dark:hover:bg-slate-800/80 border-b border-slate-100 dark:border-slate-800 last:border-b-0 transition-colors line-clamp-2"
+                            >
+                              📍 {item.display_name}
+                            </button>
+                          ))}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
 
                   {/* Coordinate display (read-only) */}
                   <div className="grid grid-cols-2 gap-4">
