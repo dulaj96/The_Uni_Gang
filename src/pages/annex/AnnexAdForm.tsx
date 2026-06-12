@@ -72,7 +72,8 @@ const LeafletAdMapPicker = ({
       const L = (window as any).L;
 
       const container = L.DomUtil.get('details-map-picker-canvas');
-      if (container?._leaflet_id) {
+      if (!container) return;
+      if (container._leaflet_id) {
         container._leaflet_id = null;
       }
 
@@ -212,12 +213,13 @@ interface AnnexFormProps {
   onSubmit: (data: Record<string, unknown>, isEditing: boolean) => void;
   onCancel: () => void;
   isEditing: boolean;
+  isSubmitting?: boolean;
 }
 
-const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel, isEditing }) => {
+const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel, isEditing, isSubmitting = false }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [images, setImages] = useState<File[]>([]);
-  const [universities, setUniversities] = useState<any[]>([]);
+  const [universities, setUniversities] = useState<any[]>(universitiesData);
   const [geocodeQuery, setGeocodeQuery] = useState('');
   const [suggestions, setSuggestions] = useState<any[]>([]);
   const [geocodeLoading, setGeocodeLoading] = useState(false);
@@ -255,6 +257,12 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
         const res = await fetch('http://localhost:5000/api/annexes/universities');
         if (res.ok) {
           const data = await res.json();
+          // If DB is empty or returns no real universities, fall back to static JSON
+          const actualUnis = data.filter((u: any) => String(u.id) !== '0');
+          if (actualUnis.length === 0) {
+            setUniversities(universitiesData);
+            return;
+          }
           // Ensure "Other" option is always available at the end
           const hasOther = data.some((u: any) => String(u.id) === '0');
           if (!hasOther) {
@@ -777,9 +785,10 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
           ) : (
             <button
               type="submit"
-              className="flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-xl hover:shadow-xl hover:shadow-blue-500/30 transition-all hover:scale-105 active:scale-95"
+              disabled={isSubmitting}
+              className="flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-xl hover:shadow-xl hover:shadow-blue-500/30 transition-all hover:scale-105 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
             >
-              {isEditing ? 'Save Updates' : 'Publish Ad'} <LuCheck />
+              {isSubmitting ? 'Publishing...' : (isEditing ? 'Save Updates' : 'Publish Ad')} <LuCheck />
             </button>
           )}
         </div>

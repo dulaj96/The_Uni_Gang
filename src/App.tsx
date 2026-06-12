@@ -69,7 +69,7 @@ function App() {
         <Route path="/contact-us" element={<Layout><ContactUsPage /></Layout>} />
         <Route path="/annex/:id" element={<Layout><AnnexDetailsPage /></Layout>} />
 
-        {/* Profile using SubLayout */}
+        {/* Post Advertiesment using SubLayout */}
         <Route path="/post-ad" element={<SubLayout><PostAdPage /></SubLayout>} />
 
         {/* Profile using SubLayout */}

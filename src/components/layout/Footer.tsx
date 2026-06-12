@@ -1,98 +1,253 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FaFacebook, FaInstagram, FaTwitter, FaLinkedin } from 'react-icons/fa';
 import { motion } from 'framer-motion';
-import { LuSparkles } from 'react-icons/lu';
+import {
+  FaFacebook,
+  FaTwitter,
+  FaYoutube,
+  FaInstagram,
+} from 'react-icons/fa';
+import { LuSend } from 'react-icons/lu';
+import logo from '../../assets/logoImage.jpg';
 
+/* ─────────────────────────────────────────
+   Data
+───────────────────────────────────────── */
+const footerColumns = [
+  {
+    heading: 'Explore',
+    links: [
+      { label: 'Find Annex', to: '/find-accommodation' },
+      { label: 'Post an Ad', to: '/post-ad' },
+      { label: 'Annex List', to: '/annex-list' },
+      { label: 'Event List', to: '/event-list' },
+    ],
+  },
+  {
+    heading: 'Resources',
+    links: [
+      { label: 'Blogs', to: '/blogs', highlight: true },
+      { label: 'Submit a Blog', to: '/submit-blog' },
+      { label: 'FAQ', to: '/faq' },
+      { label: 'Contact Us', to: '/contact-us' },
+    ],
+  },
+  {
+    heading: 'Company',
+    links: [
+      { label: 'About Us', to: '/#home' },
+      { label: 'Services', to: '/#services' },
+      { label: 'Privacy Policy', to: '/privacy-policy' },
+      { label: 'Terms of Service', to: '/terms-of-service' },
+    ],
+  },
+];
+
+const socialLinks = [
+  { icon: <FaFacebook size={16} />, href: '#', label: 'Facebook' },
+  { icon: <FaTwitter size={16} />, href: '#', label: 'Twitter' },
+  { icon: <FaYoutube size={16} />, href: '#', label: 'YouTube' },
+  { icon: <FaInstagram size={16} />, href: '#', label: 'Instagram' },
+];
+
+/* ─────────────────────────────────────────
+   Component
+───────────────────────────────────────── */
 const Footer = () => {
+  const [email, setEmail] = useState('');
+  const [subscribed, setSubscribed] = useState(false);
+
+  const handleSubscribe = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (email.trim()) {
+      setSubscribed(true);
+      setEmail('');
+      setTimeout(() => setSubscribed(false), 4000);
+    }
+  };
+
   return (
-    <footer className="bg-white dark:bg-slate-950 border-t border-slate-100 dark:border-slate-800 mt-20 pt-16 pb-8">
-      <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12 mb-12">
+    <footer
+      style={{
+        background:
+          'linear-gradient(135deg, #0d0f2b 0%, #111433 60%, #0a0c24 100%)',
+      }}
+      className="relative overflow-hidden"
+    >
+      {/* Subtle ambient glow at top */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 w-[700px] h-[200px] rounded-full blur-[80px]"
+        style={{ background: 'rgba(99,102,241,0.08)' }}
+      />
 
-          {/* Brand Column */}
-          <div className="md:col-span-1">
-            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-4">
-              The <span className="text-brand-600">Uni Gang</span>
-            </h3>
-            <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-6">
-              Powering the Future of University Life. From finding your perfect home to launching your professional digital presence, we provide a seamless ecosystem for students. Your housing, your career, and your campus—unified in one smart platform.            </p>
-          </div>
+      {/* ── Main grid ────────────────────────── */}
+      <div className="container mx-auto max-w-7xl px-6 pt-14 pb-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8">
 
-          {/* Quick Links */}
-          <div>
-            <h4 className="font-semibold text-slate-800 dark:text-white mb-6">Quick Links</h4>
-            <ul className="space-y-3">
-              <li><Link to="/" className="text-slate-500 hover:text-brand-600 transition-colors text-sm font-medium">Home</Link></li>
-              <li><Link to="/find-accommodation" className="text-slate-500 hover:text-brand-600 transition-colors text-sm font-medium">Find Annex</Link></li>
-              <li><Link to="/feed" className="text-slate-500 hover:text-brand-600 transition-colors text-sm font-medium">Feed</Link></li>
-              <li><Link to="/services" className="text-slate-500 hover:text-brand-600 transition-colors text-sm font-medium">Services</Link></li>
-              <li><Link to="/events" className="text-slate-500 hover:text-brand-600 transition-colors text-sm font-medium">Events</Link></li>
-              <li><Link to="/contact-us" className="text-slate-500 hover:text-brand-600 transition-colors text-sm font-medium">Contact Support</Link></li>
-            </ul>
-          </div>
+          {/* ① Brand column */}
+          <div className="lg:col-span-1 flex flex-col gap-5">
+            {/* Logo + name */}
+            <Link to="/" className="flex items-center gap-3 group w-fit">
+              <div className="relative w-10 h-10 rounded-xl overflow-hidden ring-2 ring-indigo-500/60 group-hover:ring-indigo-400 transition-all duration-300">
+                <img
+                  src={logo}
+                  alt="The Uni Gang"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div>
+                <p className="text-white font-bold text-sm leading-tight tracking-wide">
+                  The Uni Gang
+                </p>
+                <p
+                  className="text-[10px] leading-tight font-medium tracking-widest uppercase"
+                  style={{ color: 'rgba(129,140,248,0.8)' }}
+                >
+                  Student Platform
+                </p>
+              </div>
+            </Link>
 
-          {/* Legal / Info */}
-          <div>
-            <h4 className="font-semibold text-slate-800 dark:text-white mb-6">Support</h4>
-            <ul className="space-y-3">
-              <li><Link to="/privacy-policy" className="text-slate-500 hover:text-brand-600 transition-colors text-sm font-medium">Privacy Policy</Link></li>
-              <li><Link to="/terms-of-service" className="text-slate-500 hover:text-brand-600 transition-colors text-sm font-medium">Terms of Service</Link></li>
-              <li><Link to="/faq" className="text-slate-500 hover:text-brand-600 transition-colors text-sm font-medium">FAQ</Link></li>
-            </ul>
-          </div>
+            {/* Tagline */}
+            <p className="text-slate-400 text-sm leading-relaxed">
+              Empowering students to find their perfect accommodation, connect
+              with peers, and thrive throughout university life.
+            </p>
 
-          {/* Socials */}
-          <div>
-            <h4 className="font-semibold text-slate-800 dark:text-white mb-6">Connect</h4>
-            <div className="flex space-x-4">
-              <a href="#" className="w-10 h-10 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-all">
-                <FaFacebook />
-              </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-all">
-                <FaInstagram />
-              </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-all">
-                <FaTwitter />
-              </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-all">
-                <FaLinkedin />
-              </a>
+            {/* Social icons */}
+            <div className="flex items-center gap-2.5 mt-1">
+              {socialLinks.map(({ icon, href, label }) => (
+                <motion.a
+                  key={label}
+                  href={href}
+                  aria-label={label}
+                  whileHover={{ scale: 1.15, y: -2 }}
+                  whileTap={{ scale: 0.9 }}
+                  className="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-white transition-colors duration-200"
+                  style={{ background: 'rgba(255,255,255,0.07)' }}
+                >
+                  {icon}
+                </motion.a>
+              ))}
             </div>
+          </div>
+
+          {/* ② – ④  Link columns */}
+          {footerColumns.map((col) => (
+            <div key={col.heading} className="flex flex-col gap-4">
+              <h4 className="text-white font-semibold text-sm tracking-wide">
+                {col.heading}
+              </h4>
+              <ul className="flex flex-col gap-2.5">
+                {col.links.map((link) => (
+                  <li key={link.label}>
+                    <Link
+                      to={link.to}
+                      className={`text-sm transition-colors duration-200 ${
+                        link.highlight
+                          ? 'text-indigo-400 hover:text-indigo-300 font-medium'
+                          : 'text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+
+          {/* ⑤ Stay Connected */}
+          <div className="flex flex-col gap-4">
+            <h4 className="text-white font-semibold text-sm tracking-wide">
+              Stay Connected
+            </h4>
+            <p className="text-slate-400 text-sm leading-relaxed">
+              Get the latest updates and tips for your student journey.
+            </p>
+
+            <form onSubmit={handleSubscribe} className="flex flex-col gap-2 mt-1">
+              <div className="flex items-center gap-2">
+                {/* Email input */}
+                <input
+                  type="email"
+                  id="footer-email-input"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your email"
+                  required
+                  className="flex-1 min-w-0 px-3 py-2 rounded-lg text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 transition-all duration-200"
+                  style={{
+                    background: 'rgba(255,255,255,0.07)',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.borderColor = 'rgba(99,102,241,0.5)';
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)';
+                  }}
+                />
+                {/* Subscribe button */}
+                <motion.button
+                  type="submit"
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.96 }}
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold text-white whitespace-nowrap shadow-lg transition-all duration-200"
+                  style={{
+                    background:
+                      'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+                    boxShadow: '0 4px 15px rgba(99,102,241,0.3)',
+                  }}
+                >
+                  <LuSend size={13} />
+                  Subscribe
+                </motion.button>
+              </div>
+
+              {/* Success feedback */}
+              {subscribed && (
+                <motion.p
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-emerald-400 text-xs font-medium"
+                >
+                  ✓ You're subscribed! Thanks for joining.
+                </motion.p>
+              )}
+            </form>
           </div>
         </div>
 
-        <div className="border-t border-slate-100 dark:border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-slate-400 text-sm">
-            &copy; {new Date().getFullYear()} The Uni Gang. All rights reserved.
+        {/* ── Divider + Copyright bar ──────────── */}
+        <div
+          className="mt-12 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3"
+          style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }}
+        >
+          <p className="text-slate-500 text-sm text-center sm:text-left">
+            © {new Date().getFullYear()} The Uni Gang. All rights reserved.
           </p>
 
-          <div className="flex items-center gap-1.5 text-slate-400 text-sm mt-2 md:mt-0 font-medium">
-            <span>Engineered with</span>
-
-            {/* Animated Lucide Sparkle Icon */}
-            <motion.div
-              animate={{
-                scale: [1, 1.2, 1],
-                rotate: [0, 10, -10, 0], // පොඩි rotate එකක් දැම්මා තවත් real පේන්න
-                opacity: [0.6, 1, 0.6],
-                filter: [
-                  "drop-shadow(0 0 0px rgba(59, 130, 246, 0))",
-                  "drop-shadow(0 0 10px rgba(59, 130, 246, 0.6))",
-                  "drop-shadow(0 0 0px rgba(59, 130, 246, 0))"
-                ]
-              }}
-              transition={{
-                duration: 3, // ටිකක් slow කරා ලස්සනට පේන්න
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-              // ... motion.div එක ඇතුළේ className එකට මේක දාන්න
-              className="flex items-center justify-center text-amber-500 dark:text-amber-400"
+          <div className="flex items-center gap-5">
+            <Link
+              to="/privacy-policy"
+              className="text-slate-500 hover:text-slate-300 text-xs transition-colors duration-200"
             >
-              <LuSparkles className="text-lg" />
-            </motion.div>
-
-            <span>for the University Community</span>
+              Privacy
+            </Link>
+            <Link
+              to="/terms-of-service"
+              className="text-slate-500 hover:text-slate-300 text-xs transition-colors duration-200"
+            >
+              Terms
+            </Link>
+            <Link
+              to="/faq"
+              className="text-slate-500 hover:text-slate-300 text-xs transition-colors duration-200"
+            >
+              FAQ
+            </Link>
           </div>
         </div>
       </div>

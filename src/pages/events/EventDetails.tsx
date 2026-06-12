@@ -45,6 +45,8 @@ const EventDetails: React.FC<EventDetailsProps> = ({ event, isOpen, onClose }) =
     }, [isOpen]);
 
     if (!event) return null;
+    
+    const imageUrl = event.image ? (event.image.startsWith('http') ? event.image : `http://localhost:5000${event.image}`) : 'https://images.unsplash.com/photo-1540575861501-7ad058ad37fa?q=80&w=800';
 
     const handleWhatsApp = (contact: string, title: string) => {
         const message = `Hi! I'm interested in the event: *${title}*. Could you please provide more details?`;
@@ -87,7 +89,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({ event, isOpen, onClose }) =
                                 initial={{ scale: 1.1 }}
                                 animate={{ scale: 1 }}
                                 transition={{ duration: 1.5 }}
-                                src={event.image}
+                                src={imageUrl}
                                 alt={event.title}
                                 className="w-full h-full object-cover"
                             />

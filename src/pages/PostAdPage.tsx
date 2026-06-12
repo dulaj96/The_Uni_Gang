@@ -20,6 +20,7 @@ const PostAdPage = () => {
   const [searchParams] = useSearchParams();
   const tab = searchParams.get('tab');
   const [loading, setLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const fetchMyAds = async () => {
     const token = localStorage.getItem('userToken');
@@ -82,11 +83,19 @@ const PostAdPage = () => {
       return;
     }
 
-    setLoading(true);
+    // Use isSubmitting instead of loading so we don't unmount the Leaflet map mid-submission
+    setIsSubmitting(true);
+    const toastId = toast.loading(isEditing ? 'Updating your listing...' : 'Publishing your advertisement...');
     try {
+      // Build description — never allow empty string (DB column is NOT NULL)
+      const builtDescription = [
+        adData.houseRules ? `House Rules: ${adData.houseRules}` : '',
+        adData.description || ''
+      ].filter(Boolean).join('\n') || 'No description provided.';
+
       const formData = new FormData();
       formData.append('title', adData.title);
-      formData.append('description', adData.description || adData.houseRules || 'No description');
+      formData.append('description', builtDescription);
       formData.append('price', adData.monthlyRent);
       formData.append('address', adData.address);
       formData.append('beds', adData.beds);
@@ -94,6 +103,7 @@ const PostAdPage = () => {
       formData.append('latitude', String(adData.latitude));
       formData.append('longitude', String(adData.longitude));
       formData.append('universityId', adData.universityId);
+      formData.append('securityDeposit', adData.securityDeposit || '');
       if (adData.customInstitution) {
         formData.append('customInstitution', adData.customInstitution);
       }
@@ -127,19 +137,19 @@ const PostAdPage = () => {
       }
 
       if (response.ok) {
-        toast.success(isEditing ? 'Ad updated successfully!' : 'Ad posted successfully! Awaiting admin approval.');
+        toast.success(isEditing ? 'Ad updated successfully!' : 'Ad posted! Awaiting admin approval.', { id: toastId });
         await fetchMyAds();
         setEditingAd(null);
         setCurrentView('myAds');
       } else {
         const err = await response.json();
-        toast.error(err.message || 'Failed to submit advertisement.');
+        toast.error(err.message || 'Failed to submit advertisement.', { id: toastId });
       }
     } catch (err) {
       console.error(err);
-      toast.error('An error occurred during submission.');
+      toast.error('An error occurred during submission.', { id: toastId });
     } finally {
-      setLoading(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -235,6 +245,7 @@ const PostAdPage = () => {
                       onSubmit={handleAnnexFormSubmit}
                       onCancel={() => setCurrentView('myAds')}
                       isEditing={!!editingAd}
+                      isSubmitting={isSubmitting}
                     />
                   )}
 

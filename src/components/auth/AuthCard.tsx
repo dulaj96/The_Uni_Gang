@@ -6,6 +6,7 @@ import { LuUser, LuMail, LuLock, LuArrowRight } from 'react-icons/lu';
 import { dispatchAuthUpdate } from '../../utils/authEvents';
 import toast from 'react-hot-toast';
 import PremiumPageLoader from '../ui/PremiumPageLoader';
+import { celebrate } from '../../utils/celebrate';
 
 interface AuthCardProps {
     onAuthSuccess: () => void;
@@ -70,6 +71,7 @@ const AuthCard: React.FC<AuthCardProps> = ({ onAuthSuccess }) => {
             onAuthSuccess();
             setLoading(false);
             toast.success('Welcome back!');
+            celebrate();
         }, 400);
     };
 
@@ -84,6 +86,7 @@ const AuthCard: React.FC<AuthCardProps> = ({ onAuthSuccess }) => {
             onAuthSuccess();
             setLoading(false);
             toast.success('Account created successfully!');
+            celebrate();
         }, 400);
     };
 
@@ -99,6 +102,7 @@ const AuthCard: React.FC<AuthCardProps> = ({ onAuthSuccess }) => {
         dispatchAuthUpdate();
         onAuthSuccess();
         toast.success(`Welcome back, ${userData.name}!`);
+        celebrate();
     };
 
     const handleGoogleFailure = () => {

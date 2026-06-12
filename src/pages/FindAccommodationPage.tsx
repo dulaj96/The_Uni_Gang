@@ -18,7 +18,14 @@ const dummyAnnexes: Annex[] = Array.from({ length: 20 }, (_, i) => ({
   price: `Rs. ${10000 + (i * 500)}/month`,
   description: `Modern student accommodation with all amenities included. Close to lecture halls and public transport.`,
   address: `University Road ${i + 1}, City`,
-  images: [i % 2 === 0 ? annex1 : annex2],
+  images: [
+    {
+      id: String(i + 1),
+      imageUrl: i % 2 === 0 ? annex1 : annex2,
+      annexId: String(i + 1)
+    }
+  ],
+  features: [],
   link: `/annex/${i + 1}`,
   rating: (4 + Math.random()).toFixed(1)
 }));
@@ -121,7 +128,7 @@ const FindAccommodationPage = () => {
           {currentAnnexes.map((annex) => (
             <Link to={annex.link || '#'} key={annex.id} className="group bg-white dark:bg-slate-800 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 dark:border-slate-700 flex flex-col">
               <div className="relative h-64 overflow-hidden">
-                <img src={annex.images[0]} alt={annex.title} className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" />
+                <img src={annex.images[0]?.imageUrl || ''} alt={annex.title} className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" />
                 <div className="absolute top-4 right-4 bg-white/95 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-slate-900 shadow-sm flex items-center gap-1">
                   ⭐ {annex.rating}
                 </div>

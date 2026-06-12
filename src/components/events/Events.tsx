@@ -1,10 +1,14 @@
 import { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LuX, LuSend, LuCircleCheck, LuCloudUpload, LuCalendar, LuChevronRight, LuSparkles } from 'react-icons/lu';
+import { LuX, LuSend, LuCircleCheck, LuCloudUpload, LuCalendar, LuChevronRight, LuSparkles, LuGraduationCap, LuMapPin, LuClock, LuTrendingUp } from 'react-icons/lu';
 import TiltCard from '../ui/TiltCard.tsx';
 import PremiumPageLoader from '../ui/PremiumPageLoader';
 import { useNavigate } from 'react-router-dom';
 import PremiumTraceButton from '../ui/PremiumTraceButton';
+import { api } from '../../api';
+import AuthCard from '../auth/AuthCard';
+import toast from 'react-hot-toast';
+
 
 const eventsList = [
     {
@@ -84,9 +88,9 @@ const eventsList = [
 ];
 
 const stats = [
-    { label: "Active Events", value: 124, icon: "event" },
-    { label: "University Partners", value: 18, icon: "school" },
-    { label: "User Engagement", value: "95%", icon: "trending_up" }
+    { label: "Active Events", value: 124, icon: LuCalendar },
+    { label: "University Partners", value: 18, icon: LuGraduationCap },
+    { label: "User Engagement", value: "95%", icon: LuTrendingUp }
 ];
 
 const FloatingSymbol = ({ symbol, index }: { symbol: string, index: number }) => (
@@ -126,6 +130,11 @@ const Events = () => {
     const [previewImage, setPreviewImage] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
+    // Auth gate and dynamic events state
+    const [showAuthGate, setShowAuthGate] = useState(false);
+    const [liveEvents, setLiveEvents] = useState<any[]>([]);
+    const [, setLoadingLive] = useState(true);
+
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
@@ -148,6 +157,30 @@ const Events = () => {
         }
     }, [showToast]);
 
+    // Load live approved events
+    const fetchLiveEvents = async () => {
+        try {
+            setLoadingLive(true);
+            const data = await api.getApprovedEvents();
+            setLiveEvents(data);
+        } catch (err) {
+            console.error("Failed to fetch events:", err);
+        } finally {
+            setLoadingLive(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchLiveEvents();
+    }, []);
+
+    // Reset Auth gate when modal is closed
+    useEffect(() => {
+        if (!isModalOpen) {
+            setShowAuthGate(false);
+        }
+    }, [isModalOpen]);
+
     const handleUpcomingClick = () => {
         setIsNavigating(true);
         setTimeout(() => {
@@ -157,34 +190,136 @@ const Events = () => {
     };
 
     // Handle Form Submit
-    const handleEventSubmit = (e: React.FormEvent) => {
+    const handleEventSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        const target = e.currentTarget as HTMLFormElement;
+        const formData = new FormData(target);
+        
+        const title = formData.get('eventName') as string;
+        const uni = formData.get('university') as string;
+        const date = formData.get('eventDate') as string;
+        const contact = formData.get('phone') as string;
+        const description = formData.get('description') as string;
+        const extra = formData.get('extra') as string;
+        const location = formData.get('location') as string;
+        const price = formData.get('price') as string;
+        const flyerFile = fileInputRef.current?.files?.[0];
+
+        const token = localStorage.getItem('userToken');
+
+        if (!token) {
+            // User not logged in: cache data in localStorage and show AuthCard
+            setIsSubmitting(true);
+            try {
+                let base64Image: string | null = null;
+                if (flyerFile) {
+                    base64Image = await new Promise<string>((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onload = () => resolve(reader.result as string);
+                        reader.onerror = error => reject(error);
+                        reader.readAsDataURL(flyerFile);
+                    });
+                }
+
+                const pendingData = {
+                    title,
+                    description,
+                    uni,
+                    location,
+                    price,
+                    date,
+                    contact,
+                    extra,
+                    base64Image
+                };
+
+                localStorage.setItem('pending_event_submission', JSON.stringify(pendingData));
+                setShowAuthGate(true);
+            } catch (err) {
+                console.error('Failed to cache event data:', err);
+                toast.error('Failed to cache event concept.');
+            } finally {
+                setIsSubmitting(false);
+            }
+            return;
+        }
+
         setIsSubmitting(true);
+        try {
+            const submitData = new FormData();
+            submitData.append('title', title);
+            submitData.append('description', description);
+            submitData.append('uni', uni);
+            submitData.append('location', location);
+            submitData.append('price', price);
+            submitData.append('date', date);
+            submitData.append('contact', contact);
+            if (extra) submitData.append('extra', extra);
+            if (flyerFile) {
+                submitData.append('image', flyerFile);
+            }
 
-        setTimeout(() => {
-            const formData = new FormData(e.target as HTMLFormElement);
-            const name = formData.get('eventName');
-            const uni = formData.get('university');
-            const date = formData.get('eventDate');
-            const phone = formData.get('phone');
-            const description = formData.get('description');
-            const extra = formData.get('extra');
-
-            const message = `*✨ New Event Request ✨*%0A%0A` +
-                `*Event Name:* ${name}%0A` +
-                `*University & Faculty:* ${uni}%0A` +
-                `*Event Date:* ${date}%0A` +
-                `*WhatsApp Number:* ${phone}%0A%0A` +
-                `*Description:* ${description}%0A%0A` +
-                `*Extra Details:* ${extra}`;
-
-            window.open(`https://wa.me/94724478148?text=${message}`, '_blank');
+            await api.submitEvent(submitData, token);
 
             setIsSubmitting(false);
             setIsModalOpen(false);
             setPreviewImage(null);
+            target.reset();
+            
+            // Success alert (No WhatsApp redirection)
+            toast.success('Event submitted successfully for review!');
             setShowToast(true);
-        }, 800);
+            fetchLiveEvents(); // Reload live events
+        } catch (error: any) {
+            console.error(error);
+            toast.error(error.message || 'Failed to submit event.');
+            setIsSubmitting(false);
+        }
+    };
+
+    // Auth callback to submit cached event
+    const handleAuthSuccess = async () => {
+        setShowAuthGate(false);
+        const token = localStorage.getItem('userToken');
+        const pendingStr = localStorage.getItem('pending_event_submission');
+
+        if (!token || !pendingStr) return;
+
+        setIsSubmitting(true);
+        try {
+            const pendingData = JSON.parse(pendingStr);
+            const submitData = new FormData();
+            submitData.append('title', pendingData.title);
+            submitData.append('description', pendingData.description);
+            submitData.append('uni', pendingData.uni);
+            submitData.append('location', pendingData.location);
+            submitData.append('price', pendingData.price);
+            submitData.append('date', pendingData.date);
+            submitData.append('contact', pendingData.contact);
+            if (pendingData.extra) submitData.append('extra', pendingData.extra);
+
+            if (pendingData.base64Image) {
+                const res = await fetch(pendingData.base64Image);
+                const blob = await res.blob();
+                const file = new File([blob], 'flyer.png', { type: blob.type });
+                submitData.append('image', file);
+            }
+
+            await api.submitEvent(submitData, token);
+
+            localStorage.removeItem('pending_event_submission');
+            setIsModalOpen(false);
+            setPreviewImage(null);
+            
+            toast.success('Event submitted successfully for review!');
+            setShowToast(true);
+            fetchLiveEvents();
+        } catch (error: any) {
+            console.error(error);
+            toast.error(error.message || 'Failed to submit cached event.');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     useEffect(() => {
@@ -278,92 +413,145 @@ const Events = () => {
                     ref={scrollRef}
                     className="flex overflow-x-auto gap-8 pb-12 px-4 hide-scrollbar"
                 >
-                    {[...eventsList, ...eventsList, ...eventsList].map((event, idx) => (
-                        <div
-                            key={`${event.id}-${idx}`}
-                            className="flex-none w-[280px] md:w-[380px] snap-start"
-                            // Card එකක් උඩට cursor එක ආවම scroll එක නවත්තන්න
-                            onMouseEnter={() => setIsHovered(true)}
-                        >
-                            <TiltCard>
-                                <div className="premium-glass p-4 rounded-[2.5rem] shadow-2xl group hover:-translate-y-2 transition-all duration-500 bg-white/50 dark:bg-slate-900/50 backdrop-blur-md border border-white/20">
+                    {(() => {
+                        const displayEvents = liveEvents.length > 0 ? liveEvents : eventsList;
+                        return [...displayEvents, ...displayEvents, ...displayEvents].map((event, idx) => {
+                            const imageUrl = event.image
+                                ? (event.image.startsWith('http') ? event.image : `http://localhost:5000${event.image}`)
+                                : 'https://images.unsplash.com/photo-1540575861501-7ad058ad37fa?q=80&w=800';
 
-                                    {/* Image Container */}
-                                    <div className="relative h-[360px] md:h-[480px] rounded-[2rem] overflow-hidden mb-6">
-                                        <img
-                                            src={event.image}
-                                            alt={event.title}
-                                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                                        />
+                            const eventDate = new Date(event.date);
+                            const dayStr = isNaN(eventDate.getTime()) ? event.date : String(eventDate.getDate());
+                            const monthStr = isNaN(eventDate.getTime()) ? (event.month || 'OCT') : eventDate.toLocaleString('default', { month: 'short' }).toUpperCase();
 
-                                        {/* Date Badge */}
-                                        <div className="absolute top-4 left-4 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md px-4 py-2 rounded-2xl flex flex-col items-center">
-                                            <span className="text-xl font-bold text-primary leading-none">{event.date}</span>
-                                            <span className="text-[10px] font-bold uppercase tracking-tighter text-slate-500">{event.month}</span>
-                                        </div>
+                            const attendeeImages = event.attendeeImages || [
+                                "https://i.pravatar.cc/150?u=1",
+                                "https://i.pravatar.cc/150?u=2",
+                                "https://i.pravatar.cc/150?u=3"
+                            ];
+                            const attendeesCount = event.attendees || "150+";
 
-                                        {/* Content Overlay on Image */}
-                                        <div className="absolute bottom-4 left-4 right-4 p-4 rounded-2xl bg-black/40 backdrop-blur-md text-white border border-white/10">
-                                            <div className="flex items-center gap-2 text-xs font-medium opacity-90 mb-1">
-                                                <span className="material-symbols-outlined text-sm">location_on</span>
-                                                {event.location}
+                            return (
+                                <div
+                                    key={`${event.id}-${idx}`}
+                                    className="flex-none w-[280px] md:w-[380px] snap-start"
+                                    onMouseEnter={() => setIsHovered(true)}
+                                >
+                                    <TiltCard className="h-full">
+                                        <div className="premium-glass p-5 rounded-[2.5rem] shadow-2xl group hover:-translate-y-2 transition-all duration-500 bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border border-white/30 dark:border-slate-800/30 flex flex-col h-full justify-between">
+                                            {/* Top Container */}
+                                            <div>
+                                                {/* Image Container */}
+                                                <div className="relative h-60 rounded-[2rem] overflow-hidden mb-5">
+                                                    <img
+                                                        src={imageUrl}
+                                                        alt={event.title}
+                                                        className="w-full h-full object-cover group-hover:scale-115 transition-transform duration-700"
+                                                    />
+                                                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-transparent opacity-60" />
+
+                                                    {/* Date Badge */}
+                                                    <div className="absolute top-4 left-4 bg-white/95 dark:bg-slate-950/90 backdrop-blur-md px-3 py-1.5 rounded-2xl flex flex-col items-center border border-white/20 dark:border-slate-800">
+                                                        <span className="text-lg font-black text-blue-600 dark:text-blue-400 leading-none">{dayStr}</span>
+                                                        <span className="text-[9px] font-black uppercase tracking-tighter text-slate-500 mt-0.5">{monthStr}</span>
+                                                    </div>
+
+                                                    {/* Category Tag */}
+                                                    <div className="absolute top-4 right-4 bg-blue-600 text-white px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest shadow-lg shadow-blue-600/30">
+                                                        {event.category || 'Event'}
+                                                    </div>
+                                                </div>
+
+                                                {/* Content Details */}
+                                                <div className="px-1 space-y-3">
+                                                    {/* University / Institution */}
+                                                    <div className="flex items-center gap-1.5 text-blue-600 dark:text-blue-400 text-[10px] font-black uppercase tracking-[0.2em]">
+                                                        <LuGraduationCap className="text-xs shrink-0" />
+                                                        <span className="truncate">{event.uni}</span>
+                                                    </div>
+
+                                                    {/* Event Title */}
+                                                    <h3 className="text-xl font-black text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300 line-clamp-1 uppercase tracking-tight leading-snug">
+                                                        {event.title}
+                                                    </h3>
+
+                                                    {/* Description */}
+                                                    <p className="text-slate-500 dark:text-slate-400 text-xs leading-relaxed font-medium line-clamp-2">
+                                                        {event.description || 'Witness the pulse of university life. Register your interest and join the vibe.'}
+                                                    </p>
+                                                </div>
                                             </div>
-                                            <h3 className="text-2xl font-bold leading-tight">{event.title}</h3>
-                                        </div>
-                                    </div>
 
-                                    {/* Bottom Section: Attendees & Button */}
-                                    <div className="flex items-center justify-between px-2 pb-2">
-                                        {/* Attendee Avatars */}
-                                        <div className="flex -space-x-2">
-                                            {event.attendeeImages.map((img, i) => (
-                                                <img
-                                                    key={i}
-                                                    src={img}
-                                                    className="w-8 h-8 rounded-full border-2 border-white dark:border-slate-800 object-cover"
-                                                    alt="attendee"
-                                                />
-                                            ))}
-                                            <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 text-[10px] font-bold flex items-center justify-center border-2 border-white dark:border-slate-800 text-slate-600 dark:text-slate-300">
-                                                +{event.attendees}
+                                            {/* Divider & Info Badges */}
+                                            <div>
+                                                <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[9px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 mt-4 border-t border-slate-200/40 dark:border-slate-800/40 pt-4 mb-4">
+                                                    <div className="flex items-center gap-1.5">
+                                                        <LuMapPin className="text-blue-500 text-xs" />
+                                                        <span className="truncate max-w-[120px]">{event.location}</span>
+                                                    </div>
+                                                    <div className="flex items-center gap-1.5">
+                                                        <LuClock className="text-blue-500 text-xs" />
+                                                        <span>{event.time || '09:00 AM'}</span>
+                                                    </div>
+                                                </div>
+
+                                                {/* Bottom Section: Attendees & Button */}
+                                                <div className="flex items-center justify-between px-1">
+                                                    {/* Attendee Avatars */}
+                                                    <div className="flex -space-x-2">
+                                                        {attendeeImages.map((img: string, i: number) => (
+                                                            <img
+                                                                key={i}
+                                                                src={img}
+                                                                className="w-8 h-8 rounded-full border-2 border-white dark:border-slate-900 object-cover"
+                                                                alt="attendee"
+                                                            />
+                                                        ))}
+                                                        <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 text-[9px] font-black flex items-center justify-center border-2 border-white dark:border-slate-900 text-slate-600 dark:text-slate-300">
+                                                            +{attendeesCount}
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Interested Button */}
+                                                    <motion.button
+                                                        whileTap={{ scale: 0.95 }}
+                                                        className="bg-slate-900 dark:bg-white/10 hover:bg-blue-600 dark:hover:bg-blue-600 text-white dark:text-white px-5 py-2.5 rounded-2xl font-black text-[9px] uppercase tracking-widest transition-all duration-300 shadow-md hover:shadow-blue-500/20 active:scale-95"
+                                                    >
+                                                        Interested
+                                                    </motion.button>
+                                                </div>
                                             </div>
                                         </div>
-
-                                        {/* Interested Button */}
-                                        <motion.button
-                                            whileTap={{ scale: 0.9 }}
-                                            className="bg-slate-100 dark:bg-slate-800 hover:bg-primary hover:text-white text-slate-900 dark:text-white px-6 py-3 rounded-2xl font-bold text-sm transition-all duration-300 shadow-sm"
-                                        >
-                                            Interested
-                                        </motion.button>
-                                    </div>
-
+                                    </TiltCard>
                                 </div>
-                            </TiltCard>
-                        </div>
-                    ))}
+                            );
+                        });
+                    })()}
                 </div>
             </div>
 
             {/* Premium Stats Section */}
             <div className="max-w-7xl mx-auto px-4 md:px-8 mt-16 md:mt-24">
                 <div className="grid grid-cols-3 gap-3 md:gap-8">
-                    {stats.map((stat, i) => (
-                        <motion.div
-                            key={i}
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: i * 0.1 }}
-                            className="premium-glass p-4 md:p-10 rounded-2xl md:rounded-[2.5rem] flex flex-col items-center text-center group cursor-default"
-                        >
-                            <div className="w-10 h-10 md:w-16 md:h-16 bg-white dark:bg-slate-800 rounded-xl md:rounded-2xl shadow-xl flex items-center justify-center mb-3 md:mb-6 group-hover:bg-primary group-hover:text-white transition-all duration-500">
-                                <span className="material-symbols-outlined text-xl md:text-3xl font-bold">{stat.icon}</span>
-                            </div>
-                            <h4 className="text-xl md:text-4xl font-black text-slate-900 dark:text-white mb-1 md:mb-2">{stat.value}</h4>
-                            <p className="text-[8px] md:text-[10px] font-black uppercase tracking-wider md:tracking-[0.3em] text-slate-400">{stat.label}</p>
-                        </motion.div>
-                    ))}
+                    {stats.map((stat, i) => {
+                        const Icon = stat.icon;
+                        return (
+                            <motion.div
+                                key={i}
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: i * 0.1 }}
+                                className="premium-glass p-5 md:p-8 rounded-[2rem] md:rounded-[2.5rem] flex flex-col items-center text-center group transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_30px_60px_-15px_rgba(0,63,221,0.15)] bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border border-white/30 dark:border-slate-800/30 cursor-default"
+                            >
+                                <div className="w-12 h-12 md:w-16 md:h-16 bg-white/50 dark:bg-slate-800/50 border border-white/20 dark:border-slate-700/30 rounded-2xl flex items-center justify-center mb-4 md:mb-6 text-slate-700 dark:text-slate-200 group-hover:bg-blue-600 group-hover:text-white group-hover:border-transparent transition-all duration-500 shadow-lg group-hover:shadow-blue-500/30">
+                                    <Icon className="text-xl md:text-3xl stroke-[2]" />
+                                </div>
+                                <h4 className="text-2xl md:text-4xl font-black text-slate-900 dark:text-white mb-2 tracking-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">{stat.value}</h4>
+                                <p className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500">{stat.label}</p>
+                            </motion.div>
+                        );
+                    })}
                 </div>
             </div>
 
@@ -433,99 +621,125 @@ const Events = () => {
                                         animate="visible"
                                         className="relative z-10"
                                     >
-                                        <div className="text-center mb-8">
-                                            <div className="inline-flex items-center justify-center p-4 rounded-[1.5rem] bg-gradient-to-tr from-cyan-500/20 to-blue-500/20 text-cyan-500 mb-4 ring-1 ring-cyan-500/20">
-                                                <LuCalendar size={32} />
+                                        {showAuthGate ? (
+                                            <div className="pt-4">
+                                                <div className="text-center mb-8">
+                                                    <h4 className="text-2xl font-black tracking-tight dark:text-white uppercase">Authentication Required</h4>
+                                                    <div className="h-1.5 w-16 bg-cyan-500 rounded-full mt-3 mb-3 mx-auto" />
+                                                    <p className="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest leading-relaxed">
+                                                        Sign in to automatically finalize your request
+                                                    </p>
+                                                </div>
+                                                <AuthCard onAuthSuccess={handleAuthSuccess} />
                                             </div>
-                                            <h3 className="text-2xl sm:text-4xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Create Your Event</h3>
-                                            <p className="text-slate-500 dark:text-slate-400 text-sm mt-2 font-medium">Register your university event and amplify your reach.</p>
-                                        </div>
+                                        ) : (
+                                            <>
+                                                <div className="text-center mb-8">
+                                                    <div className="inline-flex items-center justify-center p-4 rounded-[1.5rem] bg-gradient-to-tr from-cyan-500/20 to-blue-500/20 text-cyan-500 mb-4 ring-1 ring-cyan-500/20">
+                                                        <LuCalendar size={32} />
+                                                    </div>
+                                                    <h3 className="text-2xl sm:text-4xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Create Your Event</h3>
+                                                    <p className="text-slate-500 dark:text-slate-400 text-sm mt-2 font-medium">Register your university event and amplify your reach.</p>
+                                                </div>
 
-                                        <form onSubmit={handleEventSubmit} className="space-y-4 sm:space-y-5">
-                                            {/* File Upload / Image */}
-                                            <motion.div variants={{ hidden: { opacity: 0, x: -20 }, visible: { opacity: 1, x: 0 } }}>
-                                                <label className="text-[10px] sm:text-[11px] font-black text-cyan-500 uppercase tracking-[0.2em] ml-1 mb-1 block">Event Flyer / Logo *</label>
-                                                <div className="flex flex-col sm:flex-row items-center sm:items-stretch gap-4">
-                                                    <div className={`relative group cursor-pointer w-full p-4 border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-cyan-500 dark:hover:border-cyan-500 rounded-2xl bg-white/30 dark:bg-slate-950/30 transition-all flex flex-col items-center justify-center gap-2 overflow-hidden flex-1 ${previewImage ? 'h-20 sm:h-28' : 'h-32'}`}>
-                                                        <input ref={fileInputRef} type="file" required={!previewImage} onChange={handleImageChange} className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10" accept="image/*" />
-                                                        <LuCloudUpload size={24} className="text-slate-400 group-hover:text-cyan-500 transition-colors" />
-                                                        <span className="text-xs text-slate-500 dark:text-slate-400 font-medium text-center px-4 hidden sm:block">Click or drag image to upload</span>
-                                                        <span className="text-xs text-slate-500 dark:text-slate-400 font-medium text-center px-4 block sm:hidden">Replace Upload</span>
+                                                <form onSubmit={handleEventSubmit} className="space-y-4 sm:space-y-5">
+                                                    {/* File Upload / Image */}
+                                                    <motion.div variants={{ hidden: { opacity: 0, x: -20 }, visible: { opacity: 1, x: 0 } }}>
+                                                        <label className="text-[10px] sm:text-[11px] font-black text-cyan-500 uppercase tracking-[0.2em] ml-1 mb-1 block">Event Flyer / Logo *</label>
+                                                        <div className="flex flex-col sm:flex-row items-center sm:items-stretch gap-4">
+                                                            <div className={`relative group cursor-pointer w-full p-4 border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-cyan-500 dark:hover:border-cyan-500 rounded-2xl bg-white/30 dark:bg-slate-950/30 transition-all flex flex-col items-center justify-center gap-2 overflow-hidden flex-1 ${previewImage ? 'h-20 sm:h-28' : 'h-32'}`}>
+                                                                <input ref={fileInputRef} name="image" type="file" required={!previewImage} onChange={handleImageChange} className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10" accept="image/*" />
+                                                                <LuCloudUpload size={24} className="text-slate-400 group-hover:text-cyan-500 transition-colors" />
+                                                                <span className="text-xs text-slate-500 dark:text-slate-400 font-medium text-center px-4 hidden sm:block">Click or drag image to upload</span>
+                                                                <span className="text-xs text-slate-500 dark:text-slate-400 font-medium text-center px-4 block sm:hidden">Replace Upload</span>
+                                                            </div>
+
+                                                            <AnimatePresence>
+                                                                {previewImage && (
+                                                                    <motion.div
+                                                                        initial={{ opacity: 0, scale: 0.8, x: -10 }}
+                                                                        animate={{ opacity: 1, scale: 1, x: 0 }}
+                                                                        exit={{ opacity: 0, scale: 0.8, x: -10 }}
+                                                                        transition={{ type: 'spring', damping: 20 }}
+                                                                        className="relative w-24 h-32 sm:w-20 sm:h-28 rounded-xl overflow-hidden shadow-lg border border-slate-200 dark:border-slate-700 shrink-0"
+                                                                    >
+                                                                        <img src={previewImage} alt="Event Flyer Preview" className="w-full h-full object-cover" />
+                                                                        <button type="button" onClick={removeImage} className="absolute top-1 right-1 bg-white/80 dark:bg-slate-900/80 hover:bg-red-500 text-slate-700 hover:text-white p-1.5 rounded-full backdrop-blur-md transition-colors shadow-sm z-20" aria-label="Remove image">
+                                                                            <LuX size={14} />
+                                                                        </button>
+                                                                    </motion.div>
+                                                                )}
+                                                            </AnimatePresence>
+                                                        </div>
+                                                    </motion.div>
+
+                                                    <motion.div variants={{ hidden: { opacity: 0, x: -20 }, visible: { opacity: 1, x: 0 } }}>
+                                                        <label className="text-[10px] sm:text-[11px] font-black text-cyan-500 uppercase tracking-[0.2em] ml-1 mb-1 block">Event Name *</label>
+                                                        <motion.input whileFocus={{ scale: 1.01, borderColor: "#06b6d4" }} required name="eventName" type="text" placeholder="E.g. Tech Summit 2024" className="w-full px-4 py-3 sm:p-4 rounded-xl bg-white/40 dark:bg-slate-950/40 border border-slate-200/60 dark:border-slate-800/60 focus:border-cyan-500 outline-none transition-all text-sm backdrop-blur-sm dark:text-slate-200" />
+                                                    </motion.div>
+
+                                                    <motion.div variants={{ hidden: { opacity: 0, x: -20 }, visible: { opacity: 1, x: 0 } }}>
+                                                        <label className="text-[10px] sm:text-[11px] font-black text-cyan-500 uppercase tracking-[0.2em] ml-1 mb-1 block">University & Faculty *</label>
+                                                        <motion.input whileFocus={{ scale: 1.01, borderColor: "#06b6d4" }} required name="university" type="text" placeholder="E.g. UOM - Engineering" className="w-full px-4 py-3 sm:p-4 rounded-xl bg-white/40 dark:bg-slate-950/40 border border-slate-200/60 dark:border-slate-800/60 focus:border-cyan-500 outline-none transition-all text-sm backdrop-blur-sm dark:text-slate-200" />
+                                                    </motion.div>
+
+                                                    <motion.div variants={{ hidden: { opacity: 0, x: -20 }, visible: { opacity: 1, x: 0 } }} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                        <div>
+                                                            <label className="text-[10px] sm:text-[11px] font-black text-cyan-500 uppercase tracking-[0.2em] ml-1 mb-1 block">Location / Venue *</label>
+                                                            <motion.input whileFocus={{ scale: 1.01, borderColor: "#06b6d4" }} required name="location" type="text" placeholder="E.g. Main Auditorium, UOM" className="w-full px-4 py-3 sm:p-4 rounded-xl bg-white/40 dark:bg-slate-950/40 border border-slate-200/60 dark:border-slate-800/60 focus:border-cyan-500 outline-none transition-all text-sm backdrop-blur-sm dark:text-slate-200" />
+                                                        </div>
+                                                        <div>
+                                                            <label className="text-[10px] sm:text-[11px] font-black text-cyan-500 uppercase tracking-[0.2em] ml-1 mb-1 block">Entry Price *</label>
+                                                            <motion.input whileFocus={{ scale: 1.01, borderColor: "#06b6d4" }} required name="price" type="text" placeholder="E.g. Free or LKR 1000" className="w-full px-4 py-3 sm:p-4 rounded-xl bg-white/40 dark:bg-slate-950/40 border border-slate-200/60 dark:border-slate-800/60 focus:border-cyan-500 outline-none transition-all text-sm backdrop-blur-sm dark:text-slate-200" />
+                                                        </div>
+                                                    </motion.div>
+
+                                                    <motion.div variants={{ hidden: { opacity: 0, x: -20 }, visible: { opacity: 1, x: 0 } }} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                        <div>
+                                                            <label className="text-[10px] sm:text-[11px] font-black text-cyan-500 uppercase tracking-[0.2em] ml-1 mb-1 block">Date *</label>
+                                                            <motion.input whileFocus={{ scale: 1.01, borderColor: "#06b6d4" }} required name="eventDate" type="date" className="w-full px-4 py-3 sm:p-4 rounded-xl bg-white/40 dark:bg-slate-950/40 border border-slate-200/60 dark:border-slate-800/60 focus:border-cyan-500 outline-none transition-all text-sm backdrop-blur-sm dark:text-slate-200" />
+                                                        </div>
+                                                        <div>
+                                                            <label className="text-[10px] sm:text-[11px] font-black text-cyan-500 uppercase tracking-[0.2em] ml-1 mb-1 block">Contact (WhatsApp) *</label>
+                                                            <motion.input whileFocus={{ scale: 1.01, borderColor: "#06b6d4" }} required name="phone" type="tel" placeholder="+94 7X XXX XXXX" className="w-full px-4 py-3 sm:p-4 rounded-xl bg-white/40 dark:bg-slate-950/40 border border-slate-200/60 dark:border-slate-800/60 focus:border-cyan-500 outline-none transition-all text-sm backdrop-blur-sm dark:text-slate-200" />
+                                                        </div>
+                                                    </motion.div>
+
+                                                    <motion.div variants={{ hidden: { opacity: 0, x: -20 }, visible: { opacity: 1, x: 0 } }}>
+                                                        <label className="text-[10px] sm:text-[11px] font-black text-cyan-500 uppercase tracking-[0.2em] ml-1 mb-1 block">Description *</label>
+                                                        <motion.textarea whileFocus={{ scale: 1.01, borderColor: "#06b6d4" }} required name="description" rows={3} placeholder="Tell us about the event..." className="w-full px-4 py-3 sm:p-4 rounded-xl bg-white/40 dark:bg-slate-950/40 border border-slate-200/60 dark:border-slate-800/60 focus:border-cyan-500 outline-none transition-all text-sm backdrop-blur-sm resize-none dark:text-slate-200" />
+                                                    </motion.div>
+
+                                                    {/* Divider */}
+                                                    <div className="py-2">
+                                                        <div className="h-px w-full bg-slate-200 dark:bg-slate-800 relative">
+                                                            <span className="absolute left-1/2 -translate-x-1/2 -top-2 bg-slate-150 dark:bg-slate-900 px-3 text-[10px] font-black text-slate-400 uppercase tracking-widest">Extra Details</span>
+                                                        </div>
                                                     </div>
 
-                                                    <AnimatePresence>
-                                                        {previewImage && (
-                                                            <motion.div
-                                                                initial={{ opacity: 0, scale: 0.8, x: -10 }}
-                                                                animate={{ opacity: 1, scale: 1, x: 0 }}
-                                                                exit={{ opacity: 0, scale: 0.8, x: -10 }}
-                                                                transition={{ type: 'spring', damping: 20 }}
-                                                                className="relative w-24 h-32 sm:w-20 sm:h-28 rounded-xl overflow-hidden shadow-lg border border-slate-200 dark:border-slate-700 shrink-0"
-                                                            >
-                                                                <img src={previewImage} alt="Event Flyer Preview" className="w-full h-full object-cover" />
-                                                                <button type="button" onClick={removeImage} className="absolute top-1 right-1 bg-white/80 dark:bg-slate-900/80 hover:bg-red-500 text-slate-700 hover:text-white p-1.5 rounded-full backdrop-blur-md transition-colors shadow-sm z-20" aria-label="Remove image">
-                                                                    <LuX size={14} />
-                                                                </button>
-                                                            </motion.div>
-                                                        )}
-                                                    </AnimatePresence>
-                                                </div>
-                                            </motion.div>
+                                                    <motion.div variants={{ hidden: { opacity: 0, x: -20 }, visible: { opacity: 1, x: 0 } }}>
+                                                        <label className="text-[10px] sm:text-[11px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-[0.2em] ml-1 mb-1 block">Extra Functions / Requirements</label>
+                                                        <motion.textarea whileFocus={{ scale: 1.01, borderColor: "#06b6d4" }} name="extra" rows={2} placeholder="E.g. Drone shots, After-party DJ..." className="w-full px-4 py-3 sm:p-4 rounded-xl bg-white/40 dark:bg-slate-950/40 border border-slate-200/60 dark:border-slate-800/60 focus:border-cyan-500 outline-none transition-all text-sm backdrop-blur-sm resize-none dark:text-slate-200" />
+                                                    </motion.div>
 
-                                            <motion.div variants={{ hidden: { opacity: 0, x: -20 }, visible: { opacity: 1, x: 0 } }}>
-                                                <label className="text-[10px] sm:text-[11px] font-black text-cyan-500 uppercase tracking-[0.2em] ml-1 mb-1 block">Event Name *</label>
-                                                <motion.input whileFocus={{ scale: 1.01, borderColor: "#06b6d4" }} required name="eventName" type="text" placeholder="E.g. Tech Summit 2024" className="w-full px-4 py-3 sm:p-4 rounded-xl bg-white/40 dark:bg-slate-950/40 border border-slate-200/60 dark:border-slate-800/60 focus:border-cyan-500 outline-none transition-all text-sm backdrop-blur-sm dark:text-slate-200" />
-                                            </motion.div>
-
-                                            <motion.div variants={{ hidden: { opacity: 0, x: -20 }, visible: { opacity: 1, x: 0 } }}>
-                                                <label className="text-[10px] sm:text-[11px] font-black text-cyan-500 uppercase tracking-[0.2em] ml-1 mb-1 block">University & Faculty *</label>
-                                                <motion.input whileFocus={{ scale: 1.01, borderColor: "#06b6d4" }} required name="university" type="text" placeholder="E.g. UOM - Engineering" className="w-full px-4 py-3 sm:p-4 rounded-xl bg-white/40 dark:bg-slate-950/40 border border-slate-200/60 dark:border-slate-800/60 focus:border-cyan-500 outline-none transition-all text-sm backdrop-blur-sm dark:text-slate-200" />
-                                            </motion.div>
-
-                                            <motion.div variants={{ hidden: { opacity: 0, x: -20 }, visible: { opacity: 1, x: 0 } }} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                                <div>
-                                                    <label className="text-[10px] sm:text-[11px] font-black text-cyan-500 uppercase tracking-[0.2em] ml-1 mb-1 block">Date *</label>
-                                                    <motion.input whileFocus={{ scale: 1.01, borderColor: "#06b6d4" }} required name="eventDate" type="date" className="w-full px-4 py-3 sm:p-4 rounded-xl bg-white/40 dark:bg-slate-950/40 border border-slate-200/60 dark:border-slate-800/60 focus:border-cyan-500 outline-none transition-all text-sm backdrop-blur-sm dark:text-slate-200" />
-                                                </div>
-                                                <div>
-                                                    <label className="text-[10px] sm:text-[11px] font-black text-cyan-500 uppercase tracking-[0.2em] ml-1 mb-1 block">Contact (WhatsApp) *</label>
-                                                    <motion.input whileFocus={{ scale: 1.01, borderColor: "#06b6d4" }} required name="phone" type="tel" placeholder="+94 7X XXX XXXX" className="w-full px-4 py-3 sm:p-4 rounded-xl bg-white/40 dark:bg-slate-950/40 border border-slate-200/60 dark:border-slate-800/60 focus:border-cyan-500 outline-none transition-all text-sm backdrop-blur-sm dark:text-slate-200" />
-                                                </div>
-                                            </motion.div>
-
-                                            <motion.div variants={{ hidden: { opacity: 0, x: -20 }, visible: { opacity: 1, x: 0 } }}>
-                                                <label className="text-[10px] sm:text-[11px] font-black text-cyan-500 uppercase tracking-[0.2em] ml-1 mb-1 block">Description *</label>
-                                                <motion.textarea whileFocus={{ scale: 1.01, borderColor: "#06b6d4" }} required name="description" rows={3} placeholder="Tell us about the event..." className="w-full px-4 py-3 sm:p-4 rounded-xl bg-white/40 dark:bg-slate-950/40 border border-slate-200/60 dark:border-slate-800/60 focus:border-cyan-500 outline-none transition-all text-sm backdrop-blur-sm resize-none dark:text-slate-200" />
-                                            </motion.div>
-
-                                            {/* Divider */}
-                                            <div className="py-2">
-                                                <div className="h-px w-full bg-slate-200 dark:bg-slate-800 relative">
-                                                    <span className="absolute left-1/2 -translate-x-1/2 -top-2 bg-slate-150 dark:bg-slate-900 px-3 text-[10px] font-black text-slate-400 uppercase tracking-widest">Extra Details</span>
-                                                </div>
-                                            </div>
-
-                                            <motion.div variants={{ hidden: { opacity: 0, x: -20 }, visible: { opacity: 1, x: 0 } }}>
-                                                <label className="text-[10px] sm:text-[11px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-[0.2em] ml-1 mb-1 block">Extra Functions / Requirements</label>
-                                                <motion.textarea whileFocus={{ scale: 1.01, borderColor: "#06b6d4" }} name="extra" rows={2} placeholder="E.g. Drone shots, After-party DJ..." className="w-full px-4 py-3 sm:p-4 rounded-xl bg-white/40 dark:bg-slate-950/40 border border-slate-200/60 dark:border-slate-800/60 focus:border-cyan-500 outline-none transition-all text-sm backdrop-blur-sm resize-none dark:text-slate-200" />
-                                            </motion.div>
-
-                                            <motion.div
-                                                variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
-                                                className="pt-2"
-                                            >
-                                                <motion.button
-                                                    whileHover={{ scale: 1.02, y: -2 }}
-                                                    whileTap={{ scale: 0.98 }}
-                                                    type="submit"
-                                                    disabled={isSubmitting}
-                                                    className="w-full py-4 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white font-black rounded-xl shadow-lg flex items-center justify-center gap-3 uppercase tracking-wider text-sm transition-all"
-                                                >
-                                                    <LuSend size={18} />
-                                                    {isSubmitting ? 'Transmitting Data...' : 'Submit Event Concept'}
-                                                </motion.button>
-                                            </motion.div>
-                                        </form>
+                                                    <motion.div
+                                                        variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
+                                                        className="pt-2"
+                                                    >
+                                                        <motion.button
+                                                            whileHover={{ scale: 1.02, y: -2 }}
+                                                            whileTap={{ scale: 0.98 }}
+                                                            type="submit"
+                                                            disabled={isSubmitting}
+                                                            className="w-full py-4 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white font-black rounded-xl shadow-lg flex items-center justify-center gap-3 uppercase tracking-wider text-sm transition-all"
+                                                        >
+                                                            <LuSend size={18} />
+                                                            {isSubmitting ? 'Transmitting Data...' : 'Submit Event Concept'}
+                                                        </motion.button>
+                                                    </motion.div>
+                                                </form>
+                                            </>
+                                        )}
                                     </motion.div>
                                 </motion.div>
                             </div>
@@ -550,7 +764,7 @@ const Events = () => {
                         <div className="flex-1">
                             <h4 className="text-slate-900 dark:text-white font-bold text-sm">Submission Successful!</h4>
                             <p className="text-slate-500 dark:text-slate-400 text-xs mt-1 leading-relaxed">
-                                Please allow up to 24 hours for review and acceptance. We will contact you via WhatsApp shortly.
+                                Event concept transmitted successfully! Your event is undergoing premium moderation and will be live once approved.
                             </p>
                         </div>
                         <button onClick={() => setShowToast(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">

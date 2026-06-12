@@ -191,5 +191,114 @@ export const api = {
     });
     if (!response.ok) throw new Error('Failed to submit your review');
     return response.json();
+  },
+
+  submitServiceRequest: async (requestData: {
+    serviceName: string;
+    clientPhone: string;
+    clientEmail?: string;
+    brief: string;
+    deadline?: string;
+    budget?: string;
+  }, token: string): Promise<any> => {
+    const response = await fetch(`http://localhost:5000/api/services`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify(requestData)
+    });
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.message || 'Failed to submit service request');
+    }
+    return response.json();
+  },
+
+  getMyServiceRequests: async (token: string): Promise<any[]> => {
+    const response = await fetch(`http://localhost:5000/api/services/my-requests`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    if (!response.ok) throw new Error('Failed to fetch your service requests');
+    const data = await response.json();
+    return data.data ?? [];
+  },
+
+  getServiceMessages: async (requestId: string, token: string): Promise<any[]> => {
+    const response = await fetch(`http://localhost:5000/api/services/${requestId}/messages`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    if (!response.ok) throw new Error('Failed to fetch messages for this request');
+    const data = await response.json();
+    return data.data ?? [];
+  },
+
+  addServiceMessage: async (requestId: string, message: string, token: string): Promise<any> => {
+    const response = await fetch(`http://localhost:5000/api/services/${requestId}/messages`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({ message })
+    });
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.message || 'Failed to submit comment');
+    }
+    const data = await response.json();
+    return data.data;
+  },
+
+  // Events API Integration
+  getApprovedEvents: async (): Promise<any[]> => {
+    const response = await fetch(`http://localhost:5000/api/events`);
+    if (!response.ok) throw new Error('Failed to fetch approved events');
+    return response.json();
+  },
+
+  submitEvent: async (formData: FormData, token: string): Promise<any> => {
+    const response = await fetch(`http://localhost:5000/api/events`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+      body: formData
+    });
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.message || 'Failed to submit event');
+    }
+    return response.json();
+  },
+
+  getMyEvents: async (token: string): Promise<any[]> => {
+    const response = await fetch(`http://localhost:5000/api/events/my-events`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    if (!response.ok) throw new Error('Failed to fetch your events');
+    const data = await response.json();
+    return data.data ?? [];
+  },
+
+  deleteEvent: async (id: string, token: string): Promise<any> => {
+    const response = await fetch(`http://localhost:5000/api/events/${id}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.message || 'Failed to delete event');
+    }
+    return response.json();
   }
 };

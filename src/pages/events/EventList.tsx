@@ -7,6 +7,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import TiltCard from '../../components/ui/TiltCard';
 import EventDetails from './EventDetails';
+import { api } from '../../api';
+
 
 // Mock Data for University Events
 const DUMMY_EVENTS = [
@@ -134,14 +136,24 @@ const EventList = () => {
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("All");
-    const [selectedEvent, setSelectedEvent] = useState<typeof DUMMY_EVENTS[0] | null>(null);
+    const [selectedEvent, setSelectedEvent] = useState<any | null>(null);
     const [, setIsScrolled] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [events, setEvents] = useState<any[]>([]);
 
     useEffect(() => {
-        // Simulating data fetch
-        const timer = setTimeout(() => setLoading(false), 300);
-        return () => clearTimeout(timer);
+        const loadEvents = async () => {
+            try {
+                setLoading(true);
+                const data = await api.getApprovedEvents();
+                setEvents(data);
+            } catch (err) {
+                console.error("Failed to load approved events:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        loadEvents();
     }, []);
 
     useEffect(() => {
@@ -150,13 +162,16 @@ const EventList = () => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    const filteredEvents = DUMMY_EVENTS.filter(event => {
-        const matchesSearch = event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            event.uni.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            event.faculty.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesCategory = selectedCategory === "All" || event.category === selectedCategory;
-        return matchesSearch && matchesCategory;
-    });
+    const filteredEvents = (() => {
+        const displayEvents = events.length > 0 ? events : DUMMY_EVENTS;
+        return displayEvents.filter(event => {
+            const matchesSearch = event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                event.uni.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                (event.faculty && event.faculty.toLowerCase().includes(searchTerm.toLowerCase()));
+            const matchesCategory = selectedCategory === "All" || event.category === selectedCategory;
+            return matchesSearch && matchesCategory;
+        });
+    })();
 
     const handleWhatsApp = (contact: string, title: string) => {
         const message = `Hi! I'm interested in the event: *${title}*. Could you please provide more details?`;
@@ -293,96 +308,106 @@ const EventList = () => {
                                     layout
                                     className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10"
                                 >
-                                    {filteredEvents.map((event, index) => (
-                                        <motion.div
-                                            key={event.id}
-                                            layout
-                                            initial={{ opacity: 0, y: 30 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
-                                            transition={{ duration: 0.5, delay: index * 0.1 }}
-                                        >
-                                            <TiltCard className="h-full">
-                                                <div className="group h-full bg-white/40 dark:bg-slate-900/40 backdrop-blur-[24px] border border-white/40 dark:border-slate-800 rounded-[2.5rem] p-4 hover:shadow-[0_40px_80px_-20px_rgba(0,63,221,0.15)] transition-all duration-500 flex flex-col">
-                                                    {/* Image Container */}
-                                                    <div className="relative h-72 rounded-[2rem] overflow-hidden mb-6">
-                                                        <img
-                                                            src={event.image}
-                                                            alt={event.title}
-                                                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                                        />
-                                                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                                    {filteredEvents.map((event, index) => {
+                                        const imageUrl = event.image
+                                            ? (event.image.startsWith('http') ? event.image : `http://localhost:5000${event.image}`)
+                                            : 'https://images.unsplash.com/photo-1540575861501-7ad058ad37fa?q=80&w=800';
 
-                                                        {/* Date Badge */}
-                                                        <div className="absolute top-4 left-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md px-4 py-2 rounded-2xl flex flex-col items-center border border-white/20">
-                                                            <span className="text-xl font-black text-blue-600 leading-none">{event.date.split('-')[2]}</span>
-                                                            <span className="text-[10px] font-bold uppercase tracking-tighter text-slate-500">{new Date(event.date).toLocaleString('default', { month: 'short' }).toUpperCase()}</span>
-                                                        </div>
+                                        const eventDate = new Date(event.date);
+                                        const dayStr = isNaN(eventDate.getTime()) ? event.date : String(eventDate.getDate());
+                                        const monthStr = isNaN(eventDate.getTime()) ? 'OCT' : eventDate.toLocaleString('default', { month: 'short' }).toUpperCase();
 
-                                                        {/* Category Tag */}
-                                                        <div className="absolute top-4 right-4 bg-blue-600 text-white px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg">
-                                                            {event.category}
-                                                        </div>
-                                                    </div>
+                                        return (
+                                            <motion.div
+                                                key={event.id}
+                                                layout
+                                                initial={{ opacity: 0, y: 30 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
+                                                transition={{ duration: 0.5, delay: index * 0.1 }}
+                                            >
+                                                <TiltCard className="h-full">
+                                                    <div className="group h-full bg-white/40 dark:bg-slate-900/40 backdrop-blur-[24px] border border-white/40 dark:border-slate-800 rounded-[2.5rem] p-4 hover:shadow-[0_40px_80px_-20px_rgba(0,63,221,0.15)] transition-all duration-500 flex flex-col">
+                                                        {/* Image Container */}
+                                                        <div className="relative h-72 rounded-[2rem] overflow-hidden mb-6">
+                                                            <img
+                                                                src={imageUrl}
+                                                                alt={event.title}
+                                                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                                            />
+                                                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
-                                                    {/* Content */}
-                                                    <div className="px-3 flex-grow space-y-4">
-                                                        <div className="space-y-1">
-                                                            <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 text-[10px] font-black uppercase tracking-[0.2em]">
-                                                                <LuGraduationCap /> {event.uni} - {event.faculty}
+                                                            {/* Date Badge */}
+                                                            <div className="absolute top-4 left-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md px-4 py-2 rounded-2xl flex flex-col items-center border border-white/20">
+                                                                <span className="text-xl font-black text-blue-600 leading-none">{dayStr}</span>
+                                                                <span className="text-[10px] font-bold uppercase tracking-tighter text-slate-500">{monthStr}</span>
                                                             </div>
-                                                            <h3 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tighter group-hover:text-blue-600 transition-colors">
-                                                                {event.title}
-                                                            </h3>
-                                                        </div>
 
-                                                        <div className="flex flex-wrap gap-4 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
-                                                            <div className="flex items-center gap-1.5">
-                                                                <LuMapPin className="text-blue-500" /> {event.location}
-                                                            </div>
-                                                            <div className="flex items-center gap-1.5">
-                                                                <LuClock className="text-blue-500" /> {event.time}
+                                                            {/* Category Tag */}
+                                                            <div className="absolute top-4 right-4 bg-blue-600 text-white px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg">
+                                                                {event.category || 'Event'}
                                                             </div>
                                                         </div>
 
-                                                        <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed font-medium line-clamp-2">
-                                                            {event.description}
-                                                        </p>
-
-                                                        {/* Expandable Details Peek */}
-                                                        <div className="pt-4 flex items-center justify-between border-t border-slate-200/50 dark:border-slate-800/50">
-                                                            <div className="flex items-center gap-2 group/info cursor-default">
-                                                                <div className="p-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-600">
-                                                                    <LuInfo size={16} />
+                                                        {/* Content */}
+                                                        <div className="px-3 flex-grow space-y-4">
+                                                            <div className="space-y-1">
+                                                                <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 text-[10px] font-black uppercase tracking-[0.2em]">
+                                                                    <LuGraduationCap /> {event.uni}{event.faculty ? ` - ${event.faculty}` : ''}
                                                                 </div>
-                                                                <span className="text-[10px] font-bold text-slate-400 group-hover/info:text-blue-500 transition-colors uppercase">Details Available</span>
+                                                                <h3 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tighter group-hover:text-blue-600 transition-colors">
+                                                                    {event.title}
+                                                                </h3>
                                                             </div>
-                                                            <div className="text-right">
-                                                                <span className="block text-[9px] font-black text-slate-400 uppercase tracking-widest">Entry</span>
-                                                                <span className="text-xs font-black text-slate-700 dark:text-slate-200 uppercase">{event.requirements}</span>
-                                                            </div>
-                                                        </div>
 
-                                                        {/* Interaction Buttons */}
-                                                        <div className="pt-4 grid grid-cols-2 gap-3">
-                                                            <button
-                                                                onClick={() => setSelectedEvent(event)}
-                                                                className="flex items-center justify-center gap-2 py-3.5 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-bold uppercase tracking-widest text-[10px] transition-all hover:bg-blue-600 hover:text-white active:scale-95 border border-transparent shadow-md"
-                                                            >
-                                                                <LuInfo size={14} /> View Details
-                                                            </button>
-                                                            <button
-                                                                onClick={() => handleWhatsApp(event.contact, event.title)}
-                                                                className="flex items-center justify-center gap-2 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold uppercase tracking-widest text-[10px] transition-all shadow-md shadow-emerald-500/20 active:scale-95"
-                                                            >
-                                                                <LuMessageCircle size={14} /> Contact
-                                                            </button>
+                                                            <div className="flex flex-wrap gap-4 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
+                                                                <div className="flex items-center gap-1.5">
+                                                                    <LuMapPin className="text-blue-500" /> {event.location}
+                                                                </div>
+                                                                <div className="flex items-center gap-1.5">
+                                                                    <LuClock className="text-blue-500" /> {event.time || '09:00 AM'}
+                                                                </div>
+                                                            </div>
+
+                                                            <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed font-medium line-clamp-2">
+                                                                {event.description}
+                                                            </p>
+
+                                                            {/* Expandable Details Peek */}
+                                                            <div className="pt-4 flex items-center justify-between border-t border-slate-200/50 dark:border-slate-800/50">
+                                                                <div className="flex items-center gap-2 group/info cursor-default">
+                                                                    <div className="p-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-600">
+                                                                        <LuInfo size={16} />
+                                                                    </div>
+                                                                    <span className="text-[10px] font-bold text-slate-400 group-hover/info:text-blue-500 transition-colors uppercase">Details Available</span>
+                                                                </div>
+                                                                <div className="text-right">
+                                                                    <span className="block text-[9px] font-black text-slate-400 uppercase tracking-widest">Entry</span>
+                                                                    <span className="text-xs font-black text-slate-700 dark:text-slate-200 uppercase">{event.requirements || 'Open for all'}</span>
+                                                                </div>
+                                                            </div>
+
+                                                            {/* Interaction Buttons */}
+                                                            <div className="pt-4 grid grid-cols-2 gap-3">
+                                                                <button
+                                                                    onClick={() => setSelectedEvent(event)}
+                                                                    className="flex items-center justify-center gap-2 py-3.5 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-bold uppercase tracking-widest text-[10px] transition-all hover:bg-blue-600 hover:text-white active:scale-95 border border-transparent shadow-md"
+                                                                >
+                                                                    <LuInfo size={14} /> View Details
+                                                                </button>
+                                                                <button
+                                                                    onClick={() => handleWhatsApp(event.contact, event.title)}
+                                                                    className="flex items-center justify-center gap-2 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold uppercase tracking-widest text-[10px] transition-all shadow-md shadow-emerald-500/20 active:scale-95"
+                                                                >
+                                                                    <LuMessageCircle size={14} /> Contact
+                                                                </button>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </TiltCard>
-                                        </motion.div>
-                                    ))}
+                                                </TiltCard>
+                                            </motion.div>
+                                        );
+                                    })}
                                 </motion.div>
                             </AnimatePresence>
 
