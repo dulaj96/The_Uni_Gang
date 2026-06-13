@@ -8,6 +8,33 @@ import SEO from '../../components/SEO';
 import PremiumPageLoader from '../../components/ui/PremiumPageLoader';
 import toast from 'react-hot-toast';
 
+const getLoggedInUserEmail = (): string | null => {
+  const email = localStorage.getItem('userEmail');
+  if (email) return email;
+  
+  const token = localStorage.getItem('userToken');
+  if (token) {
+    if (token === 'dummy_token') {
+      return 'john@example.com';
+    }
+    if (token.startsWith('mock_token:')) {
+      const parts = token.split(':');
+      return parts[1] || null;
+    }
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+      return JSON.parse(jsonPayload).email || null;
+    } catch (e) {
+      return null;
+    }
+  }
+  return null;
+};
+
 const BlogDetail: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const [blog, setBlog] = useState<Blog | null>(null);
@@ -306,7 +333,7 @@ const BlogDetail: React.FC = () => {
                 <div className="space-y-6">
                   {blog.comments && blog.comments.length > 0 ? (
                     blog.comments.map((comment) => {
-                      const isOwner = comment.user.email === localStorage.getItem('userEmail');
+                      const isOwner = comment.user.email === getLoggedInUserEmail();
                       return (
                         <motion.div 
                           key={comment.id}
