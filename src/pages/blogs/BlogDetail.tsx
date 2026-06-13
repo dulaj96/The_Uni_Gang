@@ -132,25 +132,58 @@ const BlogDetail: React.FC = () => {
     }
   };
 
-  const handleCommentDelete = async (commentId: string) => {
+  const handleCommentDelete = (commentId: string) => {
     if (!blog) return;
     const token = localStorage.getItem('userToken');
     if (!token) return;
-    if (!window.confirm('Are you sure you want to remove this comment?')) return;
 
-    try {
-      await api.deleteComment(blog.id, commentId, token);
-      setBlog(prev => prev ? {
-        ...prev,
-        comments: (prev.comments || []).filter(c => c.id !== commentId)
-      } : null);
-      toast.success('Comment removed.', {
-        style: { borderRadius: '20px', background: '#1e293b', color: '#fff' }
-      });
-    } catch (err) {
-      console.error(err);
-      toast.error('Failed to delete comment.');
-    }
+    toast((t) => (
+      <div className="flex flex-col gap-3 p-1">
+        <p className="text-sm font-semibold text-white">Are you sure you want to remove this comment?</p>
+        <div className="flex justify-end gap-2 mt-1">
+          <button 
+            onClick={() => toast.dismiss(t.id)}
+            className="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold transition-all cursor-pointer border border-slate-700"
+          >
+            Cancel
+          </button>
+          <button 
+            onClick={async () => {
+              toast.dismiss(t.id);
+              try {
+                await api.deleteComment(blog.id, commentId, token);
+                setBlog(prev => prev ? {
+                  ...prev,
+                  comments: (prev.comments || []).filter(c => c.id !== commentId)
+                } : null);
+                toast.success('Comment removed.', {
+                  style: { borderRadius: '20px', background: '#1e293b', color: '#fff' }
+                });
+              } catch (err) {
+                console.error(err);
+                toast.error('Failed to delete comment.', {
+                  style: { borderRadius: '20px', background: '#1e293b', color: '#fff' }
+                });
+              }
+            }}
+            className="px-3.5 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition-all cursor-pointer shadow-md shadow-red-600/20"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    ), {
+      duration: 6000,
+      position: 'top-center',
+      style: {
+        borderRadius: '24px',
+        background: '#0f172a',
+        color: '#fff',
+        border: '1px solid #1e293b',
+        padding: '16px',
+        boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.3), 0 8px 10px -6px rgb(0 0 0 / 0.3)'
+      }
+    });
   };
 
   if (!loading && !blog) {
