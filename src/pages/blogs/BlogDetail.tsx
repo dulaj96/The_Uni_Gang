@@ -1,16 +1,21 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion, useScroll, useSpring, AnimatePresence } from 'framer-motion';
-import { LuArrowLeft, LuClock, LuCalendar, LuThumbsUp, LuShare2 } from 'react-icons/lu';
+import { LuArrowLeft, LuClock, LuCalendar, LuThumbsUp, LuShare2, LuMessageSquare, LuTrash2, LuSend } from 'react-icons/lu';
 import { api } from '../../api';
 import { Blog } from '../../types/blog';
 import SEO from '../../components/SEO';
 import PremiumPageLoader from '../../components/ui/PremiumPageLoader';
+import toast from 'react-hot-toast';
 
 const BlogDetail: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const [blog, setBlog] = useState<Blog | null>(null);
   const [loading, setLoading] = useState(true);
+
+  // Comments state
+  const [commentText, setCommentText] = useState("");
+  const [submittingComment, setSubmittingComment] = useState(false);
 
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
@@ -19,16 +24,106 @@ const BlogDetail: React.FC = () => {
     restDelta: 0.001
   });
 
-  useEffect(() => {
-    const fetchBlog = async () => {
-      if (slug) {
+  const fetchBlog = async () => {
+    if (slug) {
+      try {
         const data = await api.getBlogBySlug(slug);
         if (data) setBlog(data);
+      } catch (error) {
+        console.error('Error fetching blog details:', error);
+      } finally {
         setLoading(false);
       }
-    };
+    }
+  };
+
+  useEffect(() => {
     fetchBlog();
   }, [slug]);
+
+  const handleLike = async () => {
+    if (!blog) return;
+    const token = localStorage.getItem('userToken');
+    if (!token) {
+      toast.error('Please login to like this blog post.', {
+        style: { borderRadius: '20px', background: '#1e293b', color: '#fff' }
+      });
+      return;
+    }
+    try {
+      const result = await api.toggleLike(blog.id, token);
+      setBlog(prev => prev ? {
+        ...prev,
+        likes: result.likes,
+        hasLiked: result.hasLiked
+      } : null);
+      if (result.hasLiked) {
+        toast.success('Liked story!', { style: { borderRadius: '20px', background: '#1e293b', color: '#fff' } });
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error('Failed to toggle like.');
+    }
+  };
+
+  const handleShare = () => {
+    navigator.clipboard.writeText(window.location.href);
+    toast.success('Story link copied to clipboard!', {
+      style: { borderRadius: '20px', background: '#1e293b', color: '#fff' }
+    });
+  };
+
+  const handleCommentSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!blog) return;
+    const token = localStorage.getItem('userToken');
+    if (!token) {
+      toast.error('Please login to write a comment.', {
+        style: { borderRadius: '20px', background: '#1e293b', color: '#fff' }
+      });
+      return;
+    }
+    if (!commentText.trim()) return;
+
+    setSubmittingComment(true);
+    try {
+      const newComment = await api.addComment(blog.id, commentText, token);
+      setBlog(prev => prev ? {
+        ...prev,
+        comments: [newComment, ...(prev.comments || [])]
+      } : null);
+      setCommentText('');
+      toast.success('Comment posted successfully!', {
+        style: { borderRadius: '20px', background: '#1e293b', color: '#fff' }
+      });
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err.message || 'Failed to submit comment.');
+    } finally {
+      setSubmittingComment(false);
+    }
+  };
+
+  const handleCommentDelete = async (commentId: string) => {
+    if (!blog) return;
+    const token = localStorage.getItem('userToken');
+    if (!token) return;
+    if (!window.confirm('Are you sure you want to remove this comment?')) return;
+
+    try {
+      await api.deleteComment(blog.id, commentId, token);
+      setBlog(prev => prev ? {
+        ...prev,
+        comments: (prev.comments || []).filter(c => c.id !== commentId)
+      } : null);
+      toast.success('Comment removed.', {
+        style: { borderRadius: '20px', background: '#1e293b', color: '#fff' }
+      });
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to delete comment.');
+    }
+  };
 
   if (!loading && !blog) {
     return (
@@ -75,7 +170,7 @@ const BlogDetail: React.FC = () => {
                   </span>
                 </div>
 
-                <h1 className="mb-8 text-4xl font-black text-slate-900 dark:text-white md:text-5xl lg:text-6xl">
+                <h1 className="mb-8 text-4xl font-black text-slate-900 dark:text-white md:text-5xl lg:text-6xl tracking-tight leading-tight">
                   {blog.title}
                 </h1>
 
@@ -84,7 +179,7 @@ const BlogDetail: React.FC = () => {
                     <img 
                       src={blog.author.avatar} 
                       alt={blog.author.name} 
-                      className="h-12 w-12 rounded-full border-2 border-white shadow-sm"
+                      className="h-12 w-12 rounded-full border-2 border-white shadow-sm object-cover"
                     />
                     <div>
                       <p className="font-bold text-slate-800 dark:text-white">{blog.author.name}</p>
@@ -96,10 +191,20 @@ const BlogDetail: React.FC = () => {
                   </div>
 
                   <div className="flex items-center gap-4">
-                    <button className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition-all hover:bg-blue-50 hover:text-blue-600 dark:bg-slate-800 dark:text-slate-400">
+                    <button 
+                      onClick={handleLike}
+                      className={`flex h-10 w-10 items-center justify-center rounded-full transition-all ${
+                        blog.hasLiked 
+                          ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30' 
+                          : 'bg-slate-100 text-slate-600 hover:bg-blue-50 hover:text-blue-600 dark:bg-slate-800 dark:text-slate-400 dark:hover:text-blue-400'
+                      }`}
+                    >
                       <LuThumbsUp className="w-5 h-5" />
                     </button>
-                    <button className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition-all hover:bg-blue-50 hover:text-blue-600 dark:bg-slate-800 dark:text-slate-400">
+                    <button 
+                      onClick={handleShare}
+                      className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition-all hover:bg-blue-50 hover:text-blue-600 dark:bg-slate-800 dark:text-slate-400 dark:hover:text-blue-400"
+                    >
                       <LuShare2 className="w-5 h-5" />
                     </button>
                   </div>
@@ -107,7 +212,7 @@ const BlogDetail: React.FC = () => {
               </header>
 
               {/* Featured Image */}
-              <div className="mb-12 overflow-hidden rounded-3xl shadow-2xl">
+              <div className="mb-12 overflow-hidden rounded-3xl shadow-2xl bg-slate-100 dark:bg-slate-900">
                 <img 
                   src={blog.featuredImage} 
                   alt={blog.title} 
@@ -138,21 +243,107 @@ const BlogDetail: React.FC = () => {
                   <img 
                     src={blog.author.avatar} 
                     alt={blog.author.name} 
-                    className="h-24 w-24 rounded-full border-4 border-white shadow-xl"
+                    className="h-24 w-24 rounded-full border-4 border-white shadow-xl object-cover"
                   />
                   <div className="text-center md:text-left">
                     <h4 className="mb-2 text-xl font-bold text-slate-800 dark:text-white">Written by {blog.author.name}</h4>
                     <p className="text-slate-600 dark:text-slate-400">
-                      Contributor from {blog.author.university}. Passionate about sharing student perspectives and helping the community grow.
+                      Contributor from {blog.author.university || 'University of Colombo'}. Passionate about sharing student perspectives and helping the community grow.
                     </p>
                     <div className="mt-4 flex flex-wrap justify-center md:justify-start gap-2">
                       {blog.tags.map(tag => (
-                        <span key={tag} className="text-xs font-bold text-blue-600">#{tag}</span>
+                        <span key={tag} className="px-3 py-1 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-bold uppercase tracking-wider">#{tag}</span>
                       ))}
                     </div>
                   </div>
                 </div>
               </div>
+
+              {/* Discussion Section */}
+              <section className="mt-20 border-t border-slate-100 pt-12 dark:border-slate-800">
+                <div className="flex items-center gap-3 mb-8">
+                  <LuMessageSquare className="text-blue-600 text-2xl" />
+                  <h3 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
+                    Discussion ({blog.comments ? blog.comments.length : 0})
+                  </h3>
+                </div>
+
+                {/* Comment Input */}
+                {localStorage.getItem('userToken') ? (
+                  <form onSubmit={handleCommentSubmit} className="mb-12 flex gap-4 items-start">
+                    <img 
+                      src={localStorage.getItem('userProfilePicture') || `https://api.dicebear.com/7.x/avataaars/svg?seed=${localStorage.getItem('userName') || 'User'}`} 
+                      alt="avatar" 
+                      className="w-10 h-10 rounded-full border border-slate-200 object-cover shrink-0 shadow-sm"
+                    />
+                    <div className="flex-1 space-y-3">
+                      <textarea
+                        value={commentText}
+                        onChange={(e) => setCommentText(e.target.value)}
+                        placeholder="Join the conversation..."
+                        required
+                        className="w-full p-4 rounded-2xl bg-slate-50/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 text-sm font-semibold focus:border-blue-500 focus:outline-none dark:text-white transition-all resize-none h-24 shadow-inner"
+                      />
+                      <button
+                        type="submit"
+                        disabled={submittingComment}
+                        className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-black uppercase tracking-widest transition-all shadow-md flex items-center gap-2 hover:scale-[1.02] active:scale-95 cursor-pointer"
+                      >
+                        {submittingComment ? 'Posting...' : 'Post Comment'} <LuSend />
+                      </button>
+                    </div>
+                  </form>
+                ) : (
+                  <div className="mb-12 p-8 rounded-3xl bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 text-center">
+                    <p className="text-slate-600 dark:text-slate-400 font-bold mb-4">Sign in to join the conversation and share your thoughts.</p>
+                    <Link to="/post-ad" className="inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-full text-xs font-black uppercase tracking-widest transition-all shadow-md">
+                      Sign In / Register
+                    </Link>
+                  </div>
+                )}
+
+                {/* Comments List */}
+                <div className="space-y-6">
+                  {blog.comments && blog.comments.length > 0 ? (
+                    blog.comments.map((comment) => {
+                      const isOwner = comment.user.email === localStorage.getItem('userEmail');
+                      return (
+                        <motion.div 
+                          key={comment.id}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="flex gap-4 p-5 rounded-2xl bg-slate-50/30 dark:bg-slate-900/20 border border-slate-100/50 dark:border-slate-900/50 hover:bg-slate-50/50 transition-colors"
+                        >
+                          <img 
+                            src={comment.user.avatar || comment.user.profile_pic || `https://api.dicebear.com/7.x/avataaars/svg?seed=${comment.user.name}`} 
+                            alt={comment.user.name} 
+                            className="w-10 h-10 rounded-full border border-slate-200 object-cover shrink-0 shadow-sm"
+                          />
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between mb-2">
+                              <div>
+                                <span className="font-bold text-sm text-slate-800 dark:text-white mr-2">{comment.user.name}</span>
+                                <span className="text-[10px] text-slate-400 font-semibold">{new Date(comment.createdAt).toLocaleDateString()}</span>
+                              </div>
+                              {isOwner && (
+                                <button 
+                                  onClick={() => handleCommentDelete(comment.id)}
+                                  className="text-red-500 hover:text-red-700 p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/20 transition-all text-sm cursor-pointer"
+                                >
+                                  <LuTrash2 />
+                                </button>
+                              )}
+                            </div>
+                            <p className="text-sm text-slate-600 dark:text-slate-300 font-medium leading-relaxed whitespace-pre-wrap">{comment.content}</p>
+                          </div>
+                        </motion.div>
+                      );
+                    })
+                  ) : (
+                    <p className="text-center py-10 text-slate-400 font-semibold italic">No comments on this story yet. Be the first to share your thoughts!</p>
+                  )}
+                </div>
+              </section>
             </div>
           </motion.div>
         )}

@@ -36,7 +36,17 @@ const FloatingIcon = ({ icon: Icon, index }: { icon: React.ComponentType, index:
   </motion.div>
 );
 
-const CATEGORIES: BlogCategory[] = ['Campus Life', 'Career Advice', 'Exam Tips', 'Technology'];
+const CATEGORIES: BlogCategory[] = [
+  'Campus Life',
+  'Career Advice',
+  'Exam Tips',
+  'Technology',
+  'Student Accommodation',
+  'Sports & Fitness',
+  'Clubs & Societies',
+  'Events & Festivities',
+  'General Discussion'
+];
 
 const BlogList: React.FC = () => {
   const navigate = useNavigate();

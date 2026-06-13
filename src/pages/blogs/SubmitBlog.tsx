@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import SEO from '../../components/SEO';
 import PremiumPageLoader from '../../components/ui/PremiumPageLoader';
 import { toast } from 'react-hot-toast';
+import { api } from '../../api';
 
 const SubmitBlog: React.FC = () => {
   const navigate = useNavigate();
@@ -19,16 +20,41 @@ const SubmitBlog: React.FC = () => {
     image: null as File | null
   });
 
-  const categories = ['Campus Life', 'Career Advice', 'Exam Tips', 'Technology'];
+  const categories = [
+    'Campus Life',
+    'Career Advice',
+    'Exam Tips',
+    'Technology',
+    'Student Accommodation',
+    'Sports & Fitness',
+    'Clubs & Societies',
+    'Events & Festivities',
+    'General Discussion'
+  ];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const token = localStorage.getItem('userToken');
+    if (!token) {
+      toast.error('You must be logged in to submit a blog post.');
+      return;
+    }
+
     setLoading(true);
-    
-    // Simulate API call for premium feel
-    setTimeout(() => {
-      setLoading(false);
-      toast.success('Your blog has been submitted for review!', {
+    try {
+      const data = new FormData();
+      data.append('title', formData.title);
+      data.append('category', formData.category);
+      data.append('excerpt', formData.excerpt);
+      data.append('content', formData.content);
+      data.append('tags', formData.tags);
+      if (formData.image) {
+        data.append('image', formData.image);
+      }
+
+      await api.createBlog(data, token);
+      
+      toast.success('Your blog has been submitted for moderation!', {
         duration: 5000,
         style: {
           borderRadius: '20px',
@@ -38,7 +64,12 @@ const SubmitBlog: React.FC = () => {
         }
       });
       navigate('/blogs');
-    }, 2500);
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err.message || 'Failed to submit blog post.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const nextStep = () => setStep(s => s + 1);
@@ -167,12 +198,13 @@ const SubmitBlog: React.FC = () => {
                 </div>
 
                 <button 
-                  onClick={nextStep}
-                  disabled={!formData.content || !formData.excerpt}
-                  className="w-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 py-6 rounded-2xl font-black uppercase tracking-widest text-sm hover:scale-[1.02] active:scale-95 transition-all shadow-xl disabled:opacity-50 flex items-center justify-center gap-3"
-                >
-                  Finalize Details <LuArrowRight />
-                </button>
+                    type="button"
+                    onClick={nextStep}
+                    disabled={!formData.content || !formData.excerpt}
+                    className="w-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 py-6 rounded-2xl font-black uppercase tracking-widest text-sm hover:scale-[1.02] active:scale-95 transition-all shadow-xl disabled:opacity-50 flex items-center justify-center gap-3"
+                  >
+                    Finalize Details <LuArrowRight />
+                  </button>
               </div>
             </div>
           )}
@@ -188,13 +220,65 @@ const SubmitBlog: React.FC = () => {
               </div>
 
               <div className="space-y-8">
-                <div className="space-y-2">
-                  <label className="text-sm font-black text-slate-400 uppercase tracking-widest ml-1">Featured Image</label>
-                  <div className="relative h-48 rounded-2xl bg-slate-100 dark:bg-slate-800/50 border-2 border-dashed border-slate-200 dark:border-slate-700 flex flex-col items-center justify-center gap-4 group cursor-pointer hover:border-blue-500 transition-all">
-                    <LuImage className="text-4xl text-slate-400 group-hover:text-blue-500 transition-colors" />
-                    <p className="text-sm font-bold text-slate-500">Drag or click to upload your cover image</p>
-                    <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" />
-                  </div>
+                <div className="space-y-3">
+                  <label className="text-sm font-black text-slate-400 uppercase tracking-widest ml-1">Featured Image (Only 1 Cover Photo)</label>
+
+                  {/* Empty state: click-to-upload zone */}
+                  {!formData.image && (
+                    <div className="relative rounded-2xl bg-slate-100 dark:bg-slate-800/50 border-2 border-dashed border-slate-300 dark:border-slate-700 flex flex-col items-center justify-center gap-4 group cursor-pointer hover:border-blue-500 hover:bg-blue-50/30 dark:hover:bg-blue-900/10 transition-all py-16 overflow-hidden">
+                      <div className="w-16 h-16 rounded-2xl bg-slate-200 dark:bg-slate-700 flex items-center justify-center group-hover:bg-blue-100 dark:group-hover:bg-blue-900/40 transition-colors">
+                        <LuImage className="text-3xl text-slate-400 group-hover:text-blue-500 transition-colors" />
+                      </div>
+                      <div className="text-center">
+                        <p className="font-black text-slate-600 dark:text-slate-300 text-sm uppercase tracking-wider">Click to upload cover image</p>
+                        <p className="text-xs text-slate-400 mt-1">JPG, PNG, WebP — max one image</p>
+                      </div>
+                      <input 
+                        type="file" 
+                        accept="image/*"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) setFormData({ ...formData, image: file });
+                        }}
+                        className="absolute inset-0 opacity-0 cursor-pointer z-30" 
+                      />
+                    </div>
+                  )}
+
+                  {/* Preview: show full uploaded image */}
+                  {formData.image && (
+                    <div className="relative rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-950 group">
+                      <img 
+                        src={URL.createObjectURL(formData.image)} 
+                        alt="Cover preview" 
+                        className="w-full max-h-[480px] object-contain"
+                      />
+                      {/* Change image overlay */}
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-all flex flex-col items-center justify-center gap-3 opacity-0 group-hover:opacity-100">
+                        <div className="bg-white/90 backdrop-blur rounded-xl px-5 py-3 flex items-center gap-2">
+                          <LuImage className="text-slate-700" />
+                          <span className="text-xs font-black text-slate-700 uppercase tracking-wider">Change Image</span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setFormData({ ...formData, image: null })}
+                          className="bg-red-500/90 backdrop-blur text-white text-xs font-black px-5 py-3 rounded-xl uppercase tracking-wider hover:bg-red-600 transition-colors"
+                        >
+                          Remove Image
+                        </button>
+                      </div>
+                      {/* Hidden file input to re-select */}
+                      <input 
+                        type="file" 
+                        accept="image/*"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) setFormData({ ...formData, image: file });
+                        }}
+                        className="absolute inset-0 opacity-0 cursor-pointer z-10" 
+                      />
+                    </div>
+                  )}
                 </div>
 
                 <div className="space-y-2">
@@ -219,11 +303,11 @@ const SubmitBlog: React.FC = () => {
                 </div>
 
                 <button 
-                  type="submit"
-                  className="w-full bg-blue-600 text-white py-6 rounded-2xl font-black uppercase tracking-widest text-sm hover:scale-[1.02] active:scale-95 transition-all shadow-2xl shadow-blue-600/30 flex items-center justify-center gap-3"
-                >
-                  Publish Story <LuSend />
-                </button>
+                    type="submit"
+                    className="w-full bg-blue-600 text-white py-6 rounded-2xl font-black uppercase tracking-widest text-sm hover:scale-[1.02] active:scale-95 transition-all shadow-2xl shadow-blue-600/30 flex items-center justify-center gap-3"
+                  >
+                    Publish Story <LuSend />
+                  </button>
               </div>
             </form>
           )}

@@ -220,8 +220,25 @@ const Profile = () => {
     }
   };
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+    const token = localStorage.getItem('userToken');
+    const fullName = `${firstName} ${lastName}`.trim();
+
+    if (token) {
+      try {
+        await api.updateProfile({
+          name: fullName,
+          profile_pic: profilePicture,
+          phone: phoneNumber
+        }, token);
+        localStorage.setItem('userName', fullName);
+      } catch (err: any) {
+        console.error('Failed to sync profile changes with backend:', err);
+        toast.error('Sync error: changes saved locally but failed to save to server.');
+      }
+    }
+
     localStorage.setItem('userFirstName', firstName);
     localStorage.setItem('userLastName', lastName);
     localStorage.setItem('userEmail', email);

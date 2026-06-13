@@ -1,13 +1,14 @@
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { LuMic, LuTrendingUp, LuQuote } from 'react-icons/lu';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import TiltCard from '../ui/TiltCard';
 import PremiumTraceButton from '../ui/PremiumTraceButton';
 import PremiumPageLoader from '../ui/PremiumPageLoader';
 import campusLife from "../../assets/campus-life.jpg";
 import BlogCard from '../../pages/blogs/ArticleCard';
 import { Blog } from '../../types/blog';
+import { api } from '../../api';
 
 const latestBlogs: Blog[] = [
   {
@@ -78,6 +79,19 @@ const latestBlogs: Blog[] = [
 const Blogs = () => {
   const navigate = useNavigate();
   const [isNavigating, setIsNavigating] = useState(false);
+  const [blogs, setBlogs] = useState<Blog[]>([]);
+
+  useEffect(() => {
+    const fetchLatest = async () => {
+      try {
+        const data = await api.getBlogs();
+        setBlogs(data);
+      } catch (err) {
+        console.error('Failed to fetch latest blogs:', err);
+      }
+    };
+    fetchLatest();
+  }, []);
 
   const handleExploreFeed = () => {
     setIsNavigating(true);
@@ -182,7 +196,7 @@ const Blogs = () => {
             </motion.div> */}
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {latestBlogs.slice(0, 2).map((blog, idx) => (
+              {(blogs.length > 0 ? blogs.slice(0, 2) : latestBlogs.slice(0, 2)).map((blog, idx) => (
                 <motion.div
                   key={blog.id}
                   initial={{ opacity: 0, y: 30 }}

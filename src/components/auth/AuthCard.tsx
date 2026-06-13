@@ -65,8 +65,10 @@ const AuthCard: React.FC<AuthCardProps> = ({ onAuthSuccess }) => {
         setLoading(true);
         // Simulating login
         setTimeout(() => {
-            localStorage.setItem('userToken', 'dummy_token');
-            localStorage.setItem('userName', 'TestUser');
+            const token = `mock_token:${authEmail}:${encodeURIComponent(authName || 'TestUser')}:`;
+            localStorage.setItem('userToken', token);
+            localStorage.setItem('userName', authName || 'TestUser');
+            localStorage.setItem('userEmail', authEmail);
             dispatchAuthUpdate();
             onAuthSuccess();
             setLoading(false);
@@ -80,8 +82,10 @@ const AuthCard: React.FC<AuthCardProps> = ({ onAuthSuccess }) => {
         setLoading(true);
         // Simulating registration
         setTimeout(() => {
-            localStorage.setItem('userToken', 'dummy_token');
+            const token = `mock_token:${authEmail}:${encodeURIComponent(authName || 'NewUser')}:`;
+            localStorage.setItem('userToken', token);
             localStorage.setItem('userName', authName || 'NewUser');
+            localStorage.setItem('userEmail', authEmail);
             dispatchAuthUpdate();
             onAuthSuccess();
             setLoading(false);
@@ -91,9 +95,9 @@ const AuthCard: React.FC<AuthCardProps> = ({ onAuthSuccess }) => {
     };
 
     const handleGoogleSuccess = (userData: any, _token: string) => {
-        // Store dummy_token as the auth bypass recognized by the backend landlord portal.
-        // User profile info from Google is stored separately for display purposes.
-        localStorage.setItem('userToken', 'dummy_token');
+        // Store dynamic mock token containing email, name, and picture
+        const token = `mock_token:${userData.email}:${encodeURIComponent(userData.name)}:${encodeURIComponent(userData.picture || '')}`;
+        localStorage.setItem('userToken', token);
         localStorage.setItem('userName', userData.name);
         localStorage.setItem('userProfilePicture', userData.picture);
         localStorage.setItem('userFirstName', userData.given_name);
