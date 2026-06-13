@@ -333,7 +333,17 @@ const BlogDetail: React.FC = () => {
                 <div className="space-y-6">
                   {blog.comments && blog.comments.length > 0 ? (
                     blog.comments.map((comment) => {
-                      const isOwner = comment.user.email === getLoggedInUserEmail();
+                      const userEmail = getLoggedInUserEmail();
+                      const commentEmail = comment.user.email;
+                      console.log('DEBUG COMMENT OWNER CHECK:', {
+                        commentId: comment.id,
+                        commentContent: comment.content,
+                        commentUser: comment.user,
+                        commentUserEmail: commentEmail,
+                        loggedInUserEmail: userEmail,
+                        match: commentEmail === userEmail
+                      });
+                      const isOwner = commentEmail === userEmail;
                       return (
                         <motion.div 
                           key={comment.id}
