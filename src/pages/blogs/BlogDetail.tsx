@@ -9,9 +9,6 @@ import PremiumPageLoader from '../../components/ui/PremiumPageLoader';
 import toast from 'react-hot-toast';
 
 const getLoggedInUserEmail = (): string | null => {
-  const email = localStorage.getItem('userEmail');
-  if (email) return email;
-  
   const token = localStorage.getItem('userToken');
   if (token) {
     if (token === 'dummy_token') {
@@ -29,9 +26,13 @@ const getLoggedInUserEmail = (): string | null => {
       }).join(''));
       return JSON.parse(jsonPayload).email || null;
     } catch (e) {
-      return null;
+      // ignore parsing errors and fall back to local storage
     }
   }
+  
+  const email = localStorage.getItem('userEmail');
+  if (email) return email;
+  
   return null;
 };
 
