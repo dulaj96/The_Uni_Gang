@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { LuImage, LuType, LuLayoutDashboard, LuCheck, LuArrowRight, LuArrowLeft, LuSend, LuSparkles, LuGlobe } from 'react-icons/lu';
 import { useNavigate } from 'react-router-dom';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import SEO from '../../components/SEO';
 import PremiumPageLoader from '../../components/ui/PremiumPageLoader';
 import { toast } from 'react-hot-toast';
@@ -188,13 +190,37 @@ const SubmitBlog: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-black text-slate-400 uppercase tracking-widest ml-1">Full Content (HTML Supported)</label>
-                  <textarea 
-                    placeholder="Start writing your masterpiece..."
-                    className="w-full bg-slate-100 dark:bg-slate-800/50 border-none rounded-2xl p-6 text-lg font-medium text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 transition-all outline-none h-64 resize-none"
-                    value={formData.content}
-                    onChange={e => setFormData({...formData, content: e.target.value})}
-                  />
+                  <label className="text-sm font-black text-slate-400 uppercase tracking-widest ml-1">Full Content</label>
+                  <div className="bg-white dark:bg-slate-800/50 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700/50">
+                    <ReactQuill 
+                      theme="snow"
+                      value={formData.content}
+                      onChange={content => setFormData({...formData, content})}
+                      placeholder="Start writing your masterpiece..."
+                      className="text-slate-900 dark:text-white"
+                      modules={{
+                        toolbar: [
+                          [{ 'header': [1, 2, 3, false] }],
+                          ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+                          [{'list': 'ordered'}, {'list': 'bullet'}],
+                          ['link', 'image', 'code-block'],
+                          ['clean']
+                        ]
+                      }}
+                    />
+                  </div>
+                  <style>{`
+                    .ql-toolbar.ql-snow { border: none; border-bottom: 1px solid rgba(148, 163, 184, 0.2); font-family: inherit; }
+                    .ql-container.ql-snow { border: none; font-family: inherit; font-size: 1.125rem; }
+                    .ql-editor { min-height: 300px; padding: 1.5rem; }
+                    .dark .ql-snow .ql-stroke { stroke: #94a3b8; }
+                    .dark .ql-snow .ql-fill { fill: #94a3b8; }
+                    .dark .ql-snow .ql-picker { color: #94a3b8; }
+                    .dark .ql-snow .ql-picker-options { background-color: #1e293b; border-color: #334155; }
+                    .dark .ql-snow .ql-tooltip { background-color: #1e293b; border-color: #334155; color: #fff; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.5); }
+                    .dark .ql-snow .ql-tooltip input[type=text] { background-color: #0f172a; color: #fff; border-color: #334155; }
+                    .dark .ql-editor.ql-blank::before { color: #64748b; font-style: normal; }
+                  `}</style>
                 </div>
 
                 <button 
