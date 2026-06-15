@@ -8,6 +8,7 @@ import { LuMenu, LuX, LuUser, LuLogOut, LuLayoutDashboard, LuSun, LuMoon, LuBell
 import { useTheme } from '../../context/ThemeContext';
 import { dispatchAuthUpdate, listenToAuthUpdate } from '../../utils/authEvents';
 import toast from 'react-hot-toast';
+import { NotificationDropdown } from '../ui/NotificationDropdown';
 
 const Header = () => {
   const { theme, toggleTheme } = useTheme();
@@ -234,10 +235,7 @@ const Header = () => {
         {/* Desktop Profile / Auth / Actions */}
         <div className="hidden md:flex items-center gap-3" ref={dropdownRef}>
           {/* Notification Icon */}
-          <button className="p-2.5 rounded-full text-slate-600 hover:bg-slate-100 transition-colors relative">
-            <LuBell className="w-5 h-5" />
-            <span className="absolute top-2 right-2 w-2 h-2 bg-blue-600 rounded-full border-2 border-white"></span>
-          </button>
+          {isLoggedIn && <NotificationDropdown />}
 
           {/* Theme Toggle */}
           <button

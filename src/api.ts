@@ -134,6 +134,25 @@ export const api = {
     };
   },
 
+  getMyBlogs: async (token: string): Promise<Blog[]> => {
+    const response = await fetch(`http://localhost:5000/api/blogs/my`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    if (!response.ok) throw new Error('Failed to fetch your blogs');
+    const data = await response.json();
+    return data.map((blog: any) => ({
+      ...blog,
+      tags: blog.tags ? blog.tags.split(',').map((t: string) => t.trim()) : [],
+      author: {
+        ...blog.author,
+        avatar: blog.author?.profile_pic || `https://api.dicebear.com/7.x/avataaars/svg?seed=${blog.author?.name || 'User'}`
+      },
+      featuredImage: blog.featuredImage ? (blog.featuredImage.startsWith('http') ? blog.featuredImage : `http://localhost:5000${blog.featuredImage}`) : ''
+    }));
+  },
+
   createBlog: async (formData: FormData, token: string): Promise<any> => {
     const response = await fetch(`http://localhost:5000/api/blogs`, {
       method: 'POST',
@@ -395,6 +414,40 @@ export const api = {
       const err = await response.json();
       throw new Error(err.message || 'Failed to delete event');
     }
+    return response.json();
+  },
+
+  // Notifications API Integration
+  getMyNotifications: async (token: string): Promise<any[]> => {
+    const response = await fetch(`http://localhost:5000/api/notifications`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    if (!response.ok) throw new Error('Failed to fetch notifications');
+    const data = await response.json();
+    return data.notifications ?? [];
+  },
+
+  markNotificationAsRead: async (id: string, token: string): Promise<any> => {
+    const response = await fetch(`http://localhost:5000/api/notifications/${id}/read`, {
+      method: 'PATCH',
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    if (!response.ok) throw new Error('Failed to mark notification as read');
+    return response.json();
+  },
+
+  markAllNotificationsAsRead: async (token: string): Promise<any> => {
+    const response = await fetch(`http://localhost:5000/api/notifications/read-all`, {
+      method: 'PATCH',
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    if (!response.ok) throw new Error('Failed to mark all as read');
     return response.json();
   }
 };

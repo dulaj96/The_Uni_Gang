@@ -282,7 +282,7 @@ const BlogDetail: React.FC = () => {
               </div>
 
               {/* Blog Body */}
-              <article className="prose prose-lg mx-auto max-w-none dark:prose-invert prose-headings:font-black prose-a:text-blue-600">
+              <article className="prose prose-lg mx-auto max-w-none dark:prose-invert prose-headings:font-black prose-a:text-blue-600 whitespace-pre-wrap">
                 <div dangerouslySetInnerHTML={{ __html: blog.content }} />
               </article>
 

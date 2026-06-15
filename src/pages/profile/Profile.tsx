@@ -81,6 +81,11 @@ const Profile = () => {
   const [loadingRequests, setLoadingRequests] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState<any | null>(null);
 
+  const [showBlogsModal, setShowBlogsModal] = useState(false);
+  const [submittedBlogs, setSubmittedBlogs] = useState<any[]>([]);
+  const [loadingBlogs, setLoadingBlogs] = useState(false);
+  const [selectedBlog, setSelectedBlog] = useState<any | null>(null);
+
   const [showEventsModal, setShowEventsModal] = useState(false);
   const [submittedEvents, setSubmittedEvents] = useState<any[]>([]);
   const [loadingEvents, setLoadingEvents] = useState(false);
@@ -135,8 +140,24 @@ const Profile = () => {
         setLoadingRequests(false);
       }
     };
+    
+    const fetchBlogs = async () => {
+      const token = localStorage.getItem('userToken');
+      if (!token) return;
+      try {
+        setLoadingBlogs(true);
+        const data = await api.getMyBlogs(token);
+        setSubmittedBlogs(data);
+      } catch (err) {
+        console.error('Failed to load submitted blogs:', err);
+      } finally {
+        setLoadingBlogs(false);
+      }
+    };
+
     fetchRequests();
     fetchSubmittedEvents();
+    fetchBlogs();
   }, []);
 
   useEffect(() => {
@@ -406,7 +427,7 @@ const Profile = () => {
                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3 mb-16">
                   {[
                     { label: 'Saved', value: stats.savedAnnexes, icon: LuBookmark, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-                    { label: 'Reviews', value: stats.recentReviews, icon: LuMessageSquare, color: 'text-purple-500', bg: 'bg-purple-500/10' },
+                    { label: 'My Blogs', value: submittedBlogs.length, icon: LuMessageSquare, color: 'text-purple-500', bg: 'bg-purple-500/10', onClick: () => setShowBlogsModal(true) },
                     { label: 'Activity', value: `${stats.activityScore}%`, icon: LuActivity, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
                     { label: 'My Events', value: submittedEvents.length, icon: LuCalendar, color: 'text-pink-500', bg: 'bg-pink-500/10', onClick: () => setShowEventsModal(true) },
                     { label: 'Listings', value: stats.publishedAds, icon: LuLayoutGrid, color: 'text-orange-500', bg: 'bg-orange-500/10' },
@@ -1079,6 +1100,171 @@ const Profile = () => {
                 </>
               )}
             </AnimatePresence>
+            {/* Backdrop-Blurred Blogs Tracker Modal */}
+            <AnimatePresence>
+              {showBlogsModal && (
+                <>
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    onClick={() => {
+                      setShowBlogsModal(false);
+                      setSelectedBlog(null);
+                    }}
+                    className="fixed inset-0 z-[100] bg-slate-950/60 backdrop-blur-md"
+                  />
+
+                  <div className="fixed inset-0 z-[101] overflow-y-auto pointer-events-none flex items-center justify-center p-4 sm:p-6">
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                      className="w-full max-w-2xl bg-white/95 dark:bg-slate-950/98 backdrop-blur-2xl border border-slate-200/50 dark:border-white/10 rounded-[2.5rem] p-8 shadow-2xl relative pointer-events-auto overflow-hidden max-h-[85vh] flex flex-col"
+                    >
+                      <AnimatePresence mode="wait">
+                        {!selectedBlog ? (
+                          <motion.div
+                            key="list"
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: 10 }}
+                            className="flex flex-col h-full overflow-hidden"
+                          >
+                            <div className="flex justify-between items-start mb-6">
+                              <div>
+                                <span className="text-[10px] font-black uppercase tracking-widest text-purple-500 mb-1 block">Content Hub</span>
+                                <h3 className="text-2xl font-black text-slate-800 dark:text-white tracking-tight">Your Published Blogs</h3>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => setShowBlogsModal(false)}
+                                className="p-2.5 rounded-full bg-slate-200/50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 hover:bg-red-500 hover:text-white transition-all hover:rotate-90 duration-300"
+                              >
+                                <LuX size={18} />
+                              </button>
+                            </div>
+
+                            <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-4">
+                              {loadingBlogs ? (
+                                <div className="py-20 text-center text-slate-400 dark:text-slate-500 animate-pulse font-black uppercase tracking-widest text-xs">
+                                  Retrieving your blogs...
+                                </div>
+                              ) : submittedBlogs.length === 0 ? (
+                                <div className="py-20 text-center bg-slate-500/5 border border-slate-200/10 dark:border-white/10 rounded-3xl">
+                                  <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">No blogs found</p>
+                                </div>
+                              ) : (
+                                <div className="grid grid-cols-1 gap-4">
+                                  {submittedBlogs.map((blog) => (
+                                    <div
+                                      key={blog.id}
+                                      onClick={() => setSelectedBlog(blog)}
+                                      className="cursor-pointer p-5 bg-slate-50 dark:bg-slate-900/40 border border-slate-100 dark:border-white/10 rounded-3xl hover:border-purple-500/30 hover:bg-slate-100/50 dark:hover:bg-slate-800/40 transition-all duration-300 shadow-sm flex items-center justify-between gap-4 group"
+                                    >
+                                      <div className="flex-1 min-w-0">
+                                        <div className="flex items-center gap-3 mb-2">
+                                          <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-tighter border ${blog.status === 'Approved'
+                                            ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20 dark:border-white/10'
+                                            : blog.status === 'Rejected'
+                                              ? 'bg-red-500/10 text-red-400 border-red-500/20 dark:border-white/10'
+                                              : 'bg-amber-500/10 text-amber-400 border-amber-500/20 dark:border-white/10'
+                                            }`}>
+                                            {blog.status}
+                                          </span>
+                                          <span className="text-[10px] font-bold text-slate-400">{new Date(blog.createdAt).toLocaleDateString()}</span>
+                                        </div>
+                                        <h4 className="text-base font-black text-slate-800 dark:text-white tracking-tight group-hover:text-purple-500 transition-colors truncate">
+                                          {blog.title}
+                                        </h4>
+                                        <p className="text-slate-500 dark:text-slate-400 text-xs line-clamp-1 leading-relaxed mt-1">{blog.excerpt}</p>
+                                        <div className="flex gap-4 mt-3">
+                                          <div className="flex items-center gap-1 text-[10px] font-bold text-slate-400"><LuEye size={12} /> {blog.views || 0}</div>
+                                          <div className="flex items-center gap-1 text-[10px] font-bold text-slate-400"><LuMessageSquare size={12} /> {blog.commentsCount || 0}</div>
+                                          <div className="flex items-center gap-1 text-[10px] font-bold text-slate-400"><LuActivity size={12} /> {blog.likes || 0}</div>
+                                        </div>
+                                      </div>
+                                      <LuChevronRight size={18} className="text-slate-400 group-hover:translate-x-1 transition-transform flex-shrink-0" />
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          </motion.div>
+                        ) : (
+                          <motion.div
+                            key="detail"
+                            initial={{ opacity: 0, x: 10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -10 }}
+                            className="flex flex-col h-full overflow-hidden"
+                          >
+                            <div className="flex justify-between items-start mb-6">
+                              <div>
+                                <button
+                                  type="button"
+                                  onClick={() => setSelectedBlog(null)}
+                                  className="text-[10px] font-black uppercase tracking-widest text-purple-500 hover:text-purple-600 mb-1 flex items-center gap-1.5 transition-colors cursor-pointer"
+                                >
+                                  ← Back to list
+                                </button>
+                                <h3 className="text-2xl font-black text-slate-800 dark:text-white tracking-tight mt-1 leading-tight">{selectedBlog.title}</h3>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setShowBlogsModal(false);
+                                  setSelectedBlog(null);
+                                }}
+                                className="p-2.5 rounded-full bg-slate-200/50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 hover:bg-red-500 hover:text-white transition-all hover:rotate-90 duration-300"
+                              >
+                                <LuX size={18} />
+                              </button>
+                            </div>
+
+                            <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-6">
+                              <div className="relative rounded-2xl overflow-hidden shadow-inner max-h-[250px] bg-slate-900 border border-slate-200/10 dark:border-white/10">
+                                {selectedBlog.featuredImage ? (
+                                  <img src={selectedBlog.featuredImage} alt="Cover" className="w-full h-full object-cover" />
+                                ) : (
+                                  <div className="w-full h-32 bg-slate-800 flex items-center justify-center">
+                                    <span className="text-slate-500 font-bold uppercase text-xs tracking-widest">No Image</span>
+                                  </div>
+                                )}
+                              </div>
+
+                              <div className="p-5 rounded-2xl bg-slate-500/5 dark:bg-slate-900/30 border border-slate-200/10 dark:border-white/10">
+                                <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-400 mb-2">Excerpt</p>
+                                <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed italic">"{selectedBlog.excerpt}"</p>
+                              </div>
+
+                              <div className="grid grid-cols-3 gap-4">
+                                <div className="p-4 rounded-2xl bg-slate-500/5 dark:bg-slate-900/30 border border-slate-200/10 dark:border-white/10 flex flex-col items-center justify-center text-center">
+                                  <LuEye size={20} className="text-blue-500 mb-2" />
+                                  <p className="text-xl font-black text-slate-800 dark:text-white leading-none mb-1">{selectedBlog.views || 0}</p>
+                                  <p className="text-[8px] font-black uppercase tracking-widest text-slate-400">Views</p>
+                                </div>
+                                <div className="p-4 rounded-2xl bg-slate-500/5 dark:bg-slate-900/30 border border-slate-200/10 dark:border-white/10 flex flex-col items-center justify-center text-center">
+                                  <LuActivity size={20} className="text-pink-500 mb-2" />
+                                  <p className="text-xl font-black text-slate-800 dark:text-white leading-none mb-1">{selectedBlog.likes || 0}</p>
+                                  <p className="text-[8px] font-black uppercase tracking-widest text-slate-400">Likes</p>
+                                </div>
+                                <div className="p-4 rounded-2xl bg-slate-500/5 dark:bg-slate-900/30 border border-slate-200/10 dark:border-white/10 flex flex-col items-center justify-center text-center">
+                                  <LuMessageSquare size={20} className="text-purple-500 mb-2" />
+                                  <p className="text-xl font-black text-slate-800 dark:text-white leading-none mb-1">{selectedBlog.commentsCount || 0}</p>
+                                  <p className="text-[8px] font-black uppercase tracking-widest text-slate-400">Comments</p>
+                                </div>
+                              </div>
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </motion.div>
+                  </div>
+                </>
+              )}
+            </AnimatePresence>
+
           </motion.div>
         )}
       </AnimatePresence>
