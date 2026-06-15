@@ -70,15 +70,7 @@ const MOCK_CONTRIBUTORS: Contributor[] = [
   }
 ];
 
-// Helper to initialize local storage
-const initStorage = () => {
-  if (!localStorage.getItem(BLOGS_KEY)) {
-    localStorage.setItem(BLOGS_KEY, JSON.stringify(MOCK_BLOGS));
-  }
-  if (!localStorage.getItem(CONTRIBUTORS_KEY)) {
-    localStorage.setItem(CONTRIBUTORS_KEY, JSON.stringify(MOCK_CONTRIBUTORS));
-  }
-};
+// Removed initStorage
 
 export const api = {
   // Blogs
@@ -88,7 +80,7 @@ export const api = {
     if (search) queryParams.append('search', search);
 
     const token = localStorage.getItem('userToken');
-    const headers = token ? { Authorization: `Bearer ${token}` } : {};
+    const headers: Record<string, string> = token ? { Authorization: `Bearer ${token}` } : {};
 
     const response = await fetch(`http://localhost:5000/api/blogs?${queryParams.toString()}`, {
       headers
@@ -108,7 +100,7 @@ export const api = {
 
   getBlogBySlug: async (slug: string): Promise<Blog> => {
     const token = localStorage.getItem('userToken');
-    const headers = token ? { Authorization: `Bearer ${token}` } : {};
+    const headers: Record<string, string> = token ? { Authorization: `Bearer ${token}` } : {};
 
     const response = await fetch(`http://localhost:5000/api/blogs/slug/${slug}`, {
       headers
