@@ -201,7 +201,7 @@ const BlogDetail: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#0a0a0a] transition-colors duration-500 pt-28 pb-20 selection:bg-blue-500/30">
+    <div className="min-h-screen bg-white dark:bg-[#0a0a0a] transition-colors duration-500 pt-28 pb-32 xl:pb-20 selection:bg-blue-500/30">
       <PremiumPageLoader isLoading={loading} message="Loading Story..." />
       
       <AnimatePresence>
@@ -239,6 +239,25 @@ const BlogDetail: React.FC = () => {
               </a>
             </div>
 
+            {/* Mobile/Tablet Fixed Bottom Action Bar */}
+            <div className="xl:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/85 dark:bg-slate-900/85 backdrop-blur-2xl border-t border-slate-200/60 dark:border-slate-800/60 px-6 py-4 flex items-center justify-between shadow-[0_-10px_40px_rgba(0,0,0,0.05)] pb-[calc(env(safe-area-inset-bottom)+1rem)]">
+              <div className="flex items-center gap-8">
+                <button onClick={handleLike} className="flex items-center gap-2 text-slate-500 hover:text-blue-600 transition-colors">
+                  <LuThumbsUp className={`w-6 h-6 ${blog.hasLiked ? 'text-blue-600 fill-blue-600' : ''}`} />
+                  <span className="text-sm font-semibold">{blog.likes}</span>
+                </button>
+                <button onClick={() => document.getElementById('discussion')?.scrollIntoView({ behavior: 'smooth' })} className="flex items-center gap-2 text-slate-500 hover:text-blue-600 transition-colors">
+                  <LuMessageSquare className="w-6 h-6" />
+                  <span className="text-sm font-semibold">{blog.comments?.length || 0}</span>
+                </button>
+              </div>
+              <div className="flex items-center gap-5">
+                <button onClick={handleShare} className="text-slate-500 hover:text-blue-600 transition-colors p-1">
+                  <LuShare2 className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+
             <main className="container mx-auto px-6 max-w-[700px] xl:max-w-[1000px] xl:grid xl:grid-cols-12 xl:gap-16">
               
               {/* Central Content Area */}
@@ -267,16 +286,6 @@ const BlogDetail: React.FC = () => {
                           <span>{new Date(blog.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</span>
                         </div>
                       </div>
-                    </div>
-
-                    {/* Integrated Stats on Mobile/Tablet */}
-                    <div className="flex xl:hidden items-center gap-4 text-slate-500">
-                      <button onClick={handleLike} className="flex items-center gap-1.5 hover:text-blue-600 transition-colors">
-                        <LuThumbsUp className={blog.hasLiked ? "text-blue-600 fill-blue-600" : ""} /> <span>{blog.likes}</span>
-                      </button>
-                      <button onClick={() => document.getElementById('discussion')?.scrollIntoView({ behavior: 'smooth' })} className="flex items-center gap-1.5 hover:text-blue-600 transition-colors">
-                        <LuMessageSquare /> <span>{blog.comments?.length || 0}</span>
-                      </button>
                     </div>
                   </div>
                 </header>
