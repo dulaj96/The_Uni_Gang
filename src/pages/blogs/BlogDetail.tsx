@@ -201,7 +201,7 @@ const BlogDetail: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#0a0a0a] transition-colors duration-500 pt-28 pb-32 xl:pb-20 selection:bg-blue-500/30">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors duration-500 pt-28 pb-32 xl:pb-20 selection:bg-blue-500/30">
       <PremiumPageLoader isLoading={loading} message="Loading Story..." />
       
       <AnimatePresence>
@@ -212,23 +212,23 @@ const BlogDetail: React.FC = () => {
             {/* Reading Progress Bar */}
             <motion.div className="fixed top-0 left-0 right-0 z-[60] h-1 origin-left bg-blue-600 dark:bg-blue-500" style={{ scaleX }} />
 
-            {/* Left Floating Action Bar - Sleek & Minimal */}
-            <div className="hidden xl:flex fixed left-[max(0px,calc(50%-45rem))] top-1/2 -translate-y-1/2 flex-col items-center gap-6 z-40 bg-transparent px-4">
+            {/* Left Floating Action Bar - Sleek Pill Card */}
+            <div className="hidden xl:flex fixed left-8 2xl:left-[max(32px,calc(50%-42rem))] top-1/2 -translate-y-1/2 flex-col items-center gap-5 z-40 bg-white dark:bg-slate-900 shadow-2xl dark:shadow-none border border-slate-200 dark:border-slate-800 py-6 px-3 rounded-full">
               <div className="flex flex-col items-center gap-1 group">
-                <button onClick={handleLike} className={`p-2.5 rounded-full transition-all duration-300 ${blog.hasLiked ? 'text-blue-600 dark:text-blue-400 scale-110' : 'text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'}`}>
-                  <LuThumbsUp className="w-6 h-6" />
+                <button onClick={handleLike} className={`p-2.5 rounded-full transition-all duration-300 ${blog.hasLiked ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/40 scale-110' : 'text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'}`}>
+                  <LuThumbsUp className="w-5 h-5" />
                 </button>
-                <span className="text-xs font-semibold text-slate-500 group-hover:text-slate-800 dark:group-hover:text-slate-300 transition-colors">{blog.likes}</span>
+                <span className="text-[10px] font-black text-slate-500 group-hover:text-slate-800 dark:group-hover:text-slate-300 transition-colors">{blog.likes}</span>
               </div>
               
               <div className="flex flex-col items-center gap-1 group">
                 <button onClick={() => document.getElementById('discussion')?.scrollIntoView({ behavior: 'smooth' })} className="p-2.5 rounded-full text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">
-                  <LuMessageSquare className="w-6 h-6" />
+                  <LuMessageSquare className="w-5 h-5" />
                 </button>
-                <span className="text-xs font-semibold text-slate-500 group-hover:text-slate-800 dark:group-hover:text-slate-300 transition-colors">{blog.comments?.length || 0}</span>
+                <span className="text-[10px] font-black text-slate-500 group-hover:text-slate-800 dark:group-hover:text-slate-300 transition-colors">{blog.comments?.length || 0}</span>
               </div>
 
-              <div className="w-6 h-[1px] bg-slate-200 dark:bg-slate-800 my-2" />
+              <div className="w-8 h-[1px] bg-slate-200 dark:bg-slate-800 my-1" />
               
               <button onClick={handleShare} className="p-2.5 rounded-full text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-all" title="Copy Link">
                 <LuShare2 className="w-5 h-5" />
@@ -263,8 +263,13 @@ const BlogDetail: React.FC = () => {
               {/* Central Content Area */}
               <article className="xl:col-span-8 w-full max-w-[700px] mx-auto">
                 
+                {/* Navigation */}
+                <Link to="/blogs" className="mb-8 inline-flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-blue-600 transition-colors bg-white dark:bg-slate-900 px-4 py-2 rounded-full shadow-sm border border-slate-200 dark:border-slate-800 w-fit">
+                  <LuArrowLeft className="w-4 h-4" /> Back to Blogs
+                </Link>
+
                 {/* Header (Title, Meta) */}
-                <header className="mb-10 pt-4">
+                <header className="mb-10">
                   <div className="mb-8 flex items-center justify-between">
                     <span className="text-sm font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest">
                       {blog.category}
