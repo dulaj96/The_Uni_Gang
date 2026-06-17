@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LuX, LuSend, LuCircleCheck, LuCloudUpload, LuCalendar, LuChevronRight, LuSparkles, LuGraduationCap, LuMapPin, LuClock, LuTrendingUp } from 'react-icons/lu';
-import TiltCard from '../ui/TiltCard.tsx';
+// import TiltCard from '../ui/TiltCard.tsx';
 import PremiumPageLoader from '../ui/PremiumPageLoader';
 import { useNavigate } from 'react-router-dom';
 import PremiumTraceButton from '../ui/PremiumTraceButton';
@@ -194,7 +194,7 @@ const Events = () => {
         e.preventDefault();
         const target = e.currentTarget as HTMLFormElement;
         const formData = new FormData(target);
-        
+
         const title = formData.get('eventName') as string;
         const uni = formData.get('university') as string;
         const date = formData.get('eventDate') as string;
@@ -203,6 +203,7 @@ const Events = () => {
         const extra = formData.get('extra') as string;
         const location = formData.get('location') as string;
         const price = formData.get('price') as string;
+        const capacity = formData.get('capacity') as string;
         const flyerFile = fileInputRef.current?.files?.[0];
 
         const token = localStorage.getItem('userToken');
@@ -227,6 +228,7 @@ const Events = () => {
                     uni,
                     location,
                     price,
+                    capacity,
                     date,
                     contact,
                     extra,
@@ -252,6 +254,7 @@ const Events = () => {
             submitData.append('uni', uni);
             submitData.append('location', location);
             submitData.append('price', price);
+            if (capacity) submitData.append('capacity', capacity);
             submitData.append('date', date);
             submitData.append('contact', contact);
             if (extra) submitData.append('extra', extra);
@@ -265,7 +268,7 @@ const Events = () => {
             setIsModalOpen(false);
             setPreviewImage(null);
             target.reset();
-            
+
             // Success alert (No WhatsApp redirection)
             toast.success('Event submitted successfully for review!');
             setShowToast(true);
@@ -294,6 +297,7 @@ const Events = () => {
             submitData.append('uni', pendingData.uni);
             submitData.append('location', pendingData.location);
             submitData.append('price', pendingData.price);
+            if (pendingData.capacity) submitData.append('capacity', pendingData.capacity);
             submitData.append('date', pendingData.date);
             submitData.append('contact', pendingData.contact);
             if (pendingData.extra) submitData.append('extra', pendingData.extra);
@@ -310,7 +314,7 @@ const Events = () => {
             localStorage.removeItem('pending_event_submission');
             setIsModalOpen(false);
             setPreviewImage(null);
-            
+
             toast.success('Event submitted successfully for review!');
             setShowToast(true);
             fetchLiveEvents();
@@ -429,7 +433,9 @@ const Events = () => {
                                 "https://i.pravatar.cc/150?u=2",
                                 "https://i.pravatar.cc/150?u=3"
                             ];
-                            const attendeesCount = event.attendees || "150+";
+                            const attendeesCount = Array.isArray(event.attendees) 
+                                ? event.attendees.length 
+                                : (event.attendees || "150+");
 
                             return (
                                 <div
@@ -437,8 +443,9 @@ const Events = () => {
                                     className="flex-none w-[280px] md:w-[380px] snap-start"
                                     onMouseEnter={() => setIsHovered(true)}
                                 >
-                                    <TiltCard className="h-full">
-                                        <div className="premium-glass p-5 rounded-[2.5rem] shadow-2xl group hover:-translate-y-2 transition-all duration-500 bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border border-white/30 dark:border-slate-800/30 flex flex-col h-full justify-between">
+                                    {/* <TiltCard className="h-full"> */}
+                                    <div className="h-full">
+                                        <div className="premium-glass p-5 rounded-[2rem] shadow-xl group hover:-translate-y-2 transition-all duration-500 bg-white/60 dark:bg-slate-900/60 backdrop-blur-2xl border border-white/50 dark:border-slate-700/30 flex flex-col h-full justify-between">
                                             {/* Top Container */}
                                             <div>
                                                 {/* Image Container */}
@@ -450,10 +457,14 @@ const Events = () => {
                                                     />
                                                     <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-transparent opacity-60" />
 
-                                                    {/* Date Badge */}
-                                                    <div className="absolute top-4 left-4 bg-white/95 dark:bg-slate-950/90 backdrop-blur-md px-3 py-1.5 rounded-2xl flex flex-col items-center border border-white/20 dark:border-slate-800">
-                                                        <span className="text-lg font-black text-blue-600 dark:text-blue-400 leading-none">{dayStr}</span>
-                                                        <span className="text-[9px] font-black uppercase tracking-tighter text-slate-500 mt-0.5">{monthStr}</span>
+                                                    {/* Date Badge - Premium Calendar Leaf */}
+                                                    <div className="absolute top-4 left-4 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-2xl overflow-hidden flex flex-col items-center border border-white/40 dark:border-slate-700/50 shadow-xl shadow-black/10 min-w-[3rem]">
+                                                        <div className="bg-blue-600 w-full py-1 text-center">
+                                                            <span className="text-[8px] font-black uppercase tracking-widest text-white leading-none">{monthStr}</span>
+                                                        </div>
+                                                        <div className="px-3 py-1.5 flex items-center justify-center">
+                                                            <span className="text-xl font-black text-slate-900 dark:text-white leading-none tracking-tighter">{dayStr}</span>
+                                                        </div>
                                                     </div>
 
                                                     {/* Category Tag */}
@@ -471,7 +482,7 @@ const Events = () => {
                                                     </div>
 
                                                     {/* Event Title */}
-                                                    <h3 className="text-xl font-black text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300 line-clamp-1 uppercase tracking-tight leading-snug">
+                                                    <h3 className="text-2xl font-black text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors duration-300 line-clamp-2 uppercase tracking-tighter leading-none mt-1 mb-2">
                                                         {event.title}
                                                     </h3>
 
@@ -496,33 +507,43 @@ const Events = () => {
                                                 </div>
 
                                                 {/* Bottom Section: Attendees & Button */}
-                                                <div className="flex items-center justify-between px-1">
-                                                    {/* Attendee Avatars */}
-                                                    <div className="flex -space-x-2">
-                                                        {attendeeImages.map((img: string, i: number) => (
-                                                            <img
-                                                                key={i}
-                                                                src={img}
-                                                                className="w-8 h-8 rounded-full border-2 border-white dark:border-slate-900 object-cover"
-                                                                alt="attendee"
-                                                            />
-                                                        ))}
-                                                        <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 text-[9px] font-black flex items-center justify-center border-2 border-white dark:border-slate-900 text-slate-600 dark:text-slate-300">
-                                                            +{attendeesCount}
+                                                <div className="flex items-center justify-between gap-3 w-full">
+                                                    {event.capacity ? (
+                                                        <div className="flex flex-col flex-1 gap-1.5">
+                                                            <div className="flex items-center justify-between text-[8px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">
+                                                                <span>Capacity</span>
+                                                                <span className="text-blue-600 dark:text-blue-400">{attendeesCount} / {event.capacity}</span>
+                                                            </div>
+                                                            <div className="h-1.5 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                                                                <div
+                                                                    className="h-full bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full"
+                                                                    style={{ width: `${Math.min((Number(attendeesCount) / event.capacity) * 100, 100)}%` }}
+                                                                />
+                                                            </div>
                                                         </div>
-                                                    </div>
+                                                    ) : (
+                                                        <div className="flex -space-x-2 flex-1">
+                                                            {attendeeImages.map((img: string, i: number) => (
+                                                                <img key={i} src={img} className="w-7 h-7 rounded-full border-2 border-white dark:border-slate-900 object-cover shadow-sm" alt="attendee" />
+                                                            ))}
+                                                            <div className="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-800 text-[8px] font-black flex items-center justify-center border-2 border-white dark:border-slate-900 text-slate-600 dark:text-slate-300 shadow-sm">
+                                                                +{attendeesCount}
+                                                            </div>
+                                                        </div>
+                                                    )}
 
-                                                    {/* Interested Button */}
                                                     <motion.button
+                                                        onClick={handleUpcomingClick}
                                                         whileTap={{ scale: 0.95 }}
-                                                        className="bg-slate-900 dark:bg-white/10 hover:bg-blue-600 dark:hover:bg-blue-600 text-white dark:text-white px-5 py-2.5 rounded-2xl font-black text-[9px] uppercase tracking-widest transition-all duration-300 shadow-md hover:shadow-blue-500/20 active:scale-95"
+                                                        className="shrink-0 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl font-black text-[9px] uppercase tracking-widest transition-all duration-300 shadow-lg shadow-blue-600/30 active:scale-95 flex items-center gap-1.5"
                                                     >
-                                                        Interested
+                                                        View & RSVP
                                                     </motion.button>
                                                 </div>
                                             </div>
                                         </div>
-                                    </TiltCard>
+                                    </div>
+                                    {/* </TiltCard> */}
                                 </div>
                             );
                         });
@@ -702,6 +723,17 @@ const Events = () => {
                                                         <div>
                                                             <label className="text-[10px] sm:text-[11px] font-black text-cyan-500 uppercase tracking-[0.2em] ml-1 mb-1 block">Contact (WhatsApp) *</label>
                                                             <motion.input whileFocus={{ scale: 1.01, borderColor: "#06b6d4" }} required name="phone" type="tel" placeholder="+94 7X XXX XXXX" className="w-full px-4 py-3 sm:p-4 rounded-xl bg-white/40 dark:bg-slate-950/40 border border-slate-200/60 dark:border-slate-800/60 focus:border-cyan-500 outline-none transition-all text-sm backdrop-blur-sm dark:text-slate-200" />
+                                                        </div>
+                                                    </motion.div>
+
+                                                    <motion.div variants={{ hidden: { opacity: 0, x: -20 }, visible: { opacity: 1, x: 0 } }} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                        <div>
+                                                            <label className="text-[10px] sm:text-[11px] font-black text-cyan-500 uppercase tracking-[0.2em] ml-1 mb-1 block">Max Capacity (Optional)</label>
+                                                            <motion.input whileFocus={{ scale: 1.01, borderColor: "#06b6d4" }} name="capacity" type="number" min="1" placeholder="E.g. 200" className="w-full px-4 py-3 sm:p-4 rounded-xl bg-white/40 dark:bg-slate-950/40 border border-slate-200/60 dark:border-slate-800/60 focus:border-cyan-500 outline-none transition-all text-sm backdrop-blur-sm dark:text-slate-200" />
+                                                        </div>
+                                                        <div>
+                                                            <label className="text-[10px] sm:text-[11px] font-black text-cyan-500 uppercase tracking-[0.2em] ml-1 mb-1 block">Time (Optional)</label>
+                                                            <motion.input whileFocus={{ scale: 1.01, borderColor: "#06b6d4" }} name="time" type="time" className="w-full px-4 py-3 sm:p-4 rounded-xl bg-white/40 dark:bg-slate-950/40 border border-slate-200/60 dark:border-slate-800/60 focus:border-cyan-500 outline-none transition-all text-sm backdrop-blur-sm dark:text-slate-200" />
                                                         </div>
                                                     </motion.div>
 

@@ -22,6 +22,10 @@ const SubmitBlog: React.FC = () => {
     image: null as File | null
   });
 
+  const [draftStatus, setDraftStatus] = useState<string>('');
+  const [hasRecoveredDraft, setHasRecoveredDraft] = useState(false);
+  const [showDraftBanner, setShowDraftBanner] = useState(false);
+
   const categories = [
     'Campus Life',
     'Career Advice',
@@ -33,6 +37,62 @@ const SubmitBlog: React.FC = () => {
     'Events & Festivities',
     'General Discussion'
   ];
+
+  // Draft Recovery on Mount
+  React.useEffect(() => {
+    const savedDraft = localStorage.getItem('blog_draft');
+    if (savedDraft) {
+      setShowDraftBanner(true);
+    }
+  }, []);
+
+  const restoreDraft = () => {
+    try {
+      const savedDraft = localStorage.getItem('blog_draft');
+      if (savedDraft) {
+        const parsed = JSON.parse(savedDraft);
+        setFormData({
+          ...formData,
+          title: parsed.title || '',
+          category: parsed.category || 'Campus Life',
+          excerpt: parsed.excerpt || '',
+          content: parsed.content || '',
+          tags: parsed.tags || ''
+        });
+        setHasRecoveredDraft(true);
+        toast.success('Draft restored successfully!', { style: { borderRadius: '20px', background: '#1e293b', color: '#fff' } });
+      }
+    } catch (e) {
+      console.error('Failed to parse draft', e);
+    }
+    setShowDraftBanner(false);
+  };
+
+  const discardDraft = () => {
+    localStorage.removeItem('blog_draft');
+    setShowDraftBanner(false);
+  };
+
+  // Debounced Auto-Save
+  React.useEffect(() => {
+    if (!formData.title && !formData.content) return; // Don't save empty drafts initially
+    
+    setDraftStatus('Saving draft...');
+    const timeoutId = setTimeout(() => {
+      const draftToSave = {
+        title: formData.title,
+        category: formData.category,
+        excerpt: formData.excerpt,
+        content: formData.content,
+        tags: formData.tags
+      };
+      localStorage.setItem('blog_draft', JSON.stringify(draftToSave));
+      const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      setDraftStatus(`Draft saved locally at ${time}`);
+    }, 1500);
+
+    return () => clearTimeout(timeoutId);
+  }, [formData.title, formData.category, formData.excerpt, formData.content, formData.tags]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,6 +116,10 @@ const SubmitBlog: React.FC = () => {
 
       await api.createBlog(data, token);
       
+      // Clear draft on successful submit
+      localStorage.removeItem('blog_draft');
+      setDraftStatus('');
+
       toast.success('Your blog has been submitted for moderation!', {
         duration: 5000,
         style: {
@@ -109,6 +173,24 @@ const SubmitBlog: React.FC = () => {
           </div>
         </div>
 
+        {/* Draft Recovery Slide-in Banner */}
+        {showDraftBanner && (
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-8 p-4 bg-slate-900 dark:bg-blue-900/30 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 border border-slate-800 dark:border-blue-800/50 shadow-xl"
+          >
+            <div className="flex items-center gap-3 text-white">
+              <LuSparkles className="text-yellow-400 w-5 h-5" />
+              <p className="text-sm font-semibold">You have an unsaved draft from a previous session.</p>
+            </div>
+            <div className="flex items-center gap-3">
+              <button onClick={discardDraft} className="px-4 py-2 text-xs font-bold text-slate-400 hover:text-white transition-colors">Discard</button>
+              <button onClick={restoreDraft} className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl transition-colors shadow-lg shadow-blue-600/20">Restore Draft</button>
+            </div>
+          </motion.div>
+        )}
+
         <motion.div
           key={step}
           initial={{ opacity: 0, x: 20 }}
@@ -155,6 +237,14 @@ const SubmitBlog: React.FC = () => {
                       </button>
                     ))}
                   </div>
+
+                  <button 
+                    onClick={nextStep}
+                    disabled={!formData.title}
+                    className="w-full mt-8 bg-slate-900 dark:bg-white text-white dark:text-slate-900 py-6 rounded-2xl font-black uppercase tracking-widest text-sm hover:scale-[1.02] active:scale-95 transition-all shadow-xl disabled:opacity-50 flex items-center justify-center gap-3"
+                  >
+                    Continue to Content <LuArrowRight />
+                  </button>
                 </div>
 
                 <button 
@@ -328,12 +418,19 @@ const SubmitBlog: React.FC = () => {
                   </p>
                 </div>
 
-                <button 
+                <div className="flex items-center gap-6 mt-8">
+                  {draftStatus && (
+                    <span className="text-xs font-semibold text-slate-400 animate-pulse hidden sm:block w-32">
+                      {draftStatus}
+                    </span>
+                  )}
+                  <button 
                     type="submit"
-                    className="w-full bg-blue-600 text-white py-6 rounded-2xl font-black uppercase tracking-widest text-sm hover:scale-[1.02] active:scale-95 transition-all shadow-2xl shadow-blue-600/30 flex items-center justify-center gap-3"
+                    className="flex-1 bg-blue-600 text-white py-6 rounded-2xl font-black uppercase tracking-widest text-sm hover:scale-[1.02] active:scale-95 transition-all shadow-2xl shadow-blue-600/30 flex items-center justify-center gap-3"
                   >
                     Publish Story <LuSend />
                   </button>
+                </div>
               </div>
             </form>
           )}

@@ -71,7 +71,9 @@ const Profile = () => {
     activityScore: 0,
     registeredEvents: 0,
     publishedAds: 0,
-    rewardPoints: 0
+    rewardPoints: 0,
+    followers: 0,
+    following: 0
   });
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -155,9 +157,26 @@ const Profile = () => {
       }
     };
 
+    const fetchNetwork = async () => {
+      const token = localStorage.getItem('userToken');
+      const userId = localStorage.getItem('userId');
+      if (!token || !userId) return;
+      try {
+        const data = await api.getUserNetwork(userId, token);
+        setStats(prev => ({
+          ...prev,
+          followers: data.followersCount || 0,
+          following: data.followingCount || 0
+        }));
+      } catch (err) {
+        console.error('Failed to load network:', err);
+      }
+    };
+
     fetchRequests();
     fetchSubmittedEvents();
     fetchBlogs();
+    fetchNetwork();
   }, []);
 
   useEffect(() => {
@@ -424,9 +443,10 @@ const Profile = () => {
                 </div>
 
                 {/* ── Subdued Stats Section ────────────────────────── */}
-                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3 mb-16">
+                <div className="flex flex-wrap justify-center gap-3 mb-16">
                   {[
-                    { label: 'Saved', value: stats.savedAnnexes, icon: LuBookmark, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+                    { label: 'Followers', value: stats.followers, icon: LuUser, color: 'text-indigo-500', bg: 'bg-indigo-500/10' },
+                    { label: 'Following', value: stats.following, icon: LuActivity, color: 'text-blue-500', bg: 'bg-blue-500/10' },
                     { label: 'My Blogs', value: submittedBlogs.length, icon: LuMessageSquare, color: 'text-purple-500', bg: 'bg-purple-500/10', onClick: () => setShowBlogsModal(true) },
                     { label: 'Activity', value: `${stats.activityScore}%`, icon: LuActivity, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
                     { label: 'My Events', value: submittedEvents.length, icon: LuCalendar, color: 'text-pink-500', bg: 'bg-pink-500/10', onClick: () => setShowEventsModal(true) },

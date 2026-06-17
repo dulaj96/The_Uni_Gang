@@ -299,6 +299,20 @@ export const api = {
     return response.json();
   },
 
+  toggleEventRsvp: async (id: string, token: string): Promise<any> => {
+    const response = await fetch(`http://localhost:5000/api/events/${id}/rsvp`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.message || 'Failed to toggle RSVP');
+    }
+    return response.json();
+  },
+
   submitEvent: async (formData: FormData, token: string): Promise<any> => {
     const response = await fetch(`http://localhost:5000/api/events`, {
       method: 'POST',
@@ -370,6 +384,28 @@ export const api = {
       }
     });
     if (!response.ok) throw new Error('Failed to mark all as read');
+    return response.json();
+  },
+
+  // Social & Follow Network
+  toggleFollow: async (userId: string, token: string): Promise<any> => {
+    const response = await fetch(`http://localhost:5000/api/users/${userId}/follow`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    if (!response.ok) throw new Error('Failed to toggle follow');
+    return response.json();
+  },
+
+  getUserNetwork: async (userId: string, token: string): Promise<any> => {
+    const response = await fetch(`http://localhost:5000/api/users/${userId}/network`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    if (!response.ok) throw new Error('Failed to fetch network');
     return response.json();
   }
 };

@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import TiltCard from '../../components/ui/TiltCard';
 import EventDetails from './EventDetails';
 import { api } from '../../api';
-
+import PremiumPageLoader from '../../components/ui/PremiumPageLoader';
 
 // Mock Data for University Events
 const DUMMY_EVENTS = [
@@ -130,7 +130,7 @@ const FloatingIcon = ({ icon: Icon, index }: { icon: React.ComponentType, index:
     </motion.div>
 );
 
-import PremiumPageLoader from '../../components/ui/PremiumPageLoader';
+
 
 const EventList = () => {
     const navigate = useNavigate();
@@ -326,8 +326,9 @@ const EventList = () => {
                                                 exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
                                                 transition={{ duration: 0.5, delay: index * 0.1 }}
                                             >
-                                                <TiltCard className="h-full">
-                                                    <div className="group h-full bg-white/40 dark:bg-slate-900/40 backdrop-blur-[24px] border border-white/40 dark:border-slate-800 rounded-[2.5rem] p-4 hover:shadow-[0_40px_80px_-20px_rgba(0,63,221,0.15)] transition-all duration-500 flex flex-col">
+                                                {/* <TiltCard className="h-full"> */}
+                                                <div className="h-full">
+                                                    <div className="group h-full bg-white/60 dark:bg-slate-900/60 backdrop-blur-2xl border border-white/50 dark:border-slate-700/30 rounded-[2rem] p-5 shadow-xl hover:-translate-y-2 hover:shadow-[0_40px_80px_-20px_rgba(0,63,221,0.15)] transition-all duration-500 flex flex-col">
                                                         {/* Image Container */}
                                                         <div className="relative h-72 rounded-[2rem] overflow-hidden mb-6">
                                                             <img
@@ -337,10 +338,14 @@ const EventList = () => {
                                                             />
                                                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
-                                                            {/* Date Badge */}
-                                                            <div className="absolute top-4 left-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md px-4 py-2 rounded-2xl flex flex-col items-center border border-white/20">
-                                                                <span className="text-xl font-black text-blue-600 leading-none">{dayStr}</span>
-                                                                <span className="text-[10px] font-bold uppercase tracking-tighter text-slate-500">{monthStr}</span>
+                                                            {/* Date Badge - Premium Calendar Leaf */}
+                                                            <div className="absolute top-4 left-4 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-2xl overflow-hidden flex flex-col items-center border border-white/40 dark:border-slate-700/50 shadow-xl shadow-black/10 min-w-[3rem]">
+                                                                <div className="bg-blue-600 w-full py-1 text-center">
+                                                                    <span className="text-[8px] font-black uppercase tracking-widest text-white leading-none">{monthStr}</span>
+                                                                </div>
+                                                                <div className="px-3 py-1.5 flex items-center justify-center">
+                                                                    <span className="text-xl font-black text-slate-900 dark:text-white leading-none tracking-tighter">{dayStr}</span>
+                                                                </div>
                                                             </div>
 
                                                             {/* Category Tag */}
@@ -355,7 +360,7 @@ const EventList = () => {
                                                                 <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 text-[10px] font-black uppercase tracking-[0.2em]">
                                                                     <LuGraduationCap /> {event.uni}{event.faculty ? ` - ${event.faculty}` : ''}
                                                                 </div>
-                                                                <h3 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tighter group-hover:text-blue-600 transition-colors">
+                                                                <h3 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tighter leading-none group-hover:text-blue-600 transition-colors duration-300 mt-1">
                                                                     {event.title}
                                                                 </h3>
                                                             </div>
@@ -373,38 +378,44 @@ const EventList = () => {
                                                                 {event.description}
                                                             </p>
 
-                                                            {/* Expandable Details Peek */}
-                                                            <div className="pt-4 flex items-center justify-between border-t border-slate-200/50 dark:border-slate-800/50">
-                                                                <div className="flex items-center gap-2 group/info cursor-default">
-                                                                    <div className="p-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-600">
-                                                                        <LuInfo size={16} />
+                                                            {/* Expandable Details Peek & Capacity */}
+                                                            <div className="pt-4 flex flex-col gap-4 border-t border-slate-200/50 dark:border-slate-700/50">
+                                                                {event.capacity && (
+                                                                    <div className="flex flex-col gap-1.5">
+                                                                        <div className="flex items-center justify-between text-[8px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">
+                                                                            <span>Capacity</span>
+                                                                            <span className="text-blue-600 dark:text-blue-400">{event.attendees?.length || 0} / {event.capacity}</span>
+                                                                        </div>
+                                                                        <div className="h-1.5 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                                                                            <div
+                                                                                className="h-full bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full"
+                                                                                style={{ width: `${Math.min(((event.attendees?.length || 0) / event.capacity) * 100, 100)}%` }}
+                                                                            />
+                                                                        </div>
                                                                     </div>
-                                                                    <span className="text-[10px] font-bold text-slate-400 group-hover/info:text-blue-500 transition-colors uppercase">Details Available</span>
-                                                                </div>
-                                                                <div className="text-right">
-                                                                    <span className="block text-[9px] font-black text-slate-400 uppercase tracking-widest">Entry</span>
-                                                                    <span className="text-xs font-black text-slate-700 dark:text-slate-200 uppercase">{event.requirements || 'Open for all'}</span>
-                                                                </div>
-                                                            </div>
+                                                                )}
 
-                                                            {/* Interaction Buttons */}
-                                                            <div className="pt-4 grid grid-cols-2 gap-3">
-                                                                <button
-                                                                    onClick={() => setSelectedEvent(event)}
-                                                                    className="flex items-center justify-center gap-2 py-3.5 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-bold uppercase tracking-widest text-[10px] transition-all hover:bg-blue-600 hover:text-white active:scale-95 border border-transparent shadow-md"
-                                                                >
-                                                                    <LuInfo size={14} /> View Details
-                                                                </button>
-                                                                <button
-                                                                    onClick={() => handleWhatsApp(event.contact, event.title)}
-                                                                    className="flex items-center justify-center gap-2 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold uppercase tracking-widest text-[10px] transition-all shadow-md shadow-emerald-500/20 active:scale-95"
-                                                                >
-                                                                    <LuMessageCircle size={14} /> Contact
-                                                                </button>
+                                                                {/* Interaction Buttons */}
+                                                                <div className="grid grid-cols-[1fr_auto] gap-3">
+                                                                    <button
+                                                                        onClick={() => setSelectedEvent(event)}
+                                                                        className="flex items-center justify-center gap-2 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black uppercase tracking-widest text-[10px] transition-all shadow-lg shadow-blue-600/30 active:scale-95 border border-transparent"
+                                                                    >
+                                                                        <LuInfo size={14} /> View & RSVP
+                                                                    </button>
+                                                                    <button
+                                                                        onClick={() => handleWhatsApp(event.contact, event.title)}
+                                                                        className="flex items-center justify-center p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-emerald-500 hover:text-white text-slate-500 dark:text-slate-400 transition-all active:scale-95 shadow-sm"
+                                                                        title="Contact via WhatsApp"
+                                                                    >
+                                                                        <LuMessageCircle size={18} />
+                                                                    </button>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </TiltCard>
+                                                </div>
+                                                {/* </TiltCard> */}
                                             </motion.div>
                                         );
                                     })}

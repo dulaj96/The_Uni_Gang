@@ -41,6 +41,10 @@ const BlogDetail: React.FC = () => {
   const [commentText, setCommentText] = useState("");
   const [submittingComment, setSubmittingComment] = useState(false);
 
+  // Follow state
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [togglingFollow, setTogglingFollow] = useState(false);
+
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 100, damping: 30, restDelta: 0.001
@@ -52,6 +56,22 @@ const BlogDetail: React.FC = () => {
         const data = await api.getBlogBySlug(slug);
         if (data) {
           setBlog(data);
+          
+          // Check if current user is following author
+          const token = localStorage.getItem('userToken');
+          if (token) {
+            const email = getLoggedInUserEmail();
+            if (email) {
+              try {
+                // To check follow status, we need current user ID. We can fetch profile or network.
+                // Assuming we can just fetch the author's network and see if our email is in followers
+                const network = await api.getUserNetwork(data.authorId, token);
+                const amIFollowing = network.followers.some((f: any) => f.email === email || f.id === localStorage.getItem('userId'));
+                setIsFollowing(amIFollowing);
+              } catch (e) { console.error('Failed to check follow status'); }
+            }
+          }
+
           // Fetch related blogs
           try {
             const all = await api.getBlogs();
@@ -191,6 +211,28 @@ const BlogDetail: React.FC = () => {
     });
   };
 
+  const handleFollow = async () => {
+    if (!blog || !blog.authorId) return;
+    const token = localStorage.getItem('userToken');
+    if (!token) {
+      toast.error('Please login to follow authors.', { style: { borderRadius: '20px', background: '#1e293b', color: '#fff' } });
+      return;
+    }
+    
+    setTogglingFollow(true);
+    try {
+      const result = await api.toggleFollow(blog.authorId, token);
+      setIsFollowing(result.isFollowing);
+      if (result.isFollowing) {
+        toast.success(`You are now following ${blog.author.name}!`, { style: { borderRadius: '20px', background: '#1e293b', color: '#fff' } });
+      }
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to toggle follow.');
+    } finally {
+      setTogglingFollow(false);
+    }
+  };
+
   if (!loading && !blog) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center pt-20">
@@ -284,7 +326,24 @@ const BlogDetail: React.FC = () => {
                     <div className="flex items-center gap-4">
                       <img src={blog.author.avatar} alt={blog.author.name} className="h-12 w-12 rounded-full object-cover" />
                       <div>
-                        <p className="font-semibold text-slate-900 dark:text-slate-100">{blog.author.name}</p>
+                        <div className="flex items-center gap-3">
+                          <p className="font-semibold text-slate-900 dark:text-slate-100">{blog.author.name}</p>
+                          {blog.authorId && (
+                            <button 
+                              onClick={handleFollow}
+                              disabled={togglingFollow}
+                              className={`text-xs font-bold px-3 py-1 rounded-full transition-all ${
+                                isFollowing 
+                                  ? 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/30' 
+                                  : 'bg-blue-600 text-white hover:bg-blue-700 shadow-md shadow-blue-500/20'
+                              }`}
+                              onMouseEnter={(e) => { if(isFollowing) e.currentTarget.innerText = 'Unfollow' }}
+                              onMouseLeave={(e) => { if(isFollowing) e.currentTarget.innerText = 'Following' }}
+                            >
+                              {togglingFollow ? '...' : (isFollowing ? 'Following' : 'Follow')}
+                            </button>
+                          )}
+                        </div>
                         <div className="flex items-center gap-2 text-sm text-slate-500 mt-0.5">
                           <span>{blog.readTime} read</span>
                           <span className="text-slate-300 dark:text-slate-700">&middot;</span>
@@ -320,9 +379,28 @@ const BlogDetail: React.FC = () => {
                   <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
                     <img src={blog.author.avatar} alt={blog.author.name} className="h-20 w-20 rounded-full object-cover" />
                     <div className="text-center sm:text-left flex-1">
-                      <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Written By</p>
-                      <h4 className="text-2xl font-black text-slate-900 dark:text-white mb-2">{blog.author.name}</h4>
-                      <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-2">
+                        <div>
+                          <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Written By</p>
+                          <h4 className="text-2xl font-black text-slate-900 dark:text-white">{blog.author.name}</h4>
+                        </div>
+                        {blog.authorId && (
+                          <button 
+                            onClick={handleFollow}
+                            disabled={togglingFollow}
+                            className={`text-sm font-bold px-6 py-2 rounded-full transition-all w-full sm:w-auto ${
+                              isFollowing 
+                                ? 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/30' 
+                                : 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:scale-105 shadow-xl'
+                            }`}
+                            onMouseEnter={(e) => { if(isFollowing) e.currentTarget.innerText = 'Unfollow' }}
+                            onMouseLeave={(e) => { if(isFollowing) e.currentTarget.innerText = 'Following' }}
+                          >
+                            {togglingFollow ? '...' : (isFollowing ? 'Following' : 'Follow')}
+                          </button>
+                        )}
+                      </div>
+                      <p className="text-slate-600 dark:text-slate-400 leading-relaxed mt-3">
                         Contributor from {blog.author.university || 'University of Colombo'}. Passionate about sharing student perspectives and helping the community grow.
                       </p>
                     </div>
