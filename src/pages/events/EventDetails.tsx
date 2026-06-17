@@ -84,7 +84,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({ event, isOpen, onClose }) =
 
     if (!event) return null;
 
-    const imageUrl = event.image ? (event.image.startsWith('http') ? event.image : `http://localhost:5000${event.image}`) : 'https://images.unsplash.com/photo-1540575861501-7ad058ad37fa?q=80&w=800';
+    const imageUrl = event.image ? (event.image.startsWith('http') ? event.image : `http://localhost:5001${event.image}`) : 'https://images.unsplash.com/photo-1540575861501-7ad058ad37fa?q=80&w=800';
 
     // WhatsApp handler removed as it was unused
 
@@ -390,7 +390,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({ event, isOpen, onClose }) =
                                                         event.attendees.map((attendee: any, idx: number) => (
                                                             <div key={idx} className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors border border-transparent hover:border-slate-100 dark:hover:border-slate-800">
                                                                 <img
-                                                                    src={attendee.profile_pic ? (attendee.profile_pic.startsWith('http') ? attendee.profile_pic : `http://localhost:5000${attendee.profile_pic}`) : "https://i.pravatar.cc/150"}
+                                                                    src={attendee.profile_pic ? (attendee.profile_pic.startsWith('http') ? attendee.profile_pic : `http://localhost:5001${attendee.profile_pic}`) : "https://i.pravatar.cc/150"}
                                                                     alt={attendee.name}
                                                                     className="w-8 h-8 rounded-full object-cover shadow-sm"
                                                                 />

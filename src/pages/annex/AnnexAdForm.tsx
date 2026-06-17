@@ -254,7 +254,7 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
   useEffect(() => {
     const loadUniversities = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/annexes/universities');
+        const res = await fetch('http://localhost:5001/api/annexes/universities');
         if (res.ok) {
           const data = await res.json();
           // If DB is empty or returns no real universities, fall back to static JSON
@@ -557,7 +557,7 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {initialData.images.map((img: any, idx: number) => {
                       const src = typeof img === 'object' && img !== null && img.imageUrl
-                        ? `http://localhost:5000${img.imageUrl}`
+                        ? `http://localhost:5001${img.imageUrl}`
                         : img;
                       return (
                         <div key={idx} className="relative aspect-square rounded-2xl overflow-hidden shadow-md group">

@@ -9,6 +9,7 @@ import TiltCard from '../../components/ui/TiltCard';
 import EventDetails from './EventDetails';
 import { api } from '../../api';
 import PremiumPageLoader from '../../components/ui/PremiumPageLoader';
+import AdBanner from '../../components/advertise/AdBanner';
 
 // Mock Data for University Events
 const DUMMY_EVENTS = [
@@ -296,6 +297,10 @@ const EventList = () => {
 
                         {/* Events Grid */}
                         <section className="max-w-7xl mx-auto px-4 md:px-8 pt-10 relative z-10">
+
+                            {/* Ad Banner Placement */}
+                            <AdBanner placement="BANNER" />
+
                             <div className="flex items-center justify-between mb-12">
                                 <div>
                                     <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white uppercase tracking-tighter">Upcoming Vibes</h2>
@@ -310,7 +315,7 @@ const EventList = () => {
                                 >
                                     {filteredEvents.map((event, index) => {
                                         const imageUrl = event.image
-                                            ? (event.image.startsWith('http') ? event.image : `http://localhost:5000${event.image}`)
+                                            ? (event.image.startsWith('http') ? event.image : `http://localhost:5001${event.image}`)
                                             : 'https://images.unsplash.com/photo-1540575861501-7ad058ad37fa?q=80&w=800';
 
                                         const eventDate = new Date(event.date);

@@ -37,6 +37,7 @@ const footerColumns = [
     links: [
       { label: 'About Us', to: '/#home' },
       { label: 'Services', to: '/#services' },
+      { label: 'Advertise', to: '/advertise' },
       { label: 'Privacy Policy', to: '/privacy-policy' },
       { label: 'Terms of Service', to: '/terms-of-service' },
     ],

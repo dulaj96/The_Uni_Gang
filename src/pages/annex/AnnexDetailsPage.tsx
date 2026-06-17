@@ -96,7 +96,7 @@ const AnnexDetailsPage = () => {
 
   const fetchAnnexDetails = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/annexes/${id}`);
+      const response = await fetch(`http://localhost:5001/api/annexes/${id}`);
       if (!response.ok) {
         toast.error("Accommodation details not found.");
         navigate('/annexes');
@@ -132,7 +132,7 @@ const AnnexDetailsPage = () => {
 
     setSubmittingReview(true);
     try {
-      const response = await fetch(`http://localhost:5000/api/annexes/${id}/reviews`, {
+      const response = await fetch(`http://localhost:5001/api/annexes/${id}/reviews`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -228,7 +228,7 @@ const AnnexDetailsPage = () => {
                   <img
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     src={annex.images && annex.images.length > 0 
-                      ? `http://localhost:5000${annex.images[0].imageUrl}` 
+                      ? `http://localhost:5001${annex.images[0].imageUrl}` 
                       : "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=800"}
                     alt={annex.title}
                   />
@@ -245,7 +245,7 @@ const AnnexDetailsPage = () => {
                   <div className="grid grid-cols-3 gap-4">
                     {annex.images.slice(1, 4).map((img: any, idx: number) => (
                       <div key={idx} className="aspect-square rounded-2xl overflow-hidden cursor-pointer hover:ring-2 ring-blue-600 transition-all shadow-md">
-                        <img className="w-full h-full object-cover" src={`http://localhost:5000${img.imageUrl}`} alt="sub area" />
+                        <img className="w-full h-full object-cover" src={`http://localhost:5001${img.imageUrl}`} alt="sub area" />
                       </div>
                     ))}
                   </div>

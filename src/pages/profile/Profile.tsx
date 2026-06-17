@@ -1040,7 +1040,7 @@ const Profile = () => {
                               {/* Event Flyer Banner */}
                               <div className="relative h-48 rounded-3xl overflow-hidden border border-slate-200/30 dark:border-white/10 bg-slate-900">
                                 <img
-                                  src={selectedEvent.image ? (selectedEvent.image.startsWith('http') ? selectedEvent.image : `http://localhost:5000${selectedEvent.image}`) : 'https://images.unsplash.com/photo-1540575861501-7ad058ad37fa?q=80&w=800'}
+                                  src={selectedEvent.image ? (selectedEvent.image.startsWith('http') ? selectedEvent.image : `http://localhost:5001${selectedEvent.image}`) : 'https://images.unsplash.com/photo-1540575861501-7ad058ad37fa?q=80&w=800'}
                                   alt={selectedEvent.title}
                                   className="w-full h-full object-cover"
                                 />

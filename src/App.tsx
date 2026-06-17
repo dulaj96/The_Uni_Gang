@@ -9,6 +9,7 @@ import FeaturedAnnexes from './components/annex/Annex';
 import Services from './components/services/Services';
 import Events from './components/events/Events';
 import Blogs from './components/blogs/Blogs';
+import AdvertiseSection from './components/advertise/Advertise';
 import Contact from './components/contact/Contact';
 
 // Pages Imports
@@ -30,6 +31,10 @@ import FAQ from './pages/f&q/F&Q';
 import BlogList from './pages/blogs/BlogList';
 import BlogDetail from './pages/blogs/BlogDetail';
 import SubmitBlog from './pages/blogs/SubmitBlog';
+
+import AdvertiseLanding from './pages/advertise/AdvertiseLanding';
+import AdSubmissionForm from './pages/advertise/AdSubmissionForm';
+import AdPopup from './components/advertise/AdPopup';
 
 function App() {
   return (
@@ -57,6 +62,7 @@ function App() {
                   <Services />
                   <Events />
                   <div id="blogs"><Blogs /></div>
+                  <div id="advertise"><AdvertiseSection /></div>
                   <Contact />
                 </div>
               </div>
@@ -94,9 +100,14 @@ function App() {
         <Route path="/blogs" element={<SubLayout><BlogList /></ SubLayout>} />
         <Route path="/blogs/:slug" element={<SubLayout><BlogDetail /></SubLayout>} />
         <Route path="/submit-blog" element={<SubLayout><SubmitBlog /></SubLayout>} />
+
+        {/* Advertisement Routes */}
+        <Route path="/advertise" element={<SubLayout><AdvertiseLanding /></SubLayout>} />
+        <Route path="/advertise/submit" element={<SubLayout><AdSubmissionForm /></SubLayout>} />
       </Routes>
 
       <WhatsAppButton />
+      <AdPopup />
     </Router>
   );
 }

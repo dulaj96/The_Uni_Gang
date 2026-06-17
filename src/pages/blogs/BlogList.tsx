@@ -9,6 +9,7 @@ import ContributorLeaderboard from './ContributorLeaderboard';
 import SEO from '../../components/SEO';
 import PremiumPageLoader from '../../components/ui/PremiumPageLoader';
 import TiltCard from '../../components/ui/TiltCard';
+import AdSidebarWidget from '../../components/advertise/AdSidebarWidget';
 
 const FloatingIcon = ({ icon: Icon, index }: { icon: React.ComponentType, index: number }) => (
   <motion.div
@@ -273,6 +274,7 @@ const BlogList: React.FC = () => {
 
                 {/* Right Column: Sidebar */}
                 <div className="lg:col-span-4 space-y-10">
+                  <AdSidebarWidget />
                   <ContributorLeaderboard contributors={contributors} />
 
                   {/* Premium CTA */}

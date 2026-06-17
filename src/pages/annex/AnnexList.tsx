@@ -124,7 +124,7 @@ const AnnexList = () => {
                 queryParams.append("maxDistance", maxDistance);
             }
 
-            const response = await fetch(`http://localhost:5000/api/annexes?${queryParams.toString()}`);
+            const response = await fetch(`http://localhost:5001/api/annexes?${queryParams.toString()}`);
             const data = await response.json();
             
             // Search locally by search keyword supporting title, address, university, or distance
@@ -420,7 +420,7 @@ const AnnexList = () => {
                                         {paginatedData.map((item, index) => {
                                             // Handle images mapping correctly
                                             const coverImage = item.images && item.images.length > 0 
-                                                ? `http://localhost:5000${item.images[0].imageUrl}` 
+                                                ? `http://localhost:5001${item.images[0].imageUrl}` 
                                                 : "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=800";
                                                 
                                             return (

@@ -37,7 +37,7 @@ const Header = () => {
 
   // Intersection Observer for ScrollSpy
   useEffect(() => {
-    const sectionIds = ['home', 'annex', 'services', 'events', 'blogs', 'stats', 'contact'];
+    const sectionIds = ['home', 'annex', 'services', 'events', 'blogs', 'advertise', 'stats', 'contact'];
 
     const observerOptions = {
       root: null,
@@ -156,6 +156,7 @@ const Header = () => {
     { name: 'Services', path: '/#services', id: 'services' },
     { name: 'Events', path: '/#events', id: 'events' },
     { name: 'Blogs', path: '/#blogs', id: 'blogs' },
+    { name: 'Advertise', path: '/#advertise', id: 'advertise' },
     { name: 'Contact', path: '/#contact', id: 'contact' },
   ];
 
