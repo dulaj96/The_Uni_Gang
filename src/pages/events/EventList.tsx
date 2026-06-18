@@ -10,6 +10,7 @@ import EventDetails from './EventDetails';
 import { api } from '../../api';
 import PremiumPageLoader from '../../components/ui/PremiumPageLoader';
 import AdBanner from '../../components/advertise/AdBanner';
+import AdNativeFeed from '../../components/advertise/AdNativeFeed';
 
 // Mock Data for University Events
 const DUMMY_EVENTS = [
@@ -323,8 +324,8 @@ const EventList = () => {
                                         const monthStr = isNaN(eventDate.getTime()) ? 'OCT' : eventDate.toLocaleString('default', { month: 'short' }).toUpperCase();
 
                                         return (
+                                        <React.Fragment key={event.id}>
                                             <motion.div
-                                                key={event.id}
                                                 layout
                                                 initial={{ opacity: 0, y: 30 }}
                                                 animate={{ opacity: 1, y: 0 }}
@@ -422,6 +423,13 @@ const EventList = () => {
                                                 </div>
                                                 {/* </TiltCard> */}
                                             </motion.div>
+                                            
+                                            {(index + 1) % 4 === 0 && (
+                                                <div key={`ad-${index}`} className="col-span-1 md:col-span-2 lg:col-span-3">
+                                                    <AdNativeFeed adIndex={Math.floor((index + 1) / 4) - 1} />
+                                                </div>
+                                            )}
+                                        </React.Fragment>
                                         );
                                     })}
                                 </motion.div>

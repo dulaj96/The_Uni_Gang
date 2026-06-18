@@ -3,7 +3,7 @@ import {
   LuUser, LuMail, LuPhone, LuBuilding, LuLock, LuCamera, LuPencil, LuSave,
   LuEye, LuEyeOff, LuFacebook, LuLinkedin, LuBookmark,
   LuMessageSquare, LuActivity, LuChevronRight, LuShieldCheck,
-  LuCalendar, LuLayoutGrid, LuTrophy, LuSettings, LuLogOut, LuBriefcase, LuX, LuSend, LuTrash2
+  LuCalendar, LuLayoutGrid, LuTrophy, LuSettings, LuLogOut, LuBriefcase, LuX, LuSend, LuTrash2, LuMegaphone
 } from 'react-icons/lu';
 import { motion, AnimatePresence } from 'framer-motion';
 import SEO from '../../components/SEO';
@@ -97,6 +97,10 @@ const Profile = () => {
   const [loadingMessages, setLoadingMessages] = useState(false);
   const [newMessageText, setNewMessageText] = useState('');
 
+  const [showAdsModal, setShowAdsModal] = useState(false);
+  const [myAds, setMyAds] = useState<any[]>([]);
+  const [loadingAds, setLoadingAds] = useState(false);
+
   const fetchSubmittedEvents = async () => {
     const token = localStorage.getItem('userToken');
     if (!token) return;
@@ -108,6 +112,20 @@ const Profile = () => {
       console.error('Failed to load submitted events:', err);
     } finally {
       setLoadingEvents(false);
+    }
+  };
+
+  const fetchMyAds = async () => {
+    const token = localStorage.getItem('userToken');
+    if (!token) return;
+    try {
+      setLoadingAds(true);
+      const data = await api.getMyAdvertisements(token);
+      setMyAds(data);
+    } catch (err) {
+      console.error('Failed to load my advertisements:', err);
+    } finally {
+      setLoadingAds(false);
     }
   };
 
@@ -177,6 +195,7 @@ const Profile = () => {
     fetchSubmittedEvents();
     fetchBlogs();
     fetchNetwork();
+    fetchMyAds();
   }, []);
 
   useEffect(() => {
@@ -448,6 +467,7 @@ const Profile = () => {
                     { label: 'Followers', value: stats.followers, icon: LuUser, color: 'text-indigo-500', bg: 'bg-indigo-500/10' },
                     { label: 'Following', value: stats.following, icon: LuActivity, color: 'text-blue-500', bg: 'bg-blue-500/10' },
                     { label: 'My Blogs', value: submittedBlogs.length, icon: LuMessageSquare, color: 'text-purple-500', bg: 'bg-purple-500/10', onClick: () => setShowBlogsModal(true) },
+                    { label: 'My Ads', value: myAds.length, icon: LuMegaphone, color: 'text-rose-500', bg: 'bg-rose-500/10', onClick: () => setShowAdsModal(true) },
                     { label: 'Activity', value: `${stats.activityScore}%`, icon: LuActivity, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
                     { label: 'My Events', value: submittedEvents.length, icon: LuCalendar, color: 'text-pink-500', bg: 'bg-pink-500/10', onClick: () => setShowEventsModal(true) },
                     { label: 'Listings', value: stats.publishedAds, icon: LuLayoutGrid, color: 'text-orange-500', bg: 'bg-orange-500/10' },
@@ -640,6 +660,82 @@ const Profile = () => {
                 </div>
               </div>
             </motion.div>
+
+            {/* Backdrop-Blurred Ads Tracker Modal */}
+            <AnimatePresence>
+              {showAdsModal && (
+                <>
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    onClick={() => setShowAdsModal(false)}
+                    className="fixed inset-0 z-[100] bg-slate-950/60 backdrop-blur-md"
+                  />
+                  <div className="fixed inset-0 z-[101] overflow-y-auto pointer-events-none flex items-center justify-center p-4 sm:p-6">
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                      className="w-full max-w-2xl bg-white/95 dark:bg-slate-950/98 backdrop-blur-2xl border border-slate-200/50 dark:border-white/10 rounded-[2.5rem] p-8 shadow-2xl relative pointer-events-auto overflow-hidden max-h-[85vh] flex flex-col"
+                    >
+                      <div className="flex justify-between items-start mb-6">
+                        <div>
+                          <span className="text-[10px] font-black uppercase tracking-widest text-rose-500 mb-1 block">My Advertisements</span>
+                          <h3 className="text-2xl font-black text-slate-800 dark:text-white tracking-tight">Campaign Tracker</h3>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setShowAdsModal(false)}
+                          className="p-2.5 rounded-full bg-slate-200/50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 hover:bg-red-500 hover:text-white transition-all hover:rotate-90 duration-300"
+                        >
+                          <LuX size={18} />
+                        </button>
+                      </div>
+
+                      <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-4">
+                        {loadingAds ? (
+                          <div className="py-20 text-center text-slate-400 animate-pulse font-black uppercase text-xs">
+                            Loading your campaigns...
+                          </div>
+                        ) : myAds.length === 0 ? (
+                          <div className="py-20 text-center bg-slate-500/5 border border-slate-200/10 dark:border-white/10 rounded-3xl">
+                            <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">No active campaigns</p>
+                          </div>
+                        ) : (
+                          <div className="grid grid-cols-1 gap-4">
+                            {myAds.map((ad) => (
+                              <div key={ad.id} className="p-5 bg-slate-50 dark:bg-slate-900/40 border border-slate-100 dark:border-white/10 rounded-3xl flex items-center justify-between gap-4">
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex items-center gap-3 mb-2">
+                                    <span className={`inline-flex px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-tighter border ${
+                                      ad.status === 'ACTIVE' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' :
+                                      ad.status === 'PENDING' ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' :
+                                      'bg-slate-500/10 text-slate-400 border-slate-500/20'
+                                    }`}>
+                                      {ad.status}
+                                    </span>
+                                    <span className="text-[10px] font-bold text-slate-400">{ad.placement_type}</span>
+                                  </div>
+                                  <h4 className="text-base font-black text-slate-800 dark:text-white truncate">
+                                    {ad.ad_title}
+                                  </h4>
+                                </div>
+                                <div className="text-right">
+                                  <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Performance</div>
+                                  <div className="text-sm font-bold text-slate-800 dark:text-white">{ad.views} <span className="text-slate-500">Views</span></div>
+                                  <div className="text-sm font-bold text-slate-800 dark:text-white">{ad.clicks} <span className="text-slate-500">Clicks</span></div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </motion.div>
+                  </div>
+                </>
+              )}
+            </AnimatePresence>
 
             {/* Backdrop-Blurred Services Tracker Modal */}
             <AnimatePresence>

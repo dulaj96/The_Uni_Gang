@@ -10,6 +10,7 @@ import SEO from '../../components/SEO';
 import PremiumPageLoader from '../../components/ui/PremiumPageLoader';
 import TiltCard from '../../components/ui/TiltCard';
 import AdSidebarWidget from '../../components/advertise/AdSidebarWidget';
+import AdNativeFeed from '../../components/advertise/AdNativeFeed';
 
 const FloatingIcon = ({ icon: Icon, index }: { icon: React.ComponentType, index: number }) => (
   <motion.div
@@ -259,8 +260,15 @@ const BlogList: React.FC = () => {
 
                   {/* Blogs Grid */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {filteredBlogs.map(blog => (
-                      <BlogCard key={blog.id} blog={blog} />
+                    {filteredBlogs.map((blog, index) => (
+                      <React.Fragment key={blog.id}>
+                        <BlogCard blog={blog} />
+                        {(index + 1) % 4 === 0 && (
+                          <div className="col-span-1 md:col-span-2">
+                            <AdNativeFeed adIndex={Math.floor((index + 1) / 4) - 1} />
+                          </div>
+                        )}
+                      </React.Fragment>
                     ))}
                   </div>
 
