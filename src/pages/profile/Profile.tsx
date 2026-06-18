@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
   LuUser, LuMail, LuPhone, LuBuilding, LuLock, LuCamera, LuPencil, LuSave,
-  LuEye, LuEyeOff, LuFacebook, LuLinkedin, LuBookmark,
+  LuEye, LuEyeOff, LuFacebook, LuLinkedin,
   LuMessageSquare, LuActivity, LuChevronRight, LuShieldCheck,
   LuCalendar, LuLayoutGrid, LuTrophy, LuSettings, LuLogOut, LuBriefcase, LuX, LuSend, LuTrash2, LuMegaphone
 } from 'react-icons/lu';
@@ -253,14 +253,15 @@ const Profile = () => {
     setLinkedinHandle(storedLinkedin);
 
     // Enhanced Mock stats
-    setStats({
+    setStats(prev => ({
+      ...prev,
       savedAnnexes: 5,
       recentReviews: 12,
       activityScore: 88,
       registeredEvents: 3,
       publishedAds: 1,
       rewardPoints: 1250
-    });
+    }));
 
     const timer = setTimeout(() => setLoading(false), 300);
     return () => clearTimeout(timer);

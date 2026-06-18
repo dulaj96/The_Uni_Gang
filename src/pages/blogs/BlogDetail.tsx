@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion, useScroll, useSpring, AnimatePresence } from 'framer-motion';
-import { LuArrowLeft, LuClock, LuCalendar, LuThumbsUp, LuShare2, LuMessageSquare, LuTrash2, LuSend, LuEye, LuMoreHorizontal } from 'react-icons/lu';
+import { LuArrowLeft, LuThumbsUp, LuShare2, LuMessageSquare, LuTrash2, LuEye } from 'react-icons/lu';
 import { api } from '../../api';
 import { Blog } from '../../types/blog';
 import SEO from '../../components/SEO';
@@ -65,7 +65,7 @@ const BlogDetail: React.FC = () => {
               try {
                 // To check follow status, we need current user ID. We can fetch profile or network.
                 // Assuming we can just fetch the author's network and see if our email is in followers
-                const network = await api.getUserNetwork(data.authorId, token);
+                const network = await api.getUserNetwork(data.author?.id, token);
                 const amIFollowing = network.followers.some((f: any) => f.email === email || f.id === localStorage.getItem('userId'));
                 setIsFollowing(amIFollowing);
               } catch (e) { console.error('Failed to check follow status'); }
@@ -212,7 +212,7 @@ const BlogDetail: React.FC = () => {
   };
 
   const handleFollow = async () => {
-    if (!blog || !blog.authorId) return;
+    if (!blog || !blog.author?.id) return;
     const token = localStorage.getItem('userToken');
     if (!token) {
       toast.error('Please login to follow authors.', { style: { borderRadius: '20px', background: '#1e293b', color: '#fff' } });
@@ -221,7 +221,7 @@ const BlogDetail: React.FC = () => {
     
     setTogglingFollow(true);
     try {
-      const result = await api.toggleFollow(blog.authorId, token);
+      const result = await api.toggleFollow(blog.author.id, token);
       setIsFollowing(result.isFollowing);
       if (result.isFollowing) {
         toast.success(`You are now following ${blog.author.name}!`, { style: { borderRadius: '20px', background: '#1e293b', color: '#fff' } });
@@ -328,7 +328,7 @@ const BlogDetail: React.FC = () => {
                       <div>
                         <div className="flex items-center gap-3">
                           <p className="font-semibold text-slate-900 dark:text-slate-100">{blog.author.name}</p>
-                          {blog.authorId && (
+                          {blog.author?.id && (
                             <button 
                               onClick={handleFollow}
                               disabled={togglingFollow}
@@ -384,7 +384,7 @@ const BlogDetail: React.FC = () => {
                           <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Written By</p>
                           <h4 className="text-2xl font-black text-slate-900 dark:text-white">{blog.author.name}</h4>
                         </div>
-                        {blog.authorId && (
+                        {blog.author?.id && (
                           <button 
                             onClick={handleFollow}
                             disabled={togglingFollow}

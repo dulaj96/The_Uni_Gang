@@ -23,7 +23,6 @@ const SubmitBlog: React.FC = () => {
   });
 
   const [draftStatus, setDraftStatus] = useState<string>('');
-  const [hasRecoveredDraft, setHasRecoveredDraft] = useState(false);
   const [showDraftBanner, setShowDraftBanner] = useState(false);
 
   const categories = [
@@ -59,7 +58,6 @@ const SubmitBlog: React.FC = () => {
           content: parsed.content || '',
           tags: parsed.tags || ''
         });
-        setHasRecoveredDraft(true);
         toast.success('Draft restored successfully!', { style: { borderRadius: '20px', background: '#1e293b', color: '#fff' } });
       }
     } catch (e) {
