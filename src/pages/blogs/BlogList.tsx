@@ -111,7 +111,7 @@ const BlogList: React.FC = () => {
             </div>
 
             {/* Hero Section */}
-            <section className="relative pt-24 pb-16 px-4 md:px-8 max-w-7xl mx-auto z-10">
+            <section className="relative pt-5 pb-16 px-4 md:px-8 max-w-7xl mx-auto z-10">
               <div className="grid lg:grid-cols-2 gap-12 items-center">
                 <motion.div
                   initial={{ opacity: 0, y: 30 }}
@@ -120,7 +120,7 @@ const BlogList: React.FC = () => {
                   className="space-y-8"
                 >
                   {/* Breadcrumb navigation */}
-                  <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-2 animate-in fade-in slide-in-from-left-2 duration-300">
+                  {/* <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-2 animate-in fade-in slide-in-from-left-2 duration-300">
                     <button
                       onClick={() => navigate('/')}
                       className="hover:text-blue-650 dark:hover:text-blue-400 transition-colors flex items-center gap-1.5 bg-transparent border-none p-0 cursor-pointer font-black text-slate-400 dark:text-slate-500"
@@ -129,7 +129,7 @@ const BlogList: React.FC = () => {
                     </button>
                     <span className="text-slate-300 dark:text-slate-800">/</span>
                     <span className="text-slate-600 dark:text-slate-400">Blogs</span>
-                  </div>
+                  </div> */}
 
                   <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-100/50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs font-black uppercase tracking-widest border border-blue-200/50 dark:border-blue-800/50">
                     <LuSparkles className="animate-pulse" /> Intellectual Pulse

@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { LuShoppingBag, LuTrendingUp, LuShieldCheck, LuTags, LuBriefcase } from 'react-icons/lu';
+import { LuShoppingBag, LuTrendingUp, LuShieldCheck, LuTags, LuBriefcase, LuBadgeCheck } from 'react-icons/lu';
 import { useState } from 'react';
 import TiltCard from '../ui/TiltCard';
 import PremiumTraceButton from '../ui/PremiumTraceButton';
@@ -54,7 +54,7 @@ const MarketSection = () => {
             Campus <span className="text-purple-600 italic">Marketplace</span>
           </h2>
           <p className="text-lg text-slate-500 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
-            The exclusive peer-to-peer marketplace for verified university students. Buy cheap gear, sell your old textbooks, or offer freelance services directly to your peers. Keep the money in the family.
+            The ultimate hub for campus trade. Buy official merchandise directly from the <span className="text-purple-600 font-bold dark:text-purple-400">Uni Gang Official Store</span>, trade peer-to-peer, or offer freelance services in a secure environment.
           </p>
         </motion.div>
 
@@ -174,6 +174,14 @@ const MarketSection = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {[
                 {
+                  icon: <LuBadgeCheck className="w-6 h-6" />,
+                  title: "Uni Gang Official Store",
+                  desc: "Buy university merchandise, graduation bouquets, and custom souvenirs directly with a premium cart & receipt checkout flow.",
+                  color: "amber",
+                  featured: true,
+                  badge: "Verified Merchant"
+                },
+                {
                   icon: <LuShoppingBag className="w-6 h-6" />,
                   title: "Physical Goods",
                   desc: "Buy and sell textbooks, drawing tables, laptops, and calculators.",
@@ -204,12 +212,23 @@ const MarketSection = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.8, delay: idx * 0.1 }}
-                  className="group relative bg-white dark:bg-slate-800/50 backdrop-blur-md p-6 rounded-3xl border border-slate-100 dark:border-slate-700/50 hover:border-purple-500/50 transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:hover:shadow-[0_8px_30px_rgba(139,92,246,0.1)] overflow-hidden"
+                  className={`group relative backdrop-blur-md p-6 rounded-3xl border transition-all overflow-hidden ${
+                    feature.featured
+                      ? 'sm:col-span-2 bg-gradient-to-r from-amber-500/10 via-purple-500/5 to-indigo-500/10 dark:from-amber-500/5 dark:via-purple-500/5 dark:to-indigo-500/5 border-amber-500/30 hover:border-amber-500/60 shadow-[0_8px_30px_rgba(245,158,11,0.08)]'
+                      : 'bg-white dark:bg-slate-800/50 border-slate-100 dark:border-slate-700/50 hover:border-purple-500/50 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:hover:shadow-[0_8px_30px_rgba(139,92,246,0.1)]'
+                  }`}
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                   
-                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-${feature.color}-500 bg-${feature.color}-500/10 mb-4 group-hover:scale-110 transition-transform`}>
-                    {feature.icon}
+                  <div className="flex items-start justify-between">
+                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-${feature.color}-500 bg-${feature.color}-500/10 mb-4 group-hover:scale-110 transition-transform`}>
+                      {feature.icon}
+                    </div>
+                    {feature.badge && (
+                      <span className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/25">
+                        {feature.badge}
+                      </span>
+                    )}
                   </div>
                   
                   <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">{feature.title}</h3>

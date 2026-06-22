@@ -198,7 +198,7 @@ const EventList = () => {
                         </div>
 
                         {/* Hero Section */}
-                        <section className="relative pt-24 pb-16 px-4 md:px-8 max-w-7xl mx-auto z-10">
+                        <section className="relative pt-5 pb-16 px-4 md:px-8 max-w-7xl mx-auto z-10">
                             <div className="grid lg:grid-cols-2 gap-12 items-center">
                                 <motion.div
                                     initial={{ opacity: 0, y: 30 }}
@@ -207,7 +207,7 @@ const EventList = () => {
                                     className="space-y-8"
                                 >
                                     {/* Breadcrumb navigation */}
-                                    <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-2 animate-in fade-in slide-in-from-left-2 duration-300">
+                                    {/* <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-2 animate-in fade-in slide-in-from-left-2 duration-300">
                                         <button
                                             onClick={() => navigate('/')}
                                             className="hover:text-blue-600 dark:hover:text-cyan-400 transition-colors flex items-center gap-1.5 bg-transparent border-none p-0 cursor-pointer font-black text-slate-400 dark:text-slate-500"
@@ -216,7 +216,7 @@ const EventList = () => {
                                         </button>
                                         <span className="text-slate-300 dark:text-slate-800">/</span>
                                         <span className="text-slate-605 dark:text-slate-405">Events</span>
-                                    </div>
+                                    </div> */}
 
                                     <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-100/50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs font-black uppercase tracking-widest border border-blue-200/50 dark:border-blue-800/50">
                                         <LuSparkles className="animate-pulse" /> Live the Experience
@@ -323,112 +323,112 @@ const EventList = () => {
                                         const monthStr = isNaN(eventDate.getTime()) ? 'OCT' : eventDate.toLocaleString('default', { month: 'short' }).toUpperCase();
 
                                         return (
-                                        <React.Fragment key={event.id}>
-                                            <motion.div
-                                                layout
-                                                initial={{ opacity: 0, y: 30 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
-                                                transition={{ duration: 0.5, delay: index * 0.1 }}
-                                            >
-                                                {/* <TiltCard className="h-full"> */}
-                                                <div className="h-full">
-                                                    <div className="group h-full bg-white/60 dark:bg-slate-900/60 backdrop-blur-2xl border border-white/50 dark:border-slate-700/30 rounded-[2rem] p-5 shadow-xl hover:-translate-y-2 hover:shadow-[0_40px_80px_-20px_rgba(0,63,221,0.15)] transition-all duration-500 flex flex-col">
-                                                        {/* Image Container */}
-                                                        <div className="relative h-72 rounded-[2rem] overflow-hidden mb-6">
-                                                            <img
-                                                                src={imageUrl}
-                                                                alt={event.title}
-                                                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                                            />
-                                                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                                            <React.Fragment key={event.id}>
+                                                <motion.div
+                                                    layout
+                                                    initial={{ opacity: 0, y: 30 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
+                                                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                                                >
+                                                    {/* <TiltCard className="h-full"> */}
+                                                    <div className="h-full">
+                                                        <div className="group h-full bg-white/60 dark:bg-slate-900/60 backdrop-blur-2xl border border-white/50 dark:border-slate-700/30 rounded-[2rem] p-5 shadow-xl hover:-translate-y-2 hover:shadow-[0_40px_80px_-20px_rgba(0,63,221,0.15)] transition-all duration-500 flex flex-col">
+                                                            {/* Image Container */}
+                                                            <div className="relative h-72 rounded-[2rem] overflow-hidden mb-6">
+                                                                <img
+                                                                    src={imageUrl}
+                                                                    alt={event.title}
+                                                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                                                />
+                                                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
-                                                            {/* Date Badge - Premium Calendar Leaf */}
-                                                            <div className="absolute top-4 left-4 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-2xl overflow-hidden flex flex-col items-center border border-white/40 dark:border-slate-700/50 shadow-xl shadow-black/10 min-w-[3rem]">
-                                                                <div className="bg-blue-600 w-full py-1 text-center">
-                                                                    <span className="text-[8px] font-black uppercase tracking-widest text-white leading-none">{monthStr}</span>
-                                                                </div>
-                                                                <div className="px-3 py-1.5 flex items-center justify-center">
-                                                                    <span className="text-xl font-black text-slate-900 dark:text-white leading-none tracking-tighter">{dayStr}</span>
-                                                                </div>
-                                                            </div>
-
-                                                            {/* Category Tag */}
-                                                            <div className="absolute top-4 right-4 bg-blue-600 text-white px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg">
-                                                                {event.category || 'Event'}
-                                                            </div>
-                                                        </div>
-
-                                                        {/* Content */}
-                                                        <div className="px-3 flex-grow space-y-4">
-                                                            <div className="space-y-1">
-                                                                <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 text-[10px] font-black uppercase tracking-[0.2em]">
-                                                                    <LuGraduationCap /> {event.uni}{event.faculty ? ` - ${event.faculty}` : ''}
-                                                                </div>
-                                                                <h3 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tighter leading-none group-hover:text-blue-600 transition-colors duration-300 mt-1">
-                                                                    {event.title}
-                                                                </h3>
-                                                            </div>
-
-                                                            <div className="flex flex-wrap gap-4 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
-                                                                <div className="flex items-center gap-1.5">
-                                                                    <LuMapPin className="text-blue-500" /> {event.location}
-                                                                </div>
-                                                                <div className="flex items-center gap-1.5">
-                                                                    <LuClock className="text-blue-500" /> {event.time || '09:00 AM'}
-                                                                </div>
-                                                            </div>
-
-                                                            <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed font-medium line-clamp-2">
-                                                                {event.description}
-                                                            </p>
-
-                                                            {/* Expandable Details Peek & Capacity */}
-                                                            <div className="pt-4 flex flex-col gap-4 border-t border-slate-200/50 dark:border-slate-700/50">
-                                                                {event.capacity && (
-                                                                    <div className="flex flex-col gap-1.5">
-                                                                        <div className="flex items-center justify-between text-[8px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">
-                                                                            <span>Capacity</span>
-                                                                            <span className="text-blue-600 dark:text-blue-400">{event.attendees?.length || 0} / {event.capacity}</span>
-                                                                        </div>
-                                                                        <div className="h-1.5 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
-                                                                            <div
-                                                                                className="h-full bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full"
-                                                                                style={{ width: `${Math.min(((event.attendees?.length || 0) / event.capacity) * 100, 100)}%` }}
-                                                                            />
-                                                                        </div>
+                                                                {/* Date Badge - Premium Calendar Leaf */}
+                                                                <div className="absolute top-4 left-4 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-2xl overflow-hidden flex flex-col items-center border border-white/40 dark:border-slate-700/50 shadow-xl shadow-black/10 min-w-[3rem]">
+                                                                    <div className="bg-blue-600 w-full py-1 text-center">
+                                                                        <span className="text-[8px] font-black uppercase tracking-widest text-white leading-none">{monthStr}</span>
                                                                     </div>
-                                                                )}
+                                                                    <div className="px-3 py-1.5 flex items-center justify-center">
+                                                                        <span className="text-xl font-black text-slate-900 dark:text-white leading-none tracking-tighter">{dayStr}</span>
+                                                                    </div>
+                                                                </div>
 
-                                                                {/* Interaction Buttons */}
-                                                                <div className="grid grid-cols-[1fr_auto] gap-3">
-                                                                    <button
-                                                                        onClick={() => setSelectedEvent(event)}
-                                                                        className="flex items-center justify-center gap-2 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black uppercase tracking-widest text-[10px] transition-all shadow-lg shadow-blue-600/30 active:scale-95 border border-transparent"
-                                                                    >
-                                                                        <LuInfo size={14} /> View & RSVP
-                                                                    </button>
-                                                                    <button
-                                                                        onClick={() => handleWhatsApp(event.contact, event.title)}
-                                                                        className="flex items-center justify-center p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-emerald-500 hover:text-white text-slate-500 dark:text-slate-400 transition-all active:scale-95 shadow-sm"
-                                                                        title="Contact via WhatsApp"
-                                                                    >
-                                                                        <LuMessageCircle size={18} />
-                                                                    </button>
+                                                                {/* Category Tag */}
+                                                                <div className="absolute top-4 right-4 bg-blue-600 text-white px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg">
+                                                                    {event.category || 'Event'}
+                                                                </div>
+                                                            </div>
+
+                                                            {/* Content */}
+                                                            <div className="px-3 flex-grow space-y-4">
+                                                                <div className="space-y-1">
+                                                                    <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 text-[10px] font-black uppercase tracking-[0.2em]">
+                                                                        <LuGraduationCap /> {event.uni}{event.faculty ? ` - ${event.faculty}` : ''}
+                                                                    </div>
+                                                                    <h3 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tighter leading-none group-hover:text-blue-600 transition-colors duration-300 mt-1">
+                                                                        {event.title}
+                                                                    </h3>
+                                                                </div>
+
+                                                                <div className="flex flex-wrap gap-4 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
+                                                                    <div className="flex items-center gap-1.5">
+                                                                        <LuMapPin className="text-blue-500" /> {event.location}
+                                                                    </div>
+                                                                    <div className="flex items-center gap-1.5">
+                                                                        <LuClock className="text-blue-500" /> {event.time || '09:00 AM'}
+                                                                    </div>
+                                                                </div>
+
+                                                                <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed font-medium line-clamp-2">
+                                                                    {event.description}
+                                                                </p>
+
+                                                                {/* Expandable Details Peek & Capacity */}
+                                                                <div className="pt-4 flex flex-col gap-4 border-t border-slate-200/50 dark:border-slate-700/50">
+                                                                    {event.capacity && (
+                                                                        <div className="flex flex-col gap-1.5">
+                                                                            <div className="flex items-center justify-between text-[8px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">
+                                                                                <span>Capacity</span>
+                                                                                <span className="text-blue-600 dark:text-blue-400">{event.attendees?.length || 0} / {event.capacity}</span>
+                                                                            </div>
+                                                                            <div className="h-1.5 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                                                                                <div
+                                                                                    className="h-full bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full"
+                                                                                    style={{ width: `${Math.min(((event.attendees?.length || 0) / event.capacity) * 100, 100)}%` }}
+                                                                                />
+                                                                            </div>
+                                                                        </div>
+                                                                    )}
+
+                                                                    {/* Interaction Buttons */}
+                                                                    <div className="grid grid-cols-[1fr_auto] gap-3">
+                                                                        <button
+                                                                            onClick={() => setSelectedEvent(event)}
+                                                                            className="flex items-center justify-center gap-2 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black uppercase tracking-widest text-[10px] transition-all shadow-lg shadow-blue-600/30 active:scale-95 border border-transparent"
+                                                                        >
+                                                                            <LuInfo size={14} /> View & RSVP
+                                                                        </button>
+                                                                        <button
+                                                                            onClick={() => handleWhatsApp(event.contact, event.title)}
+                                                                            className="flex items-center justify-center p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-emerald-500 hover:text-white text-slate-500 dark:text-slate-400 transition-all active:scale-95 shadow-sm"
+                                                                            title="Contact via WhatsApp"
+                                                                        >
+                                                                            <LuMessageCircle size={18} />
+                                                                        </button>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                {/* </TiltCard> */}
-                                            </motion.div>
-                                            
-                                            {(index + 1) % 4 === 0 && (
-                                                <div key={`ad-${index}`} className="col-span-1 md:col-span-2 lg:col-span-3">
-                                                    <AdNativeFeed adIndex={Math.floor((index + 1) / 4) - 1} />
-                                                </div>
-                                            )}
-                                        </React.Fragment>
+                                                    {/* </TiltCard> */}
+                                                </motion.div>
+
+                                                {(index + 1) % 4 === 0 && (
+                                                    <div key={`ad-${index}`} className="col-span-1 md:col-span-2 lg:col-span-3">
+                                                        <AdNativeFeed adIndex={Math.floor((index + 1) / 4) - 1} />
+                                                    </div>
+                                                )}
+                                            </React.Fragment>
                                         );
                                     })}
                                 </motion.div>
