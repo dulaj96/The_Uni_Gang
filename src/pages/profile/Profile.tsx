@@ -3,7 +3,7 @@ import {
   LuUser, LuMail, LuPhone, LuBuilding, LuLock, LuCamera, LuPencil, LuSave,
   LuEye, LuEyeOff, LuFacebook, LuLinkedin,
   LuMessageSquare, LuActivity, LuChevronRight, LuShieldCheck,
-  LuCalendar, LuLayoutGrid, LuTrophy, LuSettings, LuLogOut, LuBriefcase, LuX, LuSend, LuTrash2, LuMegaphone, LuShoppingBag
+  LuCalendar, LuLayoutGrid, LuTrophy, LuSettings, LuLogOut, LuBriefcase, LuX, LuSend, LuTrash2, LuMegaphone, LuShoppingBag, LuStar
 } from 'react-icons/lu';
 import { motion, AnimatePresence } from 'framer-motion';
 import SEO from '../../components/SEO';

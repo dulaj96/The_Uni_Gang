@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   LuSearch, LuPlus, LuShoppingBag, LuBriefcase, LuTags, LuShieldCheck,
   LuStar, LuX, LuSend, LuChevronLeft, LuChevronRight, LuBadgeCheck,
-  LuTrash2, LuArrowLeft, LuUpload, LuFileText
+  LuTrash2, LuArrowLeft, LuUpload
 } from 'react-icons/lu';
 import MarketplaceCard from '../../components/market/MarketplaceCard';
 import CreateListingModal from '../../components/market/CreateListingModal';
@@ -200,7 +200,7 @@ const MarketplaceHome: React.FC = () => {
       const data = await api.rateListing(itemId, score);
       setItems(prev => prev.map(item => item.id === itemId ? { ...item, rating: data.rating, rating_count: data.rating_count } : item));
       if (selectedItem && selectedItem.id === itemId) {
-        setSelectedItem(prev => ({ ...prev, rating: data.rating, rating_count: data.rating_count }));
+        setSelectedItem((prev: any) => ({ ...prev, rating: data.rating, rating_count: data.rating_count }));
       }
       toast.success('Rating submitted successfully!');
     } catch (err: any) {
