@@ -110,21 +110,8 @@ const BlogList: React.FC = () => {
               <div className="absolute bottom-[20%] left-[-10%] w-[400px] h-[400px] bg-indigo-500/10 rounded-full blur-[100px]" />
             </div>
 
-            {/* Back Button */}
-            <div className="max-w-7xl mx-auto px-4 md:px-8 pt-24 relative z-10">
-              <motion.button
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                onClick={() => navigate('/')}
-                className="flex items-center gap-2 px-5 py-2.5 bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl rounded-full text-slate-700 dark:text-slate-200 font-bold border border-white/20 dark:border-slate-800 hover:bg-blue-50 dark:hover:bg-slate-800 transition-all shadow-xl group"
-              >
-                <LuArrowLeft className="group-hover:-translate-x-1 transition-transform" />
-                Back to Hub
-              </motion.button>
-            </div>
-
             {/* Hero Section */}
-            <section className="relative pt-12 pb-16 px-4 md:px-8 max-w-7xl mx-auto z-10">
+            <section className="relative pt-24 pb-16 px-4 md:px-8 max-w-7xl mx-auto z-10">
               <div className="grid lg:grid-cols-2 gap-12 items-center">
                 <motion.div
                   initial={{ opacity: 0, y: 30 }}
@@ -132,6 +119,18 @@ const BlogList: React.FC = () => {
                   transition={{ duration: 0.8 }}
                   className="space-y-8"
                 >
+                  {/* Breadcrumb navigation */}
+                  <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-2 animate-in fade-in slide-in-from-left-2 duration-300">
+                    <button
+                      onClick={() => navigate('/')}
+                      className="hover:text-blue-650 dark:hover:text-blue-400 transition-colors flex items-center gap-1.5 bg-transparent border-none p-0 cursor-pointer font-black text-slate-400 dark:text-slate-500"
+                    >
+                      <LuArrowLeft className="w-3.5 h-3.5" /> Hub
+                    </button>
+                    <span className="text-slate-300 dark:text-slate-800">/</span>
+                    <span className="text-slate-600 dark:text-slate-400">Blogs</span>
+                  </div>
+
                   <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-100/50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs font-black uppercase tracking-widest border border-blue-200/50 dark:border-blue-800/50">
                     <LuSparkles className="animate-pulse" /> Intellectual Pulse
                   </div>

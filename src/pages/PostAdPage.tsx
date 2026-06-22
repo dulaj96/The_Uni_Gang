@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import AuthCard from '../components/auth/AuthCard';
 import AnnexAdForm from './annex/AnnexAdForm';
 import MyAdsList from './annex/MyAdsList';
@@ -13,6 +13,7 @@ import PremiumPageLoader from '../components/ui/PremiumPageLoader';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const PostAdPage = () => {
+  const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentView, setCurrentView] = useState<'postAdForm' | 'myAds'>('postAdForm');
   const [editingAd, setEditingAd] = useState<any | null>(null);
@@ -61,8 +62,7 @@ const PostAdPage = () => {
 
   const handleAuthSuccess = () => {
     setIsLoggedIn(true);
-    setCurrentView('postAdForm');
-    fetchMyAds();
+    navigate('/');
   };
 
   const handleLogout = () => {

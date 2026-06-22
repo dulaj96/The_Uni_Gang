@@ -3,7 +3,7 @@ import {
   LuUser, LuMail, LuPhone, LuBuilding, LuLock, LuCamera, LuPencil, LuSave,
   LuEye, LuEyeOff, LuFacebook, LuLinkedin,
   LuMessageSquare, LuActivity, LuChevronRight, LuShieldCheck,
-  LuCalendar, LuLayoutGrid, LuTrophy, LuSettings, LuLogOut, LuBriefcase, LuX, LuSend, LuTrash2, LuMegaphone
+  LuCalendar, LuLayoutGrid, LuTrophy, LuSettings, LuLogOut, LuBriefcase, LuX, LuSend, LuTrash2, LuMegaphone, LuShoppingBag
 } from 'react-icons/lu';
 import { motion, AnimatePresence } from 'framer-motion';
 import SEO from '../../components/SEO';
@@ -101,6 +101,34 @@ const Profile = () => {
   const [myAds, setMyAds] = useState<any[]>([]);
   const [loadingAds, setLoadingAds] = useState(false);
 
+  // Marketplace states
+  const [showListingsModal, setShowListingsModal] = useState(false);
+  const [myListings, setMyListings] = useState<any[]>([]);
+  const [loadingListings, setLoadingListings] = useState(false);
+
+  const [showOrdersModal, setShowOrdersModal] = useState(false);
+  const [myOrders, setMyOrders] = useState<any[]>([]);
+  const [loadingOrders, setLoadingOrders] = useState(false);
+
+  const fetchMyOrders = async () => {
+    try {
+      setLoadingOrders(true);
+      const data = await api.getMyMarketOrders();
+      setMyOrders(data);
+    } catch (err) {
+      console.error('Failed to load orders:', err);
+    } finally {
+      setLoadingOrders(false);
+    }
+  };
+
+  const [showChatsModal, setShowChatsModal] = useState(false);
+  const [marketplaceChats, setMarketplaceChats] = useState<any[]>([]);
+  const [loadingChats, setLoadingChats] = useState(false);
+  const [selectedChat, setSelectedChat] = useState<any | null>(null);
+  const [chatMessages, setChatMessages] = useState<any[]>([]);
+  const [chatText, setChatText] = useState('');
+
   const fetchSubmittedEvents = async () => {
     const token = localStorage.getItem('userToken');
     if (!token) return;
@@ -196,7 +224,111 @@ const Profile = () => {
     fetchBlogs();
     fetchNetwork();
     fetchMyAds();
+    fetchListings();
+    fetchChats();
+    fetchMyOrders();
   }, []);
+
+  const fetchListings = async () => {
+    try {
+      setLoadingListings(true);
+      const data = await api.getMyListings();
+      setMyListings(data);
+    } catch (err) {
+      console.error('Failed to load listings:', err);
+    } finally {
+      setLoadingListings(false);
+    }
+  };
+
+  const fetchChats = async () => {
+    try {
+      setLoadingChats(true);
+      const data = await api.getMarketplaceChats();
+      setMarketplaceChats(data);
+    } catch (err) {
+      console.error('Failed to load chats:', err);
+    } finally {
+      setLoadingChats(false);
+    }
+  };
+
+  const handleDeleteListing = async (id: string) => {
+    if (!window.confirm("Are you sure you want to delete this listing? This will permanently remove it from the platform.")) {
+      return;
+    }
+    try {
+      await api.deleteListing(id);
+      setMyListings(prev => prev.filter(item => item.id !== id));
+      toast.success("Listing deleted successfully.");
+    } catch (err: any) {
+      toast.error(err.message || "Failed to delete listing.");
+    }
+  };
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get('tab');
+    const chatId = params.get('chatId');
+    if (tab === 'orders') {
+      setShowOrdersModal(true);
+      fetchMyOrders();
+    }
+    if (tab === 'inbox') {
+      setShowChatsModal(true);
+      if (chatId) {
+        const selectParamChat = async () => {
+          try {
+            const data = await api.getMarketplaceChats();
+            setMarketplaceChats(data);
+            const found = data.find((c: any) => c.id === chatId);
+            if (found) {
+              setSelectedChat(found);
+            }
+          } catch (err) {
+            console.error('Error selecting param chat:', err);
+          }
+        };
+        selectParamChat();
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    let interval: any;
+    const fetchChatMessages = async () => {
+      if (!selectedChat) return;
+      try {
+        const msgs = await api.getMarketplaceMessages(selectedChat.id);
+        setChatMessages(msgs);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    if (selectedChat) {
+      fetchChatMessages();
+      interval = setInterval(fetchChatMessages, 4000);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [selectedChat]);
+
+  const handleSendMarketplaceMessage = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedChat || !chatText.trim()) return;
+    try {
+      const sent = await api.sendMarketplaceMessage(selectedChat.id, chatText.trim());
+      setChatMessages(prev => [...prev, sent]);
+      setChatText('');
+      // Sync chats list updated_at
+      const updated = await api.getMarketplaceChats();
+      setMarketplaceChats(updated);
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to send message.');
+    }
+  };
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -471,7 +603,9 @@ const Profile = () => {
                     { label: 'My Ads', value: myAds.length, icon: LuMegaphone, color: 'text-rose-500', bg: 'bg-rose-500/10', onClick: () => setShowAdsModal(true) },
                     { label: 'Activity', value: `${stats.activityScore}%`, icon: LuActivity, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
                     { label: 'My Events', value: submittedEvents.length, icon: LuCalendar, color: 'text-pink-500', bg: 'bg-pink-500/10', onClick: () => setShowEventsModal(true) },
-                    { label: 'Listings', value: stats.publishedAds, icon: LuLayoutGrid, color: 'text-orange-500', bg: 'bg-orange-500/10' },
+                    { label: 'My Listings', value: myListings.length, icon: LuLayoutGrid, color: 'text-orange-500', bg: 'bg-orange-500/10', onClick: () => setShowListingsModal(true) },
+                    { label: 'My Orders', value: myOrders.length, icon: LuShoppingBag, color: 'text-amber-500', bg: 'bg-amber-500/10', onClick: () => { setShowOrdersModal(true); fetchMyOrders(); } },
+                    { label: 'Inbox (Chats)', value: marketplaceChats.length, icon: LuMessageSquare, color: 'text-indigo-500', bg: 'bg-indigo-500/10', onClick: () => setShowChatsModal(true) },
                     { label: 'Services', value: serviceRequests.length, icon: LuBriefcase, color: 'text-sky-500', bg: 'bg-sky-500/10', onClick: () => setShowServicesModal(true) },
                     { label: 'Points', value: stats.rewardPoints, icon: LuTrophy, color: 'text-amber-500', bg: 'bg-amber-500/10' },
                   ].map((stat, idx) => {
@@ -499,7 +633,27 @@ const Profile = () => {
                 <form onSubmit={handleSave} className="grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-12">
                   {/* ── Personal Info Section ──────────────────────── */}
                   <div className="space-y-10">
-                    <div className="flex items-center gap-4 pb-4 border-b border-slate-100 dark:border-slate-800/60">
+                    
+                    {/* ── Verification Banner ──────────────────────── */}
+                    <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-3xl p-6 relative overflow-hidden">
+                      <div className="flex items-start justify-between gap-4 relative z-10">
+                        <div>
+                          <h3 className="text-lg font-black text-amber-900 mb-1 flex items-center gap-2">
+                            <LuShieldCheck className="w-5 h-5" /> Student Verification Required
+                          </h3>
+                          <p className="text-sm text-amber-700 font-medium mb-4">
+                            To sell items or post gigs on the Hustle Hub, you must verify your student status by uploading your University ID.
+                          </p>
+                          <label className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white px-5 py-2.5 rounded-xl font-bold text-sm cursor-pointer transition-colors shadow-md shadow-amber-500/20">
+                            <LuCamera className="w-4 h-4" /> Upload Campus ID
+                            <input type="file" className="hidden" accept="image/*" onChange={() => toast.success('ID uploaded successfully! Awaiting Admin approval.')} />
+                          </label>
+                        </div>
+                      </div>
+                      <LuShieldCheck className="absolute -right-4 -bottom-4 w-32 h-32 text-amber-500/10" />
+                    </div>
+
+                    <div className="flex items-center gap-4 pb-4 border-b border-slate-100 dark:border-slate-800/60 mt-8">
                       <div className="p-3 bg-blue-500/10 rounded-2xl text-blue-500"><LuUser className="w-6 h-6" /></div>
                       <h2 className="text-xl font-black text-slate-800 dark:text-white tracking-tight">Personal Details</h2>
                     </div>
@@ -1373,6 +1527,421 @@ const Profile = () => {
                                 </div>
                               </div>
                             </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </motion.div>
+                  </div>
+                </>
+              )}
+            </AnimatePresence>
+
+            {/* Backdrop-Blurred Orders Tracker Modal */}
+            <AnimatePresence>
+              {showOrdersModal && (
+                <>
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    onClick={() => setShowOrdersModal(false)}
+                    className="fixed inset-0 z-[100] bg-slate-950/60 backdrop-blur-md"
+                  />
+
+                  <div className="fixed inset-0 z-[101] overflow-y-auto pointer-events-none flex items-center justify-center p-4 sm:p-6">
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                      className="w-full max-w-2xl bg-white/95 dark:bg-slate-955/98 backdrop-blur-2xl border border-slate-200/50 dark:border-white/10 rounded-[2.5rem] p-8 shadow-2xl relative pointer-events-auto overflow-hidden max-h-[85vh] flex flex-col"
+                    >
+                      <div className="flex justify-between items-start mb-6">
+                        <div>
+                          <span className="text-[10px] font-black uppercase tracking-widest text-amber-500 mb-1 block">Purchase Hub</span>
+                          <h3 className="text-2xl font-black text-slate-800 dark:text-white tracking-tight">Your Official Store Orders</h3>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setShowOrdersModal(false)}
+                          className="p-2.5 rounded-full bg-slate-200/50 dark:bg-slate-800/50 text-slate-655 dark:text-slate-400 hover:bg-red-500 hover:text-white transition-all hover:rotate-90 duration-300 border-none cursor-pointer"
+                        >
+                          <LuX size={18} />
+                        </button>
+                      </div>
+
+                      <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-4">
+                        {loadingOrders ? (
+                          <div className="py-20 text-center text-slate-400 dark:text-slate-500 animate-pulse font-black uppercase tracking-widest text-xs">
+                            Retrieving your orders...
+                          </div>
+                        ) : myOrders.length === 0 ? (
+                          <div className="py-20 text-center bg-slate-500/5 border border-slate-200/10 dark:border-white/10 rounded-3xl">
+                            <p className="text-slate-505 font-bold uppercase tracking-widest text-xs mb-2">No orders found</p>
+                            <p className="text-[10px] text-slate-400 font-semibold">Buy merchandise, souvenirs, or flower bouquets from the Official Store!</p>
+                          </div>
+                        ) : (
+                          <div className="grid grid-cols-1 gap-4">
+                            {myOrders.map((order) => {
+                              const item = order.item || {};
+                              const img = item.images && item.images.length > 0
+                                ? `http://localhost:5001${item.images[0]}`
+                                : 'https://images.unsplash.com/photo-1521556906631-0c58e7ce65e5?q=80&w=600';
+                              
+                              const statusSteps = ['PENDING', 'PROCESSING', 'DELIVERED'];
+                              const currentStepIdx = statusSteps.indexOf(order.status);
+                              const stepLabels = ['Order Placed', 'Processing', 'Delivered'];
+                              const isCancelled = order.status === 'CANCELLED';
+
+                              return (
+                                <div key={order.id} className="p-6 bg-slate-50 dark:bg-slate-900 border border-slate-150 dark:border-white/10 rounded-3xl flex flex-col gap-6 text-left">
+                                  <div className="flex flex-col sm:flex-row items-center gap-4">
+                                    <img src={img} alt="" className="w-16 h-16 rounded-2xl object-cover shrink-0" />
+                                    <div className="flex-1 min-w-0 text-center sm:text-left">
+                                      <h4 className="text-base font-black text-slate-805 dark:text-white truncate">{item.title || 'Official Product'}</h4>
+                                      <p className="text-xs text-slate-400 dark:text-slate-500 font-semibold mt-1">
+                                        Qty: {order.quantity} • Total Price: <span className="text-indigo-650 dark:text-indigo-400 font-bold">Rs. {parseFloat(order.total_price).toLocaleString()}</span>
+                                      </p>
+                                    </div>
+                                    <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                                      order.status === 'DELIVERED' ? 'bg-emerald-500/10 text-emerald-500' :
+                                      order.status === 'CANCELLED' ? 'bg-red-500/10 text-red-505' :
+                                      'bg-amber-500/10 text-amber-500'
+                                    }`}>
+                                      {order.status}
+                                    </span>
+                                  </div>
+
+                                  {/* Custom Stepper Tracker */}
+                                  {!isCancelled ? (
+                                    <div className="flex items-center justify-between mt-2 pl-2 pr-2">
+                                      {stepLabels.map((lbl, idx) => {
+                                        const isCompleted = idx <= currentStepIdx;
+                                        const isCurrent = idx === currentStepIdx;
+                                        return (
+                                          <div key={lbl} className="flex items-center gap-2 flex-1 last:flex-none">
+                                            <div className="flex items-center gap-2">
+                                              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black border-2 transition-all ${
+                                                isCurrent ? 'bg-indigo-650 border-indigo-500 text-white shadow-lg shadow-indigo-500/20' :
+                                                isCompleted ? 'bg-emerald-500 border-emerald-500 text-white' :
+                                                'bg-white dark:bg-slate-950 border-slate-300 dark:border-slate-800 text-slate-400'
+                                              }`}>
+                                                {isCompleted && !isCurrent ? '✓' : idx + 1}
+                                              </div>
+                                              <span className={`text-[10px] font-black uppercase tracking-widest hidden sm:inline ${
+                                                isCurrent ? 'text-indigo-655 dark:text-white' :
+                                                isCompleted ? 'text-slate-700 dark:text-slate-350' :
+                                                'text-slate-400 dark:text-slate-600'
+                                              }`}>{lbl}</span>
+                                            </div>
+                                            {idx < stepLabels.length - 1 && (
+                                              <div className={`h-0.5 flex-1 min-w-[20px] mx-2 ${
+                                                idx < currentStepIdx ? 'bg-emerald-500' : 'bg-slate-200 dark:bg-slate-800'
+                                              }`} />
+                                            )}
+                                          </div>
+                                        );
+                                      })}
+                                    </div>
+                                  ) : (
+                                    <div className="text-center p-3 bg-red-500/5 border border-red-500/10 rounded-2xl text-xs font-bold text-red-550">
+                                      This purchase has been cancelled.
+                                    </div>
+                                  )}
+                                  <div className="text-[11px] text-slate-450 border-t border-slate-100 dark:border-white/5 pt-3 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                    <div>
+                                      <span className="font-bold text-slate-500 block mb-1">Delivery Address:</span>
+                                      {order.delivery_location} • Phone: {order.delivery_phone}
+                                      <p className="mt-1 text-slate-405">
+                                        Payment Method: <span className="font-bold text-slate-600 dark:text-slate-300">{order.payment_method === 'BANK_TRANSFER' ? '🏦 Direct Bank Transfer' : '💵 Cash on Delivery (COD)'}</span>
+                                      </p>
+                                      {order.notes && (
+                                        <p className="mt-2 italic text-slate-400">"{order.notes}"</p>
+                                      )}
+                                    </div>
+                                    {order.payment_method === 'BANK_TRANSFER' && order.payment_slip && (
+                                      <a
+                                        href={`http://localhost:5001${order.payment_slip}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-750 text-[10px] font-black text-slate-700 dark:text-white transition-all w-fit cursor-pointer border-none no-underline"
+                                      >
+                                        View Receipt Slip
+                                      </a>
+                                    )}
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    </motion.div>
+                  </div>
+                </>
+              )}
+            </AnimatePresence>
+
+            {/* Backdrop-Blurred Listings Modal */}
+            <AnimatePresence>
+              {showListingsModal && (
+                <>
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    onClick={() => setShowListingsModal(false)}
+                    className="fixed inset-0 z-[100] bg-slate-950/60 backdrop-blur-md"
+                  />
+
+                  <div className="fixed inset-0 z-[101] overflow-y-auto pointer-events-none flex items-center justify-center p-4 sm:p-6">
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                      className="w-full max-w-2xl bg-white/95 dark:bg-slate-950/98 backdrop-blur-2xl border border-slate-200/50 dark:border-white/10 rounded-[2.5rem] p-8 shadow-2xl relative pointer-events-auto overflow-hidden max-h-[85vh] flex flex-col"
+                    >
+                      <div className="flex justify-between items-start mb-6">
+                        <div>
+                          <span className="text-[10px] font-black uppercase tracking-widest text-orange-500 mb-1 block">Hustle Hub</span>
+                          <h3 className="text-2xl font-black text-slate-800 dark:text-white tracking-tight">Your Listings</h3>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setShowListingsModal(false)}
+                          className="p-2.5 rounded-full bg-slate-200/50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 hover:bg-red-500 hover:text-white transition-all hover:rotate-90 duration-300"
+                        >
+                          <LuX size={18} />
+                        </button>
+                      </div>
+
+                      <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-4">
+                        {loadingListings ? (
+                          <div className="py-20 text-center text-slate-400 dark:text-slate-500 animate-pulse font-black uppercase tracking-widest text-xs">
+                            Retrieving your listings...
+                          </div>
+                        ) : myListings.length === 0 ? (
+                          <div className="py-20 text-center bg-slate-500/5 border border-slate-200/10 dark:border-white/10 rounded-3xl">
+                            <p className="text-slate-500 font-bold uppercase tracking-widest text-xs mb-2">No listings found</p>
+                            <p className="text-[10px] text-slate-400 font-semibold">Post a product or gig on the marketplace to start selling!</p>
+                          </div>
+                        ) : (
+                          <div className="grid grid-cols-1 gap-4">
+                            {myListings.map((listing) => {
+                              const img = listing.images && listing.images.length > 0
+                                ? `http://localhost:5001${listing.images[0]}`
+                                : 'https://images.unsplash.com/photo-1521556906631-0c58e7ce65e5?q=80&w=600&auto=format&fit=crop';
+                              return (
+                                <div key={listing.id} className="p-5 bg-slate-50 dark:bg-slate-900 border border-slate-150 dark:border-white/10 rounded-3xl flex flex-col sm:flex-row items-center gap-4">
+                                  <img src={img} alt={listing.title} className="w-16 h-16 rounded-2xl object-cover shrink-0 animate-in fade-in zoom-in" />
+                                  <div className="flex-1 min-w-0 text-center sm:text-left">
+                                    <div className="flex items-center justify-center sm:justify-start gap-2 mb-1.5">
+                                      <span className={`px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-wider ${listing.type === 'GIG' ? 'bg-indigo-500/10 text-indigo-400' : 'bg-emerald-500/10 text-emerald-400'}`}>
+                                        {listing.type}
+                                      </span>
+                                      <span className={`px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-wider ${listing.status === 'AVAILABLE' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/10 text-amber-500'}`}>
+                                        {listing.status}
+                                      </span>
+                                    </div>
+                                    <h4 className="text-base font-black text-slate-800 dark:text-white truncate">{listing.title}</h4>
+                                    <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 mt-1">
+                                      <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400">Rs. {parseFloat(listing.price).toLocaleString()}</span>
+                                      <span className="text-[10px] text-slate-400 dark:text-slate-550 font-bold">•</span>
+                                      <div className="flex items-center gap-1 text-[10px] text-amber-500 font-bold">
+                                        <LuStar className="w-3.5 h-3.5 fill-current" />
+                                        <span>{parseFloat(String(listing.rating || 0)) > 0 ? parseFloat(String(listing.rating)).toFixed(1) : 'No rating'}</span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleDeleteListing(listing.id)}
+                                    className="w-full sm:w-auto p-3 bg-red-500/10 hover:bg-red-500 hover:text-white text-red-500 rounded-xl transition-all cursor-pointer border-none flex items-center justify-center"
+                                  >
+                                    <LuTrash2 size={16} />
+                                  </button>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    </motion.div>
+                  </div>
+                </>
+              )}
+            </AnimatePresence>
+
+            {/* Backdrop-Blurred Chats Modal */}
+            <AnimatePresence>
+              {showChatsModal && (
+                <>
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    onClick={() => {
+                      setShowChatsModal(false);
+                      setSelectedChat(null);
+                    }}
+                    className="fixed inset-0 z-[100] bg-slate-950/60 backdrop-blur-md"
+                  />
+
+                  <div className="fixed inset-0 z-[101] overflow-y-auto pointer-events-none flex items-center justify-center p-4 sm:p-6">
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                      className="w-full max-w-4xl bg-white/95 dark:bg-slate-950/98 backdrop-blur-2xl border border-slate-200/50 dark:border-white/10 rounded-[2.5rem] p-8 shadow-2xl relative pointer-events-auto overflow-hidden h-[85vh] flex flex-col"
+                    >
+                      <AnimatePresence mode="wait">
+                        {!selectedChat ? (
+                          <motion.div
+                            key="chats-list"
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: 10 }}
+                            className="flex flex-col h-full overflow-hidden"
+                          >
+                            <div className="flex justify-between items-start mb-6">
+                              <div>
+                                <span className="text-[10px] font-black uppercase tracking-widest text-indigo-500 mb-1 block">Direct Messaging</span>
+                                <h3 className="text-2xl font-black text-slate-800 dark:text-white tracking-tight">Your Chats</h3>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => setShowChatsModal(false)}
+                                className="p-2.5 rounded-full bg-slate-200/50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 hover:bg-red-500 hover:text-white transition-all hover:rotate-90 duration-300"
+                              >
+                                <LuX size={18} />
+                              </button>
+                            </div>
+
+                            <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-4">
+                              {loadingChats ? (
+                                <div className="py-20 text-center text-slate-400 dark:text-slate-500 animate-pulse font-black uppercase tracking-widest text-xs">
+                                  Synchronizing inbox...
+                                </div>
+                              ) : marketplaceChats.length === 0 ? (
+                                <div className="py-20 text-center bg-slate-500/5 border border-slate-200/10 dark:border-white/10 rounded-3xl">
+                                  <p className="text-slate-500 font-bold uppercase tracking-widest text-xs mb-2">Inbox Empty</p>
+                                  <p className="text-[10px] text-slate-400 font-semibold">Start chat on any product card in the marketplace.</p>
+                                </div>
+                              ) : (
+                                <div className="grid grid-cols-1 gap-4">
+                                  {marketplaceChats.map((chat) => {
+                                    const otherUser = chat.buyer_id === localStorage.getItem('userId') ? chat.seller : chat.buyer;
+                                    const otherName = otherUser?.name || 'Unknown User';
+                                    const otherPic = otherUser?.profile_pic || `https://api.dicebear.com/7.x/avataaars/svg?seed=${otherName}`;
+                                    const itemTitle = chat.item?.title || 'Unknown Item';
+                                    return (
+                                      <div
+                                        key={chat.id}
+                                        onClick={() => setSelectedChat(chat)}
+                                        className="cursor-pointer p-5 bg-slate-50 dark:bg-slate-905 border border-slate-150 dark:border-white/10 rounded-3xl hover:border-indigo-500/30 hover:bg-slate-100/50 dark:hover:bg-slate-800/40 transition-all duration-300 shadow-sm flex items-center justify-between gap-4 group"
+                                      >
+                                        <div className="flex items-center gap-4 min-w-0">
+                                          <img src={otherPic} alt={otherName} className="w-12 h-12 rounded-full object-cover border border-slate-200 dark:border-white/10 shrink-0" />
+                                          <div className="min-w-0 text-left">
+                                            <h4 className="text-base font-black text-slate-800 dark:text-white group-hover:text-indigo-500 transition-colors truncate">
+                                              {otherName}
+                                            </h4>
+                                            <p className="text-slate-400 dark:text-slate-500 text-xs font-bold truncate mt-0.5">Regarding: {itemTitle}</p>
+                                          </div>
+                                        </div>
+                                        <LuChevronRight size={18} className="text-slate-400 group-hover:translate-x-1 transition-transform flex-shrink-0" />
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              )}
+                            </div>
+                          </motion.div>
+                        ) : (
+                          <motion.div
+                            key="chat-detail"
+                            initial={{ opacity: 0, x: 10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -10 }}
+                            className="flex flex-col h-full overflow-hidden"
+                          >
+                            <div className="flex justify-between items-start mb-4 border-b border-slate-100 dark:border-white/5 pb-4">
+                              <div className="flex items-center gap-3">
+                                <button
+                                  type="button"
+                                  onClick={() => setSelectedChat(null)}
+                                  className="text-xs font-black uppercase text-indigo-500 hover:text-indigo-600 mr-2"
+                                >
+                                  ← Back
+                                </button>
+                                <img
+                                  src={(selectedChat.buyer_id === localStorage.getItem('userId') ? selectedChat.seller : selectedChat.buyer)?.profile_pic || `https://api.dicebear.com/7.x/avataaars/svg?seed=${(selectedChat.buyer_id === localStorage.getItem('userId') ? selectedChat.seller : selectedChat.buyer)?.name}`}
+                                  alt="Avatar"
+                                  className="w-10 h-10 rounded-full object-cover"
+                                />
+                                <div className="text-left">
+                                  <h3 className="text-lg font-black text-slate-800 dark:text-white leading-tight">
+                                    {(selectedChat.buyer_id === localStorage.getItem('userId') ? selectedChat.seller : selectedChat.buyer)?.name}
+                                  </h3>
+                                  <p className="text-slate-400 dark:text-slate-500 text-xs font-bold truncate">Listing: {selectedChat.item?.title}</p>
+                                </div>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setShowChatsModal(false);
+                                  setSelectedChat(null);
+                                }}
+                                className="p-2.5 rounded-full bg-slate-200/50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 hover:bg-red-500 hover:text-white transition-all hover:rotate-90 duration-300"
+                              >
+                                <LuX size={18} />
+                              </button>
+                            </div>
+
+                            {/* Chat Thread */}
+                            <div className="flex-1 overflow-y-auto pr-1 space-y-3 custom-scrollbar flex flex-col bg-slate-50 dark:bg-slate-950/20 p-4 rounded-3xl">
+                              {chatMessages.length === 0 ? (
+                                <div className="my-auto text-center text-slate-400 text-xs font-bold">
+                                  No messages yet. Send a message to start conversation.
+                                </div>
+                              ) : (
+                                chatMessages.map((msg) => {
+                                  const isMe = msg.sender_id === localStorage.getItem('userId');
+                                  return (
+                                    <div
+                                      key={msg.id}
+                                      className={`flex flex-col max-w-[80%] ${isMe ? 'self-end items-end text-right' : 'self-start items-start text-left'}`}
+                                    >
+                                      <span className="text-[9px] font-bold text-slate-400 dark:text-slate-550 mb-0.5 px-1.5">
+                                        {isMe ? 'You' : msg.sender?.name} • {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                      </span>
+                                      <div className={`p-3.5 rounded-2xl text-xs font-semibold leading-relaxed ${
+                                        isMe
+                                          ? 'bg-indigo-650 text-white rounded-tr-none'
+                                          : 'bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-tl-none'
+                                      }`}>
+                                        {msg.message}
+                                      </div>
+                                    </div>
+                                  );
+                                })
+                              )}
+                            </div>
+
+                            <form onSubmit={handleSendMarketplaceMessage} className="mt-3 flex gap-2">
+                              <input
+                                type="text"
+                                placeholder="Type your message here..."
+                                value={chatText}
+                                onChange={(e) => setChatText(e.target.value)}
+                                className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/5 rounded-xl px-4 py-3.5 text-xs text-slate-700 dark:text-slate-250 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                              />
+                              <button
+                                type="submit"
+                                className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 rounded-xl transition-all shadow-xs flex items-center justify-center cursor-pointer border-none"
+                              >
+                                <LuSend size={15} />
+                              </button>
+                            </form>
                           </motion.div>
                         )}
                       </AnimatePresence>

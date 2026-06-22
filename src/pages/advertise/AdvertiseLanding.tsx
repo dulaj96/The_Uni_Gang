@@ -8,7 +8,7 @@ export default function AdvertiseLanding() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-24 pb-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto space-y-16">
-        
+
         {/* Hero Section */}
         <div className="text-center space-y-8 max-w-4xl mx-auto pt-10">
           <motion.div
@@ -40,7 +40,7 @@ export default function AdvertiseLanding() {
             transition={{ delay: 0.3 }}
             className="flex flex-col sm:flex-row justify-center gap-4 pt-4"
           >
-            <button 
+            <button
               onClick={() => navigate('/advertise/submit')}
               className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-black text-lg uppercase tracking-wider rounded-2xl shadow-xl shadow-blue-600/20 hover:scale-105 transition-all"
             >

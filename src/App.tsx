@@ -11,6 +11,7 @@ import Events from './components/events/Events';
 import Blogs from './components/blogs/Blogs';
 import AdvertiseSection from './components/advertise/Advertise';
 import Contact from './components/contact/Contact';
+import MarketSection from './components/market/MarketSection';
 
 // Pages Imports
 import FindAccommodationPage from './pages/FindAccommodationPage';
@@ -36,6 +37,8 @@ import AdvertiseLanding from './pages/advertise/AdvertiseLanding';
 import AdSubmissionForm from './pages/advertise/AdSubmissionForm';
 import AdPopup from './components/advertise/AdPopup';
 
+import MarketplaceHome from './pages/market/MarketplaceHome';
+
 function App() {
   return (
     <Router>
@@ -56,6 +59,7 @@ function App() {
 
                 <div className="w-full space-y-8 lg:space-y-12">
                   <div id="annex"><FeaturedAnnexes /></div>
+                  <div id="market"><MarketSection /></div>
 
                   {/* Future Placeholders handling Navigation Anchors */}
                   <div id="feed" className="min-h-[10px]"></div>
@@ -104,6 +108,9 @@ function App() {
         {/* Advertisement Routes */}
         <Route path="/advertise" element={<SubLayout><AdvertiseLanding /></SubLayout>} />
         <Route path="/advertise/submit" element={<SubLayout><AdSubmissionForm /></SubLayout>} />
+
+        {/* Marketplace Route */}
+        <Route path="/market" element={<SubLayout><MarketplaceHome /></SubLayout>} />
       </Routes>
 
       <WhatsAppButton />

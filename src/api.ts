@@ -292,11 +292,12 @@ export const api = {
     return data.data;
   },
 
-  // Events API Integration
+  // Events API
   getApprovedEvents: async (): Promise<any[]> => {
     const response = await fetch(`http://localhost:5001/api/events`);
     if (!response.ok) throw new Error('Failed to fetch approved events');
-    return response.json();
+    const result = await response.json();
+    return result.data || [];
   },
 
   toggleEventRsvp: async (id: string, token: string): Promise<any> => {
@@ -453,5 +454,126 @@ export const api = {
     if (!response.ok) throw new Error('Failed to fetch your advertisements');
     const data = await response.json();
     return data.data ?? [];
+  },
+
+  // Marketplace
+  getMyListings: async (): Promise<any[]> => {
+    const token = localStorage.getItem('userToken');
+    const response = await fetch(`http://localhost:5001/api/market/my`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    if (!response.ok) throw new Error('Failed to fetch your listings');
+    return response.json();
+  },
+
+  deleteListing: async (id: string): Promise<any> => {
+    const token = localStorage.getItem('userToken');
+    const response = await fetch(`http://localhost:5001/api/market/${id}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    if (!response.ok) throw new Error('Failed to delete listing');
+    return response.json();
+  },
+
+  rateListing: async (id: string, rating: number): Promise<any> => {
+    const token = localStorage.getItem('userToken');
+    const response = await fetch(`http://localhost:5001/api/market/${id}/rate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({ rating })
+    });
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.message || 'Failed to submit rating');
+    }
+    return response.json();
+  },
+
+  startMarketplaceChat: async (itemId: string): Promise<any> => {
+    const token = localStorage.getItem('userToken');
+    const response = await fetch(`http://localhost:5001/api/market/chats/start`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({ itemId })
+    });
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.message || 'Failed to start chat');
+    }
+    return response.json();
+  },
+
+  getMarketplaceChats: async (): Promise<any[]> => {
+    const token = localStorage.getItem('userToken');
+    const response = await fetch(`http://localhost:5001/api/market/chats`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    if (!response.ok) throw new Error('Failed to fetch marketplace chats');
+    return response.json();
+  },
+
+  getMarketplaceMessages: async (chatId: string): Promise<any[]> => {
+    const token = localStorage.getItem('userToken');
+    const response = await fetch(`http://localhost:5001/api/market/chats/${chatId}/messages`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    if (!response.ok) throw new Error('Failed to fetch messages');
+    return response.json();
+  },
+
+  sendMarketplaceMessage: async (chatId: string, message: string): Promise<any> => {
+    const token = localStorage.getItem('userToken');
+    const response = await fetch(`http://localhost:5001/api/market/chats/${chatId}/messages`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({ message })
+    });
+    if (!response.ok) throw new Error('Failed to send message');
+    return response.json();
+  },
+
+  createMarketOrder: async (formData: FormData): Promise<any> => {
+    const token = localStorage.getItem('userToken');
+    const response = await fetch(`http://localhost:5001/api/market/orders`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+      body: formData
+    });
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.message || 'Failed to place order');
+    }
+    return response.json();
+  },
+
+  getMyMarketOrders: async (): Promise<any[]> => {
+    const token = localStorage.getItem('userToken');
+    const response = await fetch(`http://localhost:5001/api/market/orders/my`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    if (!response.ok) throw new Error('Failed to fetch your orders');
+    return response.json();
   }
 };

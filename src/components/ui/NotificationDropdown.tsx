@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { FiBell, FiCheck, FiInfo, FiFileText, FiCalendar, FiTool, FiHome } from 'react-icons/fi';
+import { FiBell, FiCheck, FiInfo, FiFileText, FiCalendar, FiTool, FiHome, FiShoppingBag } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 import { api } from '../../api';
 import { useNavigate } from 'react-router-dom';
@@ -10,6 +10,7 @@ const getNotificationIcon = (type: string) => {
     case 'Event': return <FiCalendar className="w-4 h-4 text-emerald-500" />;
     case 'Service': return <FiTool className="w-4 h-4 text-orange-500" />;
     case 'Annex': return <FiHome className="w-4 h-4 text-rose-500" />;
+    case 'Marketplace': return <FiShoppingBag className="w-4 h-4 text-indigo-500" />;
     case 'System':
     default: return <FiInfo className="w-4 h-4 text-blue-500" />;
   }
@@ -21,6 +22,7 @@ const getNotificationColor = (type: string) => {
     case 'Event': return 'bg-emerald-500/10 border-emerald-500/20';
     case 'Service': return 'bg-orange-500/10 border-orange-500/20';
     case 'Annex': return 'bg-rose-500/10 border-rose-500/20';
+    case 'Marketplace': return 'bg-indigo-500/10 border-indigo-500/20';
     case 'System':
     default: return 'bg-blue-500/10 border-blue-500/20';
   }

@@ -37,7 +37,7 @@ const Header = () => {
 
   // Intersection Observer for ScrollSpy
   useEffect(() => {
-    const sectionIds = ['home', 'annex', 'services', 'events', 'blogs', 'advertise', 'stats', 'contact'];
+    const sectionIds = ['home', 'annex', 'market', 'services', 'events', 'blogs', 'advertise', 'stats', 'contact'];
 
     const observerOptions = {
       root: null,
@@ -153,6 +153,7 @@ const Header = () => {
   const navLinks = [
     { name: 'Home', path: '/#home', id: 'home' },
     { name: 'Annex', path: '/#annex', id: 'annex' },
+    { name: 'Market', path: '/#market', id: 'market' },
     { name: 'Services', path: '/#services', id: 'services' },
     { name: 'Events', path: '/#events', id: 'events' },
     { name: 'Blogs', path: '/#blogs', id: 'blogs' },
@@ -280,13 +281,7 @@ const Header = () => {
                 >
                   <LuUser className="w-4 h-4" /> Profile
                 </Link>
-                <Link
-                  to="/post-ad?tab=myAds"
-                  className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 hover:text-brand-600 transition-colors"
-                  onClick={() => setIsProfileDropdownOpen(false)}
-                >
-                  <LuLayoutDashboard className="w-4 h-4" /> My Ads
-                </Link>
+
                 <div className="h-px bg-slate-100 my-1"></div>
                 <button
                   onClick={handleLogout}
@@ -332,7 +327,7 @@ const Header = () => {
               className="fixed inset-0 z-40 md:hidden overflow-hidden"
             >
               {/* Backdrop Blur Layer */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -386,11 +381,10 @@ const Header = () => {
                               scrollToSection(e, link.path);
                               setIsMobileMenuOpen(false);
                             }}
-                            className={`group flex items-center justify-between p-4 rounded-2xl transition-all ${
-                              isActive 
-                                ? 'bg-blue-600 text-white shadow-xl shadow-blue-500/30' 
+                            className={`group flex items-center justify-between p-4 rounded-2xl transition-all ${isActive
+                                ? 'bg-blue-600 text-white shadow-xl shadow-blue-500/30'
                                 : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
-                            }`}
+                              }`}
                           >
                             <span className="text-xl font-black uppercase tracking-widest">{link.name}</span>
                             <LuArrowRight className={`w-5 h-5 transition-transform ${isActive ? 'translate-x-0 opacity-100' : '-translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100'}`} />
@@ -399,11 +393,10 @@ const Header = () => {
                           <Link
                             to={link.path}
                             onClick={() => setIsMobileMenuOpen(false)}
-                            className={`group flex items-center justify-between p-4 rounded-2xl transition-all ${
-                              isActive 
-                                ? 'bg-blue-600 text-white shadow-xl shadow-blue-500/30' 
+                            className={`group flex items-center justify-between p-4 rounded-2xl transition-all ${isActive
+                                ? 'bg-blue-600 text-white shadow-xl shadow-blue-500/30'
                                 : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
-                            }`}
+                              }`}
                           >
                             <span className="text-xl font-black uppercase tracking-widest">{link.name}</span>
                             <LuArrowRight className={`w-5 h-5 transition-transform ${isActive ? 'translate-x-0 opacity-100' : '-translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100'}`} />
@@ -440,15 +433,15 @@ const Header = () => {
                         </button>
                       </div>
                       <div className="grid grid-cols-2 gap-3">
-                        <Link 
-                          to="/profile" 
+                        <Link
+                          to="/profile"
                           onClick={() => setIsMobileMenuOpen(false)}
                           className="flex items-center justify-center gap-2 p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50"
                         >
                           <LuUser size={18} /> Profile
                         </Link>
-                        <Link 
-                          to="/post-ad?tab=myAds" 
+                        <Link
+                          to="/post-ad?tab=myAds"
                           onClick={() => setIsMobileMenuOpen(false)}
                           className="flex items-center justify-center gap-2 p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50"
                         >
