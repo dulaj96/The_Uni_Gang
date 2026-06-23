@@ -58,44 +58,29 @@ const MarketSection = () => {
           </p>
         </motion.div>
 
-        {/* Filters & Actions Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="flex flex-col md:flex-row md:items-center justify-center gap-6 mb-16"
-        >
-          {/* Action: PREMIUM TRACE BUTTON */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full md:w-auto">
-            <PremiumTraceButton
-              index={5}
-              icon={<LuShoppingBag className="text-lg" />}
-              onClick={handleExploreMarket}
-              className="w-full sm:w-auto !bg-purple-600 hover:!bg-purple-700"
-            >
-              Enter Marketplace
-            </PremiumTraceButton>
-          </div>
-        </motion.div>
-
-        <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center mt-12">
-          {/* Left Side: Modern 3D Visual Collage (lg:col-span-5) */}
-          <div className="lg:col-span-5 flex flex-col items-center lg:items-start gap-12 order-2 lg:order-1">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch mt-12">
+          {/* Column 1: Modern 3D Visual Collage */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="flex flex-col items-center justify-center w-full h-full"
+          >
             {/* Modern 3D Visual Collage */}
-            <div className="relative h-[500px] flex items-center justify-center w-full max-w-sm lg:max-w-md mx-auto lg:mx-0">
+            <div className="relative h-[480px] flex items-center justify-center w-full max-w-sm mx-auto">
               {/* Background Decorative Rings */}
               <div className="absolute inset-0 flex items-center justify-center opacity-20">
-                <div className="w-[400px] h-[400px] border border-purple-500 rounded-full animate-[spin_20s_linear_infinite]" />
-                <div className="absolute w-[300px] h-[300px] border border-dashed border-indigo-500 rounded-full animate-[spin_15s_linear_infinite_reverse]" />
+                <div className="w-[360px] h-[360px] border border-purple-500 rounded-full animate-[spin_20s_linear_infinite]" />
+                <div className="absolute w-[280px] h-[280px] border border-dashed border-indigo-500 rounded-full animate-[spin_15s_linear_infinite_reverse]" />
               </div>
 
-              <TiltCard className="w-full max-w-md relative z-20">
+              <TiltCard className="w-full max-w-sm relative z-20">
                 <div className="relative group">
                   <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-[3rem] blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
 
                   <div className="relative bg-white dark:bg-slate-900 rounded-[2.5rem] p-4 border border-white/50 dark:border-slate-800 shadow-2xl">
-                    <div className="relative h-[400px] rounded-[2rem] overflow-hidden">
+                    <div className="relative h-[380px] rounded-[2rem] overflow-hidden">
                       <img
                         src="https://images.unsplash.com/photo-1555529771-835f59fc5efe?q=80&w=800&auto=format&fit=crop"
                         alt="Marketplace Gear"
@@ -130,18 +115,18 @@ const MarketSection = () => {
                     initial={{ x: -60, opacity: 0 }}
                     whileInView={{ x: 0, opacity: 1 }}
                     transition={{ delay: 0.8 }}
-                    className="absolute -left-8 top-1/2 -translate-y-1/2 w-48 bg-white dark:bg-slate-800 rounded-3xl shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] border border-slate-100 dark:border-slate-700 p-4 hidden xl:block z-30"
+                    className="absolute -left-6 top-1/2 -translate-y-1/2 w-44 bg-white dark:bg-slate-800 rounded-3xl shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] border border-slate-100 dark:border-slate-700 p-4 hidden xl:block z-30"
                   >
                     <div className="flex items-center gap-3 mb-3">
-                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white">
-                        <LuShoppingBag size={20} />
+                      <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white">
+                        <LuShoppingBag size={16} />
                       </div>
                       <div>
-                        <div className="text-[9px] font-black text-purple-600 uppercase">Hot Deal</div>
-                        <div className="text-xs font-bold text-slate-900 dark:text-white">Drawing Board</div>
+                        <div className="text-[8px] font-black text-purple-600 uppercase">Hot Deal</div>
+                        <div className="text-[11px] font-bold text-slate-900 dark:text-white">Drawing Board</div>
                       </div>
                     </div>
-                    <div className="text-lg font-black text-emerald-500">Rs. 3,500</div>
+                    <div className="text-md font-black text-emerald-500">Rs. 3,500</div>
                   </motion.div>
                 </div>
               </TiltCard>
@@ -167,97 +152,145 @@ const MarketSection = () => {
                 />
               ))}
             </div>
-          </div>
+          </motion.div>
 
-          {/* Right Side: Features Grid (lg:col-span-7) */}
-          <div className="lg:col-span-7 flex flex-col w-full justify-center order-1 lg:order-2">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {/* Column 2: Premium Official Store Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.1 }}
+            className="flex flex-col h-full"
+          >
+            <div className="flex-1 group relative bg-gradient-to-b from-amber-500/10 via-purple-500/5 to-indigo-500/10 dark:from-amber-500/5 dark:via-purple-500/5 dark:to-[#090d1f] backdrop-blur-md p-8 rounded-[2.5rem] border border-amber-500/30 dark:border-amber-500/25 hover:border-amber-500/60 transition-all hover:shadow-[0_20px_50px_rgba(245,158,11,0.15)] flex flex-col justify-between overflow-hidden h-full min-h-[480px]">
+              <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              
+              <div>
+                <div className="flex items-center justify-between mb-8">
+                  <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-amber-500 bg-amber-500/10 group-hover:scale-110 transition-transform">
+                    <LuBadgeCheck className="w-8 h-8" />
+                  </div>
+                  <span className="px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30">
+                    Verified Store
+                  </span>
+                </div>
+                
+                <h3 className="text-2xl font-extrabold text-slate-900 dark:text-white mb-4">
+                  Uni Gang Official Store
+                </h3>
+                <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed mb-6">
+                  Shop official university merchandise, graduation bouquets, custom keytags, and premium souvenirs. Secure checkout via bank slip uploads or COD with real-time order tracking.
+                </p>
+
+                {/* Feature Checkmarks */}
+                <ul className="space-y-3.5 mb-8">
+                  {[
+                    "Premium Shopping Cart checkout",
+                    "Direct Bank Transfer with receipt upload",
+                    "100% campus-verified official merchandise",
+                    "Real-time order review & approval system"
+                  ].map((feat, i) => (
+                    <li key={i} className="flex items-center gap-3 text-xs text-slate-600 dark:text-slate-300 font-medium">
+                      <span className="w-5 h-5 rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center shrink-0">✓</span>
+                      {feat}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Action Button */}
+              <button
+                onClick={handleExploreMarket}
+                className="w-full py-4 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-black uppercase tracking-widest text-xs transition-all shadow-lg shadow-amber-500/20 hover:shadow-amber-500/40 active:scale-[0.98] mt-auto"
+              >
+                Shop Official Store
+              </button>
+            </div>
+          </motion.div>
+
+          {/* Column 3: Peer-to-Peer Hub Stack */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="flex flex-col h-full justify-between gap-6"
+          >
+            {/* Stack of 3 Horizontal Cards */}
+            <div className="flex-1 flex flex-col justify-between gap-4 h-full min-h-[480px]">
               {[
                 {
-                  icon: <LuBadgeCheck className="w-6 h-6" />,
-                  title: "Uni Gang Official Store",
-                  desc: "Buy university merchandise, graduation bouquets, and custom souvenirs directly with a premium cart & receipt checkout flow.",
-                  color: "amber",
-                  featured: true,
-                  badge: "Verified Merchant"
-                },
-                {
-                  icon: <LuShoppingBag className="w-6 h-6" />,
+                  icon: <LuShoppingBag className="w-5 h-5" />,
                   title: "Physical Goods",
                   desc: "Buy and sell textbooks, drawing tables, laptops, and calculators.",
                   color: "blue"
                 },
                 {
-                  icon: <LuBriefcase className="w-6 h-6" />,
+                  icon: <LuBriefcase className="w-5 h-5" />,
                   title: "Freelance Gigs",
-                  desc: "Offer tutoring, graphic design, or coding services to your peers.",
+                  desc: "Offer tutoring, graphic design, or coding services to peers.",
                   color: "purple"
                 },
                 {
-                  icon: <LuShieldCheck className="w-6 h-6" />,
-                  title: "Zero Scams",
-                  desc: "Only university-verified students can buy or sell. 100% safe.",
+                  icon: <LuShieldCheck className="w-5 h-5" />,
+                  title: "Zero Scams Guarantee",
+                  desc: "Only university-verified students can list. 100% secure peer trades.",
                   color: "emerald"
-                },
-                {
-                  icon: <LuTrendingUp className="w-6 h-6" />,
-                  title: "The Hustle Hub",
-                  desc: "Keep the money circulating within the campus community.",
-                  color: "amber"
                 }
-              ].map((feature, idx) => (
-                <motion.div
+              ].map((item, idx) => (
+                <div
                   key={idx}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8, delay: idx * 0.1 }}
-                  className={`group relative backdrop-blur-md p-6 rounded-3xl border transition-all overflow-hidden ${
-                    feature.featured
-                      ? 'sm:col-span-2 bg-gradient-to-r from-amber-500/10 via-purple-500/5 to-indigo-500/10 dark:from-amber-500/5 dark:via-purple-500/5 dark:to-indigo-500/5 border-amber-500/30 hover:border-amber-500/60 shadow-[0_8px_30px_rgba(245,158,11,0.08)]'
-                      : 'bg-white dark:bg-slate-800/50 border-slate-100 dark:border-slate-700/50 hover:border-purple-500/50 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:hover:shadow-[0_8px_30px_rgba(139,92,246,0.1)]'
-                  }`}
+                  className="flex-1 group relative bg-white dark:bg-slate-800/40 backdrop-blur-md p-5 rounded-[1.8rem] border border-slate-100 dark:border-slate-700/50 hover:border-purple-500/40 transition-all hover:shadow-[0_8px_30px_rgba(139,92,246,0.06)] overflow-hidden flex items-start gap-4"
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                   
-                  <div className="flex items-start justify-between">
-                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-${feature.color}-500 bg-${feature.color}-500/10 mb-4 group-hover:scale-110 transition-transform`}>
-                      {feature.icon}
-                    </div>
-                    {feature.badge && (
-                      <span className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/25">
-                        {feature.badge}
-                      </span>
-                    )}
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-${item.color}-500 bg-${item.color}-500/10 shrink-0 group-hover:scale-110 transition-transform`}>
+                    {item.icon}
                   </div>
                   
-                  <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">{feature.title}</h3>
-                  <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
-                    {feature.desc}
-                  </p>
-                </motion.div>
+                  <div className="flex-1">
+                    <h4 className="text-base font-extrabold text-slate-900 dark:text-white mb-1">
+                      {item.title}
+                    </h4>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                      {item.desc}
+                    </p>
+                  </div>
+                </div>
               ))}
-            </div>
 
-            {/* Quick Metrics */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              className="flex w-full justify-center lg:justify-start gap-12 mt-12"
-            >
-              <div className="text-center lg:text-left">
-                <div className="text-4xl lg:text-5xl font-black text-slate-900 dark:text-white mb-2">2<span className="text-purple-600">k+</span></div>
-                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Active Listings</div>
-              </div>
-              <div className="text-center lg:text-left">
-                <div className="text-4xl lg:text-5xl font-black text-slate-900 dark:text-white mb-2">100<span className="text-emerald-500">%</span></div>
-                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Verified Students</div>
-              </div>
-            </motion.div>
-          </div>
+              {/* Action Button */}
+              <button
+                onClick={handleExploreMarket}
+                className="w-full py-4 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-black uppercase tracking-widest text-xs transition-all shadow-lg shadow-purple-600/20 hover:shadow-purple-600/40 active:scale-[0.98] mt-2"
+              >
+                Explore Peer Listings
+              </button>
+            </div>
+          </motion.div>
         </div>
+
+        {/* Quick Metrics */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="flex w-full justify-center gap-16 mt-16 pt-8 border-t border-slate-200/50 dark:border-slate-800/40"
+        >
+          <div className="text-center">
+            <div className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white mb-2">2<span className="text-purple-600">k+</span></div>
+            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Active Listings</div>
+          </div>
+          <div className="text-center">
+            <div className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white mb-2">100<span className="text-emerald-500">%</span></div>
+            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Verified Students</div>
+          </div>
+          <div className="text-center">
+            <div className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white mb-2">24<span className="text-amber-500">/7</span></div>
+            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Store Operations</div>
+          </div>
+        </motion.div>
       </div>
     </section>
   );
