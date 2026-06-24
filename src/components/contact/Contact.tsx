@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LuSend, LuPhone, LuMail, LuMapPin, LuMessageSquareQuote, LuMonitor, LuSearch, LuCalendarDays, LuUsers, LuStar, LuChevronDown, LuUser } from 'react-icons/lu';
+import { LuSend, LuPhone, LuMail, LuMapPin, LuMessageSquareQuote, LuMonitor, LuSearch, LuCalendarDays, LuUsers, LuStar, LuChevronDown, LuUser, LuCopy, LuCheck } from 'react-icons/lu';
 import TiltCard from '../ui/TiltCard.tsx';
 
 interface Feedback {
@@ -132,11 +132,37 @@ const Contact = () => {
     const [rating, setRating] = useState(0);
     const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
 
-    // Form states
+    // Report problem form states
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [inquiryType, setInquiryType] = useState('');
     const [message, setMessage] = useState('');
+
+    // Client feedback form states
+    const [feedbackName, setFeedbackName] = useState('');
+    const [feedbackInstitution, setFeedbackInstitution] = useState('');
+    const [feedbackText, setFeedbackText] = useState('');
+    const [feedbackSuccess, setFeedbackSuccess] = useState(false);
+
+    // Copy states
+    const [copiedItem, setCopiedItem] = useState<string | null>(null);
+
+    const handleCopy = (text: string, label: string) => {
+        navigator.clipboard.writeText(text);
+        setCopiedItem(label);
+        setTimeout(() => setCopiedItem(null), 2000);
+    };
+
+    const getRatingLabel = (stars: number) => {
+        switch (stars) {
+            case 1: return "1/5 - Poor";
+            case 2: return "2/5 - Fair";
+            case 3: return "3/5 - Good";
+            case 4: return "4/5 - Very Good";
+            case 5: return "5/5 - Excellent!";
+            default: return "Select your rating above";
+        }
+    };
 
     const handleSendInquiry = () => {
         if (!name.trim() || !email.trim() || !inquiryType || !message.trim()) {
@@ -148,6 +174,22 @@ const Contact = () => {
         const text = `*New Contact Request*\n\n*Name:* ${name}\n*Email:* ${email}\n${typeStr}\n\n*Message:*\n${message}`;
         window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(text)}`, '_blank');
         setName(''); setEmail(''); setInquiryType(''); setMessage('');
+    };
+
+    const handleSendFeedback = () => {
+        if (!feedbackName.trim() || !feedbackText.trim() || rating === 0) {
+            alert("Please provide your name, feedback comment, and a star rating.");
+            return;
+        }
+        setFeedbackSuccess(true);
+        setTimeout(() => {
+            setFeedbackSuccess(false);
+            setFeedbackName('');
+            setFeedbackInstitution('');
+            setFeedbackText('');
+            setRating(0);
+            setAvatarPreview(null);
+        }, 3000);
     };
 
     return (
@@ -189,20 +231,43 @@ const Contact = () => {
                                 ].map((item, i) => (
                                     <motion.div
                                         key={i}
-                                        whileHover={{ x: 10 }}
-                                        className="flex gap-6 items-center group cursor-pointer"
+                                        whileHover={{ x: 6 }}
+                                        className="flex gap-6 items-center group relative cursor-pointer"
+                                        onClick={() => handleCopy(item.value, item.label)}
                                     >
                                         <motion.div
-                                            animate={{ y: [0, -5, 0] }}
+                                            animate={{ y: [0, -4, 0] }}
                                             transition={{ duration: 3, repeat: Infinity, delay: i * 0.5 }}
                                             className="w-14 h-14 rounded-2xl bg-white/20 dark:bg-slate-800/30 backdrop-blur-md border border-white/20 shadow-sm flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300"
                                         >
                                             <item.icon className="text-2xl" />
                                         </motion.div>
-                                        <div>
-                                            <p className="text-[10px] font-bold uppercase tracking-widest text-primary/60 mb-1">{item.label}</p>
-                                            <p className="text-lg font-semibold text-slate-800 dark:text-slate-200">{item.value}</p>
+                                        <div className="flex-1 flex items-center justify-between">
+                                            <div>
+                                                <p className="text-[10px] font-bold uppercase tracking-widest text-primary/60 mb-1">{item.label}</p>
+                                                <p className="text-lg font-semibold text-slate-800 dark:text-slate-200 group-hover:text-primary transition-colors">{item.value}</p>
+                                            </div>
+                                            <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-slate-400 dark:text-slate-500 hover:text-primary p-2">
+                                                {copiedItem === item.label ? (
+                                                    <LuCheck className="text-emerald-500 text-lg animate-pulse" />
+                                                ) : (
+                                                    <LuCopy className="text-lg" />
+                                                )}
+                                            </div>
                                         </div>
+                                        {/* Copied Tooltip */}
+                                        <AnimatePresence>
+                                            {copiedItem === item.label && (
+                                                <motion.span
+                                                    initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                                                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                                                    exit={{ opacity: 0, y: -10, scale: 0.9 }}
+                                                    className="absolute -top-6 right-0 px-3 py-1 rounded-lg text-[9px] font-bold uppercase tracking-wider bg-emerald-500 text-white shadow-md z-20"
+                                                >
+                                                    Copied!
+                                                </motion.span>
+                                            )}
+                                        </AnimatePresence>
                                     </motion.div>
                                 ))}
                             </div>
@@ -254,36 +319,51 @@ const Contact = () => {
 
                             <AnimatePresence mode="wait">
                                 <motion.div
-                                    key={activeTab}
+                                    key={activeTab + (feedbackSuccess ? '-success' : '-form')}
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -20 }}
                                     transition={{ duration: 0.4 }}
                                     className="flex flex-col gap-4 flex-grow"
                                 >
-                                    {activeTab === 'contact' ? (
+                                    {feedbackSuccess ? (
+                                        <motion.div
+                                            initial={{ opacity: 0, scale: 0.8 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            exit={{ opacity: 0, scale: 0.8 }}
+                                            className="flex flex-col items-center justify-center text-center p-12 h-full my-auto"
+                                        >
+                                            <div className="w-20 h-20 rounded-full bg-rose-500/10 text-rose-500 flex items-center justify-center mb-6 border border-rose-500/30 animate-bounce">
+                                                <LuMessageSquareQuote size={36} />
+                                            </div>
+                                            <h4 className="text-2xl font-black text-slate-900 dark:text-white mb-2">Thank You!</h4>
+                                            <p className="text-sm text-slate-500 dark:text-slate-400 max-w-sm leading-relaxed">
+                                                Your valuable feedback has been submitted successfully. We appreciate your support in making The Uni Gang the best platform in Sri Lanka!
+                                            </p>
+                                        </motion.div>
+                                    ) : activeTab === 'contact' ? (
                                         <>
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
                                                 <div className="group">
-                                                    <input required value={name} onChange={(e) => setName(e.target.value)} type="text" placeholder="Full Name" className="w-full px-6 py-4 rounded-[1.25rem] text-sm font-semibold bg-white/50 dark:bg-slate-800/50 backdrop-blur-md border-[1.5px] border-white/60 dark:border-slate-700 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] group-hover:bg-white/70 dark:group-hover:bg-slate-800/70 text-slate-800 dark:text-slate-100 placeholder:text-slate-400" />
+                                                    <input required value={name} onChange={(e) => setName(e.target.value)} type="text" placeholder="Full Name" className="w-full px-6 py-4 rounded-[1.25rem] text-sm font-semibold bg-slate-100/50 dark:bg-slate-800/40 backdrop-blur-md border-[1.5px] border-slate-200 dark:border-slate-800 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] group-hover:bg-white/70 dark:group-hover:bg-slate-800/70 text-slate-800 dark:text-slate-100 placeholder:text-slate-400" />
                                                 </div>
                                                 <div className="group">
-                                                    <input required value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="Email Address" className="w-full px-6 py-4 rounded-[1.25rem] text-sm font-semibold bg-white/50 dark:bg-slate-800/50 backdrop-blur-md border-[1.5px] border-white/60 dark:border-slate-700 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] group-hover:bg-white/70 dark:group-hover:bg-slate-800/70 text-slate-800 dark:text-slate-100 placeholder:text-slate-400" />
+                                                    <input required value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="Email Address" className="w-full px-6 py-4 rounded-[1.25rem] text-sm font-semibold bg-slate-100/50 dark:bg-slate-800/40 backdrop-blur-md border-[1.5px] border-slate-200 dark:border-slate-800 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] group-hover:bg-white/70 dark:group-hover:bg-slate-800/70 text-slate-800 dark:text-slate-100 placeholder:text-slate-400" />
                                                 </div>
                                             </div>
                                             <div className="relative group mb-5">
-                                                <select required value={inquiryType} onChange={(e) => setInquiryType(e.target.value)} className="w-full px-6 py-4 rounded-[1.25rem] text-sm font-semibold bg-white/50 dark:bg-slate-800/50 backdrop-blur-md border-[1.5px] border-white/60 dark:border-slate-700 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none appearance-none cursor-pointer shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] group-hover:bg-white/70 dark:group-hover:bg-slate-800/70 text-slate-700 dark:text-slate-200">
-                                                    <option disabled value="">Select Inquiry or Problem Type</option>
-                                                    <option value="General Inquiry">General Inquiry</option>
-                                                    <option value="Report a Bug / Problem">Report a Bug / Problem</option>
-                                                    <option value="Request a New Service / Dev">Request a New Service / Dev</option>
-                                                    <option value="Accommodation Listing Help">Accommodation Listing Help</option>
-                                                    <option value="Event Posting Help">Event Posting Help</option>
+                                                <select required value={inquiryType} onChange={(e) => setInquiryType(e.target.value)} className="w-full px-6 py-4 rounded-[1.25rem] text-sm font-semibold bg-slate-100/50 dark:bg-slate-800/40 backdrop-blur-md border-[1.5px] border-slate-200 dark:border-slate-800 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none appearance-none cursor-pointer shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] group-hover:bg-white/70 dark:group-hover:bg-slate-800/70 text-slate-700 dark:text-slate-200">
+                                                    <option disabled value="" className="dark:bg-slate-900">Select Inquiry or Problem Type</option>
+                                                    <option value="General Inquiry" className="dark:bg-slate-900">General Inquiry</option>
+                                                    <option value="Report a Bug / Problem" className="dark:bg-slate-900">Report a Bug / Problem</option>
+                                                    <option value="Request a New Service / Dev" className="dark:bg-slate-900">Request a New Service / Dev</option>
+                                                    <option value="Accommodation Listing Help" className="dark:bg-slate-900">Accommodation Listing Help</option>
+                                                    <option value="Event Posting Help" className="dark:bg-slate-900">Event Posting Help</option>
                                                 </select>
                                                 <LuChevronDown className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none group-focus-within:text-primary transition-colors" />
                                             </div>
                                             <div className="group mb-6">
-                                                <textarea required value={message} onChange={(e) => setMessage(e.target.value)} rows={5} placeholder="Tell us about your problem, question, or request..." className="w-full px-6 py-4 rounded-[1.25rem] text-sm font-semibold bg-white/50 dark:bg-slate-800/50 backdrop-blur-md border-[1.5px] border-white/60 dark:border-slate-700 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none resize-none shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] group-hover:bg-white/70 dark:group-hover:bg-slate-800/70 text-slate-800 dark:text-slate-100 placeholder:text-slate-400" />
+                                                <textarea required value={message} onChange={(e) => setMessage(e.target.value)} rows={5} placeholder="Tell us about your problem, question, or request..." className="w-full px-6 py-4 rounded-[1.25rem] text-sm font-semibold bg-slate-100/50 dark:bg-slate-800/40 backdrop-blur-md border-[1.5px] border-slate-200 dark:border-slate-800 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none resize-none shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] group-hover:bg-white/70 dark:group-hover:bg-slate-800/70 text-slate-800 dark:text-slate-100 placeholder:text-slate-400" />
                                             </div>
                                             <motion.button
                                                 onClick={handleSendInquiry}
@@ -296,7 +376,7 @@ const Contact = () => {
                                         </>
                                     ) : (
                                         <>
-                                            <div className="flex items-center gap-6 p-6 rounded-2xl bg-white/20 dark:bg-slate-800/40 border border-white/40 dark:border-slate-700/50">
+                                            <div className="flex items-center gap-6 p-6 rounded-2xl bg-slate-100/50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50">
                                                 <label className="relative cursor-pointer group">
                                                     <input
                                                         type="file"
@@ -310,9 +390,9 @@ const Contact = () => {
                                                     />
                                                     <motion.div
                                                         whileHover={{ scale: 1.05 }}
-                                                        className="w-16 h-16 rounded-3xl border-2 border-dashed border-slate-400 flex items-center justify-center bg-white/40 dark:bg-slate-800/40"
+                                                        className="w-16 h-16 rounded-3xl border-2 border-dashed border-rose-400 dark:border-rose-500/60 flex items-center justify-center bg-white/40 dark:bg-slate-800/40 hover:border-rose-500 dark:hover:bg-rose-500/10 hover:shadow-[0_0_15px_rgba(233,30,99,0.3)] transition-all relative overflow-hidden group"
                                                     >
-                                                        {avatarPreview ? <img src={avatarPreview} alt="Avatar" className="w-full h-full object-cover rounded-3xl" /> : <LuUser className="text-slate-400 size-6" />}
+                                                        {avatarPreview ? <img src={avatarPreview} alt="Avatar" className="w-full h-full object-cover rounded-3xl" /> : <LuUser className="text-slate-400 dark:text-slate-500 size-6 group-hover:text-rose-500 transition-colors" />}
                                                         <div className="absolute -bottom-1 -right-1 bg-[#E91E63] text-white text-[8px] font-black px-1.5 py-0.5 rounded-lg shadow-lg">UP</div>
                                                     </motion.div>
                                                 </label>
@@ -322,24 +402,55 @@ const Contact = () => {
                                                 </div>
                                             </div>
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                <input required type="text" placeholder="Your Name" className="w-full px-6 py-4 rounded-2xl text-sm font-medium bg-white/40 dark:bg-slate-800/40 border border-white/60 dark:border-slate-700/50 focus:border-[#E91E63] outline-none shadow-inner" />
-                                                <input required type="text" placeholder="Club / University" className="w-full px-6 py-4 rounded-2xl text-sm font-medium bg-white/40 dark:bg-slate-800/40 border border-white/60 dark:border-slate-700/50 focus:border-[#E91E63] outline-none shadow-inner" />
+                                                <div className="group">
+                                                    <input required value={feedbackName} onChange={(e) => setFeedbackName(e.target.value)} type="text" placeholder="Your Name" className="w-full px-6 py-4 rounded-[1.25rem] text-sm font-semibold bg-slate-100/50 dark:bg-slate-800/40 backdrop-blur-md border-[1.5px] border-slate-200 dark:border-slate-800 focus:border-[#E91E63] focus:ring-4 focus:ring-[#E91E63]/10 outline-none transition-all shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] group-hover:bg-white/70 dark:group-hover:bg-slate-800/70 text-slate-800 dark:text-slate-100 placeholder:text-slate-400" />
+                                                </div>
+                                                <div className="group">
+                                                    <input required value={feedbackInstitution} onChange={(e) => setFeedbackInstitution(e.target.value)} type="text" placeholder="Club / University" className="w-full px-6 py-4 rounded-[1.25rem] text-sm font-semibold bg-slate-100/50 dark:bg-slate-800/40 backdrop-blur-md border-[1.5px] border-slate-200 dark:border-slate-800 focus:border-[#E91E63] focus:ring-4 focus:ring-[#E91E63]/10 outline-none transition-all shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] group-hover:bg-white/70 dark:group-hover:bg-slate-800/70 text-slate-800 dark:text-slate-100 placeholder:text-slate-400" />
+                                                </div>
                                             </div>
-                                            <div className="flex flex-col items-center gap-4 p-6 rounded-2xl bg-white/20 dark:bg-slate-800/40 border border-white/40 dark:border-slate-700/50">
-                                                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Rate Your Experience</p>
+                                            <div className="flex flex-col items-center gap-4 p-6 rounded-2xl bg-slate-100/50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 shadow-sm relative overflow-hidden group">
+                                                <div className="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-transparent via-[#E91E63]/25 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                                                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500">Rate Your Experience</p>
                                                 <div className="flex gap-3">
                                                     {[1, 2, 3, 4, 5].map((i) => (
-                                                        <motion.button key={i} whileHover={{ scale: 1.2 }} whileTap={{ scale: 0.9 }} onClick={() => setRating(i)} className={`text-4xl transition-colors ${i <= rating ? 'text-[#FFD700]' : 'text-slate-200 dark:text-slate-700'}`}>
-                                                            <LuStar fill={i <= rating ? 'currentColor' : 'none'} />
+                                                        <motion.button
+                                                            key={i}
+                                                            type="button"
+                                                            whileHover={{ scale: 1.25, rotate: 10 }}
+                                                            whileTap={{ scale: 0.9 }}
+                                                            onClick={() => setRating(i)}
+                                                            className="focus:outline-none"
+                                                        >
+                                                            <LuStar
+                                                                size={36}
+                                                                className={`transition-all duration-300 ${
+                                                                    i <= rating
+                                                                        ? 'text-amber-400 fill-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.5)]'
+                                                                        : 'text-slate-300 dark:text-slate-700 hover:text-amber-300'
+                                                                }`}
+                                                            />
                                                         </motion.button>
                                                     ))}
                                                 </div>
+                                                <AnimatePresence mode="wait">
+                                                    <motion.p
+                                                        key={rating}
+                                                        initial={{ opacity: 0, y: 5 }}
+                                                        animate={{ opacity: 1, y: 0 }}
+                                                        exit={{ opacity: 0, y: -5 }}
+                                                        className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest"
+                                                    >
+                                                        {getRatingLabel(rating)}
+                                                    </motion.p>
+                                                </AnimatePresence>
                                             </div>
-                                            <textarea required rows={3} placeholder="Tell your Feedback..." className="w-full px-6 py-4 rounded-2xl text-sm font-medium bg-white/40 dark:bg-slate-800/40 border border-white/60 dark:border-slate-700/50 focus:border-[#E91E63] outline-none resize-none shadow-inner" />
+                                            <textarea required value={feedbackText} onChange={(e) => setFeedbackText(e.target.value)} rows={3} placeholder="Tell your Feedback..." className="w-full px-6 py-4 rounded-[1.25rem] text-sm font-semibold bg-slate-100/50 dark:bg-slate-800/40 backdrop-blur-md border-[1.5px] border-slate-200 dark:border-slate-800 focus:border-[#E91E63] focus:ring-4 focus:ring-[#E91E63]/10 outline-none resize-none shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] group-hover:bg-white/70 dark:group-hover:bg-slate-800/70 text-slate-800 dark:text-slate-100 placeholder:text-slate-400" />
                                             <motion.button
-                                                whileHover={{ scale: 1.02, y: -2 }}
+                                                onClick={handleSendFeedback}
+                                                whileHover={{ scale: 1.02, y: -2, boxShadow: "0 20px 40px -10px rgba(233, 30, 99, 0.4)" }}
                                                 whileTap={{ scale: 0.98 }}
-                                                className="w-full py-4 mt-auto rounded-2xl text-white text-[11px] font-black uppercase tracking-[0.2em] shadow-xl bg-gradient-to-r from-[#E91E63] to-[#880E4F] flex items-center justify-center gap-3"
+                                                className="w-full py-4 mt-auto rounded-[1.25rem] text-white text-[11px] font-black uppercase tracking-[0.2em] bg-gradient-to-r from-[#E91E63] to-[#880E4F] flex items-center justify-center gap-3 transition-all"
                                             >
                                                 Post Feedback <LuMessageSquareQuote size={14} />
                                             </motion.button>
