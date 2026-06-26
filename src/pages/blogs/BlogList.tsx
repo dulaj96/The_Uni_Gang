@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link, useNavigate } from 'react-router-dom';
-import { LuSearch, LuTrendingUp, LuArrowLeft, LuSparkles, LuPenTool, LuMessageSquare, LuBookOpen } from 'react-icons/lu';
+import { Link } from 'react-router-dom';
+import { LuSearch, LuTrendingUp, LuSparkles, LuPenTool, LuMessageSquare, LuBookOpen } from 'react-icons/lu';
 import { api } from '../../api';
 import { Blog, Contributor, BlogCategory } from '../../types/blog';
 import BlogCard from './ArticleCard';
@@ -51,7 +51,6 @@ const CATEGORIES: BlogCategory[] = [
 ];
 
 const BlogList: React.FC = () => {
-  const navigate = useNavigate();
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [contributors, setContributors] = useState<Contributor[]>([]);
   const [loading, setLoading] = useState(true);

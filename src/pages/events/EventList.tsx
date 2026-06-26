@@ -4,7 +4,6 @@ import {
     LuClock, LuMessageCircle, LuInfo, LuArrowRight, LuSparkles
 } from "react-icons/lu";
 import { motion, AnimatePresence } from "framer-motion";
-import { useNavigate } from "react-router-dom";
 import TiltCard from '../../components/ui/TiltCard';
 import EventDetails from './EventDetails';
 import { api } from '../../api';
@@ -135,7 +134,6 @@ const FloatingIcon = ({ icon: Icon, index }: { icon: React.ComponentType, index:
 
 
 const EventList = () => {
-    const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("All");
     const [selectedEvent, setSelectedEvent] = useState<any | null>(null);

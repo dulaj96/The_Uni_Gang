@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { LuShoppingBag, LuTrendingUp, LuShieldCheck, LuTags, LuBriefcase, LuBadgeCheck } from 'react-icons/lu';
 import { useState } from 'react';
 import TiltCard from '../ui/TiltCard';
-import PremiumTraceButton from '../ui/PremiumTraceButton';
 import PremiumPageLoader from '../ui/PremiumPageLoader';
 
 const MarketSection = () => {
