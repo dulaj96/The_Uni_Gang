@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LuSend, LuPhone, LuMail, LuMapPin, LuMessageSquareQuote, LuMonitor, LuSearch, LuCalendarDays, LuUsers, LuStar, LuChevronDown, LuUser, LuCopy, LuCheck } from 'react-icons/lu';
 import TiltCard from '../ui/TiltCard.tsx';
+import toast from 'react-hot-toast';
+import { api } from '../../api';
 
 interface Feedback {
     id: number;
@@ -131,6 +133,7 @@ const Contact = () => {
     const [activeTab, setActiveTab] = useState<'contact' | 'feedback'>('feedback');
     const [rating, setRating] = useState(0);
     const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+    const [avatarFile, setAvatarFile] = useState<File | null>(null);
 
     // Report problem form states
     const [name, setName] = useState('');
@@ -144,8 +147,34 @@ const Contact = () => {
     const [feedbackText, setFeedbackText] = useState('');
     const [feedbackSuccess, setFeedbackSuccess] = useState(false);
 
+    // Dynamic testimonials state
+    const [activeFeedbacks, setActiveFeedbacks] = useState<Feedback[]>(feedbacks);
+
     // Copy states
     const [copiedItem, setCopiedItem] = useState<string | null>(null);
+
+    // Fetch approved feedbacks from database
+    useEffect(() => {
+        const fetchFeedbacks = async () => {
+            try {
+                const approved = await api.getApprovedFeedbacks();
+                if (approved && approved.length > 0) {
+                    const mapped: Feedback[] = approved.map((f: any) => ({
+                        id: f.id,
+                        name: f.name,
+                        role: f.institution || 'Verified Client',
+                        comment: f.comment,
+                        avatar: f.avatar.startsWith('http') ? f.avatar : `http://localhost:5001${f.avatar}`,
+                        rating: f.rating
+                    }));
+                    setActiveFeedbacks(mapped);
+                }
+            } catch (err) {
+                console.error("Failed to load approved feedbacks:", err);
+            }
+        };
+        fetchFeedbacks();
+    }, []);
 
     const handleCopy = (text: string, label: string) => {
         navigator.clipboard.writeText(text);
@@ -164,32 +193,68 @@ const Contact = () => {
         }
     };
 
-    const handleSendInquiry = () => {
+    const handleSendInquiry = async () => {
         if (!name.trim() || !email.trim() || !inquiryType || !message.trim()) {
-            alert("Please fill all fields");
+            toast.error("Please fill all fields");
             return;
         }
-        const waNumber = '94724478148';
-        const typeStr = inquiryType ? `*Type:* ${inquiryType}` : '*Type:* General Inquiry / Problem';
-        const text = `*New Contact Request*\n\n*Name:* ${name}\n*Email:* ${email}\n${typeStr}\n\n*Message:*\n${message}`;
-        window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(text)}`, '_blank');
-        setName(''); setEmail(''); setInquiryType(''); setMessage('');
+
+        const token = localStorage.getItem('userToken');
+        if (!token) {
+            toast.error("Please login to report a problem.");
+            return;
+        }
+
+        try {
+            await api.submitSupportProblem({
+                name,
+                email,
+                inquiryType,
+                message
+            });
+
+            toast.success("Problem reported successfully to the admin team!");
+            setName('');
+            setEmail('');
+            setInquiryType('');
+            setMessage('');
+        } catch (err: any) {
+            toast.error(err.message || "Failed to submit problem report");
+        }
     };
 
-    const handleSendFeedback = () => {
+    const handleSendFeedback = async () => {
         if (!feedbackName.trim() || !feedbackText.trim() || rating === 0) {
-            alert("Please provide your name, feedback comment, and a star rating.");
+            toast.error("Please provide your name, feedback comment, and a star rating.");
             return;
         }
-        setFeedbackSuccess(true);
-        setTimeout(() => {
-            setFeedbackSuccess(false);
-            setFeedbackName('');
-            setFeedbackInstitution('');
-            setFeedbackText('');
-            setRating(0);
-            setAvatarPreview(null);
-        }, 3000);
+
+        try {
+            const formData = new FormData();
+            formData.append('name', feedbackName);
+            formData.append('institution', feedbackInstitution);
+            formData.append('comment', feedbackText);
+            formData.append('rating', String(rating));
+            if (avatarFile) {
+                formData.append('avatar', avatarFile);
+            }
+
+            await api.submitFeedback(formData);
+
+            setFeedbackSuccess(true);
+            toast.success("Feedback posted successfully!");
+            setTimeout(() => {
+                setFeedbackSuccess(false);
+                setFeedbackName('');
+                setFeedbackInstitution('');
+                setFeedbackText('');
+                setRating(0);
+                setAvatarPreview(null);
+                setAvatarFile(null);
+            }, 3000);
+        } catch (err: any) {
+            toast.error(err.message || "Failed to submit feedback");
+        }
     };
 
     return (
@@ -385,6 +450,7 @@ const Contact = () => {
                                                         onChange={(e) => {
                                                             if (e.target.files && e.target.files[0]) {
                                                                 setAvatarPreview(URL.createObjectURL(e.target.files[0]));
+                                                                setAvatarFile(e.target.files[0]);
                                                             }
                                                         }}
                                                     />
@@ -480,7 +546,7 @@ const Contact = () => {
                     <div className="absolute inset-y-0 right-0 w-40 bg-gradient-to-l from-[#f7f9fb] dark:from-slate-950 to-transparent z-10 pointer-events-none"></div>
 
                     <div className="flex gap-8 animate-marquee">
-                        {[...feedbacks, ...feedbacks, ...feedbacks].map((f, i) => (
+                        {[...activeFeedbacks, ...activeFeedbacks, ...activeFeedbacks].map((f, i) => (
                             <TestimonialCard key={`${f.id}-${i}`} feedback={f} />
                         ))}
                     </div>

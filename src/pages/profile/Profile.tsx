@@ -122,12 +122,30 @@ const Profile = () => {
     }
   };
 
+  const fetchSupportProblems = async () => {
+    try {
+      setLoadingSupport(true);
+      const data = await api.getMySupportProblems();
+      setSupportProblems(data);
+    } catch (err) {
+      console.error('Failed to load support tickets:', err);
+    } finally {
+      setLoadingSupport(false);
+    }
+  };
+
   const [showChatsModal, setShowChatsModal] = useState(false);
   const [marketplaceChats, setMarketplaceChats] = useState<any[]>([]);
   const [loadingChats, setLoadingChats] = useState(false);
   const [selectedChat, setSelectedChat] = useState<any | null>(null);
   const [chatMessages, setChatMessages] = useState<any[]>([]);
   const [chatText, setChatText] = useState('');
+
+  // Support Inbox states
+  const [showSupportModal, setShowSupportModal] = useState(false);
+  const [supportProblems, setSupportProblems] = useState<any[]>([]);
+  const [loadingSupport, setLoadingSupport] = useState(false);
+  const [selectedSupportTicket, setSelectedSupportTicket] = useState<any | null>(null);
 
   const fetchSubmittedEvents = async () => {
     const token = localStorage.getItem('userToken');
@@ -227,6 +245,7 @@ const Profile = () => {
     fetchListings();
     fetchChats();
     fetchMyOrders();
+    fetchSupportProblems();
   }, []);
 
   const fetchListings = async () => {
@@ -606,6 +625,7 @@ const Profile = () => {
                     { label: 'My Listings', value: myListings.length, icon: LuLayoutGrid, color: 'text-orange-500', bg: 'bg-orange-500/10', onClick: () => setShowListingsModal(true) },
                     { label: 'My Orders', value: myOrders.length, icon: LuShoppingBag, color: 'text-amber-500', bg: 'bg-amber-500/10', onClick: () => { setShowOrdersModal(true); fetchMyOrders(); } },
                     { label: 'Inbox (Chats)', value: marketplaceChats.length, icon: LuMessageSquare, color: 'text-indigo-500', bg: 'bg-indigo-500/10', onClick: () => setShowChatsModal(true) },
+                    { label: 'Support Inbox', value: supportProblems.length, icon: LuMessageSquare, color: 'text-rose-500', bg: 'bg-rose-500/10', onClick: () => { setShowSupportModal(true); fetchSupportProblems(); } },
                     { label: 'Services', value: serviceRequests.length, icon: LuBriefcase, color: 'text-sky-500', bg: 'bg-sky-500/10', onClick: () => setShowServicesModal(true) },
                     { label: 'Points', value: stats.rewardPoints, icon: LuTrophy, color: 'text-amber-500', bg: 'bg-amber-500/10' },
                   ].map((stat, idx) => {
@@ -1762,6 +1782,144 @@ const Profile = () => {
                                 </div>
                               );
                             })}
+                          </div>
+                        )}
+                      </div>
+                    </motion.div>
+                  </div>
+                </>
+              )}
+            </AnimatePresence>
+
+            {/* Backdrop-Blurred Support Modal */}
+            <AnimatePresence>
+              {showSupportModal && (
+                <>
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    onClick={() => {
+                      setShowSupportModal(false);
+                      setSelectedSupportTicket(null);
+                    }}
+                    className="fixed inset-0 z-[100] bg-slate-950/60 backdrop-blur-md"
+                  />
+
+                  <div className="fixed inset-0 z-[101] overflow-y-auto pointer-events-none flex items-center justify-center p-4 sm:p-6">
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                      className="w-full max-w-3xl bg-white/95 dark:bg-slate-950/98 backdrop-blur-2xl border border-slate-200/50 dark:border-white/10 rounded-[2.5rem] p-8 shadow-2xl relative pointer-events-auto overflow-hidden h-[75vh] flex flex-col"
+                    >
+                      <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-200/50 dark:border-white/10">
+                        <div>
+                          <h3 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-wider">Support Inbox</h3>
+                          <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Manage your problem reports and replies</p>
+                        </div>
+                        <button
+                          onClick={() => {
+                            setShowSupportModal(false);
+                            setSelectedSupportTicket(null);
+                          }}
+                          className="p-3 rounded-full hover:bg-slate-100 dark:hover:bg-slate-900 text-slate-400 hover:text-slate-600 transition-colors"
+                        >
+                          <LuX size={18} />
+                        </button>
+                      </div>
+
+                      <div className="flex-1 overflow-y-auto pr-2">
+                        {loadingSupport ? (
+                          <div className="flex items-center justify-center h-full">
+                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-rose-500"></div>
+                          </div>
+                        ) : !selectedSupportTicket ? (
+                          supportProblems.length === 0 ? (
+                            <div className="flex flex-col items-center justify-center h-full text-center py-10">
+                              <LuMessageSquare size={36} className="text-slate-300 dark:text-slate-700 mb-3" />
+                              <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">No support tickets found</p>
+                              <p className="text-[10px] text-slate-400 max-w-xs mt-1">If you have encountered any issues, submit a report on our Contact page.</p>
+                            </div>
+                          ) : (
+                            <div className="space-y-4">
+                              {supportProblems.map((ticket) => (
+                                <div
+                                  key={ticket.id}
+                                  onClick={() => setSelectedSupportTicket(ticket)}
+                                  className="group p-5 rounded-[1.8rem] bg-slate-50 dark:bg-slate-900/40 border border-slate-100 dark:border-white/5 hover:border-rose-500/30 dark:hover:border-rose-500/20 hover:bg-white dark:hover:bg-slate-900/60 transition-all cursor-pointer flex items-center justify-between"
+                                >
+                                  <div className="min-w-0 flex-1">
+                                    <div className="flex items-center gap-3 mb-2 flex-wrap">
+                                      <span className="text-[9px] font-black uppercase tracking-wider bg-rose-500/10 text-rose-500 dark:bg-rose-500/20 dark:text-rose-400 px-2.5 py-0.5 rounded-full border border-rose-500/25">
+                                        {ticket.inquiryType}
+                                      </span>
+                                      <span className={`text-[8px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border ${
+                                        ticket.status === 'Resolved'
+                                          ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20'
+                                          : 'bg-amber-500/10 text-amber-500 border-amber-500/20'
+                                      }`}>
+                                        {ticket.status}
+                                      </span>
+                                    </div>
+                                    <p className="text-sm font-extrabold text-slate-800 dark:text-white truncate">{ticket.message}</p>
+                                    <p className="text-[10px] text-slate-400 dark:text-slate-500 font-medium mt-1">
+                                      Reported on {new Date(ticket.createdAt).toLocaleDateString()}
+                                    </p>
+                                  </div>
+                                  <LuChevronRight size={18} className="text-slate-400 group-hover:text-rose-500 transition-colors" />
+                                </div>
+                              ))}
+                            </div>
+                          )
+                        ) : (
+                          <div className="flex flex-col h-full justify-between">
+                            <div className="space-y-6">
+                              {/* Go Back button */}
+                              <button
+                                onClick={() => setSelectedSupportTicket(null)}
+                                className="flex items-center gap-2 text-[10px] font-black text-rose-500 uppercase tracking-widest hover:underline mb-2"
+                              >
+                                ← Back to Tickets list
+                              </button>
+
+                              {/* User ticket details */}
+                              <div className="p-5 rounded-3xl bg-slate-50 dark:bg-slate-900/40 border border-slate-100 dark:border-white/5 relative overflow-hidden">
+                                <div className="absolute top-0 right-0 p-3">
+                                  <span className="text-[8px] font-black uppercase tracking-wider bg-rose-500/15 text-rose-500 dark:bg-rose-500/25 dark:text-rose-400 px-2 py-0.5 rounded-md">
+                                    Your Ticket
+                                  </span>
+                                </div>
+                                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-1">{selectedSupportTicket.inquiryType}</p>
+                                <p className="text-sm text-slate-800 dark:text-slate-200 leading-relaxed font-semibold">{selectedSupportTicket.message}</p>
+                                <p className="text-[9px] text-slate-400 font-bold uppercase tracking-wider mt-3">
+                                  Sent: {new Date(selectedSupportTicket.createdAt).toLocaleString()}
+                                </p>
+                              </div>
+
+                              {/* Admin reply details */}
+                              {selectedSupportTicket.adminReply ? (
+                                <div className="p-5 rounded-3xl bg-gradient-to-r from-emerald-500/10 to-teal-500/5 dark:from-[#0c2423] dark:to-[#051717] border border-emerald-500/20 dark:border-emerald-500/10 relative overflow-hidden">
+                                  <div className="absolute top-0 right-0 p-3">
+                                    <span className="text-[8px] font-black uppercase tracking-wider bg-emerald-500/15 text-emerald-600 dark:bg-emerald-500/25 dark:text-emerald-400 px-2 py-0.5 rounded-md">
+                                      Admin Reply
+                                    </span>
+                                  </div>
+                                  <p className="text-[10px] font-black uppercase tracking-widest text-emerald-500/60 mb-2">Reply Message</p>
+                                  <p className="text-sm text-slate-800 dark:text-slate-200 leading-relaxed font-semibold italic">"{selectedSupportTicket.adminReply}"</p>
+                                  <p className="text-[9px] text-slate-400 font-bold uppercase tracking-wider mt-4">
+                                    Replied: {new Date(selectedSupportTicket.repliedAt).toLocaleString()}
+                                  </p>
+                                </div>
+                              ) : (
+                                <div className="p-5 rounded-3xl bg-amber-500/5 dark:bg-[#201c10] border border-amber-500/20 dark:border-amber-500/10 flex items-center gap-3">
+                                  <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping"></span>
+                                  <p className="text-[10px] font-black text-amber-600 dark:text-amber-400 uppercase tracking-widest">
+                                    Waiting for Administration review... typical response time is ~2 hours
+                                  </p>
+                                </div>
+                              )}
+                            </div>
                           </div>
                         )}
                       </div>

@@ -575,5 +575,59 @@ export const api = {
     });
     if (!response.ok) throw new Error('Failed to fetch your orders');
     return response.json();
+  },
+
+  submitFeedback: async (formData: FormData): Promise<any> => {
+    const token = localStorage.getItem('userToken');
+    const headers: Record<string, string> = {};
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    const response = await fetch(`http://localhost:5001/api/support/feedbacks`, {
+      method: 'POST',
+      headers,
+      body: formData
+    });
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.message || 'Failed to submit feedback');
+    }
+    return response.json();
+  },
+
+  getApprovedFeedbacks: async (): Promise<any[]> => {
+    const response = await fetch(`http://localhost:5001/api/support/feedbacks/approved`);
+    if (!response.ok) throw new Error('Failed to fetch testimonials');
+    const data = await response.json();
+    return data.feedbacks || [];
+  },
+
+  submitSupportProblem: async (data: { name: string; email: string; inquiryType: string; message: string; }): Promise<any> => {
+    const token = localStorage.getItem('userToken');
+    const response = await fetch(`http://localhost:5001/api/support/problems`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(data)
+    });
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.message || 'Failed to report problem');
+    }
+    return response.json();
+  },
+
+  getMySupportProblems: async (): Promise<any[]> => {
+    const token = localStorage.getItem('userToken');
+    const response = await fetch(`http://localhost:5001/api/support/my-problems`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    if (!response.ok) throw new Error('Failed to fetch support tickets');
+    const data = await response.json();
+    return data.problems || [];
   }
 };
