@@ -6,6 +6,7 @@ import {
   LuCalendar, LuLayoutGrid, LuTrophy, LuSettings, LuLogOut, LuBriefcase, LuX, LuSend, LuTrash2, LuMegaphone, LuShoppingBag, LuStar
 } from 'react-icons/lu';
 import { motion, AnimatePresence } from 'framer-motion';
+import { io } from 'socket.io-client';
 import SEO from '../../components/SEO';
 import toast from 'react-hot-toast';
 import { api } from '../../api';
@@ -314,7 +315,7 @@ const Profile = () => {
   }, []);
 
   useEffect(() => {
-    let interval: any;
+    let socket: any;
     const fetchChatMessages = async () => {
       if (!selectedChat) return;
       try {
@@ -324,12 +325,38 @@ const Profile = () => {
         console.error(err);
       }
     };
+
     if (selectedChat) {
+      // Fetch initial chat history once
       fetchChatMessages();
-      interval = setInterval(fetchChatMessages, 4000);
+
+      // Establish real-time Socket.io link
+      socket = io('http://localhost:5001', {
+        withCredentials: true
+      });
+
+      // Join chat room session
+      socket.emit('join_chat', selectedChat.id);
+
+      // Listen for inbound messages
+      socket.on('receive_message', (msg: any) => {
+        if (msg.chat_id === selectedChat.id) {
+          setChatMessages(prev => {
+            const exists = prev.some(m => m.id === msg.id);
+            if (exists) return prev;
+            return [...prev, msg];
+          });
+        }
+      });
     }
+
     return () => {
-      if (interval) clearInterval(interval);
+      if (socket) {
+        if (selectedChat) {
+          socket.emit('leave_chat', selectedChat.id);
+        }
+        socket.disconnect();
+      }
     };
   }, [selectedChat]);
 
@@ -614,20 +641,20 @@ const Profile = () => {
                 </div>
 
                 {/* ── Subdued Stats Section ────────────────────────── */}
-                <div className="flex flex-wrap justify-center gap-3 mb-16">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-16">
                   {[
                     { label: 'Followers', value: stats.followers, icon: LuUser, color: 'text-indigo-500', bg: 'bg-indigo-500/10' },
                     { label: 'Following', value: stats.following, icon: LuActivity, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-                    { label: 'My Blogs', value: submittedBlogs.length, icon: LuMessageSquare, color: 'text-purple-500', bg: 'bg-purple-500/10', onClick: () => setShowBlogsModal(true) },
-                    { label: 'My Ads', value: myAds.length, icon: LuMegaphone, color: 'text-rose-500', bg: 'bg-rose-500/10', onClick: () => setShowAdsModal(true) },
                     { label: 'Activity', value: `${stats.activityScore}%`, icon: LuActivity, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
-                    { label: 'My Events', value: submittedEvents.length, icon: LuCalendar, color: 'text-pink-500', bg: 'bg-pink-500/10', onClick: () => setShowEventsModal(true) },
-                    { label: 'My Listings', value: myListings.length, icon: LuLayoutGrid, color: 'text-orange-500', bg: 'bg-orange-500/10', onClick: () => setShowListingsModal(true) },
-                    { label: 'My Orders', value: myOrders.length, icon: LuShoppingBag, color: 'text-amber-500', bg: 'bg-amber-500/10', onClick: () => { setShowOrdersModal(true); fetchMyOrders(); } },
+                    { label: 'Points', value: stats.rewardPoints, icon: LuTrophy, color: 'text-amber-500', bg: 'bg-amber-500/10' },
                     { label: 'Inbox (Chats)', value: marketplaceChats.length, icon: LuMessageSquare, color: 'text-indigo-500', bg: 'bg-indigo-500/10', onClick: () => setShowChatsModal(true) },
                     { label: 'Support Inbox', value: supportProblems.length, icon: LuMessageSquare, color: 'text-rose-500', bg: 'bg-rose-500/10', onClick: () => { setShowSupportModal(true); fetchSupportProblems(); } },
+                    { label: 'My Listings', value: myListings.length, icon: LuLayoutGrid, color: 'text-orange-500', bg: 'bg-orange-500/10', onClick: () => setShowListingsModal(true) },
+                    { label: 'My Ads', value: myAds.length, icon: LuMegaphone, color: 'text-rose-500', bg: 'bg-rose-500/10', onClick: () => setShowAdsModal(true) },
+                    { label: 'My Orders', value: myOrders.length, icon: LuShoppingBag, color: 'text-amber-500', bg: 'bg-amber-500/10', onClick: () => { setShowOrdersModal(true); fetchMyOrders(); } },
                     { label: 'Services', value: serviceRequests.length, icon: LuBriefcase, color: 'text-sky-500', bg: 'bg-sky-500/10', onClick: () => setShowServicesModal(true) },
-                    { label: 'Points', value: stats.rewardPoints, icon: LuTrophy, color: 'text-amber-500', bg: 'bg-amber-500/10' },
+                    { label: 'My Blogs', value: submittedBlogs.length, icon: LuMessageSquare, color: 'text-purple-500', bg: 'bg-purple-500/10', onClick: () => setShowBlogsModal(true) },
+                    { label: 'My Events', value: submittedEvents.length, icon: LuCalendar, color: 'text-pink-500', bg: 'bg-pink-500/10', onClick: () => setShowEventsModal(true) },
                   ].map((stat, idx) => {
                     const CardElement = stat.onClick ? 'button' : 'div';
                     return (

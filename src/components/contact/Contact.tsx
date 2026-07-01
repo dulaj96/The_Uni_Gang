@@ -66,10 +66,38 @@ const feedbacks: Feedback[] = [
 ];
 
 const stats = [
-    { icon: <LuMonitor />, value: "45+", label: "Web, Apps Developed" },
-    { icon: <LuSearch />, value: "20+", label: "SEO Projects" },
-    { icon: <LuCalendarDays />, value: "60+", label: "Events Displayed" },
-    { icon: <LuUsers />, value: "150+", label: "Happy Clients" }
+    { 
+        icon: LuMonitor, 
+        value: "45+", 
+        label: "Web, Apps Developed",
+        color: "text-blue-500 dark:text-blue-400 group-hover:text-blue-300", 
+        bg: "bg-blue-500/10 border-blue-500/20 group-hover:border-blue-500/50 group-hover:shadow-[0_0_20px_rgba(59,130,246,0.3)]",
+        glow: "rgba(59,130,246,0.4)"
+    },
+    { 
+        icon: LuSearch, 
+        value: "20+", 
+        label: "SEO Projects",
+        color: "text-purple-500 dark:text-purple-400 group-hover:text-purple-300", 
+        bg: "bg-purple-500/10 border-purple-500/20 group-hover:border-purple-500/50 group-hover:shadow-[0_0_20px_rgba(168,85,247,0.3)]",
+        glow: "rgba(168,85,247,0.4)"
+    },
+    { 
+        icon: LuCalendarDays, 
+        value: "60+", 
+        label: "Events Displayed",
+        color: "text-emerald-500 dark:text-emerald-400 group-hover:text-emerald-300", 
+        bg: "bg-emerald-500/10 border-emerald-500/20 group-hover:border-emerald-500/50 group-hover:shadow-[0_0_20px_rgba(16,185,129,0.3)]",
+        glow: "rgba(16,185,129,0.4)"
+    },
+    { 
+        icon: LuUsers, 
+        value: "150+", 
+        label: "Happy Clients",
+        color: "text-rose-500 dark:text-rose-400 group-hover:text-rose-300", 
+        bg: "bg-rose-500/10 border-rose-500/20 group-hover:border-rose-500/50 group-hover:shadow-[0_0_20px_rgba(244,63,94,0.3)]",
+        glow: "rgba(244,63,94,0.4)"
+    }
 ];
 
 const TestimonialCard = ({ feedback }: { feedback: Feedback }) => {
@@ -571,16 +599,16 @@ const Contact = () => {
                             transition={{ duration: 0.5, delay: i * 0.1 }}
                         >
                             <TiltCard>
-                                <div className="premium-glass p-6 md:p-8 rounded-[2.5rem] md:rounded-[3.5rem] text-center group transition-all duration-500 hover:shadow-2xl flex flex-col items-center">
+                                <div className="premium-glass p-5 md:p-6 rounded-[1.75rem] md:rounded-[2.25rem] text-center group transition-all duration-500 hover:shadow-xl flex flex-col items-center">
                                     <motion.div
-                                        whileHover={{ rotate: 360 }}
-                                        transition={{ duration: 1 }}
-                                        className="w-14 h-14 md:w-20 md:h-20 rounded-2xl md:rounded-3xl bg-white dark:bg-slate-900 shadow-xl flex items-center justify-center text-primary text-2xl md:text-4xl mb-4 md:mb-8 group-hover:bg-primary group-hover:text-white transition-colors"
+                                        whileHover={{ scale: 1.1, rotate: 8 }}
+                                        transition={{ type: "spring", stiffness: 300, damping: 15 }}
+                                        className={`w-11 h-11 md:w-14 md:h-14 rounded-xl md:rounded-2xl border backdrop-blur-md flex items-center justify-center mb-3 md:mb-4 transition-all duration-300 ${s.bg}`}
                                     >
-                                        {s.icon}
+                                        <s.icon className={`w-5 h-5 md:w-6 md:h-6 ${s.color} transition-all duration-300`} style={{ filter: `drop-shadow(0 0 6px ${s.glow})` }} />
                                     </motion.div>
-                                    <h4 className="text-2xl md:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white mb-2 md:mb-3 tracking-tighter">{s.value}</h4>
-                                    <p className="text-[8px] md:text-[10px] font-black uppercase tracking-wider md:tracking-[0.3em] text-slate-400 group-hover:text-primary transition-colors">{s.label}</p>
+                                    <h4 className="text-xl md:text-2xl lg:text-3xl font-black text-slate-900 dark:text-white mb-1.5 md:mb-2 tracking-tight">{s.value}</h4>
+                                    <p className="text-[7.5px] md:text-[9px] font-black uppercase tracking-wider md:tracking-[0.25em] text-slate-400 group-hover:text-primary transition-colors">{s.label}</p>
                                 </div>
                             </TiltCard>
                         </motion.div>
