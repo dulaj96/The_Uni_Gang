@@ -686,7 +686,11 @@ const Profile = () => {
                     <div className="relative group/avatar">
                       <motion.div
                         whileHover={{ scale: 1.05 }}
-                        className="relative p-1.5 rounded-full bg-linear-to-tr from-blue-300 via-indigo-300 to-purple-300 shadow-lg"
+                        className={`relative p-1.5 rounded-full shadow-lg ${
+                          isVerifiedStudent
+                            ? 'bg-gradient-to-tr from-amber-400 via-yellow-300 to-orange-400 shadow-amber-400/50'
+                            : 'bg-linear-to-tr from-blue-300 via-indigo-300 to-purple-300'
+                        }`}
                       >
                         <div className="w-48 h-48 rounded-full border-[6px] border-white dark:border-slate-800 overflow-hidden bg-white dark:bg-slate-900 shadow-inner relative z-10 transition-colors">
                           {profilePicture ? (
