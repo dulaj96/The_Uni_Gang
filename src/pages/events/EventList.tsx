@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import TiltCard from '../../components/ui/TiltCard';
 import EventDetails from './EventDetails';
 import { api } from '../../api';
+import toast from 'react-hot-toast';
 import PremiumPageLoader from '../../components/ui/PremiumPageLoader';
 import AdBanner from '../../components/advertise/AdBanner';
 import AdNativeFeed from '../../components/advertise/AdNativeFeed';
@@ -173,9 +174,19 @@ const EventList = () => {
         });
     })();
 
-    const handleWhatsApp = (contact: string, title: string) => {
-        const message = `Hi! I'm interested in the event: *${title}*. Could you please provide more details?`;
-        window.open(`https://wa.me/${contact.replace('+', '')}?text=${encodeURIComponent(message)}`, '_blank');
+    const handleStartChat = async (eventId: string, title: string) => {
+        const token = localStorage.getItem('userToken');
+        if (!token) {
+            toast.error("Please login to chat with the host.");
+            return;
+        }
+        try {
+            const chat = await api.startEventChat(eventId);
+            window.location.href = `/profile?tab=inbox&chatId=${chat.id}&type=event`;
+        } catch (err: any) {
+            console.error(err);
+            toast.error(err.message || "Failed to start chat session.");
+        }
     };
 
     return (
@@ -266,7 +277,7 @@ const EventList = () => {
                                                 transition={{ duration: 0.5 }}
                                             >
                                                 <img
-                                                    src="https://images.unsplash.com/photo-1540575861501-7ad058ad37fa?q=80&w=1200"
+                                                    src="https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=1200"
                                                     className="w-full h-full object-cover"
                                                     alt="University Event"
                                                 />
@@ -314,7 +325,7 @@ const EventList = () => {
                                     {filteredEvents.map((event, index) => {
                                         const imageUrl = event.image
                                             ? (event.image.startsWith('http') ? event.image : `http://localhost:5001${event.image}`)
-                                            : 'https://images.unsplash.com/photo-1540575861501-7ad058ad37fa?q=80&w=800';
+                                            : 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=800';
 
                                         const eventDate = new Date(event.date);
                                         const dayStr = isNaN(eventDate.getTime()) ? event.date : String(eventDate.getDate());
@@ -407,9 +418,9 @@ const EventList = () => {
                                                                             <LuInfo size={14} /> View & RSVP
                                                                         </button>
                                                                         <button
-                                                                            onClick={() => handleWhatsApp(event.contact, event.title)}
-                                                                            className="flex items-center justify-center p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-emerald-500 hover:text-white text-slate-500 dark:text-slate-400 transition-all active:scale-95 shadow-sm"
-                                                                            title="Contact via WhatsApp"
+                                                                            onClick={() => handleStartChat(event.id.toString(), event.title)}
+                                                                            className="flex items-center justify-center p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-blue-600 hover:text-white text-slate-500 dark:text-slate-400 transition-all active:scale-95 shadow-sm"
+                                                                            title="Chat with Organizer"
                                                                         >
                                                                             <LuMessageCircle size={18} />
                                                                         </button>

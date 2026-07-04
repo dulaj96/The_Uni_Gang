@@ -107,6 +107,12 @@ const Profile = () => {
   const [myListings, setMyListings] = useState<any[]>([]);
   const [loadingListings, setLoadingListings] = useState(false);
 
+  // Annex and Verification states
+  const [myAnnexes, setMyAnnexes] = useState<any[]>([]);
+  const [loadingAnnexes, setLoadingAnnexes] = useState(false);
+  const [isVerifiedStudent, setIsVerifiedStudent] = useState(false);
+  const [isVerifiedLandlord, setIsVerifiedLandlord] = useState(false);
+
   const [showOrdersModal, setShowOrdersModal] = useState(false);
   const [myOrders, setMyOrders] = useState<any[]>([]);
   const [loadingOrders, setLoadingOrders] = useState(false);
@@ -135,18 +141,55 @@ const Profile = () => {
     }
   };
 
-  const [showChatsModal, setShowChatsModal] = useState(false);
+  // Unified Inbox states
+  const [showInboxModal, setShowInboxModal] = useState(false);
+  const [inboxTab, setInboxTab] = useState<'marketplace' | 'events' | 'support'>('marketplace');
+
+  // Marketplace states
   const [marketplaceChats, setMarketplaceChats] = useState<any[]>([]);
   const [loadingChats, setLoadingChats] = useState(false);
   const [selectedChat, setSelectedChat] = useState<any | null>(null);
   const [chatMessages, setChatMessages] = useState<any[]>([]);
   const [chatText, setChatText] = useState('');
 
+  // Event chat states
+  const [eventChats, setEventChats] = useState<any[]>([]);
+  const [loadingEventChats, setLoadingEventChats] = useState(false);
+  const [selectedEventChat, setSelectedEventChat] = useState<any | null>(null);
+  const [eventChatMessages, setEventChatMessages] = useState<any[]>([]);
+  const [eventChatText, setEventChatText] = useState('');
+
   // Support Inbox states
-  const [showSupportModal, setShowSupportModal] = useState(false);
   const [supportProblems, setSupportProblems] = useState<any[]>([]);
   const [loadingSupport, setLoadingSupport] = useState(false);
   const [selectedSupportTicket, setSelectedSupportTicket] = useState<any | null>(null);
+
+  const fetchEventChats = async () => {
+    try {
+      setLoadingEventChats(true);
+      const data = await api.getEventChats();
+      setEventChats(data);
+    } catch (err) {
+      console.error('Failed to load event chats:', err);
+    } finally {
+      setLoadingEventChats(false);
+    }
+  };
+
+  const handleSendEventMessage = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedEventChat || !eventChatText.trim()) return;
+    try {
+      const sent = await api.sendEventMessage(selectedEventChat.id, eventChatText.trim());
+      setEventChatMessages(prev => [...prev, sent]);
+      setEventChatText('');
+      const updated = await api.getEventChats();
+      setEventChats(updated);
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to send message.');
+    }
+  };
 
   const fetchSubmittedEvents = async () => {
     const token = localStorage.getItem('userToken');
@@ -244,7 +287,10 @@ const Profile = () => {
     fetchNetwork();
     fetchMyAds();
     fetchListings();
+    fetchMyAnnexes();
+    fetchUserProfile();
     fetchChats();
+    fetchEventChats();
     fetchMyOrders();
     fetchSupportProblems();
   }, []);
@@ -258,6 +304,48 @@ const Profile = () => {
       console.error('Failed to load listings:', err);
     } finally {
       setLoadingListings(false);
+    }
+  };
+
+  const fetchMyAnnexes = async () => {
+    const token = localStorage.getItem('userToken');
+    if (!token) return;
+    try {
+      setLoadingAnnexes(true);
+      const response = await fetch('http://localhost:5001/api/annexes/my-listings', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setMyAnnexes(data || []);
+      }
+    } catch (err) {
+      console.error('Failed to load my annexes:', err);
+    } finally {
+      setLoadingAnnexes(false);
+    }
+  };
+
+  const fetchUserProfile = async () => {
+    const token = localStorage.getItem('userToken');
+    if (!token) return;
+    try {
+      const response = await fetch('http://localhost:5001/api/users/profile', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && data.user) {
+          setIsVerifiedStudent(!!data.user.is_verified_student);
+          setIsVerifiedLandlord(!!data.user.is_verified_landlord);
+        }
+      }
+    } catch (err) {
+      console.error('Failed to load user profile verification:', err);
     }
   };
 
@@ -290,13 +378,15 @@ const Profile = () => {
     const params = new URLSearchParams(window.location.search);
     const tab = params.get('tab');
     const chatId = params.get('chatId');
+    const type = params.get('type') || 'marketplace';
     if (tab === 'orders') {
       setShowOrdersModal(true);
       fetchMyOrders();
     }
     if (tab === 'inbox') {
-      setShowChatsModal(true);
-      if (chatId) {
+      setShowInboxModal(true);
+      setInboxTab(type as any);
+      if (type === 'marketplace' && chatId) {
         const selectParamChat = async () => {
           try {
             const data = await api.getMarketplaceChats();
@@ -310,6 +400,20 @@ const Profile = () => {
           }
         };
         selectParamChat();
+      } else if (type === 'event' && chatId) {
+        const selectParamEventChat = async () => {
+          try {
+            const data = await api.getEventChats();
+            setEventChats(data);
+            const found = data.find((c: any) => c.id === chatId);
+            if (found) {
+              setSelectedEventChat(found);
+            }
+          } catch (err) {
+            console.error('Error selecting param event chat:', err);
+          }
+        };
+        selectParamEventChat();
       }
     }
   }, []);
@@ -359,6 +463,48 @@ const Profile = () => {
       }
     };
   }, [selectedChat]);
+
+  useEffect(() => {
+    let socket: any;
+    const fetchChatMessages = async () => {
+      if (!selectedEventChat) return;
+      try {
+        const msgs = await api.getEventMessages(selectedEventChat.id);
+        setEventChatMessages(msgs);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    if (selectedEventChat) {
+      fetchChatMessages();
+
+      socket = io('http://localhost:5001', {
+        withCredentials: true
+      });
+
+      socket.emit('join_chat', selectedEventChat.id);
+
+      socket.on('receive_message', (msg: any) => {
+        if (msg.chat_id === selectedEventChat.id) {
+          setEventChatMessages(prev => {
+            const exists = prev.some(m => m.id === msg.id);
+            if (exists) return prev;
+            return [...prev, msg];
+          });
+        }
+      });
+    }
+
+    return () => {
+      if (socket) {
+        if (selectedEventChat) {
+          socket.emit('leave_chat', selectedEventChat.id);
+        }
+        socket.disconnect();
+      }
+    };
+  }, [selectedEventChat]);
 
   const handleSendMarketplaceMessage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -576,27 +722,43 @@ const Profile = () => {
                         <h1 className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight leading-none">
                           {firstName} {lastName}
                         </h1>
-                        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 dark:bg-blue-500/20 border border-blue-500/20 dark:border-white/10 text-blue-600 dark:text-blue-400 shadow-sm">
-                          <LuShieldCheck className="w-5 h-5" />
-                          <span className="text-[10px] font-black uppercase tracking-widest hidden sm:block">Verified</span>
-                        </div>
+                        {(isVerifiedStudent || isVerifiedLandlord) ? (
+                          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-500/10 to-yellow-500/10 dark:from-amber-500/20 dark:to-yellow-500/10 border border-amber-500/30 dark:border-amber-500/20 text-amber-600 dark:text-amber-400 shadow-sm shadow-amber-500/5 cursor-default select-none">
+                            <LuShieldCheck className="w-5 h-5 text-amber-500" />
+                            <span className="text-[10px] font-black uppercase tracking-widest hidden sm:block">Verified</span>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-500/10 dark:bg-blue-500/20 border border-blue-500/20 dark:border-blue-500/10 text-blue-600 dark:text-blue-400 shadow-sm cursor-default select-none">
+                            <LuShieldCheck className="w-5 h-5" />
+                            <span className="text-[10px] font-black uppercase tracking-widest hidden sm:block">Email Verified</span>
+                          </div>
+                        )}
                       </div>
 
                       <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
                         <span className="text-slate-400 dark:text-slate-400 font-bold uppercase tracking-widest text-[10px]">Community Member</span>
-                        <span className="w-1 h-1 rounded-full bg-slate-200 dark:bg-slate-800"></span>
-                        <div className="flex gap-2">
-                          {stats.publishedAds > 0 && (
-                            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/5 dark:bg-indigo-500/20 text-indigo-500 dark:text-indigo-400 border border-indigo-500/10 dark:border-white/10 text-[9px] font-black uppercase tracking-wider">
-                              Annex Provider
+                        {(myAnnexes.length > 0 || submittedEvents.length > 0 || myListings.length > 0) && (
+                          <>
+                            <span className="w-1 h-1 rounded-full bg-slate-200 dark:bg-slate-800"></span>
+                            <div className="flex gap-2 flex-wrap">
+                              {myAnnexes.length > 0 && (
+                                <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/5 dark:bg-indigo-500/20 text-indigo-500 dark:text-indigo-400 border border-indigo-500/10 dark:border-white/10 text-[9px] font-black uppercase tracking-wider">
+                                  Annex Provider
+                                </div>
+                              )}
+                              {submittedEvents.length > 0 && (
+                                <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-pink-500/5 dark:bg-pink-500/20 text-pink-500 dark:text-pink-400 border border-pink-500/10 dark:border-white/10 text-[9px] font-black uppercase tracking-wider">
+                                  Event Master
+                                </div>
+                              )}
+                              {myListings.length > 0 && (
+                                <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/5 dark:bg-cyan-500/20 text-cyan-500 dark:text-cyan-400 border border-cyan-500/10 dark:border-white/10 text-[9px] font-black uppercase tracking-wider">
+                                  Market Seller
+                                </div>
+                              )}
                             </div>
-                          )}
-                          {stats.registeredEvents > 0 && (
-                            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-pink-500/5 dark:bg-pink-500/20 text-pink-500 dark:text-pink-400 border border-pink-500/10 dark:border-white/10 text-[9px] font-black uppercase tracking-wider">
-                              Event Master
-                            </div>
-                          )}
-                        </div>
+                          </>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -647,8 +809,7 @@ const Profile = () => {
                     { label: 'Following', value: stats.following, icon: LuActivity, color: 'text-blue-500', bg: 'bg-blue-500/10' },
                     { label: 'Activity', value: `${stats.activityScore}%`, icon: LuActivity, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
                     { label: 'Points', value: stats.rewardPoints, icon: LuTrophy, color: 'text-amber-500', bg: 'bg-amber-500/10' },
-                    { label: 'Inbox (Chats)', value: marketplaceChats.length, icon: LuMessageSquare, color: 'text-indigo-500', bg: 'bg-indigo-500/10', onClick: () => setShowChatsModal(true) },
-                    { label: 'Support Inbox', value: supportProblems.length, icon: LuMessageSquare, color: 'text-rose-500', bg: 'bg-rose-500/10', onClick: () => { setShowSupportModal(true); fetchSupportProblems(); } },
+                    { label: 'Inbox (Messages)', value: marketplaceChats.length + eventChats.length + supportProblems.length, icon: LuMessageSquare, color: 'text-blue-500', bg: 'bg-blue-500/10', onClick: () => { setShowInboxModal(true); fetchSupportProblems(); fetchChats(); fetchEventChats(); } },
                     { label: 'My Listings', value: myListings.length, icon: LuLayoutGrid, color: 'text-orange-500', bg: 'bg-orange-500/10', onClick: () => setShowListingsModal(true) },
                     { label: 'My Ads', value: myAds.length, icon: LuMegaphone, color: 'text-rose-500', bg: 'bg-rose-500/10', onClick: () => setShowAdsModal(true) },
                     { label: 'My Orders', value: myOrders.length, icon: LuShoppingBag, color: 'text-amber-500', bg: 'bg-amber-500/10', onClick: () => { setShowOrdersModal(true); fetchMyOrders(); } },
@@ -1338,7 +1499,7 @@ const Profile = () => {
                               {/* Event Flyer Banner */}
                               <div className="relative h-48 rounded-3xl overflow-hidden border border-slate-200/30 dark:border-white/10 bg-slate-900">
                                 <img
-                                  src={selectedEvent.image ? (selectedEvent.image.startsWith('http') ? selectedEvent.image : `http://localhost:5001${selectedEvent.image}`) : 'https://images.unsplash.com/photo-1540575861501-7ad058ad37fa?q=80&w=800'}
+                                  src={selectedEvent.image ? (selectedEvent.image.startsWith('http') ? selectedEvent.image : `http://localhost:5001${selectedEvent.image}`) : 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=800'}
                                   alt={selectedEvent.title}
                                   className="w-full h-full object-cover"
                                 />
@@ -1818,155 +1979,19 @@ const Profile = () => {
               )}
             </AnimatePresence>
 
-            {/* Backdrop-Blurred Support Modal */}
+            {/* Backdrop-Blurred Unified Inbox Modal */}
             <AnimatePresence>
-              {showSupportModal && (
+              {showInboxModal && (
                 <>
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     onClick={() => {
-                      setShowSupportModal(false);
-                      setSelectedSupportTicket(null);
-                    }}
-                    className="fixed inset-0 z-[100] bg-slate-950/60 backdrop-blur-md"
-                  />
-
-                  <div className="fixed inset-0 z-[101] overflow-y-auto pointer-events-none flex items-center justify-center p-4 sm:p-6">
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                      animate={{ opacity: 1, scale: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                      className="w-full max-w-3xl bg-white/95 dark:bg-slate-950/98 backdrop-blur-2xl border border-slate-200/50 dark:border-white/10 rounded-[2.5rem] p-8 shadow-2xl relative pointer-events-auto overflow-hidden h-[75vh] flex flex-col"
-                    >
-                      <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-200/50 dark:border-white/10">
-                        <div>
-                          <h3 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-wider">Support Inbox</h3>
-                          <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Manage your problem reports and replies</p>
-                        </div>
-                        <button
-                          onClick={() => {
-                            setShowSupportModal(false);
-                            setSelectedSupportTicket(null);
-                          }}
-                          className="p-3 rounded-full hover:bg-slate-100 dark:hover:bg-slate-900 text-slate-400 hover:text-slate-600 transition-colors"
-                        >
-                          <LuX size={18} />
-                        </button>
-                      </div>
-
-                      <div className="flex-1 overflow-y-auto pr-2">
-                        {loadingSupport ? (
-                          <div className="flex items-center justify-center h-full">
-                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-rose-500"></div>
-                          </div>
-                        ) : !selectedSupportTicket ? (
-                          supportProblems.length === 0 ? (
-                            <div className="flex flex-col items-center justify-center h-full text-center py-10">
-                              <LuMessageSquare size={36} className="text-slate-300 dark:text-slate-700 mb-3" />
-                              <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">No support tickets found</p>
-                              <p className="text-[10px] text-slate-400 max-w-xs mt-1">If you have encountered any issues, submit a report on our Contact page.</p>
-                            </div>
-                          ) : (
-                            <div className="space-y-4">
-                              {supportProblems.map((ticket) => (
-                                <div
-                                  key={ticket.id}
-                                  onClick={() => setSelectedSupportTicket(ticket)}
-                                  className="group p-5 rounded-[1.8rem] bg-slate-50 dark:bg-slate-900/40 border border-slate-100 dark:border-white/5 hover:border-rose-500/30 dark:hover:border-rose-500/20 hover:bg-white dark:hover:bg-slate-900/60 transition-all cursor-pointer flex items-center justify-between"
-                                >
-                                  <div className="min-w-0 flex-1">
-                                    <div className="flex items-center gap-3 mb-2 flex-wrap">
-                                      <span className="text-[9px] font-black uppercase tracking-wider bg-rose-500/10 text-rose-500 dark:bg-rose-500/20 dark:text-rose-400 px-2.5 py-0.5 rounded-full border border-rose-500/25">
-                                        {ticket.inquiryType}
-                                      </span>
-                                      <span className={`text-[8px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border ${
-                                        ticket.status === 'Resolved'
-                                          ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20'
-                                          : 'bg-amber-500/10 text-amber-500 border-amber-500/20'
-                                      }`}>
-                                        {ticket.status}
-                                      </span>
-                                    </div>
-                                    <p className="text-sm font-extrabold text-slate-800 dark:text-white truncate">{ticket.message}</p>
-                                    <p className="text-[10px] text-slate-400 dark:text-slate-500 font-medium mt-1">
-                                      Reported on {new Date(ticket.createdAt).toLocaleDateString()}
-                                    </p>
-                                  </div>
-                                  <LuChevronRight size={18} className="text-slate-400 group-hover:text-rose-500 transition-colors" />
-                                </div>
-                              ))}
-                            </div>
-                          )
-                        ) : (
-                          <div className="flex flex-col h-full justify-between">
-                            <div className="space-y-6">
-                              {/* Go Back button */}
-                              <button
-                                onClick={() => setSelectedSupportTicket(null)}
-                                className="flex items-center gap-2 text-[10px] font-black text-rose-500 uppercase tracking-widest hover:underline mb-2"
-                              >
-                                ← Back to Tickets list
-                              </button>
-
-                              {/* User ticket details */}
-                              <div className="p-5 rounded-3xl bg-slate-50 dark:bg-slate-900/40 border border-slate-100 dark:border-white/5 relative overflow-hidden">
-                                <div className="absolute top-0 right-0 p-3">
-                                  <span className="text-[8px] font-black uppercase tracking-wider bg-rose-500/15 text-rose-500 dark:bg-rose-500/25 dark:text-rose-400 px-2 py-0.5 rounded-md">
-                                    Your Ticket
-                                  </span>
-                                </div>
-                                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-1">{selectedSupportTicket.inquiryType}</p>
-                                <p className="text-sm text-slate-800 dark:text-slate-200 leading-relaxed font-semibold">{selectedSupportTicket.message}</p>
-                                <p className="text-[9px] text-slate-400 font-bold uppercase tracking-wider mt-3">
-                                  Sent: {new Date(selectedSupportTicket.createdAt).toLocaleString()}
-                                </p>
-                              </div>
-
-                              {/* Admin reply details */}
-                              {selectedSupportTicket.adminReply ? (
-                                <div className="p-5 rounded-3xl bg-gradient-to-r from-emerald-500/10 to-teal-500/5 dark:from-[#0c2423] dark:to-[#051717] border border-emerald-500/20 dark:border-emerald-500/10 relative overflow-hidden">
-                                  <div className="absolute top-0 right-0 p-3">
-                                    <span className="text-[8px] font-black uppercase tracking-wider bg-emerald-500/15 text-emerald-600 dark:bg-emerald-500/25 dark:text-emerald-400 px-2 py-0.5 rounded-md">
-                                      Admin Reply
-                                    </span>
-                                  </div>
-                                  <p className="text-[10px] font-black uppercase tracking-widest text-emerald-500/60 mb-2">Reply Message</p>
-                                  <p className="text-sm text-slate-800 dark:text-slate-200 leading-relaxed font-semibold italic">"{selectedSupportTicket.adminReply}"</p>
-                                  <p className="text-[9px] text-slate-400 font-bold uppercase tracking-wider mt-4">
-                                    Replied: {new Date(selectedSupportTicket.repliedAt).toLocaleString()}
-                                  </p>
-                                </div>
-                              ) : (
-                                <div className="p-5 rounded-3xl bg-amber-500/5 dark:bg-[#201c10] border border-amber-500/20 dark:border-amber-500/10 flex items-center gap-3">
-                                  <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping"></span>
-                                  <p className="text-[10px] font-black text-amber-600 dark:text-amber-400 uppercase tracking-widest">
-                                    Waiting for Administration review... typical response time is ~2 hours
-                                  </p>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </motion.div>
-                  </div>
-                </>
-              )}
-            </AnimatePresence>
-
-            {/* Backdrop-Blurred Chats Modal */}
-            <AnimatePresence>
-              {showChatsModal && (
-                <>
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    onClick={() => {
-                      setShowChatsModal(false);
+                      setShowInboxModal(false);
                       setSelectedChat(null);
+                      setSelectedEventChat(null);
+                      setSelectedSupportTicket(null);
                     }}
                     className="fixed inset-0 z-[100] bg-slate-950/60 backdrop-blur-md"
                   />
@@ -1978,158 +2003,431 @@ const Profile = () => {
                       exit={{ opacity: 0, scale: 0.95, y: 20 }}
                       className="w-full max-w-4xl bg-white/95 dark:bg-slate-950/98 backdrop-blur-2xl border border-slate-200/50 dark:border-white/10 rounded-[2.5rem] p-8 shadow-2xl relative pointer-events-auto overflow-hidden h-[85vh] flex flex-col"
                     >
-                      <AnimatePresence mode="wait">
-                        {!selectedChat ? (
-                          <motion.div
-                            key="chats-list"
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: 10 }}
-                            className="flex flex-col h-full overflow-hidden"
-                          >
-                            <div className="flex justify-between items-start mb-6">
-                              <div>
-                                <span className="text-[10px] font-black uppercase tracking-widest text-indigo-500 mb-1 block">Direct Messaging</span>
-                                <h3 className="text-2xl font-black text-slate-800 dark:text-white tracking-tight">Your Chats</h3>
-                              </div>
-                              <button
-                                type="button"
-                                onClick={() => setShowChatsModal(false)}
-                                className="p-2.5 rounded-full bg-slate-200/50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 hover:bg-red-500 hover:text-white transition-all hover:rotate-90 duration-300"
-                              >
-                                <LuX size={18} />
-                              </button>
-                            </div>
+                      {/* Modal Header */}
+                      <div className="flex justify-between items-start mb-6 pb-4 border-b border-slate-200/50 dark:border-white/10">
+                        <div>
+                          <span className="text-[10px] font-black uppercase tracking-widest text-blue-500 mb-1 block">Unified Inbox</span>
+                          <h3 className="text-2xl font-black text-slate-800 dark:text-white tracking-tight">Messages Hub</h3>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setShowInboxModal(false);
+                            setSelectedChat(null);
+                            setSelectedEventChat(null);
+                            setSelectedSupportTicket(null);
+                          }}
+                          className="p-2.5 rounded-full bg-slate-200/50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 hover:bg-red-500 hover:text-white transition-all hover:rotate-90 duration-300 border-none cursor-pointer"
+                        >
+                          <LuX size={18} />
+                        </button>
+                      </div>
 
-                            <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-4">
-                              {loadingChats ? (
-                                <div className="py-20 text-center text-slate-400 dark:text-slate-500 animate-pulse font-black uppercase tracking-widest text-xs">
-                                  Synchronizing inbox...
+                      {/* Tab Selection Row (Hidden if a specific chat or ticket detail is open) */}
+                      {!selectedChat && !selectedEventChat && !selectedSupportTicket && (
+                        <div className="flex flex-wrap gap-2 mb-6 bg-slate-100 dark:bg-slate-900/50 p-1.5 rounded-2xl w-fit">
+                          <button
+                            type="button"
+                            onClick={() => setInboxTab('marketplace')}
+                            className={`px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
+                              inboxTab === 'marketplace'
+                                ? 'bg-indigo-600 text-white shadow-md'
+                                : 'text-slate-400 hover:text-slate-700 dark:hover:text-white bg-transparent border-none cursor-pointer'
+                            }`}
+                          >
+                            🎁 Marketplace ({marketplaceChats.length})
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setInboxTab('events')}
+                            className={`px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
+                              inboxTab === 'events'
+                                ? 'bg-pink-600 text-white shadow-md'
+                                : 'text-slate-400 hover:text-slate-700 dark:hover:text-white bg-transparent border-none cursor-pointer'
+                            }`}
+                          >
+                            📅 Events ({eventChats.length})
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setInboxTab('support')}
+                            className={`px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
+                              inboxTab === 'support'
+                                ? 'bg-rose-600 text-white shadow-md'
+                                : 'text-slate-400 hover:text-slate-700 dark:hover:text-white bg-transparent border-none cursor-pointer'
+                            }`}
+                          >
+                            🛠️ Support ({supportProblems.length})
+                          </button>
+                        </div>
+                      )}
+
+                      <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
+                        {/* ── MARKETPLACE TAB CONTENT ── */}
+                        {inboxTab === 'marketplace' && (
+                          <AnimatePresence mode="wait">
+                            {!selectedChat ? (
+                              <motion.div
+                                key="marketplace-list"
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: 10 }}
+                                className="space-y-4"
+                              >
+                                {loadingChats ? (
+                                  <div className="py-20 text-center text-slate-400 dark:text-slate-500 animate-pulse font-black uppercase tracking-widest text-xs">
+                                    Synchronizing inbox...
+                                  </div>
+                                ) : marketplaceChats.length === 0 ? (
+                                  <div className="py-20 text-center bg-slate-500/5 border border-slate-200/10 dark:border-white/10 rounded-3xl">
+                                    <p className="text-slate-500 font-bold uppercase tracking-widest text-xs mb-2">Inbox Empty</p>
+                                    <p className="text-[10px] text-slate-400 font-semibold">Start chat on any product card in the marketplace.</p>
+                                  </div>
+                                ) : (
+                                  <div className="grid grid-cols-1 gap-4">
+                                    {marketplaceChats.map((chat) => {
+                                      const otherUser = chat.buyer_id === localStorage.getItem('userId') ? chat.seller : chat.buyer;
+                                      const otherName = otherUser?.name || 'Unknown User';
+                                      const otherPic = otherUser?.profile_pic || `https://api.dicebear.com/7.x/avataaars/svg?seed=${otherName}`;
+                                      const itemTitle = chat.item?.title || 'Unknown Item';
+                                      return (
+                                        <div
+                                          key={chat.id}
+                                          onClick={() => setSelectedChat(chat)}
+                                          className="cursor-pointer p-5 bg-slate-50 dark:bg-slate-900/40 border border-slate-100 dark:border-white/10 rounded-3xl hover:border-indigo-500/30 hover:bg-slate-100/50 dark:hover:bg-slate-800/40 transition-all duration-300 shadow-sm flex items-center justify-between gap-4 group"
+                                        >
+                                          <div className="flex items-center gap-4 min-w-0">
+                                            <img src={otherPic} alt={otherName} className="w-12 h-12 rounded-full object-cover border border-slate-200 dark:border-white/10 shrink-0" />
+                                            <div className="min-w-0 text-left">
+                                              <h4 className="text-base font-black text-slate-800 dark:text-white group-hover:text-indigo-500 transition-colors truncate">
+                                                {otherName}
+                                              </h4>
+                                              <p className="text-slate-400 dark:text-slate-500 text-xs font-bold truncate mt-0.5">Regarding: {itemTitle}</p>
+                                            </div>
+                                          </div>
+                                          <LuChevronRight size={18} className="text-slate-400 group-hover:translate-x-1 transition-transform flex-shrink-0" />
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                )}
+                              </motion.div>
+                            ) : (
+                              <motion.div
+                                key="marketplace-detail"
+                                initial={{ opacity: 0, x: 10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -10 }}
+                                className="flex flex-col h-full overflow-hidden text-left"
+                              >
+                                <div className="flex justify-between items-start mb-4 border-b border-slate-100 dark:border-white/5 pb-4">
+                                  <div className="flex items-center gap-3">
+                                    <button
+                                      type="button"
+                                      onClick={() => setSelectedChat(null)}
+                                      className="text-xs font-black uppercase text-indigo-500 hover:text-indigo-600 mr-2 bg-transparent border-none cursor-pointer font-bold"
+                                    >
+                                      ← Back
+                                    </button>
+                                    <img
+                                      src={(selectedChat.buyer_id === localStorage.getItem('userId') ? selectedChat.seller : selectedChat.buyer)?.profile_pic || `https://api.dicebear.com/7.x/avataaars/svg?seed=${(selectedChat.buyer_id === localStorage.getItem('userId') ? selectedChat.seller : selectedChat.buyer)?.name}`}
+                                      alt="Avatar"
+                                      className="w-10 h-10 rounded-full object-cover"
+                                    />
+                                    <div className="text-left">
+                                      <h3 className="text-lg font-black text-slate-800 dark:text-white leading-tight">
+                                        {(selectedChat.buyer_id === localStorage.getItem('userId') ? selectedChat.seller : selectedChat.buyer)?.name}
+                                      </h3>
+                                      <p className="text-slate-400 dark:text-slate-500 text-xs font-bold truncate">Listing: {selectedChat.item?.title}</p>
+                                    </div>
+                                  </div>
                                 </div>
-                              ) : marketplaceChats.length === 0 ? (
-                                <div className="py-20 text-center bg-slate-500/5 border border-slate-200/10 dark:border-white/10 rounded-3xl">
-                                  <p className="text-slate-500 font-bold uppercase tracking-widest text-xs mb-2">Inbox Empty</p>
-                                  <p className="text-[10px] text-slate-400 font-semibold">Start chat on any product card in the marketplace.</p>
-                                </div>
-                              ) : (
-                                <div className="grid grid-cols-1 gap-4">
-                                  {marketplaceChats.map((chat) => {
-                                    const otherUser = chat.buyer_id === localStorage.getItem('userId') ? chat.seller : chat.buyer;
-                                    const otherName = otherUser?.name || 'Unknown User';
-                                    const otherPic = otherUser?.profile_pic || `https://api.dicebear.com/7.x/avataaars/svg?seed=${otherName}`;
-                                    const itemTitle = chat.item?.title || 'Unknown Item';
-                                    return (
-                                      <div
-                                        key={chat.id}
-                                        onClick={() => setSelectedChat(chat)}
-                                        className="cursor-pointer p-5 bg-slate-50 dark:bg-slate-905 border border-slate-150 dark:border-white/10 rounded-3xl hover:border-indigo-500/30 hover:bg-slate-100/50 dark:hover:bg-slate-800/40 transition-all duration-300 shadow-sm flex items-center justify-between gap-4 group"
-                                      >
-                                        <div className="flex items-center gap-4 min-w-0">
-                                          <img src={otherPic} alt={otherName} className="w-12 h-12 rounded-full object-cover border border-slate-200 dark:border-white/10 shrink-0" />
-                                          <div className="min-w-0 text-left">
-                                            <h4 className="text-base font-black text-slate-800 dark:text-white group-hover:text-indigo-500 transition-colors truncate">
-                                              {otherName}
-                                            </h4>
-                                            <p className="text-slate-400 dark:text-slate-500 text-xs font-bold truncate mt-0.5">Regarding: {itemTitle}</p>
+
+                                <div className="h-[320px] overflow-y-auto pr-1 space-y-3 custom-scrollbar flex flex-col bg-slate-50 dark:bg-slate-950/20 p-4 rounded-3xl mb-4">
+                                  {chatMessages.length === 0 ? (
+                                    <div className="my-auto text-center text-slate-400 text-xs font-bold">
+                                      No messages yet. Send a message to start conversation.
+                                    </div>
+                                  ) : (
+                                    chatMessages.map((msg) => {
+                                      const isMe = msg.sender_id === localStorage.getItem('userId');
+                                      return (
+                                        <div
+                                          key={msg.id}
+                                          className={`flex flex-col max-w-[80%] ${isMe ? 'self-end items-end text-right' : 'self-start items-start text-left'}`}
+                                        >
+                                          <span className="text-[9px] font-bold text-slate-400 dark:text-slate-550 mb-0.5 px-1.5">
+                                            {isMe ? 'You' : msg.sender?.name} • {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                          </span>
+                                          <div className={`p-3.5 rounded-2xl text-xs font-semibold leading-relaxed ${
+                                            isMe
+                                              ? 'bg-indigo-650 text-white rounded-tr-none'
+                                              : 'bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-tl-none'
+                                          }`}>
+                                            {msg.message}
                                           </div>
                                         </div>
-                                        <LuChevronRight size={18} className="text-slate-400 group-hover:translate-x-1 transition-transform flex-shrink-0" />
-                                      </div>
-                                    );
-                                  })}
+                                      );
+                                    })
+                                  )}
                                 </div>
-                              )}
-                            </div>
-                          </motion.div>
-                        ) : (
-                          <motion.div
-                            key="chat-detail"
-                            initial={{ opacity: 0, x: 10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: -10 }}
-                            className="flex flex-col h-full overflow-hidden"
-                          >
-                            <div className="flex justify-between items-start mb-4 border-b border-slate-100 dark:border-white/5 pb-4">
-                              <div className="flex items-center gap-3">
+
+                                <form onSubmit={handleSendMarketplaceMessage} className="flex gap-2">
+                                  <input
+                                    type="text"
+                                    placeholder="Type your message here..."
+                                    value={chatText}
+                                    onChange={(e) => setChatText(e.target.value)}
+                                    className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/5 rounded-xl px-4 py-3.5 text-xs text-slate-700 dark:text-slate-250 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                  />
+                                  <button
+                                    type="submit"
+                                    className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 rounded-xl transition-all shadow-xs flex items-center justify-center cursor-pointer border-none"
+                                  >
+                                    <LuSend size={15} />
+                                  </button>
+                                </form>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        )}
+
+                        {/* ── EVENTS TAB CONTENT ── */}
+                        {inboxTab === 'events' && (
+                          <AnimatePresence mode="wait">
+                            {!selectedEventChat ? (
+                              <motion.div
+                                key="events-chat-list"
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: 10 }}
+                                className="space-y-4"
+                              >
+                                {loadingEventChats ? (
+                                  <div className="py-20 text-center text-slate-400 dark:text-slate-500 animate-pulse font-black uppercase tracking-widest text-xs">
+                                    Synchronizing inbox...
+                                  </div>
+                                ) : eventChats.length === 0 ? (
+                                  <div className="py-20 text-center bg-slate-500/5 border border-slate-200/10 dark:border-white/10 rounded-3xl">
+                                    <p className="text-slate-500 font-bold uppercase tracking-widest text-xs mb-2">Inbox Empty</p>
+                                    <p className="text-[10px] text-slate-400 font-semibold">Start chat on any event listing card.</p>
+                                  </div>
+                                ) : (
+                                  <div className="grid grid-cols-1 gap-4">
+                                    {eventChats.map((chat) => {
+                                      const otherUser = chat.buyer_id === localStorage.getItem('userId') ? chat.host : chat.buyer;
+                                      const otherName = otherUser?.name || 'Unknown User';
+                                      const otherPic = otherUser?.profile_pic || `https://api.dicebear.com/7.x/avataaars/svg?seed=${otherName}`;
+                                      const eventTitle = chat.event?.title || 'Unknown Event';
+                                      return (
+                                        <div
+                                          key={chat.id}
+                                          onClick={() => setSelectedEventChat(chat)}
+                                          className="cursor-pointer p-5 bg-slate-50 dark:bg-slate-900/40 border border-slate-100 dark:border-white/10 rounded-3xl hover:border-pink-500/30 hover:bg-slate-100/50 dark:hover:bg-slate-800/40 transition-all duration-300 shadow-sm flex items-center justify-between gap-4 group"
+                                        >
+                                          <div className="flex items-center gap-4 min-w-0">
+                                            <img src={otherPic} alt={otherName} className="w-12 h-12 rounded-full object-cover border border-slate-200 dark:border-white/10 shrink-0" />
+                                            <div className="min-w-0 text-left">
+                                              <h4 className="text-base font-black text-slate-805 dark:text-white group-hover:text-pink-500 transition-colors truncate">
+                                                {otherName}
+                                              </h4>
+                                              <p className="text-slate-400 dark:text-slate-500 text-xs font-bold truncate mt-0.5">Regarding Event: {eventTitle}</p>
+                                            </div>
+                                          </div>
+                                          <LuChevronRight size={18} className="text-slate-400 group-hover:translate-x-1 transition-transform flex-shrink-0" />
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                )}
+                              </motion.div>
+                            ) : (
+                              <motion.div
+                                key="events-chat-detail"
+                                initial={{ opacity: 0, x: 10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -10 }}
+                                className="flex flex-col h-full overflow-hidden text-left"
+                              >
+                                <div className="flex justify-between items-start mb-4 border-b border-slate-100 dark:border-white/5 pb-4">
+                                  <div className="flex items-center gap-3">
+                                    <button
+                                      type="button"
+                                      onClick={() => setSelectedEventChat(null)}
+                                      className="text-xs font-black uppercase text-pink-500 hover:text-pink-600 mr-2 bg-transparent border-none cursor-pointer font-bold"
+                                    >
+                                      ← Back
+                                    </button>
+                                    <img
+                                      src={(selectedEventChat.buyer_id === localStorage.getItem('userId') ? selectedEventChat.host : selectedEventChat.buyer)?.profile_pic || `https://api.dicebear.com/7.x/avataaars/svg?seed=${(selectedEventChat.buyer_id === localStorage.getItem('userId') ? selectedEventChat.host : selectedEventChat.buyer)?.name}`}
+                                      alt="Avatar"
+                                      className="w-10 h-10 rounded-full object-cover"
+                                    />
+                                    <div className="text-left">
+                                      <h3 className="text-lg font-black text-slate-808 dark:text-white leading-tight">
+                                        {(selectedEventChat.buyer_id === localStorage.getItem('userId') ? selectedEventChat.host : selectedEventChat.buyer)?.name}
+                                      </h3>
+                                      <p className="text-slate-400 dark:text-slate-500 text-xs font-bold truncate">Event: {selectedEventChat.event?.title}</p>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div className="h-[320px] overflow-y-auto pr-1 space-y-3 custom-scrollbar flex flex-col bg-slate-50 dark:bg-slate-950/20 p-4 rounded-3xl mb-4">
+                                  {eventChatMessages.length === 0 ? (
+                                    <div className="my-auto text-center text-slate-400 text-xs font-bold">
+                                      No messages yet. Send a message to start conversation.
+                                    </div>
+                                  ) : (
+                                    eventChatMessages.map((msg) => {
+                                      const isMe = msg.sender_id === localStorage.getItem('userId');
+                                      return (
+                                        <div
+                                          key={msg.id}
+                                          className={`flex flex-col max-w-[80%] ${isMe ? 'self-end items-end text-right' : 'self-start items-start text-left'}`}
+                                        >
+                                          <span className="text-[9px] font-bold text-slate-400 dark:text-slate-550 mb-0.5 px-1.5">
+                                            {isMe ? 'You' : msg.sender?.name} • {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                          </span>
+                                          <div className={`p-3.5 rounded-2xl text-xs font-semibold leading-relaxed ${
+                                            isMe
+                                              ? 'bg-pink-600 text-white rounded-tr-none'
+                                              : 'bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-tl-none'
+                                          }`}>
+                                            {msg.message}
+                                          </div>
+                                        </div>
+                                      );
+                                    })
+                                  )}
+                                </div>
+
+                                <form onSubmit={handleSendEventMessage} className="flex gap-2">
+                                  <input
+                                    type="text"
+                                    placeholder="Type your message here..."
+                                    value={eventChatText}
+                                    onChange={(e) => setEventChatText(e.target.value)}
+                                    className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/5 rounded-xl px-4 py-3.5 text-xs text-slate-700 dark:text-slate-250 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-pink-500"
+                                  />
+                                  <button
+                                    type="submit"
+                                    className="bg-pink-600 hover:bg-pink-700 text-white px-5 rounded-xl transition-all shadow-xs flex items-center justify-center cursor-pointer border-none"
+                                  >
+                                    <LuSend size={15} />
+                                  </button>
+                                </form>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        )}
+
+                        {/* ── SUPPORT TAB CONTENT ── */}
+                        {inboxTab === 'support' && (
+                          <AnimatePresence mode="wait">
+                            {!selectedSupportTicket ? (
+                              <motion.div
+                                key="support-list"
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: 10 }}
+                                className="space-y-4"
+                              >
+                                {loadingSupport ? (
+                                  <div className="flex items-center justify-center py-20">
+                                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-rose-500"></div>
+                                  </div>
+                                ) : supportProblems.length === 0 ? (
+                                  <div className="py-20 text-center bg-slate-500/5 border border-slate-200/10 dark:border-white/10 rounded-3xl">
+                                    <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">No support tickets found</p>
+                                    <p className="text-[10px] text-slate-400 max-w-xs mx-auto mt-1">If you have encountered any issues, submit a report on our Contact page.</p>
+                                  </div>
+                                ) : (
+                                  <div className="space-y-4">
+                                    {supportProblems.map((ticket) => (
+                                      <div
+                                        key={ticket.id}
+                                        onClick={() => setSelectedSupportTicket(ticket)}
+                                        className="group p-5 rounded-[1.8rem] bg-slate-50 dark:bg-slate-900/40 border border-slate-100 dark:border-white/5 hover:border-rose-500/30 dark:hover:border-rose-500/20 hover:bg-white dark:hover:bg-slate-900/60 transition-all cursor-pointer flex items-center justify-between"
+                                      >
+                                        <div className="min-w-0 flex-1 text-left">
+                                          <div className="flex items-center gap-3 mb-2 flex-wrap">
+                                            <span className="text-[9px] font-black uppercase tracking-wider bg-rose-500/10 text-rose-500 dark:bg-rose-500/20 dark:text-rose-400 px-2.5 py-0.5 rounded-full border border-rose-500/25">
+                                              {ticket.inquiryType}
+                                            </span>
+                                            <span className={`text-[8px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border ${
+                                              ticket.status === 'Resolved'
+                                                ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20'
+                                                : 'bg-amber-500/10 text-amber-500 border-amber-500/20'
+                                            }`}>
+                                              {ticket.status}
+                                            </span>
+                                          </div>
+                                          <p className="text-sm font-extrabold text-slate-800 dark:text-white truncate">{ticket.message}</p>
+                                          <p className="text-[10px] text-slate-400 dark:text-slate-500 font-medium mt-1">
+                                            Reported on {new Date(ticket.createdAt).toLocaleDateString()}
+                                          </p>
+                                        </div>
+                                        <LuChevronRight size={18} className="text-slate-400 group-hover:text-rose-500 transition-colors" />
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
+                              </motion.div>
+                            ) : (
+                              <motion.div
+                                key="support-detail"
+                                initial={{ opacity: 0, x: 10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -10 }}
+                                className="space-y-6 text-left"
+                              >
                                 <button
                                   type="button"
-                                  onClick={() => setSelectedChat(null)}
-                                  className="text-xs font-black uppercase text-indigo-500 hover:text-indigo-600 mr-2"
+                                  onClick={() => setSelectedSupportTicket(null)}
+                                  className="flex items-center gap-2 text-[10px] font-black text-rose-500 uppercase tracking-widest hover:underline mb-2 bg-transparent border-none cursor-pointer"
                                 >
-                                  ← Back
+                                  ← Back to Tickets list
                                 </button>
-                                <img
-                                  src={(selectedChat.buyer_id === localStorage.getItem('userId') ? selectedChat.seller : selectedChat.buyer)?.profile_pic || `https://api.dicebear.com/7.x/avataaars/svg?seed=${(selectedChat.buyer_id === localStorage.getItem('userId') ? selectedChat.seller : selectedChat.buyer)?.name}`}
-                                  alt="Avatar"
-                                  className="w-10 h-10 rounded-full object-cover"
-                                />
-                                <div className="text-left">
-                                  <h3 className="text-lg font-black text-slate-800 dark:text-white leading-tight">
-                                    {(selectedChat.buyer_id === localStorage.getItem('userId') ? selectedChat.seller : selectedChat.buyer)?.name}
-                                  </h3>
-                                  <p className="text-slate-400 dark:text-slate-500 text-xs font-bold truncate">Listing: {selectedChat.item?.title}</p>
-                                </div>
-                              </div>
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  setShowChatsModal(false);
-                                  setSelectedChat(null);
-                                }}
-                                className="p-2.5 rounded-full bg-slate-200/50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 hover:bg-red-500 hover:text-white transition-all hover:rotate-90 duration-300"
-                              >
-                                <LuX size={18} />
-                              </button>
-                            </div>
 
-                            {/* Chat Thread */}
-                            <div className="flex-1 overflow-y-auto pr-1 space-y-3 custom-scrollbar flex flex-col bg-slate-50 dark:bg-slate-950/20 p-4 rounded-3xl">
-                              {chatMessages.length === 0 ? (
-                                <div className="my-auto text-center text-slate-400 text-xs font-bold">
-                                  No messages yet. Send a message to start conversation.
+                                <div className="p-5 rounded-3xl bg-slate-50 dark:bg-slate-900/40 border border-slate-100 dark:border-white/5 relative overflow-hidden">
+                                  <div className="absolute top-0 right-0 p-3">
+                                    <span className="text-[8px] font-black uppercase tracking-wider bg-rose-500/15 text-rose-500 dark:bg-rose-500/25 dark:text-rose-400 px-2 py-0.5 rounded-md">
+                                      Your Ticket
+                                    </span>
+                                  </div>
+                                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-1">{selectedSupportTicket.inquiryType}</p>
+                                  <p className="text-sm text-slate-800 dark:text-slate-200 leading-relaxed font-semibold">{selectedSupportTicket.message}</p>
+                                  <p className="text-[9px] text-slate-400 font-bold uppercase tracking-wider mt-3">
+                                    Sent: {new Date(selectedSupportTicket.createdAt).toLocaleString()}
+                                  </p>
                                 </div>
-                              ) : (
-                                chatMessages.map((msg) => {
-                                  const isMe = msg.sender_id === localStorage.getItem('userId');
-                                  return (
-                                    <div
-                                      key={msg.id}
-                                      className={`flex flex-col max-w-[80%] ${isMe ? 'self-end items-end text-right' : 'self-start items-start text-left'}`}
-                                    >
-                                      <span className="text-[9px] font-bold text-slate-400 dark:text-slate-550 mb-0.5 px-1.5">
-                                        {isMe ? 'You' : msg.sender?.name} • {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+
+                                {selectedSupportTicket.adminReply ? (
+                                  <div className="p-5 rounded-3xl bg-gradient-to-r from-emerald-500/10 to-teal-500/5 dark:from-[#0c2423] dark:to-[#051717] border border-emerald-500/20 dark:border-emerald-500/10 relative overflow-hidden">
+                                    <div className="absolute top-0 right-0 p-3">
+                                      <span className="text-[8px] font-black uppercase tracking-wider bg-emerald-500/15 text-emerald-600 dark:bg-emerald-500/25 dark:text-emerald-400 px-2 py-0.5 rounded-md">
+                                        Admin Reply
                                       </span>
-                                      <div className={`p-3.5 rounded-2xl text-xs font-semibold leading-relaxed ${
-                                        isMe
-                                          ? 'bg-indigo-650 text-white rounded-tr-none'
-                                          : 'bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-tl-none'
-                                      }`}>
-                                        {msg.message}
-                                      </div>
                                     </div>
-                                  );
-                                })
-                              )}
-                            </div>
-
-                            <form onSubmit={handleSendMarketplaceMessage} className="mt-3 flex gap-2">
-                              <input
-                                type="text"
-                                placeholder="Type your message here..."
-                                value={chatText}
-                                onChange={(e) => setChatText(e.target.value)}
-                                className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/5 rounded-xl px-4 py-3.5 text-xs text-slate-700 dark:text-slate-250 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                              />
-                              <button
-                                type="submit"
-                                className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 rounded-xl transition-all shadow-xs flex items-center justify-center cursor-pointer border-none"
-                              >
-                                <LuSend size={15} />
-                              </button>
-                            </form>
-                          </motion.div>
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-emerald-500/60 mb-2">Reply Message</p>
+                                    <p className="text-sm text-slate-805 dark:text-slate-202 leading-relaxed font-semibold italic">"{selectedSupportTicket.adminReply}"</p>
+                                    <p className="text-[9px] text-slate-400 font-bold uppercase tracking-wider mt-4">
+                                      Replied: {new Date(selectedSupportTicket.repliedAt).toLocaleString()}
+                                    </p>
+                                  </div>
+                                ) : (
+                                  <div className="p-5 rounded-3xl bg-amber-500/5 dark:bg-[#201c10] border border-amber-500/20 dark:border-amber-500/10 flex items-center gap-3">
+                                    <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping"></span>
+                                    <p className="text-[10px] font-black text-amber-600 dark:text-amber-400 uppercase tracking-widest animate-pulse">
+                                      Waiting for Administration review... typical response time is ~2 hours
+                                    </p>
+                                  </div>
+                                )}
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
                         )}
-                      </AnimatePresence>
+                      </div>
                     </motion.div>
                   </div>
                 </>
