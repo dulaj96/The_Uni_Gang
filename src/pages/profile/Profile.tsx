@@ -113,6 +113,7 @@ const Profile = () => {
   const [loadingAnnexes, setLoadingAnnexes] = useState(false);
   const [isVerifiedStudent, setIsVerifiedStudent] = useState(false);
   const [isVerifiedLandlord, setIsVerifiedLandlord] = useState(false);
+  const [isVerificationPending, setIsVerificationPending] = useState(false);
 
   // Campus ID Verify Modal states
   const [showVerifyIdModal, setShowVerifyIdModal] = useState(false);
@@ -349,6 +350,8 @@ const Profile = () => {
         if (data.success && data.user) {
           setIsVerifiedStudent(!!data.user.is_verified_student);
           setIsVerifiedLandlord(!!data.user.is_verified_landlord);
+          // If ID was submitted but not yet approved by admin → pending
+          setIsVerificationPending(!data.user.is_verified_student && !!data.user.verification_id_url);
         }
       }
     } catch (err) {
@@ -853,28 +856,55 @@ const Profile = () => {
                   {/* ── Personal Info Section ──────────────────────── */}
                   <div className="space-y-10">
                     
-                    {/* ── Verification Banner — hidden once verified ─── */}
+                    {/* ── Verification Banner — 3 states ─── */}
                     {!isVerifiedStudent && (
-                      <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-3xl p-6 relative overflow-hidden">
-                        <div className="flex items-start justify-between gap-4 relative z-10">
-                          <div>
-                            <h3 className="text-lg font-black text-amber-900 mb-1 flex items-center gap-2">
-                              <LuShieldCheck className="w-5 h-5" /> Student Verification Required
-                            </h3>
-                            <p className="text-sm text-amber-700 font-medium mb-4">
-                              To sell items or post gigs on the Hustle Hub, you must verify your student status by uploading your University ID.
-                            </p>
-                            <button
-                              type="button"
-                              onClick={() => { setIdImage(null); setIdUploadSuccess(false); setShowVerifyIdModal(true); }}
-                              className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white px-5 py-2.5 rounded-xl font-bold text-sm cursor-pointer transition-colors shadow-md shadow-amber-500/20"
-                            >
-                              <LuCamera className="w-4 h-4" /> Upload Campus ID
-                            </button>
+                      isVerificationPending ? (
+                        /* Pending state — ID submitted, awaiting admin approval */
+                        <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-3xl p-6 relative overflow-hidden">
+                          <div className="flex items-start gap-4 relative z-10">
+                            <div className="w-10 h-10 shrink-0 bg-amber-500/15 rounded-full flex items-center justify-center">
+                              <LuClock className="w-5 h-5 text-amber-600" />
+                            </div>
+                            <div>
+                              <h3 className="text-base font-black text-amber-900 mb-1">Verification Under Review</h3>
+                              <p className="text-sm text-amber-700 font-medium">
+                                Your Campus ID has been submitted and is awaiting admin approval. You'll be notified once it's approved.
+                              </p>
+                              <div className="flex flex-wrap gap-2 mt-3">
+                                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 text-[11px] font-semibold">
+                                  <LuClock className="w-3 h-3" /> Usually approved within 24 hours
+                                </div>
+                                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-100 text-blue-700 text-[11px] font-semibold">
+                                  <LuShieldCheck className="w-3 h-3" /> ID deleted after verification
+                                </div>
+                              </div>
+                            </div>
                           </div>
+                          <LuClock className="absolute -right-4 -bottom-4 w-28 h-28 text-amber-500/10" />
                         </div>
-                        <LuShieldCheck className="absolute -right-4 -bottom-4 w-32 h-32 text-amber-500/10" />
-                      </div>
+                      ) : (
+                        /* Not submitted — show upload card */
+                        <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-3xl p-6 relative overflow-hidden">
+                          <div className="flex items-start justify-between gap-4 relative z-10">
+                            <div>
+                              <h3 className="text-lg font-black text-amber-900 mb-1 flex items-center gap-2">
+                                <LuShieldCheck className="w-5 h-5" /> Student Verification Required
+                              </h3>
+                              <p className="text-sm text-amber-700 font-medium mb-4">
+                                To sell items or post gigs on the Hustle Hub, you must verify your student status by uploading your University ID.
+                              </p>
+                              <button
+                                type="button"
+                                onClick={() => { setIdImage(null); setIdUploadSuccess(false); setShowVerifyIdModal(true); }}
+                                className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white px-5 py-2.5 rounded-xl font-bold text-sm cursor-pointer transition-colors shadow-md shadow-amber-500/20"
+                              >
+                                <LuCamera className="w-4 h-4" /> Upload Campus ID
+                              </button>
+                            </div>
+                          </div>
+                          <LuShieldCheck className="absolute -right-4 -bottom-4 w-32 h-32 text-amber-500/10" />
+                        </div>
+                      )
                     )}
 
                     <div className="flex items-center gap-4 pb-4 border-b border-slate-100 dark:border-slate-800/60 mt-8">
@@ -2569,6 +2599,7 @@ const Profile = () => {
                           });
                           if (!res.ok) throw new Error('Upload failed');
                           setIdUploadSuccess(true);
+                          setIsVerificationPending(true);
                           toast.success('Campus ID submitted! Awaiting admin approval.');
                         } catch {
                           toast.error('Failed to upload ID. Please try again.');
