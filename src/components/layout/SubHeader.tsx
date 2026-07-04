@@ -41,6 +41,21 @@ const SubHeader = () => {
       setIsLoggedIn(!!token);
       setUserName(storedUserName);
       setUserProfilePic(storedProfilePic);
+
+      if (token && !localStorage.getItem('userId')) {
+        fetch('http://localhost:5001/api/users/profile', {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+          .then(res => res.ok ? res.json() : Promise.reject('Failed to fetch profile'))
+          .then(data => {
+            if (data.success && data.user) {
+              localStorage.setItem('userId', String(data.user.id));
+              // Dispatch event to sync other components
+              window.dispatchEvent(new Event('auth-update'));
+            }
+          })
+          .catch(err => console.error('Error auto-syncing userId in SubHeader:', err));
+      }
     };
 
     checkLoginStatus();
@@ -76,6 +91,7 @@ const SubHeader = () => {
     localStorage.removeItem('userToken');
     localStorage.removeItem('userName');
     localStorage.removeItem('userProfilePicture');
+    localStorage.removeItem('userId');
     setIsLoggedIn(false);
     setUserName(null);
     setUserProfilePic(null);

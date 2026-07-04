@@ -70,6 +70,7 @@ const PostAdPage = () => {
     localStorage.removeItem('userToken');
     localStorage.removeItem('userProfilePicture');
     localStorage.removeItem('userName');
+    localStorage.removeItem('userId');
     dispatchAuthUpdate();
     toast.success('Logged out successfully');
   };

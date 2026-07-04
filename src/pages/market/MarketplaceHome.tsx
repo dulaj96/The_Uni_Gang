@@ -195,6 +195,24 @@ const MarketplaceHome: React.FC = () => {
     fetchItems();
   }, [filter]);
 
+  // Ensure userId is synced if the user is logged in
+  useEffect(() => {
+    const token = localStorage.getItem('userToken');
+    const userId = localStorage.getItem('userId');
+    if (token && !userId) {
+      fetch('http://localhost:5001/api/users/profile', {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+        .then(res => res.ok ? res.json() : Promise.reject('Failed to fetch profile'))
+        .then(data => {
+          if (data.success && data.user) {
+            localStorage.setItem('userId', String(data.user.id));
+          }
+        })
+        .catch(err => console.error('Error auto-syncing userId in MarketplaceHome:', err));
+    }
+  }, []);
+
   const handleRate = async (itemId: string, score: number) => {
     try {
       const data = await api.rateListing(itemId, score);
