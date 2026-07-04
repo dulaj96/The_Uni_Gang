@@ -632,11 +632,11 @@ const MarketplaceHome: React.FC = () => {
 
                   <div className="mb-6 text-left">
                     <h4 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Description</h4>
-                    <p className="text-sm text-slate-600 dark:text-slate-305 leading-relaxed whitespace-pre-wrap">{selectedItem.description}</p>
+                    <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-wrap">{selectedItem.description}</p>
                   </div>
 
                   <div className="p-4 bg-slate-50 dark:bg-slate-950/30 rounded-2xl border border-slate-150 dark:border-white/5 mb-6 text-left">
-                    <p className="text-xs font-black text-slate-500 dark:text-slate-450 mb-2">Rate this {selectedItem.type.toLowerCase()}:</p>
+                    <p className="text-xs font-black text-slate-500 dark:text-slate-400 mb-2">Rate this {selectedItem.type.toLowerCase()}:</p>
                     <div className="flex gap-1.5 items-center">
                       {[1, 2, 3, 4, 5].map((star) => (
                         <button
@@ -703,7 +703,7 @@ const MarketplaceHome: React.FC = () => {
                           onClick={() => {
                             addToCart(selectedItem, 1, false);
                           }}
-                          className="flex-1 bg-slate-100 hover:bg-slate-250 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-white py-4 rounded-2xl font-black text-sm transition-all flex items-center justify-center gap-2 cursor-pointer border-none active:scale-95"
+                          className="flex-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-white py-4 rounded-2xl font-black text-sm transition-all flex items-center justify-center gap-2 cursor-pointer border-none active:scale-95"
                         >
                           Add to Cart
                         </button>
@@ -721,7 +721,7 @@ const MarketplaceHome: React.FC = () => {
                       <button
                         onClick={() => handleContactSeller(selectedItem)}
                         disabled={loadingChat}
-                        className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-2xl font-black text-sm transition-all shadow-lg shadow-indigo-650/20 flex items-center justify-center gap-2 cursor-pointer border-none"
+                        className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-2xl font-black text-sm transition-all shadow-lg shadow-indigo-600/20 flex items-center justify-center gap-2 cursor-pointer border-none"
                       >
                         <LuSend className="w-4 h-4" /> {loadingChat ? 'Connecting...' : 'Contact Seller (Direct Message)'}
                       </button>
@@ -741,7 +741,7 @@ const MarketplaceHome: React.FC = () => {
             initial={{ opacity: 0, y: 50, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 50, scale: 0.95 }}
-            className="fixed bottom-6 right-6 w-96 bg-white dark:bg-slate-900 border border-gray-200 dark:border-white/10 rounded-3xl shadow-2xl z-[9999] overflow-hidden flex flex-col h-[420px] transition-colors"
+            className="fixed bottom-6 right-4 md:right-24 w-[calc(100vw-32px)] sm:w-96 bg-white dark:bg-slate-900 border border-gray-200 dark:border-white/10 rounded-3xl shadow-2xl z-[9999] overflow-hidden flex flex-col h-[420px] transition-colors"
           >
             <div className="p-4 bg-indigo-600 text-white flex items-center justify-between gap-3 shrink-0">
               <div className="flex items-center gap-2.5 min-w-0">
@@ -778,7 +778,7 @@ const MarketplaceHome: React.FC = () => {
                     >
                       <div className={`p-3 rounded-2xl text-xs font-semibold leading-relaxed ${isMe
                           ? 'bg-indigo-600 text-white rounded-tr-none'
-                          : 'bg-slate-205 dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-tl-none'
+                          : 'bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-tl-none'
                         }`}>
                         {msg.message}
                       </div>
@@ -797,7 +797,7 @@ const MarketplaceHome: React.FC = () => {
                 placeholder="Type your message here..."
                 value={chatText}
                 onChange={(e) => setChatText(e.target.value)}
-                className="flex-1 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-white/5 rounded-xl px-4 py-2.5 text-xs text-slate-700 dark:text-slate-250 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                className="flex-1 bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-white/5 rounded-xl px-4 py-2.5 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
               />
               <button
                 type="submit"
