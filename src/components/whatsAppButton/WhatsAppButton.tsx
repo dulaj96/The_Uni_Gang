@@ -38,17 +38,17 @@ const WhatsAppButton = () => {
                     aria-label="Contact us on WhatsApp"
                 >
                     {/* Glowing Aura */}
-                    <div className="absolute inset-0 bg-[#25D366] blur-xl opacity-20 group-hover:opacity-40 transition-opacity"></div>
+                    <div className="absolute inset-0 bg-[#25D366] blur-lg opacity-20 group-hover:opacity-40 transition-opacity"></div>
 
                     {/* Tooltip */}
                     <div className="absolute right-full mr-4 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0 pointer-events-none">
-                        <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-md text-slate-900 dark:text-white text-xs font-bold py-2 px-4 rounded-2xl shadow-2xl border border-white/20 whitespace-nowrap">
+                        <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-md text-slate-900 dark:text-white text-xs font-bold py-2 px-4 rounded-2xl shadow-xl border border-white/20 whitespace-nowrap">
                             Chat with us! 💬
                         </div>
                     </div>
 
                     {/* Button Body */}
-                    <div className="relative w-12 h-12 bg-gradient-to-tr from-[#25D366] to-[#20ba5a] rounded-full shadow-[0_8px_24px_rgba(37,211,102,0.3)] flex items-center justify-center border border-white/20 overflow-hidden">
+                    <div className="relative w-12 h-12 bg-[#25D366] rounded-full shadow-[0_4px_20px_rgba(37,211,102,0.4)] flex items-center justify-center border border-white/25 overflow-hidden">
                         <svg
                             viewBox="0 0 24 24"
                             className="w-6 h-6 fill-white drop-shadow-sm"
@@ -65,7 +65,7 @@ const WhatsAppButton = () => {
                     </div>
 
                     {/* Outer Ring Animation */}
-                    <div className="absolute inset-0 rounded-full border border-[#25D366] animate-ping opacity-20 pointer-events-none"></div>
+                    <div className="absolute inset-0 rounded-full border border-[#25D366] animate-ping opacity-25 pointer-events-none"></div>
                 </motion.a>
             )}
         </AnimatePresence>

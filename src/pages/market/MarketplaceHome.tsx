@@ -741,7 +741,7 @@ const MarketplaceHome: React.FC = () => {
             initial={{ opacity: 0, y: 50, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 50, scale: 0.95 }}
-            className="fixed bottom-6 right-4 md:right-24 w-[calc(100vw-32px)] sm:w-96 bg-white dark:bg-slate-900 border border-gray-200 dark:border-white/10 rounded-3xl shadow-2xl z-[9999] overflow-hidden flex flex-col h-[420px] transition-colors"
+            className="fixed bottom-24 right-6 w-96 bg-white dark:bg-slate-900 border border-gray-200 dark:border-white/10 rounded-3xl shadow-2xl z-[9999] overflow-hidden flex flex-col h-[420px] transition-colors"
           >
             <div className="p-4 bg-indigo-600 text-white flex items-center justify-between gap-3 shrink-0">
               <div className="flex items-center gap-2.5 min-w-0">
@@ -797,7 +797,7 @@ const MarketplaceHome: React.FC = () => {
                 placeholder="Type your message here..."
                 value={chatText}
                 onChange={(e) => setChatText(e.target.value)}
-                className="flex-1 bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-white/5 rounded-xl px-4 py-2.5 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                className="flex-1 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-white/5 rounded-xl px-4 py-2.5 text-xs text-slate-700 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500"
               />
               <button
                 type="submit"
@@ -822,7 +822,7 @@ const MarketplaceHome: React.FC = () => {
             verifyCartPrices();
           }}
           className={`fixed z-40 bg-gradient-to-tr from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white w-16 h-16 rounded-full shadow-2xl shadow-orange-500/30 border-none cursor-pointer flex items-center justify-center transition-all ${
-            activeChat ? 'bottom-[450px] right-6' : 'bottom-24 right-6'
+            activeChat ? 'bottom-[540px] right-6' : 'bottom-24 right-6'
           }`}
         >
           <LuShoppingBag className="w-7 h-7" />
