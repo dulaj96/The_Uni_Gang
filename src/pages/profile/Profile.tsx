@@ -1807,7 +1807,7 @@ const Profile = () => {
                       initial={{ opacity: 0, scale: 0.95, y: 20 }}
                       animate={{ opacity: 1, scale: 1, y: 0 }}
                       exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                      className="w-full max-w-2xl bg-white/95 dark:bg-slate-955/98 backdrop-blur-2xl border border-slate-200/50 dark:border-white/10 rounded-[2.5rem] p-8 shadow-2xl relative pointer-events-auto overflow-hidden max-h-[85vh] flex flex-col"
+                      className="w-full max-w-2xl bg-white/95 dark:bg-slate-950/98 backdrop-blur-2xl border border-slate-200/50 dark:border-white/10 rounded-[2.5rem] p-8 shadow-2xl relative pointer-events-auto overflow-hidden max-h-[85vh] flex flex-col"
                     >
                       <div className="flex justify-between items-start mb-6">
                         <div>
