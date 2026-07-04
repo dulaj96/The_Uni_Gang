@@ -2467,7 +2467,7 @@ const Profile = () => {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.92, opacity: 0 }}
               transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-              className="bg-white dark:bg-slate-900 border border-gray-100 dark:border-white/10 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden"
+              className="bg-white dark:bg-slate-900 border border-gray-100 dark:border-white/10 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col max-h-[90vh]"
             >
               {/* Header */}
               <div className="px-6 py-4 border-b border-gray-100 dark:border-white/10 flex justify-between items-center bg-gray-50 dark:bg-slate-800/40">
@@ -2484,17 +2484,17 @@ const Profile = () => {
 
               {/* Body */}
               {!idUploadSuccess ? (
-                <div className="p-8 text-center flex flex-col items-center">
-                  <div className="w-16 h-16 bg-amber-100 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400 rounded-full flex items-center justify-center mb-4">
-                    <LuShieldCheck className="w-8 h-8" />
+                <div className="p-5 text-center flex flex-col items-center overflow-y-auto">
+                  <div className="w-12 h-12 bg-amber-100 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400 rounded-full flex items-center justify-center mb-3">
+                    <LuShieldCheck className="w-6 h-6" />
                   </div>
-                  <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-2">Awesome!</h3>
-                  <p className="text-gray-500 dark:text-slate-400 mb-8 max-w-sm text-sm">
+                  <h3 className="text-xl font-black text-gray-900 dark:text-white mb-1">Awesome!</h3>
+                  <p className="text-gray-500 dark:text-slate-400 mb-5 max-w-sm text-sm">
                     Upload your University Campus ID to get verified. We securely destroy this photo immediately after verification.
                   </p>
 
                   {/* ID image upload area */}
-                  <label className="w-full max-w-sm aspect-[1.6] rounded-2xl border-2 border-dashed border-gray-300 dark:border-white/10 hover:border-amber-500 hover:bg-amber-50 dark:hover:bg-slate-800 transition-colors flex flex-col items-center justify-center cursor-pointer text-gray-500 dark:text-slate-400 group relative overflow-hidden">
+                  <label className="w-full max-w-sm h-36 rounded-2xl border-2 border-dashed border-gray-300 dark:border-white/10 hover:border-amber-500 hover:bg-amber-50 dark:hover:bg-slate-800 transition-colors flex flex-col items-center justify-center cursor-pointer text-gray-500 dark:text-slate-400 group relative overflow-hidden">
                     {idImage ? (
                       <>
                         <img src={URL.createObjectURL(idImage)} alt="ID preview" className="absolute inset-0 w-full h-full object-cover" />
@@ -2504,9 +2504,9 @@ const Profile = () => {
                       </>
                     ) : (
                       <>
-                        <LuImagePlus className="w-8 h-8 mb-2 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors" />
-                        <span className="font-semibold group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">Upload Student ID</span>
-                        <span className="text-xs mt-1 dark:text-slate-500">JPEG, PNG up to 5MB</span>
+                        <LuImagePlus className="w-7 h-7 mb-1.5 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors" />
+                        <span className="font-semibold text-sm group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">Upload Student ID</span>
+                        <span className="text-xs mt-0.5 dark:text-slate-500">JPEG, PNG up to 5MB</span>
                       </>
                     )}
                     <input
@@ -2519,14 +2519,14 @@ const Profile = () => {
                 </div>
               ) : (
                 /* Success state */
-                <div className="p-10 flex flex-col items-center text-center">
-                  <div className="w-20 h-20 rounded-full bg-amber-500/10 dark:bg-amber-500/20 flex items-center justify-center mb-5">
-                    <div className="w-14 h-14 rounded-full bg-amber-500/20 dark:bg-amber-500/30 flex items-center justify-center">
-                      <LuClock className="w-8 h-8 text-amber-500" />
+                <div className="p-6 flex flex-col items-center text-center overflow-y-auto">
+                  <div className="w-16 h-16 rounded-full bg-amber-500/10 dark:bg-amber-500/20 flex items-center justify-center mb-4">
+                    <div className="w-11 h-11 rounded-full bg-amber-500/20 dark:bg-amber-500/30 flex items-center justify-center">
+                      <LuClock className="w-6 h-6 text-amber-500" />
                     </div>
                   </div>
-                  <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-2">Under Review ⏳</h3>
-                  <p className="text-gray-500 dark:text-slate-400 max-w-xs mb-5 text-sm">
+                  <h3 className="text-xl font-black text-gray-900 dark:text-white mb-1.5">Under Review ⏳</h3>
+                  <p className="text-gray-500 dark:text-slate-400 max-w-xs mb-4 text-sm">
                     Your Student ID has been submitted. Once our team approves you, your{' '}
                     <span className="font-bold text-amber-500">Verified badge</span> will appear automatically!
                   </p>
