@@ -45,6 +45,7 @@ const MarketplaceHome: React.FC = () => {
   const saveCart = (newCart: any[]) => {
     setCart(newCart);
     localStorage.setItem('company_store_cart', JSON.stringify(newCart));
+    window.dispatchEvent(new Event('cart-update'));
   };
 
   const addToCart = (item: any, qty = 1, openDrawer = false) => {
@@ -195,7 +196,7 @@ const MarketplaceHome: React.FC = () => {
     fetchItems();
   }, [filter]);
 
-  // Ensure userId is synced if the user is logged in
+  // Ensure userId is synced and handle cart opening trigger from header
   useEffect(() => {
     const token = localStorage.getItem('userToken');
     const userId = localStorage.getItem('userId');
@@ -211,6 +212,25 @@ const MarketplaceHome: React.FC = () => {
         })
         .catch(err => console.error('Error auto-syncing userId in MarketplaceHome:', err));
     }
+
+    // Check for openCart URL parameter
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('openCart') === 'true') {
+      setIsCartOpen(true);
+      verifyCartPrices();
+      // Remove query param without reload
+      window.history.replaceState(null, '', window.location.pathname);
+    }
+
+    const handleOpenDrawer = () => {
+      setIsCartOpen(true);
+      verifyCartPrices();
+    };
+
+    window.addEventListener('open-cart-drawer', handleOpenDrawer);
+    return () => {
+      window.removeEventListener('open-cart-drawer', handleOpenDrawer);
+    };
   }, []);
 
   const handleRate = async (itemId: string, score: number) => {
@@ -802,7 +822,7 @@ const MarketplaceHome: React.FC = () => {
             verifyCartPrices();
           }}
           className={`fixed z-40 bg-gradient-to-tr from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white w-16 h-16 rounded-full shadow-2xl shadow-orange-500/30 border-none cursor-pointer flex items-center justify-center transition-all ${
-            activeChat ? 'bottom-24 right-6' : 'bottom-6 right-6'
+            activeChat ? 'bottom-[450px] right-6' : 'bottom-24 right-6'
           }`}
         >
           <LuShoppingBag className="w-7 h-7" />

@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import logo from '../../assets/logoImage.jpg'; // Adjusting path if needed, wait, original Header had '../assets/logoImage.jpg'. I'll use '../assets/logoImage.jpg'. Oh wait, `Layout.tsx` has `import Header from '../Header';`.
 
-import { LuMenu, LuX, LuUser, LuLogOut, LuLayoutDashboard, LuSun, LuMoon, LuBell } from 'react-icons/lu';
+import { LuMenu, LuX, LuUser, LuLogOut, LuLayoutDashboard, LuSun, LuMoon, LuBell, LuShoppingBag } from 'react-icons/lu';
 import { useTheme } from '../../context/ThemeContext'; // wait, Header.tsx might be in src/components/
 import { dispatchAuthUpdate, listenToAuthUpdate } from '../../utils/authEvents';
 import toast from 'react-hot-toast';
@@ -19,6 +19,7 @@ const SubHeader = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState<string | null>(null);
   const [userProfilePic, setUserProfilePic] = useState<string | null>(null);
+  const [cartCount, setCartCount] = useState(0);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -31,7 +32,7 @@ const SubHeader = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Check Login Status
+  // Check Login Status and sync Cart Count
   useEffect(() => {
     const checkLoginStatus = () => {
       const token = localStorage.getItem('userToken');
@@ -58,14 +59,36 @@ const SubHeader = () => {
       }
     };
 
+    const updateCartCount = () => {
+      const savedCart = localStorage.getItem('company_store_cart');
+      if (savedCart) {
+        try {
+          const parsed = JSON.parse(savedCart);
+          if (Array.isArray(parsed)) {
+            const count = parsed.reduce((sum, item) => sum + item.quantity, 0);
+            setCartCount(count);
+            return;
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      setCartCount(0);
+    };
+
     checkLoginStatus();
+    updateCartCount();
 
     const cleanup = listenToAuthUpdate(checkLoginStatus);
     window.addEventListener('storage', checkLoginStatus);
+    window.addEventListener('storage', updateCartCount);
+    window.addEventListener('cart-update', updateCartCount);
 
     return () => {
       cleanup();
       window.removeEventListener('storage', checkLoginStatus);
+      window.removeEventListener('storage', updateCartCount);
+      window.removeEventListener('cart-update', updateCartCount);
     };
   }, []);
 
@@ -126,6 +149,27 @@ const SubHeader = () => {
             <LuBell className="w-5 h-5" />
             <span className="absolute top-2 right-2 w-2 h-2 bg-blue-600 rounded-full border-2 border-white"></span>
           </button>
+
+          {/* Cart Icon (Only if isLoggedIn is true and there are items in the cart) */}
+          {isLoggedIn && cartCount > 0 && (
+            <button
+              onClick={() => {
+                if (window.location.pathname === '/market') {
+                  window.dispatchEvent(new Event('open-cart-drawer'));
+                } else {
+                  // Redirect to /market with openCart parameter
+                  window.location.href = '/market?openCart=true';
+                }
+              }}
+              className="p-2.5 rounded-full text-slate-650 hover:bg-slate-100 hover:text-indigo-600 transition-all relative cursor-pointer"
+              title="View Shopping Cart"
+            >
+              <LuShoppingBag className="w-5 h-5" />
+              <span className="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-[9px] font-black w-4.5 h-4.5 rounded-full flex items-center justify-center border border-white dark:border-slate-900 shadow-sm animate-pulse">
+                {cartCount}
+              </span>
+            </button>
+          )}
 
           {/* Theme Toggle */}
           <button

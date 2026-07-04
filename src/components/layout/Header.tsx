@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import logo from '../../assets/logoImage.jpg';
 
 
-import { LuMenu, LuX, LuUser, LuLogOut, LuLayoutDashboard, LuSun, LuMoon, LuArrowRight } from 'react-icons/lu';
+import { LuMenu, LuX, LuUser, LuLogOut, LuLayoutDashboard, LuSun, LuMoon, LuArrowRight, LuShoppingBag } from 'react-icons/lu';
 import { useTheme } from '../../context/ThemeContext';
 import { dispatchAuthUpdate, listenToAuthUpdate } from '../../utils/authEvents';
 import toast from 'react-hot-toast';
@@ -23,6 +23,7 @@ const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState<string | null>(null);
   const [userProfilePic, setUserProfilePic] = useState<string | null>(null);
+  const [cartCount, setCartCount] = useState(0);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -94,7 +95,7 @@ const Header = () => {
     }
   };
 
-  // Check Login Status
+  // Check Login Status and sync Cart Count
   useEffect(() => {
     const checkLoginStatus = () => {
       const token = localStorage.getItem('userToken');
@@ -121,17 +122,39 @@ const Header = () => {
       }
     };
 
+    const updateCartCount = () => {
+      const savedCart = localStorage.getItem('company_store_cart');
+      if (savedCart) {
+        try {
+          const parsed = JSON.parse(savedCart);
+          if (Array.isArray(parsed)) {
+            const count = parsed.reduce((sum, item) => sum + item.quantity, 0);
+            setCartCount(count);
+            return;
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      setCartCount(0);
+    };
+
     checkLoginStatus();
+    updateCartCount();
 
     // Listen for custom auth events (same tab)
     const cleanup = listenToAuthUpdate(checkLoginStatus);
 
     // Also listen for storage events (cross tab)
     window.addEventListener('storage', checkLoginStatus);
+    window.addEventListener('storage', updateCartCount);
+    window.addEventListener('cart-update', updateCartCount);
 
     return () => {
       cleanup();
       window.removeEventListener('storage', checkLoginStatus);
+      window.removeEventListener('storage', updateCartCount);
+      window.removeEventListener('cart-update', updateCartCount);
     };
   }, []);
 
@@ -254,6 +277,27 @@ const Header = () => {
         <div className="hidden md:flex items-center gap-3" ref={dropdownRef}>
           {/* Notification Icon */}
           {isLoggedIn && <NotificationDropdown />}
+
+          {/* Cart Icon (Only if isLoggedIn is true and there are items in the cart) */}
+          {isLoggedIn && cartCount > 0 && (
+            <button
+              onClick={() => {
+                if (window.location.pathname === '/market') {
+                  window.dispatchEvent(new Event('open-cart-drawer'));
+                } else {
+                  // Redirect to /market with openCart parameter
+                  window.location.href = '/market?openCart=true';
+                }
+              }}
+              className="p-2.5 rounded-full text-slate-650 hover:bg-slate-100 hover:text-indigo-600 transition-all relative cursor-pointer"
+              title="View Shopping Cart"
+            >
+              <LuShoppingBag className="w-5 h-5" />
+              <span className="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-[9px] font-black w-4.5 h-4.5 rounded-full flex items-center justify-center border border-white dark:border-slate-900 shadow-sm animate-pulse">
+                {cartCount}
+              </span>
+            </button>
+          )}
 
           {/* Theme Toggle */}
           <button
