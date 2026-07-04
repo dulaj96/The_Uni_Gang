@@ -20,6 +20,7 @@ const SubHeader = () => {
   const [userName, setUserName] = useState<string | null>(null);
   const [userProfilePic, setUserProfilePic] = useState<string | null>(null);
   const [cartCount, setCartCount] = useState(0);
+  const [isVerifiedStudent, setIsVerifiedStudent] = useState(false);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -38,12 +39,14 @@ const SubHeader = () => {
       const token = localStorage.getItem('userToken');
       const storedUserName = localStorage.getItem('userName');
       const storedProfilePic = localStorage.getItem('userProfilePicture');
+      const verified = localStorage.getItem('userIsVerifiedStudent') === 'true';
 
       setIsLoggedIn(!!token);
       setUserName(storedUserName);
       setUserProfilePic(storedProfilePic);
+      setIsVerifiedStudent(verified);
 
-      if (token && !localStorage.getItem('userId')) {
+      if (token && (!localStorage.getItem('userId') || localStorage.getItem('userIsVerifiedStudent') === null)) {
         fetch('http://localhost:5001/api/users/profile', {
           headers: { Authorization: `Bearer ${token}` }
         })
@@ -51,6 +54,7 @@ const SubHeader = () => {
           .then(data => {
             if (data.success && data.user) {
               localStorage.setItem('userId', String(data.user.id));
+              localStorage.setItem('userIsVerifiedStudent', String(!!data.user.is_verified_student));
               // Dispatch event to sync other components
               window.dispatchEvent(new Event('auth-update'));
             }
@@ -115,9 +119,11 @@ const SubHeader = () => {
     localStorage.removeItem('userName');
     localStorage.removeItem('userProfilePicture');
     localStorage.removeItem('userId');
+    localStorage.removeItem('userIsVerifiedStudent');
     setIsLoggedIn(false);
     setUserName(null);
     setUserProfilePic(null);
+    setIsVerifiedStudent(false);
     setIsProfileDropdownOpen(false);
     dispatchAuthUpdate();
     toast.success('Logged out successfully');
@@ -183,12 +189,18 @@ const SubHeader = () => {
             <div className="relative">
               <button
                 onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
-                className="flex items-center gap-3 focus:outline-none transition-all hover:bg-slate-50 p-1.5 pr-3 rounded-full border border-transparent hover:border-slate-100"
+                className="flex items-center gap-3 focus:outline-none transition-all hover:bg-slate-50 dark:hover:bg-slate-800 p-1.5 pr-3 rounded-full border border-transparent hover:border-slate-100"
               >
                 {userProfilePic ? (
-                  <img src={userProfilePic} alt="Profile" className="w-9 h-9 rounded-full border border-slate-200 object-cover" />
+                  <div className={`p-[2px] rounded-full shrink-0 ${
+                    isVerifiedStudent
+                      ? 'bg-gradient-to-tr from-amber-400 via-yellow-300 to-orange-400 shadow-sm shadow-amber-400/30'
+                      : 'bg-linear-to-tr from-blue-300 via-indigo-300 to-purple-300'
+                  }`}>
+                    <img src={userProfilePic} alt="Profile" className="w-8 h-8 rounded-full border border-white dark:border-slate-900 object-cover" />
+                  </div>
                 ) : (
-                  <div className="w-9 h-9 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center border border-slate-200">
+                  <div className="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 flex items-center justify-center border border-slate-200 dark:border-slate-700">
                     <LuUser className="w-5 h-5" />
                   </div>
                 )}

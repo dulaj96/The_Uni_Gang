@@ -352,6 +352,9 @@ const Profile = () => {
           setIsVerifiedLandlord(!!data.user.is_verified_landlord);
           // If ID was submitted but not yet approved by admin → pending
           setIsVerificationPending(!data.user.is_verified_student && !!data.user.verification_id_url);
+          // Sync with navbar
+          localStorage.setItem('userIsVerifiedStudent', String(!!data.user.is_verified_student));
+          window.dispatchEvent(new Event('auth-update'));
         }
       }
     } catch (err) {
