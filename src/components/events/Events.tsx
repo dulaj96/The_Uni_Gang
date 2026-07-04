@@ -422,7 +422,7 @@ const Events = () => {
                         return [...displayEvents, ...displayEvents, ...displayEvents].map((event, idx) => {
                             const imageUrl = event.image
                                 ? (event.image.startsWith('http') ? event.image : `http://localhost:5001${event.image}`)
-                                : 'https://images.unsplash.com/photo-1540575861501-7ad058ad37fa?q=80&w=800';
+                                : 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=800';
 
                             const eventDate = new Date(event.date);
                             const dayStr = isNaN(eventDate.getTime()) ? event.date : String(eventDate.getDate());

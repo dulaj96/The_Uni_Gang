@@ -300,6 +300,59 @@ export const api = {
     return result.data || [];
   },
 
+  startEventChat: async (eventId: string): Promise<any> => {
+    const token = localStorage.getItem('userToken');
+    const response = await fetch(`http://localhost:5001/api/events/chats/start`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({ eventId })
+    });
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.message || 'Failed to start event chat');
+    }
+    return response.json();
+  },
+
+  getEventChats: async (): Promise<any[]> => {
+    const token = localStorage.getItem('userToken');
+    const response = await fetch(`http://localhost:5001/api/events/chats`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    if (!response.ok) throw new Error('Failed to fetch event chats');
+    return response.json();
+  },
+
+  getEventMessages: async (chatId: string): Promise<any[]> => {
+    const token = localStorage.getItem('userToken');
+    const response = await fetch(`http://localhost:5001/api/events/chats/${chatId}/messages`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    if (!response.ok) throw new Error('Failed to fetch messages');
+    return response.json();
+  },
+
+  sendEventMessage: async (chatId: string, message: string): Promise<any> => {
+    const token = localStorage.getItem('userToken');
+    const response = await fetch(`http://localhost:5001/api/events/chats/${chatId}/messages`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({ message })
+    });
+    if (!response.ok) throw new Error('Failed to send message');
+    return response.json();
+  },
+
   toggleEventRsvp: async (id: string, token: string): Promise<any> => {
     const response = await fetch(`http://localhost:5001/api/events/${id}/rsvp`, {
       method: 'POST',

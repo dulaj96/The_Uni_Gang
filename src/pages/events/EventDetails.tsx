@@ -84,7 +84,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({ event, isOpen, onClose }) =
 
     if (!event) return null;
 
-    const imageUrl = event.image ? (event.image.startsWith('http') ? event.image : `http://localhost:5001${event.image}`) : 'https://images.unsplash.com/photo-1540575861501-7ad058ad37fa?q=80&w=800';
+    const imageUrl = event.image ? (event.image.startsWith('http') ? event.image : `http://localhost:5001${event.image}`) : 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=800';
 
     // WhatsApp handler removed as it was unused
 
@@ -221,9 +221,9 @@ const EventDetails: React.FC<EventDetailsProps> = ({ event, isOpen, onClose }) =
                                     <div className="w-6 h-1 bg-blue-600 rounded-full" />
                                     <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em]">About Event</span>
                                 </div>
-                                <h3 className="text-lg md:text-xl font-bold text-slate-800 dark:text-white leading-tight">
+                                <p className="text-sm md:text-base font-medium text-slate-800 dark:text-white leading-relaxed whitespace-pre-wrap">
                                     {event.description}
-                                </h3>
+                                </p>
                             </div>
 
                             {/* Refined Info List (More compact heights and text) */}
