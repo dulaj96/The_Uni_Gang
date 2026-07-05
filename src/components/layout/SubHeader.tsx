@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import logo from '../../assets/logoImage.jpg'; // Adjusting path if needed, wait, original Header had '../assets/logoImage.jpg'. I'll use '../assets/logoImage.jpg'. Oh wait, `Layout.tsx` has `import Header from '../Header';`.
 
-import { LuMenu, LuX, LuUser, LuLogOut, LuLayoutDashboard, LuSun, LuMoon, LuBell, LuShoppingBag } from 'react-icons/lu';
+import { LuMenu, LuX, LuUser, LuLogOut, LuSun, LuMoon, LuBell, LuShoppingBag } from 'react-icons/lu';
 import { useTheme } from '../../context/ThemeContext'; // wait, Header.tsx might be in src/components/
 import { dispatchAuthUpdate, listenToAuthUpdate } from '../../utils/authEvents';
 import toast from 'react-hot-toast';

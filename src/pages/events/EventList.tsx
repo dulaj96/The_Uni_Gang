@@ -174,7 +174,7 @@ const EventList = () => {
         });
     })();
 
-    const handleStartChat = async (eventId: string, title: string) => {
+    const handleStartChat = async (eventId: string) => {
         const token = localStorage.getItem('userToken');
         if (!token) {
             toast.error("Please login to chat with the host.");
@@ -418,7 +418,7 @@ const EventList = () => {
                                                                             <LuInfo size={14} /> View & RSVP
                                                                         </button>
                                                                         <button
-                                                                            onClick={() => handleStartChat(event.id.toString(), event.title)}
+                                                                            onClick={() => handleStartChat(event.id.toString())}
                                                                             className="flex items-center justify-center p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-blue-600 hover:text-white text-slate-500 dark:text-slate-400 transition-all active:scale-95 shadow-sm"
                                                                             title="Chat with Organizer"
                                                                         >

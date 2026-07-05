@@ -110,7 +110,7 @@ const Profile = () => {
 
   // Annex and Verification states
   const [myAnnexes, setMyAnnexes] = useState<any[]>([]);
-  const [loadingAnnexes, setLoadingAnnexes] = useState(false);
+  const [, setLoadingAnnexes] = useState(false);
   const [isVerifiedStudent, setIsVerifiedStudent] = useState(false);
   const [isVerifiedLandlord, setIsVerifiedLandlord] = useState(false);
   const [isVerificationPending, setIsVerificationPending] = useState(false);
