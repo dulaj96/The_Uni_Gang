@@ -11,23 +11,7 @@ import PremiumPageLoader from "../../components/ui/PremiumPageLoader";
 // Dynamic Leaflet map rendering component using dynamic CDN script injections
 const LeafletListMap = ({ items, centerUniId }: { items: any[], centerUniId: string }) => {
     useEffect(() => {
-        // Load Leaflet styles and scripts dynamically
-        if (!document.getElementById('leaflet-css')) {
-            const css = document.createElement('link');
-            css.id = 'leaflet-css';
-            css.rel = 'stylesheet';
-            css.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
-            document.head.appendChild(css);
-        }
-        if (!document.getElementById('leaflet-js')) {
-            const js = document.createElement('script');
-            js.id = 'leaflet-js';
-            js.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-            document.body.appendChild(js);
-            js.onload = () => initMap();
-        } else {
-            initMap();
-        }
+        initMap();
 
         let map: any;
         function initMap() {
