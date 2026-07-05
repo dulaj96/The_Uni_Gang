@@ -307,6 +307,12 @@ export const api = {
     return result.data;
   },
 
+  getAnnouncements: async (): Promise<any[]> => {
+    const response = await fetch(`${BASE_URL}/api/announcements`);
+    if (!response.ok) throw new Error('Failed to fetch announcements');
+    return response.json();
+  },
+
   startEventChat: async (eventId: string): Promise<any> => {
     const token = localStorage.getItem('userToken');
     const response = await fetch(`${BASE_URL}/api/events/chats/start`, {

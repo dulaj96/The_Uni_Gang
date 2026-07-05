@@ -12,6 +12,7 @@ import Blogs from './components/blogs/Blogs';
 import AdvertiseSection from './components/advertise/Advertise';
 import Contact from './components/contact/Contact';
 import MarketSection from './components/market/MarketSection';
+import NoticeBoard from './components/home/NoticeBoard';
 
 // Pages Imports
 import FindAccommodationPage from './pages/FindAccommodationPage';
@@ -57,6 +58,7 @@ function App() {
                 />
 
                 <Hero />
+                <NoticeBoard />
 
                 <div className="w-full space-y-8 lg:space-y-12">
                   <div id="annex"><FeaturedAnnexes /></div>
