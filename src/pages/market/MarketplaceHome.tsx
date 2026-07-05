@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  LuSearch, LuPlus, LuShoppingBag, LuBriefcase, LuTags, LuShieldCheck,
+  LuSearch, LuPlus, LuShoppingBag, LuBriefcase, LuShieldCheck,
   LuStar, LuX, LuSend, LuChevronLeft, LuChevronRight, LuBadgeCheck,
   LuTrash2, LuArrowLeft, LuUpload
 } from 'react-icons/lu';
@@ -101,7 +101,7 @@ const MarketplaceHome: React.FC = () => {
       if (!response.ok) throw new Error('Failed to verify catalog prices');
       const data = await response.json();
       const dbItems = Array.isArray(data) ? data : (data.data ?? []);
-      
+
       let priceChanged = false;
       const updatedCart = cart.map(cartItem => {
         const dbItem = dbItems.find((i: any) => i.id === cartItem.id);
@@ -356,13 +356,13 @@ const MarketplaceHome: React.FC = () => {
           <div className="relative z-10 p-10 md:p-16 lg:p-20 flex flex-col lg:flex-row items-center justify-between gap-12">
 
             <div className="max-w-2xl text-center lg:text-left">
-              <motion.div
+              {/* <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-purple-400 font-black text-[10px] uppercase tracking-[0.2em] mb-6 backdrop-blur-md"
               >
                 <LuTags className="text-sm" /> The Campus Ecosystem
-              </motion.div>
+              </motion.div> */}
 
               <motion.h1
                 initial={{ opacity: 0, y: 20 }}
@@ -462,8 +462,8 @@ const MarketplaceHome: React.FC = () => {
                 key={tab}
                 onClick={() => setFilter(tab as any)}
                 className={`px-5 py-2.5 rounded-lg font-bold text-sm transition-all flex items-center gap-2 ${filter === tab
-                    ? 'bg-indigo-600 text-white shadow-md'
-                    : 'text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-800/50'
+                  ? 'bg-indigo-600 text-white shadow-md'
+                  : 'text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-800/50'
                   }`}
               >
                 {tab === 'OFFICIAL_PRODUCT' && <LuBadgeCheck className="w-4 h-4 text-amber-500" />}
@@ -649,10 +649,10 @@ const MarketplaceHome: React.FC = () => {
                         >
                           <LuStar
                             className={`w-6 h-6 ${star <= (hoverRating ?? 0)
-                                ? 'text-amber-400 fill-amber-400'
-                                : star <= Math.round(parseFloat(String(selectedItem.rating || 0)))
-                                  ? 'text-amber-500 fill-amber-500'
-                                  : 'text-gray-300 dark:text-slate-700'
+                              ? 'text-amber-400 fill-amber-400'
+                              : star <= Math.round(parseFloat(String(selectedItem.rating || 0)))
+                                ? 'text-amber-500 fill-amber-500'
+                                : 'text-gray-300 dark:text-slate-700'
                               }`}
                           />
                         </button>
@@ -777,8 +777,8 @@ const MarketplaceHome: React.FC = () => {
                       className={`flex flex-col max-w-[80%] ${isMe ? 'self-end items-end text-right' : 'self-start items-start text-left'}`}
                     >
                       <div className={`p-3 rounded-2xl text-xs font-semibold leading-relaxed ${isMe
-                          ? 'bg-indigo-600 text-white rounded-tr-none'
-                          : 'bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-tl-none'
+                        ? 'bg-indigo-600 text-white rounded-tr-none'
+                        : 'bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-tl-none'
                         }`}>
                         {msg.message}
                       </div>
@@ -821,9 +821,8 @@ const MarketplaceHome: React.FC = () => {
             setIsCartOpen(true);
             verifyCartPrices();
           }}
-          className={`fixed z-40 bg-gradient-to-tr from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white w-16 h-16 rounded-full shadow-2xl shadow-orange-500/30 border-none cursor-pointer flex items-center justify-center transition-all ${
-            activeChat ? 'bottom-[540px] right-6' : 'bottom-24 right-6'
-          }`}
+          className={`fixed z-40 bg-gradient-to-tr from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white w-16 h-16 rounded-full shadow-2xl shadow-orange-500/30 border-none cursor-pointer flex items-center justify-center transition-all ${activeChat ? 'bottom-[540px] right-6' : 'bottom-24 right-6'
+            }`}
         >
           <LuShoppingBag className="w-7 h-7" />
           <span className="absolute -top-1.5 -right-1.5 bg-red-550 border-2 border-white dark:border-slate-950 text-white text-[10px] font-black w-6 h-6 rounded-full flex items-center justify-center shadow-md animate-pulse">
@@ -1025,8 +1024,8 @@ const MarketplaceHome: React.FC = () => {
                               type="button"
                               onClick={() => setCartPayment(pay.id as any)}
                               className={`py-3 rounded-xl text-[10px] font-black uppercase border transition-all cursor-pointer ${cartPayment === pay.id
-                                  ? 'bg-amber-500/10 border-amber-500 text-amber-500'
-                                  : 'bg-transparent border-gray-200 dark:border-white/5 text-slate-650 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50'
+                                ? 'bg-amber-500/10 border-amber-500 text-amber-500'
+                                : 'bg-transparent border-gray-200 dark:border-white/5 text-slate-650 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50'
                                 }`}
                             >
                               {pay.label}

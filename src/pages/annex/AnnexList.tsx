@@ -11,9 +11,8 @@ import PremiumPageLoader from "../../components/ui/PremiumPageLoader";
 // Dynamic Leaflet map rendering component using dynamic CDN script injections
 const LeafletListMap = ({ items, centerUniId }: { items: any[], centerUniId: string }) => {
     useEffect(() => {
-        initMap();
-
         let map: any;
+
         function initMap() {
             if (!(window as any).L) return;
             const L = (window as any).L;
@@ -75,6 +74,14 @@ const LeafletListMap = ({ items, centerUniId }: { items: any[], centerUniId: str
                 }
             });
         }
+
+        initMap();
+
+        return () => {
+            if (map) {
+                map.remove();
+            }
+        };
     }, [items, centerUniId]);
 
     return (

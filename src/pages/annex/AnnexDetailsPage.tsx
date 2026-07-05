@@ -15,9 +15,8 @@ const LeafletDetailMap = ({ propertyLat, propertyLng, uniLat, uniLng, uniName, a
   propertyLat: number, propertyLng: number, uniLat: number, uniLng: number, uniName: string, address: string
 }) => {
   useEffect(() => {
-    initMap();
-
     let map: any;
+
     function initMap() {
       if (!(window as any).L) return;
       const L = (window as any).L;
@@ -56,7 +55,15 @@ const LeafletDetailMap = ({ propertyLat, propertyLng, uniLat, uniLng, uniName, a
         }).addTo(map);
       }
     }
-  }, [propertyLat, propertyLng, uniLat, uniLng]);
+
+    initMap();
+
+    return () => {
+      if (map) {
+        map.remove();
+      }
+    };
+  }, [propertyLat, propertyLng, uniLat, uniLng, address, uniName]);
 
   return (
     <div 
