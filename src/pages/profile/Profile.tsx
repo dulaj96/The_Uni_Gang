@@ -320,7 +320,7 @@ const Profile = () => {
     if (!token) return;
     try {
       setLoadingAnnexes(true);
-      const response = await fetch('http://localhost:5001/api/annexes/my-listings', {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}/api/annexes/my-listings`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -340,7 +340,7 @@ const Profile = () => {
     const token = localStorage.getItem('userToken');
     if (!token) return;
     try {
-      const response = await fetch('http://localhost:5001/api/users/profile', {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}/api/users/profile`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -448,7 +448,7 @@ const Profile = () => {
       fetchChatMessages();
 
       // Establish real-time Socket.io link
-      socket = io('http://localhost:5001', {
+      socket = io(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}`, {
         withCredentials: true
       });
 
@@ -492,7 +492,7 @@ const Profile = () => {
     if (selectedEventChat) {
       fetchChatMessages();
 
-      socket = io('http://localhost:5001', {
+      socket = io(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}`, {
         withCredentials: true
       });
 
@@ -1548,7 +1548,7 @@ const Profile = () => {
                               {/* Event Flyer Banner */}
                               <div className="relative h-48 rounded-3xl overflow-hidden border border-slate-200/30 dark:border-white/10 bg-slate-900">
                                 <img
-                                  src={selectedEvent.image ? (selectedEvent.image.startsWith('http') ? selectedEvent.image : `http://localhost:5001${selectedEvent.image}`) : 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=800'}
+                                  src={selectedEvent.image ? (selectedEvent.image.startsWith('http') ? selectedEvent.image : `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}${selectedEvent.image}`) : 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=800'}
                                   alt={selectedEvent.title}
                                   className="w-full h-full object-cover"
                                 />
@@ -1841,7 +1841,7 @@ const Profile = () => {
                             {myOrders.map((order) => {
                               const item = order.item || {};
                               const img = item.images && item.images.length > 0
-                                ? `http://localhost:5001${item.images[0]}`
+                                ? `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}${item.images[0]}`
                                 : 'https://images.unsplash.com/photo-1521556906631-0c58e7ce65e5?q=80&w=600';
                               
                               const statusSteps = ['PENDING', 'PROCESSING', 'DELIVERED'];
@@ -1917,7 +1917,7 @@ const Profile = () => {
                                     </div>
                                     {order.payment_method === 'BANK_TRANSFER' && order.payment_slip && (
                                       <a
-                                        href={`http://localhost:5001${order.payment_slip}`}
+                                        href={`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}${order.payment_slip}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-750 text-[10px] font-black text-slate-700 dark:text-white transition-all w-fit cursor-pointer border-none no-underline"
@@ -1985,7 +1985,7 @@ const Profile = () => {
                           <div className="grid grid-cols-1 gap-4">
                             {myListings.map((listing) => {
                               const img = listing.images && listing.images.length > 0
-                                ? `http://localhost:5001${listing.images[0]}`
+                                ? `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}${listing.images[0]}`
                                 : 'https://images.unsplash.com/photo-1521556906631-0c58e7ce65e5?q=80&w=600&auto=format&fit=crop';
                               return (
                                 <div key={listing.id} className="p-5 bg-slate-50 dark:bg-slate-900 border border-slate-150 dark:border-white/10 rounded-3xl flex flex-col sm:flex-row items-center gap-4">
@@ -2595,7 +2595,7 @@ const Profile = () => {
                           const token = localStorage.getItem('userToken');
                           const formData = new FormData();
                           formData.append('idImage', idImage);
-                          const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/users/profile/verify`, {
+                          const res = await fetch(`${import.meta.env.VITE_API_URL || `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}`}/api/users/profile/verify`, {
                             method: 'POST',
                             headers: { 'Authorization': `Bearer ${token}` },
                             body: formData

@@ -27,7 +27,7 @@ const PostAdPage = () => {
     const token = localStorage.getItem('userToken');
     if (!token) return;
     try {
-      const response = await fetch('http://localhost:5001/api/annexes/my-listings', {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}/api/annexes/my-listings`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -120,7 +120,7 @@ const PostAdPage = () => {
 
       let response;
       if (isEditing && editingAd) {
-        response = await fetch(`http://localhost:5001/api/annexes/${editingAd.id}`, {
+        response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}/api/annexes/${editingAd.id}`, {
           method: 'PUT',
           headers: {
             Authorization: `Bearer ${token}`
@@ -128,7 +128,7 @@ const PostAdPage = () => {
           body: formData
         });
       } else {
-        response = await fetch('http://localhost:5001/api/annexes', {
+        response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}/api/annexes`, {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${token}`
@@ -160,7 +160,7 @@ const PostAdPage = () => {
 
     if (window.confirm('Are you sure you want to delete this ad?')) {
       try {
-        const response = await fetch(`http://localhost:5001/api/annexes/${adId}`, {
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}/api/annexes/${adId}`, {
           method: 'DELETE',
           headers: {
             Authorization: `Bearer ${token}`

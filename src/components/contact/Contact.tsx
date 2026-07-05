@@ -192,7 +192,7 @@ const Contact = () => {
                         name: f.name,
                         role: f.institution || 'Verified Client',
                         comment: f.comment,
-                        avatar: f.avatar.startsWith('http') ? f.avatar : `http://localhost:5001${f.avatar}`,
+                        avatar: f.avatar.startsWith('http') ? f.avatar : `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}${f.avatar}`,
                         rating: f.rating
                     }));
                     setActiveFeedbacks(mapped);

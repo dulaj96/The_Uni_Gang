@@ -97,7 +97,7 @@ const MarketplaceHome: React.FC = () => {
   const verifyCartPrices = async () => {
     if (cart.length === 0) return;
     try {
-      const response = await fetch('http://localhost:5001/api/market?type=OFFICIAL_PRODUCT');
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}/api/market?type=OFFICIAL_PRODUCT`);
       if (!response.ok) throw new Error('Failed to verify catalog prices');
       const data = await response.json();
       const dbItems = Array.isArray(data) ? data : (data.data ?? []);
@@ -179,7 +179,7 @@ const MarketplaceHome: React.FC = () => {
   const fetchItems = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:5001/api/market?type=${filter === 'All' ? '' : filter}`);
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}/api/market?type=${filter === 'All' ? '' : filter}`);
       if (!response.ok) throw new Error('Failed to fetch items');
       const data = await response.json();
       // Guard: backend returns plain array
@@ -201,7 +201,7 @@ const MarketplaceHome: React.FC = () => {
     const token = localStorage.getItem('userToken');
     const userId = localStorage.getItem('userId');
     if (token && !userId) {
-      fetch('http://localhost:5001/api/users/profile', {
+      fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}/api/users/profile`, {
         headers: { Authorization: `Bearer ${token}` }
       })
         .then(res => res.ok ? res.json() : Promise.reject('Failed to fetch profile'))
@@ -309,7 +309,7 @@ const MarketplaceHome: React.FC = () => {
 
   const handleCreateListing = async (formData: FormData) => {
     const token = localStorage.getItem('userToken');
-    const res = await fetch('http://localhost:5001/api/market', {
+    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}/api/market`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`
@@ -561,7 +561,7 @@ const MarketplaceHome: React.FC = () => {
                     <>
                       <div className="relative w-full h-64 md:h-96 flex items-center justify-center overflow-hidden rounded-2xl bg-slate-100 dark:bg-slate-950">
                         <img
-                          src={`http://localhost:5001${selectedItem.images[activeImgIndex]}`}
+                          src={`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}${selectedItem.images[activeImgIndex]}`}
                           alt={selectedItem.title}
                           className="max-w-full max-h-full object-contain"
                         />
@@ -584,7 +584,7 @@ const MarketplaceHome: React.FC = () => {
                             {selectedItem.images.map((img: string, idx: number) => (
                               <img
                                 key={idx}
-                                src={`http://localhost:5001${img}`}
+                                src={`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}${img}`}
                                 alt=""
                                 onClick={() => setActiveImgIndex(idx)}
                                 className={`w-12 h-12 rounded-lg object-cover cursor-pointer border-2 transition-all shrink-0 ${idx === activeImgIndex ? 'border-indigo-600 scale-105' : 'border-transparent opacity-60 hover:opacity-100'}`}
@@ -902,7 +902,7 @@ const MarketplaceHome: React.FC = () => {
                       {cart.map((item) => (
                         <div key={item.id} className="flex gap-4 p-4 rounded-2xl bg-slate-50 dark:bg-slate-950/30 border border-slate-150 dark:border-white/5 transition-all">
                           {item.image ? (
-                            <img src={`http://localhost:5001${item.image}`} alt="" className="w-16 h-16 rounded-xl object-cover border border-slate-200 dark:border-white/10 shrink-0" />
+                            <img src={`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}${item.image}`} alt="" className="w-16 h-16 rounded-xl object-cover border border-slate-200 dark:border-white/10 shrink-0" />
                           ) : (
                             <div className="w-16 h-16 rounded-xl bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-white/10 flex items-center justify-center text-slate-400 text-xs shrink-0">No Img</div>
                           )}

@@ -324,7 +324,7 @@ const EventList = () => {
                                 >
                                     {filteredEvents.map((event, index) => {
                                         const imageUrl = event.image
-                                            ? (event.image.startsWith('http') ? event.image : `http://localhost:5001${event.image}`)
+                                            ? (event.image.startsWith('http') ? event.image : `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}${event.image}`)
                                             : 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=800';
 
                                         const eventDate = new Date(event.date);

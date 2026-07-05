@@ -24,6 +24,7 @@ import SEO from './components/SEO';
 import './App.css';
 import AnnexList from './pages/annex/AnnexList';
 import EventList from './pages/events/EventList';
+import EventDetailPage from './pages/events/EventDetailPage';
 import PrivacyPolicy from './pages/privacyPolicy/PrivacyPolicy';
 import Terms from './pages/terms/Terms';
 import FAQ from './pages/f&q/F&Q';
@@ -90,6 +91,7 @@ function App() {
 
         {/* EventList using SubLayout */}
         <Route path="/event-list" element={<SubLayout><EventList /></SubLayout>} />
+        <Route path="/events/:id" element={<SubLayout><EventDetailPage /></SubLayout>} />
 
         {/* Privacy Policy using SubLayout */}
         <Route path="/privacy-policy" element={<SubLayout><PrivacyPolicy /></SubLayout>} />

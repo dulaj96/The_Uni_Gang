@@ -1,6 +1,6 @@
 import { Blog, Contributor } from './types/blog';
 
-// Removed initStorage
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || '${BASE_URL}';
 
 export const api = {
   // Blogs
@@ -12,7 +12,7 @@ export const api = {
     const token = localStorage.getItem('userToken');
     const headers: Record<string, string> = token ? { Authorization: `Bearer ${token}` } : {};
 
-    const response = await fetch(`http://localhost:5001/api/blogs?${queryParams.toString()}`, {
+    const response = await fetch(`${BASE_URL}/api/blogs?${queryParams.toString()}`, {
       headers
     });
     if (!response.ok) throw new Error('Failed to fetch blogs');
@@ -24,7 +24,7 @@ export const api = {
         ...blog.author,
         avatar: blog.author.profile_pic || `https://api.dicebear.com/7.x/avataaars/svg?seed=${blog.author.name}`
       },
-      featuredImage: blog.featuredImage ? (blog.featuredImage.startsWith('http') ? blog.featuredImage : `http://localhost:5001${blog.featuredImage}`) : ''
+      featuredImage: blog.featuredImage ? (blog.featuredImage.startsWith('http') ? blog.featuredImage : `${BASE_URL}${blog.featuredImage}`) : ''
     }));
   },
 
@@ -32,7 +32,7 @@ export const api = {
     const token = localStorage.getItem('userToken');
     const headers: Record<string, string> = token ? { Authorization: `Bearer ${token}` } : {};
 
-    const response = await fetch(`http://localhost:5001/api/blogs/slug/${slug}`, {
+    const response = await fetch(`${BASE_URL}/api/blogs/slug/${slug}`, {
       headers
     });
     if (!response.ok) throw new Error('Failed to fetch blog post');
@@ -45,7 +45,7 @@ export const api = {
         avatar: blog.author.profile_pic || `https://api.dicebear.com/7.x/avataaars/svg?seed=${blog.author.name}`,
         university: 'University of Colombo'
       },
-      featuredImage: blog.featuredImage ? (blog.featuredImage.startsWith('http') ? blog.featuredImage : `http://localhost:5001${blog.featuredImage}`) : '',
+      featuredImage: blog.featuredImage ? (blog.featuredImage.startsWith('http') ? blog.featuredImage : `${BASE_URL}${blog.featuredImage}`) : '',
       comments: blog.comments ? blog.comments.map((comment: any) => ({
         ...comment,
         user: {
@@ -57,7 +57,7 @@ export const api = {
   },
 
   getMyBlogs: async (token: string): Promise<Blog[]> => {
-    const response = await fetch(`http://localhost:5001/api/blogs/my`, {
+    const response = await fetch(`${BASE_URL}/api/blogs/my`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -71,12 +71,12 @@ export const api = {
         ...blog.author,
         avatar: blog.author?.profile_pic || `https://api.dicebear.com/7.x/avataaars/svg?seed=${blog.author?.name || 'User'}`
       },
-      featuredImage: blog.featuredImage ? (blog.featuredImage.startsWith('http') ? blog.featuredImage : `http://localhost:5001${blog.featuredImage}`) : ''
+      featuredImage: blog.featuredImage ? (blog.featuredImage.startsWith('http') ? blog.featuredImage : `${BASE_URL}${blog.featuredImage}`) : ''
     }));
   },
 
   createBlog: async (formData: FormData, token: string): Promise<any> => {
-    const response = await fetch(`http://localhost:5001/api/blogs`, {
+    const response = await fetch(`${BASE_URL}/api/blogs`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`
@@ -106,7 +106,7 @@ export const api = {
   },
 
   toggleLike: async (blogId: string, token: string): Promise<{ likes: number; hasLiked: boolean }> => {
-    const response = await fetch(`http://localhost:5001/api/blogs/${blogId}/like`, {
+    const response = await fetch(`${BASE_URL}/api/blogs/${blogId}/like`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`
@@ -117,7 +117,7 @@ export const api = {
   },
 
   addComment: async (blogId: string, content: string, token: string): Promise<any> => {
-    const response = await fetch(`http://localhost:5001/api/blogs/${blogId}/comments`, {
+    const response = await fetch(`${BASE_URL}/api/blogs/${blogId}/comments`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -138,7 +138,7 @@ export const api = {
   },
 
   deleteComment: async (blogId: string, commentId: string, token: string): Promise<void> => {
-    const response = await fetch(`http://localhost:5001/api/blogs/${blogId}/comments/${commentId}`, {
+    const response = await fetch(`${BASE_URL}/api/blogs/${blogId}/comments/${commentId}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${token}`
@@ -151,7 +151,7 @@ export const api = {
     profileData: { name: string; profile_pic?: string | null; phone?: string | null },
     token: string
   ): Promise<any> => {
-    const response = await fetch(`http://localhost:5001/api/users/profile`, {
+    const response = await fetch(`${BASE_URL}/api/users/profile`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -165,7 +165,7 @@ export const api = {
 
   // Contributors
   getContributors: async (): Promise<Contributor[]> => {
-    const response = await fetch(`http://localhost:5001/api/blogs/contributors/leaderboard`);
+    const response = await fetch(`${BASE_URL}/api/blogs/contributors/leaderboard`);
     if (!response.ok) throw new Error('Failed to fetch contributors leaderboard');
     return response.json();
   },
@@ -180,19 +180,19 @@ export const api = {
         }
       });
     }
-    const response = await fetch(`http://localhost:5001/api/annexes?${queryParams.toString()}`);
+    const response = await fetch(`${BASE_URL}/api/annexes?${queryParams.toString()}`);
     if (!response.ok) throw new Error('Failed to fetch approved listings');
     return response.json();
   },
 
   getAnnexById: async (id: string): Promise<any> => {
-    const response = await fetch(`http://localhost:5001/api/annexes/${id}`);
+    const response = await fetch(`${BASE_URL}/api/annexes/${id}`);
     if (!response.ok) throw new Error('Listing not found');
     return response.json();
   },
 
   createAnnex: async (formData: FormData, token: string): Promise<any> => {
-    const response = await fetch(`http://localhost:5001/api/annexes`, {
+    const response = await fetch(`${BASE_URL}/api/annexes`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`
@@ -207,7 +207,7 @@ export const api = {
   },
 
   deleteAnnex: async (id: string, token: string): Promise<any> => {
-    const response = await fetch(`http://localhost:5001/api/annexes/${id}`, {
+    const response = await fetch(`${BASE_URL}/api/annexes/${id}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${token}`
@@ -218,7 +218,7 @@ export const api = {
   },
 
   submitReview: async (id: string, reviewData: any, token: string): Promise<any> => {
-    const response = await fetch(`http://localhost:5001/api/annexes/${id}/reviews`, {
+    const response = await fetch(`${BASE_URL}/api/annexes/${id}/reviews`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -238,7 +238,7 @@ export const api = {
     deadline?: string;
     budget?: string;
   }, token: string): Promise<any> => {
-    const response = await fetch(`http://localhost:5001/api/services`, {
+    const response = await fetch(`${BASE_URL}/api/services`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -254,7 +254,7 @@ export const api = {
   },
 
   getMyServiceRequests: async (token: string): Promise<any[]> => {
-    const response = await fetch(`http://localhost:5001/api/services/my-requests`, {
+    const response = await fetch(`${BASE_URL}/api/services/my-requests`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -265,7 +265,7 @@ export const api = {
   },
 
   getServiceMessages: async (requestId: string, token: string): Promise<any[]> => {
-    const response = await fetch(`http://localhost:5001/api/services/${requestId}/messages`, {
+    const response = await fetch(`${BASE_URL}/api/services/${requestId}/messages`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -276,7 +276,7 @@ export const api = {
   },
 
   addServiceMessage: async (requestId: string, message: string, token: string): Promise<any> => {
-    const response = await fetch(`http://localhost:5001/api/services/${requestId}/messages`, {
+    const response = await fetch(`${BASE_URL}/api/services/${requestId}/messages`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -294,15 +294,22 @@ export const api = {
 
   // Events API
   getApprovedEvents: async (): Promise<any[]> => {
-    const response = await fetch(`http://localhost:5001/api/events`);
+    const response = await fetch(`${BASE_URL}/api/events`);
     if (!response.ok) throw new Error('Failed to fetch approved events');
     const result = await response.json();
     return result.data || [];
   },
 
+  getEventById: async (id: string): Promise<any> => {
+    const response = await fetch(`${BASE_URL}/api/events/${id}`);
+    if (!response.ok) throw new Error('Event not found');
+    const result = await response.json();
+    return result.data;
+  },
+
   startEventChat: async (eventId: string): Promise<any> => {
     const token = localStorage.getItem('userToken');
-    const response = await fetch(`http://localhost:5001/api/events/chats/start`, {
+    const response = await fetch(`${BASE_URL}/api/events/chats/start`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -319,7 +326,7 @@ export const api = {
 
   getEventChats: async (): Promise<any[]> => {
     const token = localStorage.getItem('userToken');
-    const response = await fetch(`http://localhost:5001/api/events/chats`, {
+    const response = await fetch(`${BASE_URL}/api/events/chats`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -330,7 +337,7 @@ export const api = {
 
   getEventMessages: async (chatId: string): Promise<any[]> => {
     const token = localStorage.getItem('userToken');
-    const response = await fetch(`http://localhost:5001/api/events/chats/${chatId}/messages`, {
+    const response = await fetch(`${BASE_URL}/api/events/chats/${chatId}/messages`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -341,7 +348,7 @@ export const api = {
 
   sendEventMessage: async (chatId: string, message: string): Promise<any> => {
     const token = localStorage.getItem('userToken');
-    const response = await fetch(`http://localhost:5001/api/events/chats/${chatId}/messages`, {
+    const response = await fetch(`${BASE_URL}/api/events/chats/${chatId}/messages`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -354,7 +361,7 @@ export const api = {
   },
 
   toggleEventRsvp: async (id: string, token: string): Promise<any> => {
-    const response = await fetch(`http://localhost:5001/api/events/${id}/rsvp`, {
+    const response = await fetch(`${BASE_URL}/api/events/${id}/rsvp`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`
@@ -368,7 +375,7 @@ export const api = {
   },
 
   submitEvent: async (formData: FormData, token: string): Promise<any> => {
-    const response = await fetch(`http://localhost:5001/api/events`, {
+    const response = await fetch(`${BASE_URL}/api/events`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`
@@ -383,7 +390,7 @@ export const api = {
   },
 
   getMyEvents: async (token: string): Promise<any[]> => {
-    const response = await fetch(`http://localhost:5001/api/events/my-events`, {
+    const response = await fetch(`${BASE_URL}/api/events/my-events`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -394,7 +401,7 @@ export const api = {
   },
 
   deleteEvent: async (id: string, token: string): Promise<any> => {
-    const response = await fetch(`http://localhost:5001/api/events/${id}`, {
+    const response = await fetch(`${BASE_URL}/api/events/${id}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${token}`
@@ -409,7 +416,7 @@ export const api = {
 
   // Notifications API Integration
   getMyNotifications: async (token: string): Promise<any[]> => {
-    const response = await fetch(`http://localhost:5001/api/notifications`, {
+    const response = await fetch(`${BASE_URL}/api/notifications`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -420,7 +427,7 @@ export const api = {
   },
 
   markNotificationAsRead: async (id: string, token: string): Promise<any> => {
-    const response = await fetch(`http://localhost:5001/api/notifications/${id}/read`, {
+    const response = await fetch(`${BASE_URL}/api/notifications/${id}/read`, {
       method: 'PATCH',
       headers: {
         Authorization: `Bearer ${token}`
@@ -431,7 +438,7 @@ export const api = {
   },
 
   markAllNotificationsAsRead: async (token: string): Promise<any> => {
-    const response = await fetch(`http://localhost:5001/api/notifications/read-all`, {
+    const response = await fetch(`${BASE_URL}/api/notifications/read-all`, {
       method: 'PATCH',
       headers: {
         Authorization: `Bearer ${token}`
@@ -443,7 +450,7 @@ export const api = {
 
   // Social & Follow Network
   toggleFollow: async (userId: string, token: string): Promise<any> => {
-    const response = await fetch(`http://localhost:5001/api/users/${userId}/follow`, {
+    const response = await fetch(`${BASE_URL}/api/users/${userId}/follow`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`
@@ -454,7 +461,7 @@ export const api = {
   },
 
   getUserNetwork: async (userId: string, token: string): Promise<any> => {
-    const response = await fetch(`http://localhost:5001/api/users/${userId}/network`, {
+    const response = await fetch(`${BASE_URL}/api/users/${userId}/network`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -466,7 +473,7 @@ export const api = {
   // ─── ADVERTISEMENTS API ────────────────────────────────────────
 
   getActiveAds: async (): Promise<any[]> => {
-    const response = await fetch(`http://localhost:5001/api/advertisements/active`);
+    const response = await fetch(`${BASE_URL}/api/advertisements/active`);
     if (!response.ok) throw new Error('Failed to fetch advertisements');
     const data = await response.json();
     return data.data ?? [];
@@ -474,7 +481,7 @@ export const api = {
 
   submitAdvertisement: async (formData: FormData): Promise<any> => {
     const token = localStorage.getItem('userToken');
-    const response = await fetch(`http://localhost:5001/api/advertisements`, {
+    const response = await fetch(`${BASE_URL}/api/advertisements`, {
       method: 'POST',
       headers: {
         ...(token ? { Authorization: `Bearer ${token}` } : {})
@@ -490,7 +497,7 @@ export const api = {
 
   trackAdClick: async (id: string | number): Promise<void> => {
     try {
-      await fetch(`http://localhost:5001/api/advertisements/${id}/click`, {
+      await fetch(`${BASE_URL}/api/advertisements/${id}/click`, {
         method: 'POST'
       });
     } catch (error) {
@@ -499,7 +506,7 @@ export const api = {
   },
 
   getMyAdvertisements: async (token: string): Promise<any[]> => {
-    const response = await fetch(`http://localhost:5001/api/advertisements/my-ads`, {
+    const response = await fetch(`${BASE_URL}/api/advertisements/my-ads`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -512,7 +519,7 @@ export const api = {
   // Marketplace
   getMyListings: async (): Promise<any[]> => {
     const token = localStorage.getItem('userToken');
-    const response = await fetch(`http://localhost:5001/api/market/my`, {
+    const response = await fetch(`${BASE_URL}/api/market/my`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -523,7 +530,7 @@ export const api = {
 
   deleteListing: async (id: string): Promise<any> => {
     const token = localStorage.getItem('userToken');
-    const response = await fetch(`http://localhost:5001/api/market/${id}`, {
+    const response = await fetch(`${BASE_URL}/api/market/${id}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${token}`
@@ -535,7 +542,7 @@ export const api = {
 
   rateListing: async (id: string, rating: number): Promise<any> => {
     const token = localStorage.getItem('userToken');
-    const response = await fetch(`http://localhost:5001/api/market/${id}/rate`, {
+    const response = await fetch(`${BASE_URL}/api/market/${id}/rate`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -552,7 +559,7 @@ export const api = {
 
   startMarketplaceChat: async (itemId: string): Promise<any> => {
     const token = localStorage.getItem('userToken');
-    const response = await fetch(`http://localhost:5001/api/market/chats/start`, {
+    const response = await fetch(`${BASE_URL}/api/market/chats/start`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -569,7 +576,7 @@ export const api = {
 
   getMarketplaceChats: async (): Promise<any[]> => {
     const token = localStorage.getItem('userToken');
-    const response = await fetch(`http://localhost:5001/api/market/chats`, {
+    const response = await fetch(`${BASE_URL}/api/market/chats`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -580,7 +587,7 @@ export const api = {
 
   getMarketplaceMessages: async (chatId: string): Promise<any[]> => {
     const token = localStorage.getItem('userToken');
-    const response = await fetch(`http://localhost:5001/api/market/chats/${chatId}/messages`, {
+    const response = await fetch(`${BASE_URL}/api/market/chats/${chatId}/messages`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -591,7 +598,7 @@ export const api = {
 
   sendMarketplaceMessage: async (chatId: string, message: string): Promise<any> => {
     const token = localStorage.getItem('userToken');
-    const response = await fetch(`http://localhost:5001/api/market/chats/${chatId}/messages`, {
+    const response = await fetch(`${BASE_URL}/api/market/chats/${chatId}/messages`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -605,7 +612,7 @@ export const api = {
 
   createMarketOrder: async (formData: FormData): Promise<any> => {
     const token = localStorage.getItem('userToken');
-    const response = await fetch(`http://localhost:5001/api/market/orders`, {
+    const response = await fetch(`${BASE_URL}/api/market/orders`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`
@@ -621,7 +628,7 @@ export const api = {
 
   getMyMarketOrders: async (): Promise<any[]> => {
     const token = localStorage.getItem('userToken');
-    const response = await fetch(`http://localhost:5001/api/market/orders/my`, {
+    const response = await fetch(`${BASE_URL}/api/market/orders/my`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -636,7 +643,7 @@ export const api = {
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
     }
-    const response = await fetch(`http://localhost:5001/api/support/feedbacks`, {
+    const response = await fetch(`${BASE_URL}/api/support/feedbacks`, {
       method: 'POST',
       headers,
       body: formData
@@ -649,7 +656,7 @@ export const api = {
   },
 
   getApprovedFeedbacks: async (): Promise<any[]> => {
-    const response = await fetch(`http://localhost:5001/api/support/feedbacks/approved`);
+    const response = await fetch(`${BASE_URL}/api/support/feedbacks/approved`);
     if (!response.ok) throw new Error('Failed to fetch testimonials');
     const data = await response.json();
     return data.feedbacks || [];
@@ -657,7 +664,7 @@ export const api = {
 
   submitSupportProblem: async (data: { name: string; email: string; inquiryType: string; message: string; }): Promise<any> => {
     const token = localStorage.getItem('userToken');
-    const response = await fetch(`http://localhost:5001/api/support/problems`, {
+    const response = await fetch(`${BASE_URL}/api/support/problems`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -674,7 +681,7 @@ export const api = {
 
   getMySupportProblems: async (): Promise<any[]> => {
     const token = localStorage.getItem('userToken');
-    const response = await fetch(`http://localhost:5001/api/support/my-problems`, {
+    const response = await fetch(`${BASE_URL}/api/support/my-problems`, {
       headers: {
         'Authorization': `Bearer ${token}`
       }

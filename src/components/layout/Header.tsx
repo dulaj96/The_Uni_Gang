@@ -110,7 +110,7 @@ const Header = () => {
       setIsVerifiedStudent(verified);
 
       if (token && (!localStorage.getItem('userId') || localStorage.getItem('userIsVerifiedStudent') === null)) {
-        fetch('http://localhost:5001/api/users/profile', {
+        fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}/api/users/profile`, {
           headers: { Authorization: `Bearer ${token}` }
         })
           .then(res => res.ok ? res.json() : Promise.reject('Failed to fetch profile'))

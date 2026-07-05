@@ -125,7 +125,7 @@ export default function AdPopup() {
               {ad.image_url && (
                 <div className="w-full h-48 mb-6 rounded-2xl overflow-hidden relative">
                   <img 
-                    src={`http://localhost:5001${ad.image_url}`} 
+                    src={`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}${ad.image_url}`} 
                     alt={ad.ad_title} 
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />

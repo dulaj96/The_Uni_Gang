@@ -40,7 +40,7 @@ export default function AdBanner({ placement = 'BANNER' }: { placement?: string 
     >
       {ad.image_url ? (
         <img
-          src={`http://localhost:5001${ad.image_url}`}
+          src={`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}${ad.image_url}`}
           alt={ad.ad_title}
           className="w-full h-32 md:h-48 object-cover group-hover:scale-105 transition-transform duration-700"
         />

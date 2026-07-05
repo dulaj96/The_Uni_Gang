@@ -80,7 +80,7 @@ const MyAdsList: React.FC<MyAdsListProps> = ({ ads, onEdit, onDelete }) => {
         const images = Array.isArray(ad.images)
           ? ad.images.map((img: any) => {
               if (typeof img === 'object' && img !== null && img.imageUrl) {
-                return `http://localhost:5001${img.imageUrl}`;
+                return `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}${img.imageUrl}`;
               }
               return img;
             })

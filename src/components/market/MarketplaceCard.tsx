@@ -27,7 +27,7 @@ interface MarketplaceCardProps {
 const MarketplaceCard: React.FC<MarketplaceCardProps> = ({ item, onClick }) => {
   const imageUrl =
     item.images && item.images.length > 0
-      ? `http://localhost:5001${item.images[0]}`
+      ? `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}${item.images[0]}`
       : 'https://images.unsplash.com/photo-1521556906631-0c58e7ce65e5?q=80&w=600&auto=format&fit=crop';
 
   const displayPrice = parseFloat(String(item.price || 0)).toLocaleString();

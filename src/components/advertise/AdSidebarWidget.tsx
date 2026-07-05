@@ -40,7 +40,7 @@ export default function AdSidebarWidget() {
       {ad.image_url && (
         <div className="relative aspect-video overflow-hidden border-b border-slate-200 dark:border-slate-800">
           <img 
-            src={`http://localhost:5001${ad.image_url}`} 
+            src={`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}${ad.image_url}`} 
             alt={ad.ad_title} 
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
           />
