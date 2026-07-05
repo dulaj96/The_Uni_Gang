@@ -1,5 +1,5 @@
 import React from 'react';
-import { LuBadgeCheck, LuStar, LuClock } from 'react-icons/lu';
+import { LuBadgeCheck, LuStar, LuClock, LuShoppingBag } from 'react-icons/lu';
 import { formatDistanceToNow } from 'date-fns';
 
 interface MarketplaceCardProps {
@@ -22,9 +22,10 @@ interface MarketplaceCardProps {
     is_featured?: boolean;
   };
   onClick: () => void;
+  onAddToCart?: (item: any) => void;
 }
 
-const MarketplaceCard: React.FC<MarketplaceCardProps> = ({ item, onClick }) => {
+const MarketplaceCard: React.FC<MarketplaceCardProps> = ({ item, onClick, onAddToCart }) => {
   const imageUrl =
     item.images && item.images.length > 0
       ? `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}${item.images[0]}`
@@ -155,6 +156,19 @@ const MarketplaceCard: React.FC<MarketplaceCardProps> = ({ item, onClick }) => {
             <span className="text-xs font-medium bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-slate-300 px-2.5 py-1 rounded-md">
               {item.condition}
             </span>
+          )}
+
+          {item.type === 'OFFICIAL_PRODUCT' && onAddToCart && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onAddToCart(item);
+              }}
+              className="flex items-center gap-1 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-3 py-1.5 rounded-xl shadow-md transition-all active:scale-95 hover:scale-105 border-none cursor-pointer text-xs font-bold font-sans"
+              title="Add to Cart"
+            >
+              <LuShoppingBag className="w-3.5 h-3.5" /> Add
+            </button>
           )}
         </div>
       </div>

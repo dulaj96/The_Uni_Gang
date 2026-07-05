@@ -509,6 +509,7 @@ const MarketplaceHome: React.FC = () => {
                   setSelectedItem(item);
                   setActiveImgIndex(0);
                 }}
+                onAddToCart={(item) => addToCart(item, 1, false)}
               />
             ))}
           </div>
