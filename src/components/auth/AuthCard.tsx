@@ -1,8 +1,15 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { useGoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 import { FcGoogle } from 'react-icons/fc';
 import { LuUser, LuMail, LuLock, LuArrowRight } from 'react-icons/lu';
+import { 
+    signInWithEmailAndPassword, 
+    createUserWithEmailAndPassword, 
+    updateProfile, 
+    signInWithPopup, 
+    GoogleAuthProvider 
+} from 'firebase/auth';
+import { auth } from '../../firebase';
 import { dispatchAuthUpdate } from '../../utils/authEvents';
 import toast from 'react-hot-toast';
 import PremiumPageLoader from '../ui/PremiumPageLoader';
@@ -12,37 +19,46 @@ interface AuthCardProps {
     onAuthSuccess: () => void;
 }
 
-const GOOGLE_CLIENT_ID = '750632401016-kr68r15hln088k0mt7nrshlnc0nrn1t5.apps.googleusercontent.com';
-
 const GoogleSignInButton = ({ onSuccess, onFailure, setLoading }: { 
     onSuccess: (userData: any, token: string) => void, 
-    onFailure: () => void,
+    onFailure: (error?: any) => void,
     setLoading: (loading: boolean) => void
 }) => {
-    const login = useGoogleLogin({
-        onSuccess: async (tokenResponse) => {
-            setLoading(true);
-            try {
-                const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-                    headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
-                });
-                const userInfo = await res.json();
-                onSuccess(userInfo, tokenResponse.access_token);
-            } catch (error) {
-                console.error('Google Auth Error:', error);
-                onFailure();
-            } finally {
-                setLoading(false);
-            }
-        },
-        onError: onFailure,
-    });
+    const handleGoogleClick = async () => {
+        setLoading(true);
+        try {
+            const provider = new GoogleAuthProvider();
+            const userCredential = await signInWithPopup(auth, provider);
+            const token = await userCredential.user.getIdToken(true);
+
+            // Sync with backend database
+            const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}/api/users/sync`, {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}` 
+                },
+            });
+            const data = await res.json();
+            const syncedUser = data.user || {
+                name: userCredential.user.displayName || 'Google User',
+                email: userCredential.user.email || '',
+                profile_pic: userCredential.user.photoURL || ''
+            };
+            onSuccess(syncedUser, token);
+        } catch (error) {
+            console.error('Google Auth Error:', error);
+            onFailure(error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <motion.button
             whileHover={{ scale: 1.02, y: -2 }}
             whileTap={{ scale: 0.98 }}
-            onClick={() => login()}
+            onClick={handleGoogleClick}
             type="button"
             className="w-full bg-white dark:bg-slate-900/40 backdrop-blur-md border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-black py-4 rounded-2xl shadow-xl shadow-slate-200/5 dark:shadow-slate-950/20 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all flex items-center justify-center gap-3 group uppercase tracking-widest text-[10px]"
         >
@@ -60,57 +76,115 @@ const AuthCard: React.FC<AuthCardProps> = ({ onAuthSuccess }) => {
     const [message, setMessage] = useState<{ text: string, type: 'success' | 'error' } | null>(null);
     const [loading, setLoading] = useState(false);
 
-    const handleLogin = (e: React.FormEvent) => {
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-        // Simulating login
-        setTimeout(() => {
-            const token = `mock_token:${authEmail}:${encodeURIComponent(authName || 'TestUser')}:`;
+        setMessage(null);
+        try {
+            const userCredential = await signInWithEmailAndPassword(auth, authEmail, authPassword);
+            const token = await userCredential.user.getIdToken(true);
+
+            // Sync/Verify with backend
+            const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}/api/users/sync`, {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}` 
+                },
+            });
+            const data = await res.json();
+            const syncedUser = data.user || {
+                name: userCredential.user.displayName || authName || 'Student',
+                email: authEmail,
+                profile_pic: userCredential.user.photoURL || ''
+            };
+
             localStorage.setItem('userToken', token);
-            localStorage.setItem('userName', authName || 'TestUser');
+            localStorage.setItem('userName', syncedUser.name || 'Student');
             localStorage.setItem('userEmail', authEmail);
+            if (syncedUser.profile_pic) {
+                localStorage.setItem('userProfilePicture', syncedUser.profile_pic);
+            }
             dispatchAuthUpdate();
             onAuthSuccess();
-            setLoading(false);
             toast.success('Welcome back!');
             celebrate();
-        }, 400);
+        } catch (error: any) {
+            console.error('Login Error:', error);
+            if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+                setMessage({ text: 'Invalid email or password. Please try again.', type: 'error' });
+            } else if (error.code === 'auth/invalid-email') {
+                setMessage({ text: 'Please enter a valid email address.', type: 'error' });
+            } else {
+                setMessage({ text: error.message || 'Login failed. Please try again.', type: 'error' });
+            }
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const handleRegister = (e: React.FormEvent) => {
+    const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-        // Simulating registration
-        setTimeout(() => {
-            const token = `mock_token:${authEmail}:${encodeURIComponent(authName || 'NewUser')}:`;
+        setMessage(null);
+        try {
+            const userCredential = await createUserWithEmailAndPassword(auth, authEmail, authPassword);
+            if (authName) {
+                await updateProfile(userCredential.user, { displayName: authName });
+            }
+            const token = await userCredential.user.getIdToken(true);
+
+            // Sync with backend so MySQL profile is created immediately
+            const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}/api/users/sync`, {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}` 
+                },
+            });
+            const data = await res.json();
+            const syncedUser = data.user || {
+                name: authName || 'Student',
+                email: authEmail,
+                profile_pic: ''
+            };
+
             localStorage.setItem('userToken', token);
-            localStorage.setItem('userName', authName || 'NewUser');
+            localStorage.setItem('userName', syncedUser.name || authName || 'Student');
             localStorage.setItem('userEmail', authEmail);
             dispatchAuthUpdate();
             onAuthSuccess();
-            setLoading(false);
             toast.success('Account created successfully!');
             celebrate();
-        }, 400);
+        } catch (error: any) {
+            console.error('Register Error:', error);
+            if (error.code === 'auth/email-already-in-use') {
+                setMessage({ text: 'An account with this email already exists.', type: 'error' });
+            } else if (error.code === 'auth/weak-password') {
+                setMessage({ text: 'Security Key must be at least 6 characters long.', type: 'error' });
+            } else {
+                setMessage({ text: error.message || 'Registration failed. Please check your details.', type: 'error' });
+            }
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const handleGoogleSuccess = (userData: any, _token: string) => {
-        // Store dynamic mock token containing email, name, and picture
-        const token = `mock_token:${userData.email}:${encodeURIComponent(userData.name)}:${encodeURIComponent(userData.picture || '')}`;
+    const handleGoogleSuccess = (userData: any, token: string) => {
         localStorage.setItem('userToken', token);
-        localStorage.setItem('userName', userData.name);
-        localStorage.setItem('userProfilePicture', userData.picture);
-        localStorage.setItem('userFirstName', userData.given_name);
-        localStorage.setItem('userLastName', userData.family_name);
-        localStorage.setItem('userEmail', userData.email);
+        localStorage.setItem('userName', userData.name || 'Google User');
+        localStorage.setItem('userEmail', userData.email || '');
+        if (userData.profile_pic) {
+            localStorage.setItem('userProfilePicture', userData.profile_pic);
+        }
         dispatchAuthUpdate();
         onAuthSuccess();
-        toast.success(`Welcome back, ${userData.name}!`);
+        toast.success(`Welcome back, ${userData.name || 'Student'}!`);
         celebrate();
     };
 
     const handleGoogleFailure = () => {
-        setMessage({ text: 'Google Login Failed. Please Try Again.', type: 'error' });
+        setMessage({ text: 'Google Login Failed or Cancelled. Please Try Again.', type: 'error' });
     };
 
     return (
@@ -204,13 +278,11 @@ const AuthCard: React.FC<AuthCardProps> = ({ onAuthSuccess }) => {
                 </div>
 
                 <div className="flex justify-center">
-                    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-                        <GoogleSignInButton
-                            onSuccess={handleGoogleSuccess}
-                            onFailure={handleGoogleFailure}
-                            setLoading={setLoading}
-                        />
-                    </GoogleOAuthProvider>
+                    <GoogleSignInButton
+                        onSuccess={handleGoogleSuccess}
+                        onFailure={handleGoogleFailure}
+                        setLoading={setLoading}
+                    />
                 </div>
             </div>
 
