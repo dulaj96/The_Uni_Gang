@@ -101,6 +101,7 @@ const AnnexList = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedUni, setSelectedUni] = useState("All Universities");
     const [maxDistance, setMaxDistance] = useState("Any Distance");
+    const [activeCategory, setActiveCategory] = useState<'ALL' | 'LANDLORD_RENT' | 'ROOMMATE_WANTED'>('ALL');
     const [loading, setLoading] = useState(true);
     const [annexes, setAnnexes] = useState<any[]>([]);
 
@@ -113,6 +114,9 @@ const AnnexList = () => {
             }
             if (maxDistance !== "Any Distance" && selectedUni !== "All Universities") {
                 queryParams.append("maxDistance", maxDistance);
+            }
+            if (activeCategory !== 'ALL') {
+                queryParams.append("listingType", activeCategory);
             }
 
             const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}/api/annexes?${queryParams.toString()}`);
@@ -145,7 +149,7 @@ const AnnexList = () => {
 
     useEffect(() => {
         fetchAnnexes();
-    }, [selectedUni, maxDistance]);
+    }, [selectedUni, maxDistance, activeCategory]);
 
     const handleSearchClick = () => {
         fetchAnnexes();
@@ -368,6 +372,28 @@ const AnnexList = () => {
                                     <p className="text-slate-500 dark:text-slate-400">The most coveted listings currently available near top campuses</p>
                                 </div>
 
+                                {/* Category Filter Tabs */}
+                                <div className="flex p-1 bg-slate-100/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200/50 dark:border-slate-800/80 rounded-2xl w-full md:w-auto shrink-0 select-none">
+                                    {(['ALL', 'LANDLORD_RENT', 'ROOMMATE_WANTED'] as const).map((type) => (
+                                        <button
+                                            key={type}
+                                            onClick={() => {
+                                                setActiveCategory(type);
+                                                setCurrentPage(1);
+                                            }}
+                                            className={`flex-1 md:flex-initial px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all duration-300 border-none cursor-pointer ${
+                                                activeCategory === type
+                                                    ? 'bg-blue-800 text-white shadow-md shadow-blue-800/25'
+                                                    : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-200 bg-transparent'
+                                            }`}
+                                        >
+                                            {type === 'ALL' && 'All Listings'}
+                                            {type === 'LANDLORD_RENT' && 'Boarding Places'}
+                                            {type === 'ROOMMATE_WANTED' && 'Roommate Finder'}
+                                        </button>
+                                    ))}
+                                </div>
+
                                 <div className="flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto">
                                     {/* Toggle Map View button next to Post Ad */}
                                     <button
@@ -438,6 +464,23 @@ const AnnexList = () => {
                                                                 <span className="text-[10px] font-extrabold uppercase tracking-widest text-slate-800 dark:text-slate-200">Verified</span>
                                                             </div>
                                                         )}
+
+                                                        {/* Listing Type Tag */}
+                                                        <div className="absolute bottom-4 left-4 bg-slate-950/70 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-1 border border-white/10 text-white shadow-lg">
+                                                            <span className="text-[9px] font-black uppercase tracking-widest flex items-center gap-1">
+                                                                {item.listing_type === 'ROOMMATE_WANTED' ? (
+                                                                    <>
+                                                                        <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse"></span>
+                                                                        Roommate Finder
+                                                                    </>
+                                                                ) : (
+                                                                    <>
+                                                                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                                                                        Landlord Annex
+                                                                    </>
+                                                                )}
+                                                            </span>
+                                                        </div>
 
                                                         {/* Favorite Button */}
                                                         <button

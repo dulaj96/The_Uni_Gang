@@ -161,6 +161,7 @@ const formSchema = z.object({
   address: z.string().min(5, 'Exact address is required'),
   universityId: z.string().min(1, 'Selecting a university or institution is required'),
   customInstitution: z.string().optional(),
+  listingType: z.enum(['LANDLORD_RENT', 'ROOMMATE_WANTED']).default('LANDLORD_RENT'),
   beds: z.string().min(1, 'Beds capacity is required'),
   bath: z.string().min(1, 'Bathroom type is required'),
   houseRules: z.string().min(1, 'House rules are required (e.g. Girls Only)'),
@@ -269,6 +270,7 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
       address: initialData?.address ?? '',
       universityId: initialData?.universityId ? String(initialData.universityId) : '',
       customInstitution: '',
+      listingType: initialData?.listing_type ?? 'LANDLORD_RENT',
       beds: initialData?.beds ? String(initialData.beds) : '1',
       bath: initialData?.bath ?? 'Private Bath',
       houseRules: initialData?.features?.map((f: any) => f.featureName).join(', ') ?? '',
@@ -402,6 +404,28 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
             <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
               <h2 className="text-xl font-bold text-slate-800 dark:text-white mb-6">General Specifications</h2>
               <div className="space-y-4">
+                {/* Listing Type Segment Selector */}
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Listing Purpose</label>
+                  <div className="flex p-1 bg-slate-100 dark:bg-slate-800/80 rounded-2xl w-full">
+                    {(['LANDLORD_RENT', 'ROOMMATE_WANTED'] as const).map((type) => (
+                      <button
+                        key={type}
+                        type="button"
+                        onClick={() => setValue('listingType', type)}
+                        className={`flex-1 px-6 py-3.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all duration-300 border-none cursor-pointer ${
+                          watch('listingType') === type
+                            ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20'
+                            : 'text-slate-500 dark:text-slate-400 bg-transparent hover:text-slate-800 dark:hover:text-slate-200'
+                        }`}
+                      >
+                        {type === 'LANDLORD_RENT' ? '🏠 Entire Boarding Place' : '👥 Roommate Finder / Share'}
+                      </button>
+                    ))}
+                  </div>
+                  <input type="hidden" {...register('listingType')} />
+                </div>
+
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Ad Title</label>
                   <input {...register('title')} placeholder="e.g. Modern Studio near UOM" className="w-full px-5 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 font-medium outline-none transition-all dark:text-white" />

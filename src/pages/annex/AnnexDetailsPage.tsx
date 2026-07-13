@@ -255,6 +255,17 @@ const AnnexDetailsPage = () => {
                       <LuBadgeCheck className="text-base fill-blue-500 text-white dark:text-slate-900" />
                       {annex.status}
                     </span>
+                    {annex.listing_type === 'ROOMMATE_WANTED' ? (
+                      <span className="inline-flex items-center gap-1.5 bg-indigo-100 dark:bg-indigo-900/40 text-indigo-800 dark:text-indigo-300 px-3 py-1.5 rounded-full text-xs font-black uppercase tracking-widest border border-indigo-200 dark:border-indigo-800/50">
+                        <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></span>
+                        Roommate Wanted
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1.5 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-300 px-3 py-1.5 rounded-full text-xs font-black uppercase tracking-widest border border-emerald-200 dark:border-emerald-800/50">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                        Landlord Annex
+                      </span>
+                    )}
                   </div>
                   <div className="flex flex-col">
                     <div className="flex items-baseline gap-2">
@@ -399,7 +410,12 @@ const AnnexDetailsPage = () => {
                     />
                     <div>
                       <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Listed by</p>
-                      <p className="text-base font-bold text-slate-900 dark:text-white">{annex.owner ? annex.owner.name : "Mr. Landlord"}</p>
+                      <div className="flex items-center gap-1">
+                        <p className="text-base font-bold text-slate-900 dark:text-white">{annex.owner ? annex.owner.name : "Mr. Landlord"}</p>
+                        {annex.owner && (annex.owner.is_verified_landlord || annex.owner.is_verified_student) && (
+                          <LuBadgeCheck className={`w-4 h-4 shrink-0 ${annex.owner.is_verified_landlord ? 'text-amber-500' : 'text-blue-500'}`} title="Verified Provider" />
+                        )}
+                      </div>
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-3 w-full sm:w-[320px]">

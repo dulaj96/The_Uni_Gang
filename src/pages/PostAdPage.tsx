@@ -105,6 +105,7 @@ const PostAdPage = () => {
       formData.append('longitude', String(adData.longitude));
       formData.append('universityId', adData.universityId);
       formData.append('securityDeposit', adData.securityDeposit || '');
+      formData.append('listingType', adData.listingType || 'LANDLORD_RENT');
       if (adData.customInstitution) {
         formData.append('customInstitution', adData.customInstitution);
       }
