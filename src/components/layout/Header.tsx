@@ -4,7 +4,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import logo from '../../assets/logoImage.jpg';
 
 
-import { LuMenu, LuX, LuUser, LuLogOut, LuLayoutDashboard, LuSun, LuMoon, LuArrowRight, LuShoppingBag } from 'react-icons/lu';
+import { 
+  LuMenu, LuX, LuUser, LuLogOut, LuLayoutDashboard, LuSun, LuMoon, 
+  LuArrowRight, LuShoppingBag, LuHome, LuBed, LuBriefcase, 
+  LuCalendar, LuFileText, LuMegaphone, LuMessageSquare 
+} from 'react-icons/lu';
 import { useTheme } from '../../context/ThemeContext';
 import { dispatchAuthUpdate, listenToAuthUpdate } from '../../utils/authEvents';
 import toast from 'react-hot-toast';
@@ -196,14 +200,14 @@ const Header = () => {
   };
 
   const navLinks = [
-    { name: 'Home', path: '/#home', id: 'home' },
-    { name: 'Annex', path: '/#annex', id: 'annex' },
-    { name: 'Market', path: '/#market', id: 'market' },
-    { name: 'Services', path: '/#services', id: 'services' },
-    { name: 'Events', path: '/#events', id: 'events' },
-    { name: 'Blogs', path: '/#blogs', id: 'blogs' },
-    { name: 'Advertise', path: '/#advertise', id: 'advertise' },
-    { name: 'Contact', path: '/#contact', id: 'contact' },
+    { name: 'Home', path: '/#home', id: 'home', icon: LuHome },
+    { name: 'Annex', path: '/#annex', id: 'annex', icon: LuBed },
+    { name: 'Market', path: '/#market', id: 'market', icon: LuShoppingBag },
+    { name: 'Services', path: '/#services', id: 'services', icon: LuBriefcase },
+    { name: 'Events', path: '/#events', id: 'events', icon: LuCalendar },
+    { name: 'Blogs', path: '/#blogs', id: 'blogs', icon: LuFileText },
+    { name: 'Advertise', path: '/#advertise', id: 'advertise', icon: LuMegaphone },
+    { name: 'Contact', path: '/#contact', id: 'contact', icon: LuMessageSquare },
   ];
 
   return (
@@ -400,38 +404,50 @@ const Header = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="absolute inset-0 bg-white/40 dark:bg-slate-950/40 backdrop-blur-3xl"
+                className="absolute inset-0 bg-slate-900/20 dark:bg-slate-950/40 backdrop-blur-md"
                 onClick={() => setIsMobileMenuOpen(false)}
               />
 
               {/* Menu Card */}
               <motion.div
-                initial={{ x: '100%', borderRadius: '100% 0 0 100%' }}
-                animate={{ x: 0, borderRadius: 0 }}
-                exit={{ x: '100%', borderRadius: '100% 0 0 100%' }}
-                transition={{ type: "spring", damping: 30, stiffness: 200 }}
-                className="absolute right-0 top-0 bottom-0 w-[85%] bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl border-l border-white/20 dark:border-slate-800 shadow-[-20px_0_50px_rgba(0,0,0,0.1)] p-8 flex flex-col"
+                initial={{ x: '100%' }}
+                animate={{ x: 0 }}
+                exit={{ x: '100%' }}
+                transition={{ type: "spring", damping: 28, stiffness: 220 }}
+                className="absolute right-0 top-0 bottom-0 w-[80%] sm:w-[380px] bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl border-l border-slate-100 dark:border-slate-800 shadow-[-10px_0_40px_rgba(0,0,0,0.08)] p-6 flex flex-col"
               >
                 {/* Decorative Elements */}
                 <div className="absolute top-[-10%] right-[-10%] w-64 h-64 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
                 <div className="absolute bottom-[10%] left-[-10%] w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
 
                 {/* Close & Theme Toggle Header */}
-                <div className="flex items-center justify-between mb-12 relative z-10">
-                  <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-2">
-                    <img src={logo} alt="Logo" className="w-8 h-8 rounded-full border border-blue-500" />
-                    <span className="font-black text-slate-900 dark:text-white tracking-tighter uppercase text-sm">The Uni Gang</span>
+                <div className="flex items-center justify-between mb-8 relative z-10">
+                  <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-2.5">
+                    <img src={logo} alt="Logo" className="w-8 h-8 rounded-full border border-blue-500 object-cover" />
+                    <span className="font-bold text-slate-800 dark:text-white tracking-tight text-base">
+                      The <span className="text-blue-600">Uni Gang</span>
+                    </span>
                   </Link>
-                  <button
-                    onClick={toggleTheme}
-                    className="p-3 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 transition-all active:scale-90"
-                  >
-                    {theme === 'dark' ? <LuSun className="w-5 h-5" /> : <LuMoon className="w-5 h-5" />}
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={toggleTheme}
+                      className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-350 transition-all active:scale-90 border-none cursor-pointer"
+                      title="Toggle Theme"
+                    >
+                      {theme === 'dark' ? <LuSun className="w-4.5 h-4.5" /> : <LuMoon className="w-4.5 h-4.5" />}
+                    </button>
+                    <button
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-350 transition-all active:scale-90 border-none cursor-pointer"
+                      title="Close Menu"
+                    >
+                      <LuX className="w-4.5 h-4.5" />
+                    </button>
+                  </div>
                 </div>
 
                 {/* Navigation Links with Staggered Animation */}
-                <div className="flex-1 space-y-2 overflow-y-auto custom-scrollbar relative z-10">
+                <div className="flex-1 space-y-1.5 overflow-y-auto hide-scrollbar relative z-10">
                   {navLinks.map((link, index) => {
                     const isActive = activeSection === link.id || location.pathname === link.path;
                     const isAnchor = link.path.startsWith('/#');
@@ -439,9 +455,9 @@ const Header = () => {
                     return (
                       <motion.div
                         key={link.id}
-                        initial={{ x: 50, opacity: 0 }}
+                        initial={{ x: 30, opacity: 0 }}
                         animate={{ x: 0, opacity: 1 }}
-                        transition={{ delay: 0.1 + index * 0.05 }}
+                        transition={{ delay: 0.05 + index * 0.04 }}
                       >
                         {isAnchor ? (
                           <a
@@ -450,25 +466,31 @@ const Header = () => {
                               scrollToSection(e, link.path);
                               setIsMobileMenuOpen(false);
                             }}
-                            className={`group flex items-center justify-between p-4 rounded-2xl transition-all ${isActive
-                                ? 'bg-blue-600 text-white shadow-xl shadow-blue-500/30'
-                                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                            className={`group flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 border ${isActive
+                                ? 'bg-blue-600/10 dark:bg-blue-500/10 border-blue-500/20 text-blue-600 dark:text-blue-400 font-bold'
+                                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100/50 dark:hover:bg-slate-800/30 border-transparent'
                               }`}
                           >
-                            <span className="text-xl font-black uppercase tracking-widest">{link.name}</span>
-                            <LuArrowRight className={`w-5 h-5 transition-transform ${isActive ? 'translate-x-0 opacity-100' : '-translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100'}`} />
+                            <div className="flex items-center gap-3.5">
+                              {link.icon && <link.icon className={`w-5 h-5 transition-colors ${isActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-slate-500 group-hover:text-blue-500'}`} />}
+                              <span className="text-sm tracking-wide font-semibold">{link.name}</span>
+                            </div>
+                            <LuArrowRight className={`w-4 h-4 transition-all ${isActive ? 'translate-x-0 opacity-100 text-blue-600 dark:text-blue-400' : '-translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 text-slate-450'}`} />
                           </a>
                         ) : (
                           <Link
                             to={link.path}
                             onClick={() => setIsMobileMenuOpen(false)}
-                            className={`group flex items-center justify-between p-4 rounded-2xl transition-all ${isActive
-                                ? 'bg-blue-600 text-white shadow-xl shadow-blue-500/30'
-                                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                            className={`group flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 border ${isActive
+                                ? 'bg-blue-600/10 dark:bg-blue-500/10 border-blue-500/20 text-blue-600 dark:text-blue-400 font-bold'
+                                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100/50 dark:hover:bg-slate-800/30 border-transparent'
                               }`}
                           >
-                            <span className="text-xl font-black uppercase tracking-widest">{link.name}</span>
-                            <LuArrowRight className={`w-5 h-5 transition-transform ${isActive ? 'translate-x-0 opacity-100' : '-translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100'}`} />
+                            <div className="flex items-center gap-3.5">
+                              {link.icon && <link.icon className={`w-5 h-5 transition-colors ${isActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-slate-500 group-hover:text-blue-500'}`} />}
+                              <span className="text-sm tracking-wide font-semibold">{link.name}</span>
+                            </div>
+                            <LuArrowRight className={`w-4 h-4 transition-all ${isActive ? 'translate-x-0 opacity-100 text-blue-600 dark:text-blue-400' : '-translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 text-slate-455'}`} />
                           </Link>
                         )}
                       </motion.div>
@@ -477,44 +499,44 @@ const Header = () => {
                 </div>
 
                 {/* Footer Section: Auth/Profile */}
-                <div className="mt-8 pt-8 border-t border-slate-100 dark:border-slate-800 relative z-10">
+                <div className="mt-6 pt-6 border-t border-slate-100 dark:border-slate-800 relative z-10">
                   {isLoggedIn ? (
                     <motion.div
                       initial={{ y: 20, opacity: 0 }}
                       animate={{ y: 0, opacity: 1 }}
-                      transition={{ delay: 0.5 }}
-                      className="space-y-4"
+                      transition={{ delay: 0.4 }}
+                      className="space-y-3.5"
                     >
-                      <div className="flex items-center gap-4 p-4 rounded-3xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700">
+                      <div className="flex items-center gap-3.5 p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700">
                         {userProfilePic ? (
-                          <img src={userProfilePic} alt="Profile" className="w-12 h-12 rounded-full object-cover border-2 border-white dark:border-slate-700" />
+                          <img src={userProfilePic} alt="Profile" className="w-10 h-10 rounded-full object-cover border border-white dark:border-slate-700 shadow-sm" />
                         ) : (
-                          <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 flex items-center justify-center">
-                            <LuUser className="w-6 h-6" />
+                          <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 flex items-center justify-center">
+                            <LuUser className="w-5.5 h-5.5" />
                           </div>
                         )}
                         <div className="flex-1 min-w-0">
-                          <p className="font-bold text-slate-900 dark:text-white truncate">{userName}</p>
-                          <p className="text-xs text-slate-500">Student Explorer</p>
+                          <p className="font-bold text-sm text-slate-900 dark:text-white truncate">{userName}</p>
+                          <p className="text-[11px] text-slate-500">Student Explorer</p>
                         </div>
-                        <button onClick={handleLogout} className="p-3 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-xl transition-colors">
+                        <button onClick={handleLogout} className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-xl transition-colors border-none bg-transparent cursor-pointer">
                           <LuLogOut className="w-5 h-5" />
                         </button>
                       </div>
-                      <div className="grid grid-cols-2 gap-3">
+                      <div className="grid grid-cols-2 gap-2.5">
                         <Link
                           to="/profile"
                           onClick={() => setIsMobileMenuOpen(false)}
-                          className="flex items-center justify-center gap-2 p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50"
+                          className="flex items-center justify-center gap-2 p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 transition-colors"
                         >
-                          <LuUser size={18} /> Profile
+                          <LuUser size={16} /> Profile
                         </Link>
                         <Link
                           to="/post-ad?tab=myAds"
                           onClick={() => setIsMobileMenuOpen(false)}
-                          className="flex items-center justify-center gap-2 p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50"
+                          className="flex items-center justify-center gap-2 p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 transition-colors"
                         >
-                          <LuLayoutDashboard size={18} /> Ads
+                          <LuLayoutDashboard size={16} /> Ads
                         </Link>
                       </div>
                     </motion.div>
@@ -522,14 +544,14 @@ const Header = () => {
                     <motion.div
                       initial={{ y: 20, opacity: 0 }}
                       animate={{ y: 0, opacity: 1 }}
-                      transition={{ delay: 0.5 }}
+                      transition={{ delay: 0.4 }}
                     >
                       <Link
                         to="/post-ad"
                         onClick={() => setIsMobileMenuOpen(false)}
-                        className="w-full flex items-center justify-center gap-3 p-5 rounded-[2rem] bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black uppercase tracking-widest text-xs shadow-2xl shadow-blue-500/30 hover:scale-[1.02] active:scale-95 transition-all"
+                        className="w-full flex items-center justify-center gap-2.5 p-4 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-sm shadow-xl shadow-blue-500/20 hover:scale-[1.01] active:scale-95 transition-all"
                       >
-                        Join the Gang <LuArrowRight size={18} />
+                        Join the Gang <LuArrowRight size={16} />
                       </Link>
                     </motion.div>
                   )}
