@@ -17,8 +17,10 @@ const CreateListingModal: React.FC<CreateListingModalProps> = ({ isOpen, onClose
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [step, setStep] = useState<1 | 2 | 3>(1);
-  const [idImage, setIdImage] = useState<File | null>(null);
-  // 'live' = verified student published, 'pending' = awaiting ID verification approval
+  const [campusEmail, setCampusEmail] = useState('');
+  const [verificationCode, setVerificationCode] = useState('');
+  const [emailStep, setEmailStep] = useState<'enter_email' | 'enter_code'>('enter_email');
+  // 'live' = verified student published, 'pending' = awaiting email verification code
   const [successType, setSuccessType] = useState<'live' | 'pending'>('live');
   const [countdown, setCountdown] = useState(4);
 
@@ -84,28 +86,62 @@ const CreateListingModal: React.FC<CreateListingModalProps> = ({ isOpen, onClose
     }
   };
 
-  const handleIdUpload = async () => {
-    if (!idImage) return;
+  const handleSendCode = async () => {
+    if (!campusEmail.trim()) return;
     setIsSubmitting(true);
     setError('');
     try {
       const token = localStorage.getItem('userToken');
-      const formData = new FormData();
-      formData.append('idImage', idImage);
-
       const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}/api/users/profile/verify`, {
         method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}` },
-        body: formData
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` 
+        },
+        body: JSON.stringify({ campusEmail: campusEmail.trim() })
       });
 
-      if (!res.ok) throw new Error('Failed to upload ID');
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Failed to send verification code');
       
-      // Show pending approval screen
-      setSuccessType('pending');
+      if (data.debugCode) {
+        alert(`Development verification code generated: ${data.debugCode}`);
+      }
+
+      setEmailStep('enter_code');
+    } catch (err: any) {
+      setError(err.message || 'Failed to send verification code');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleConfirmCode = async () => {
+    if (!verificationCode.trim()) return;
+    setIsSubmitting(true);
+    setError('');
+    try {
+      const token = localStorage.getItem('userToken');
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}/api/users/profile/verify/confirm`, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` 
+        },
+        body: JSON.stringify({ code: verificationCode.trim() })
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Failed to verify code');
+
+      localStorage.setItem('userIsVerifiedStudent', 'true');
+      window.dispatchEvent(new Event('auth-update'));
+
+      // Show live success screen
+      setSuccessType('live');
       setStep(3);
     } catch (err: any) {
-      setError(err.message || 'Failed to upload ID');
+      setError(err.message || 'Failed to verify code');
     } finally {
       setIsSubmitting(false);
     }
@@ -261,12 +297,12 @@ const CreateListingModal: React.FC<CreateListingModalProps> = ({ isOpen, onClose
           </>
         )}
 
-        {/* ── STEP 2: Student ID Verification ── */}
+        {/* ── STEP 2: Student Email Verification ── */}
         {step === 2 && (
           <>
             <div className="px-6 py-4 border-b border-gray-100 dark:border-white/10 flex justify-between items-center bg-gray-50 dark:bg-slate-800/40">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white">Verify Student ID</h2>
-              <button onClick={onClose} className="p-2 text-gray-400 dark:text-slate-400 hover:text-gray-600 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-slate-800 rounded-full transition-colors">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white">Verify Student Status</h2>
+              <button onClick={onClose} className="p-2 text-gray-400 dark:text-slate-400 hover:text-gray-600 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-slate-800 rounded-full transition-colors border-none bg-transparent cursor-pointer">
                 <LuX className="w-5 h-5" />
               </button>
             </div>
@@ -275,10 +311,7 @@ const CreateListingModal: React.FC<CreateListingModalProps> = ({ isOpen, onClose
               <div className="w-16 h-16 bg-amber-100 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400 rounded-full flex items-center justify-center mb-4">
                 <LuShieldCheck className="w-8 h-8" />
               </div>
-              <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-2">Awesome Listing!</h3>
-              <p className="text-gray-500 dark:text-slate-400 mb-8 max-w-sm">
-                Your listing is saved! Just one final step: Verify your Student ID to publish it live. We securely destroy this photo immediately after verification.
-              </p>
+              <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-2">Almost Live! 🚀</h3>
 
               {error && (
                 <div className="mb-6 p-4 w-full bg-red-50 dark:bg-red-950/20 border-l-4 border-red-500 text-red-700 dark:text-red-400 text-sm text-left">
@@ -286,44 +319,78 @@ const CreateListingModal: React.FC<CreateListingModalProps> = ({ isOpen, onClose
                 </div>
               )}
 
-              <label className="w-full max-w-sm aspect-[1.6] rounded-2xl border-2 border-dashed border-gray-300 dark:border-white/10 hover:border-indigo-500 hover:bg-indigo-50 dark:hover:bg-slate-800 transition-colors flex flex-col items-center justify-center cursor-pointer text-gray-500 dark:text-slate-400 group relative overflow-hidden">
-                {idImage ? (
-                  <>
-                    <img src={URL.createObjectURL(idImage)} alt="ID preview" className="absolute inset-0 w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                      <span className="text-white font-bold">Change Image</span>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <LuImagePlus className="w-8 h-8 mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors" />
-                    <span className="font-semibold group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">Upload Student ID</span>
-                    <span className="text-xs mt-1 dark:text-slate-500">JPEG, PNG up to 5MB</span>
-                  </>
-                )}
-                <input type="file" accept="image/*" className="hidden" onChange={(e) => {
-                  if (e.target.files && e.target.files[0]) setIdImage(e.target.files[0]);
-                }} />
-              </label>
-            </div>
+              {emailStep === 'enter_email' ? (
+                <>
+                  <p className="text-gray-500 dark:text-slate-400 mb-8 max-w-sm text-sm">
+                    Your listing is saved! To publish it live, please verify your student status by entering your University Email Address (e.g. .ac.lk, sliit.lk, nsbm.ac.lk).
+                  </p>
 
-            <div className="px-6 py-4 border-t border-gray-100 dark:border-white/10 bg-gray-50 dark:bg-slate-800/40 flex justify-end gap-3">
-              <button type="button" onClick={onClose} className="px-5 py-2.5 rounded-xl font-semibold text-gray-700 dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-slate-800 transition-colors">
-                Verify Later
-              </button>
-              <button 
-                type="button"
-                onClick={handleIdUpload}
-                disabled={!idImage || isSubmitting}
-                className="px-6 py-2.5 rounded-xl font-bold text-white bg-indigo-600 hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-600/30 disabled:opacity-70 disabled:cursor-not-allowed"
-              >
-                {isSubmitting ? (
-                  <span className="flex items-center gap-2">
-                    <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-                    Uploading...
-                  </span>
-                ) : 'Submit ID for Verification'}
-              </button>
+                  <input
+                    type="email"
+                    required
+                    value={campusEmail}
+                    onChange={(e) => setCampusEmail(e.target.value)}
+                    placeholder="name@university.ac.lk"
+                    className="w-full max-w-sm px-4 py-3 rounded-xl border border-gray-300 dark:border-white/10 bg-white dark:bg-slate-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500 font-bold placeholder:text-gray-400"
+                  />
+
+                  <div className="mt-8 flex justify-end gap-3 w-full max-w-sm">
+                    <button
+                      type="button"
+                      onClick={onClose}
+                      className="px-5 py-2.5 rounded-xl font-semibold text-gray-700 dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-slate-800 transition-colors border-none bg-transparent cursor-pointer"
+                    >
+                      Verify Later
+                    </button>
+                    <button
+                      type="button"
+                      disabled={isSubmitting || !campusEmail.trim()}
+                      onClick={handleSendCode}
+                      className="px-6 py-2.5 rounded-xl font-bold text-white bg-amber-500 hover:bg-amber-600 transition-all shadow-lg shadow-amber-500/30 disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2 border-none cursor-pointer"
+                    >
+                      {isSubmitting ? (
+                        <><span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Sending...</>
+                      ) : 'Send Code'}
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <p className="text-gray-500 dark:text-slate-400 mb-8 max-w-sm text-sm">
+                    Please check your university email **{campusEmail}** for the 6-digit verification code.
+                  </p>
+
+                  <input
+                    type="text"
+                    maxLength={6}
+                    required
+                    value={verificationCode}
+                    onChange={(e) => setVerificationCode(e.target.value)}
+                    placeholder="123456"
+                    className="w-full max-w-sm px-4 py-3 rounded-xl border border-gray-300 dark:border-white/10 bg-white dark:bg-slate-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500 font-bold text-center tracking-widest text-lg placeholder:text-gray-400"
+                  />
+
+                  <div className="mt-8 flex justify-end gap-3 w-full max-w-sm">
+                    <button
+                      type="button"
+                      onClick={() => setEmailStep('enter_email')}
+                      className="px-5 py-2.5 rounded-xl font-semibold text-gray-700 dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-slate-800 transition-colors border-none bg-transparent cursor-pointer"
+                    >
+                      Back
+                    </button>
+                    <button
+                      type="button"
+                      disabled={isSubmitting || !verificationCode.trim()}
+                      onClick={handleConfirmCode}
+                      className="px-6 py-2.5 rounded-xl font-bold text-white bg-indigo-650 hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-600/30 disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2 border-none cursor-pointer"
+                    >
+                      {isSubmitting ? (
+                        <><span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Verifying...</>
+                      ) : 'Verify Code'}
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           </>
         )}
