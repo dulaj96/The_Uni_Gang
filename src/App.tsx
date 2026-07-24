@@ -12,6 +12,7 @@ import Blogs from './components/blogs/Blogs';
 import AdvertiseSection from './components/advertise/Advertise';
 import Contact from './components/contact/Contact';
 import MarketSection from './components/market/MarketSection';
+import AdBanner from './components/advertise/AdBanner';
 
 // Pages Imports
 import FindAccommodationPage from './pages/FindAccommodationPage';
@@ -39,6 +40,8 @@ import AdSubmissionForm from './pages/advertise/AdSubmissionForm';
 import AdPopup from './components/advertise/AdPopup';
 
 import MarketplaceHome from './pages/market/MarketplaceHome';
+import ServicesPage from './pages/services/ServicesPage';
+import GoogleOneTap from './components/auth/GoogleOneTap';
 
 function App() {
   return (
@@ -49,7 +52,7 @@ function App() {
         <Route
           path="/"
           element={
-            <Layout>
+            <Layout isFullWidth>
               <div className="flex flex-col">
                 <SEO
                   title="The Uni Gang - Find Your Perfect Student Annex in Sri Lanka"
@@ -58,9 +61,13 @@ function App() {
 
                 <Hero />
 
-                <div className="w-full space-y-8 lg:space-y-12">
+                <div className="w-full flex flex-col">
                   <div id="annex"><FeaturedAnnexes /></div>
                   <div id="market"><MarketSection /></div>
+
+                  <div className="max-w-7xl mx-auto w-full px-6 lg:px-12 my-6">
+                    <AdBanner placement="BANNER" />
+                  </div>
 
                   {/* Future Placeholders handling Navigation Anchors */}
                   <div id="feed" className="min-h-[10px]"></div>
@@ -113,10 +120,14 @@ function App() {
 
         {/* Marketplace Route */}
         <Route path="/market" element={<SubLayout><MarketplaceHome /></SubLayout>} />
+
+        {/* Services Dedicated Route */}
+        <Route path="/services" element={<SubLayout><ServicesPage /></SubLayout>} />
       </Routes>
 
       <WhatsAppButton />
       <AdPopup />
+      <GoogleOneTap />
     </Router>
   );
 }

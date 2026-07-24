@@ -4,7 +4,7 @@ import {
   LuEye, LuEyeOff, LuFacebook, LuLinkedin,
   LuMessageSquare, LuActivity, LuChevronRight, LuShieldCheck,
   LuCalendar, LuLayoutGrid, LuTrophy, LuSettings, LuLogOut, LuBriefcase, LuX, LuSend, LuTrash2, LuMegaphone, LuShoppingBag, LuStar,
-  LuImagePlus, LuClock
+  LuClock
 } from 'react-icons/lu';
 import { motion, AnimatePresence } from 'framer-motion';
 import { io } from 'socket.io-client';

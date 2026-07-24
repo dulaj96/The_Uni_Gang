@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { LuMegaphone, LuArrowRight } from 'react-icons/lu';
 import { api } from '../../api';
 
 export default function AdSidebarWidget() {
@@ -30,32 +31,41 @@ export default function AdSidebarWidget() {
     }
   };
 
+  const adImgSrc = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}${ad.image_url}`;
+
   return (
     <motion.div
-      initial={{ opacity: 0, x: 20 }}
+      initial={{ opacity: 0, x: 15 }}
       animate={{ opacity: 1, x: 0 }}
-      className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl overflow-hidden cursor-pointer group shadow-lg hover:shadow-xl transition-all mb-8"
+      whileHover={{ y: -4 }}
+      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      className="relative overflow-hidden rounded-[2rem] bg-white/70 dark:bg-slate-900/40 backdrop-blur-xl border border-slate-200/50 dark:border-white/10 shadow-lg hover:shadow-2xl hover:shadow-indigo-500/5 dark:hover:shadow-none transition-all mb-8 w-full max-w-[320px] mx-auto select-none cursor-pointer group"
       onClick={handleClick}
     >
       {ad.image_url && (
-        <div className="relative aspect-video overflow-hidden border-b border-slate-200 dark:border-slate-800">
+        <div className="relative aspect-video overflow-hidden border-b border-slate-200/40 dark:border-white/5 bg-slate-900/10">
           <img 
-            src={`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}${ad.image_url}`} 
+            src={adImgSrc} 
             alt={ad.ad_title} 
-            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 pointer-events-none"
           />
-          <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-md px-2 py-1 rounded text-[9px] text-white font-black uppercase tracking-widest">
-            Ad
+          {/* Floating Neon Badge */}
+          <div className="absolute top-3 right-3 z-15 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-black uppercase text-[8px] tracking-widest px-2.5 py-1 rounded-full shadow-lg shadow-indigo-500/20 flex items-center gap-1 border border-white/10">
+            <LuMegaphone className="w-2.5 h-2.5 animate-pulse" />
+            Partner
           </div>
         </div>
       )}
-      <div className="p-5">
-        <h4 className="text-slate-500 dark:text-slate-400 text-[10px] font-black uppercase tracking-widest mb-1">{ad.company_name}</h4>
-        <h3 className="text-lg font-black text-slate-800 dark:text-white mb-2 leading-tight group-hover:text-blue-500 transition-colors">{ad.ad_title}</h3>
-        <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-3">{ad.ad_description}</p>
+      <div className="p-5 relative z-10 flex flex-col h-full justify-between">
+        <div>
+          <h4 className="text-blue-600 dark:text-blue-400 text-[10px] font-black uppercase tracking-[0.2em] mb-1.5">{ad.company_name}</h4>
+          <h3 className="text-base font-black text-slate-800 dark:text-white mb-2 leading-tight group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors line-clamp-2">{ad.ad_title}</h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-3 leading-relaxed">{ad.ad_description}</p>
+        </div>
         
-        <div className="mt-4 inline-flex items-center text-xs font-bold text-blue-500 uppercase tracking-widest group-hover:underline">
-          Learn More &rarr;
+        <div className="mt-4 flex items-center gap-1 text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest group-hover:gap-2 transition-all">
+          Learn More 
+          <LuArrowRight className="w-3.5 h-3.5 transition-transform" />
         </div>
       </div>
     </motion.div>

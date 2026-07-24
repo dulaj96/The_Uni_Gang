@@ -7,6 +7,7 @@ import {
 } from "react-icons/lu";
 import { api } from '../../api';
 import toast from 'react-hot-toast';
+import AdSidebarWidget from '../../components/advertise/AdSidebarWidget';
 
 interface EventData {
     id: number;
@@ -294,6 +295,11 @@ const EventDetails: React.FC<EventDetailsProps> = ({ event, isOpen, onClose }) =
                                 <p className="text-[11px] font-bold text-slate-600 dark:text-slate-400 tracking-tight italic leading-snug">
                                     " {event.extra} "
                                 </p>
+                            </div>
+
+                            {/* Ad Placement */}
+                            <div className="flex justify-center border-t border-slate-100 dark:border-slate-800/60 pt-4">
+                                <AdSidebarWidget />
                             </div>
 
                             {/* Interaction Row (Includes new Interested Button) */}

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LuSend, LuPhone, LuMail, LuMapPin, LuMessageSquareQuote, LuMonitor, LuSearch, LuCalendarDays, LuUsers, LuStar, LuChevronDown, LuUser, LuCopy, LuCheck } from 'react-icons/lu';
+import { LuSend, LuPhone, LuMail, LuMapPin, LuMessageSquareQuote, LuMonitor, LuSearch, LuCalendarDays, LuUsers, LuStar, LuChevronDown, LuUser, LuCopy, LuCheck, LuGraduationCap } from 'react-icons/lu';
+import { FiHome } from 'react-icons/fi';
 import TiltCard from '../ui/TiltCard.tsx';
 import toast from 'react-hot-toast';
 import { api } from '../../api';
@@ -65,40 +66,7 @@ const feedbacks: Feedback[] = [
     }
 ];
 
-const stats = [
-    { 
-        icon: LuMonitor, 
-        value: "45+", 
-        label: "Web, Apps Developed",
-        color: "text-blue-500 dark:text-blue-400 group-hover:text-blue-300", 
-        bg: "bg-blue-500/10 border-blue-500/20 group-hover:border-blue-500/50 group-hover:shadow-[0_0_20px_rgba(59,130,246,0.3)]",
-        glow: "rgba(59,130,246,0.4)"
-    },
-    { 
-        icon: LuSearch, 
-        value: "20+", 
-        label: "SEO Projects",
-        color: "text-purple-500 dark:text-purple-400 group-hover:text-purple-300", 
-        bg: "bg-purple-500/10 border-purple-500/20 group-hover:border-purple-500/50 group-hover:shadow-[0_0_20px_rgba(168,85,247,0.3)]",
-        glow: "rgba(168,85,247,0.4)"
-    },
-    { 
-        icon: LuCalendarDays, 
-        value: "60+", 
-        label: "Events Displayed",
-        color: "text-emerald-500 dark:text-emerald-400 group-hover:text-emerald-300", 
-        bg: "bg-emerald-500/10 border-emerald-500/20 group-hover:border-emerald-500/50 group-hover:shadow-[0_0_20px_rgba(16,185,129,0.3)]",
-        glow: "rgba(16,185,129,0.4)"
-    },
-    { 
-        icon: LuUsers, 
-        value: "150+", 
-        label: "Happy Clients",
-        color: "text-rose-500 dark:text-rose-400 group-hover:text-rose-300", 
-        bg: "bg-rose-500/10 border-rose-500/20 group-hover:border-rose-500/50 group-hover:shadow-[0_0_20px_rgba(244,63,94,0.3)]",
-        glow: "rgba(244,63,94,0.4)"
-    }
-];
+
 
 const TestimonialCard = ({ feedback }: { feedback: Feedback }) => {
     const nameParts = feedback.name.split(' ');
@@ -286,12 +254,15 @@ const Contact = () => {
     };
 
     return (
-        <section id="contact" className="relative pt-12 pb-10 bg-slate-150 font-sans overflow-hidden">
+        <section id="contact" className="relative pt-12 pb-10 bg-slate-150 dark:bg-[#020617] font-sans overflow-hidden">
+            {/* Smooth Section Blend Overlays */}
+            <div className="absolute top-0 left-0 right-0 h-48 bg-gradient-to-b from-slate-150 via-slate-150 dark:from-[#020617] dark:via-[#020617] to-transparent pointer-events-none z-10" />
+            <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-slate-150 via-slate-150 dark:from-[#020617] dark:via-[#020617] to-transparent pointer-events-none z-10" />
             {/* Ambient background decorations */}
             <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2 opacity-50"></div>
             <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-secondary-fixed/10 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/2 opacity-50"></div>
 
-            <div className="max-w-7xl mx-auto">
+            <div className="max-w-7xl mx-auto relative z-10">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -588,32 +559,6 @@ const Contact = () => {
                     }} />
                 </div>
 
-                {/* Stats */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
-                    {stats.map((s, i) => (
-                        <motion.div
-                            key={i}
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            whileInView={{ opacity: 1, scale: 1 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.5, delay: i * 0.1 }}
-                        >
-                            <TiltCard>
-                                <div className="premium-glass p-5 md:p-6 rounded-[1.75rem] md:rounded-[2.25rem] text-center group transition-all duration-500 hover:shadow-xl flex flex-col items-center">
-                                    <motion.div
-                                        whileHover={{ scale: 1.1, rotate: 8 }}
-                                        transition={{ type: "spring", stiffness: 300, damping: 15 }}
-                                        className={`w-11 h-11 md:w-14 md:h-14 rounded-xl md:rounded-2xl border backdrop-blur-md flex items-center justify-center mb-3 md:mb-4 transition-all duration-300 ${s.bg}`}
-                                    >
-                                        <s.icon className={`w-5 h-5 md:w-6 md:h-6 ${s.color} transition-all duration-300`} style={{ filter: `drop-shadow(0 0 6px ${s.glow})` }} />
-                                    </motion.div>
-                                    <h4 className="text-xl md:text-2xl lg:text-3xl font-black text-slate-900 dark:text-white mb-1.5 md:mb-2 tracking-tight">{s.value}</h4>
-                                    <p className="text-[7.5px] md:text-[9px] font-black uppercase tracking-wider md:tracking-[0.25em] text-slate-400 group-hover:text-primary transition-colors">{s.label}</p>
-                                </div>
-                            </TiltCard>
-                        </motion.div>
-                    ))}
-                </div>
             </div>
         </section>
     );

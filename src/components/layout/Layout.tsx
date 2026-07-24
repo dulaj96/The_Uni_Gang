@@ -5,9 +5,10 @@ import Footer from './Footer';
 
 interface LayoutProps {
   children: React.ReactNode;
+  isFullWidth?: boolean;
 }
 
-const Layout: React.FC<LayoutProps> = ({ children }) => {
+const Layout: React.FC<LayoutProps> = ({ children, isFullWidth = false }) => {
   return (
     <div className="flex flex-col min-h-screen font-sans bg-slate-50 dark:bg-slate-950 transition-colors duration-300 relative overflow-hidden">
       {/* Global Background Decorative Glows (Mixed White/Blue aesthetic) */}
@@ -53,11 +54,17 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           },
         }}
       />
-      <main className="flex-grow pt-20 sm:pt-24 pb-12 px-4 md:px-6">
-        <div className="container mx-auto max-w-7xl">
+      {isFullWidth ? (
+        <main className="flex-grow pt-20 sm:pt-24">
           {children}
-        </div>
-      </main>
+        </main>
+      ) : (
+        <main className="flex-grow pt-20 sm:pt-24 pb-12 px-4 md:px-6">
+          <div className="container mx-auto max-w-7xl">
+            {children}
+          </div>
+        </main>
+      )}
       <Footer />
     </div>
   );

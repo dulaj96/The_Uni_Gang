@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
+import { LuMegaphone, LuArrowRight } from 'react-icons/lu';
 import { api } from '../../api';
 
 interface Ad {
@@ -25,7 +27,6 @@ const AdNativeFeed: React.FC<AdNativeFeedProps> = ({ adIndex }) => {
       try {
         const activeAds = await api.getActiveAds();
         const nativeAds = activeAds.filter((a: Ad) => a.placement_type === 'NATIVE_FEED');
-        // Shuffle or pick random if needed. For now, just set them.
         setAds(nativeAds);
       } catch (err) {
         console.error('Failed to load native ads', err);
@@ -36,7 +37,6 @@ const AdNativeFeed: React.FC<AdNativeFeedProps> = ({ adIndex }) => {
 
   useEffect(() => {
     if (adIndex !== undefined) {
-      // If adIndex is provided, do not auto-rotate
       if (ads.length > 0) {
         setCurrentAdIndex(adIndex % ads.length);
       }
@@ -56,46 +56,68 @@ const AdNativeFeed: React.FC<AdNativeFeedProps> = ({ adIndex }) => {
     api.trackAdClick(ad.id);
   };
 
-  return (
-    <a
-      href={ad.target_link || '#'}
-      target={ad.target_link ? "_blank" : "_self"}
-      rel="noopener noreferrer"
-      onClick={handleAdClick}
-      className="block group overflow-hidden rounded-[2.5rem] bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-white/10 shadow-lg hover:shadow-2xl transition-all duration-500 relative my-6"
-    >
-      <div className="absolute top-4 right-4 z-10 bg-slate-900/80 backdrop-blur-md px-3 py-1 rounded-full border border-white/10">
-        <span className="text-[9px] font-black uppercase tracking-widest text-white">Sponsored</span>
-      </div>
+  const adImgSrc = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}${ad.image_url}`;
 
-      <div className="flex flex-col sm:flex-row h-full">
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 15 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      whileHover={{ y: -4 }}
+      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      className="w-full relative overflow-hidden rounded-[2rem] bg-white/70 dark:bg-slate-900/40 backdrop-blur-xl border border-slate-200/50 dark:border-white/10 shadow-lg hover:shadow-2xl hover:shadow-indigo-500/5 dark:hover:shadow-none transition-all my-6 select-none cursor-pointer group"
+      onClick={handleAdClick}
+    >
+      <a
+        href={ad.target_link || '#'}
+        target={ad.target_link ? "_blank" : "_self"}
+        rel="noopener noreferrer"
+        className="block"
+      >
+        {/* Floating Neon Badge */}
+        <div className="absolute top-4 right-4 z-20 bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-black uppercase text-[8px] tracking-widest px-3 py-1 rounded-full shadow-lg shadow-blue-500/20 flex items-center gap-1 border border-white/10">
+          <LuMegaphone className="w-2.5 h-2.5 animate-pulse" />
+          Partner
+        </div>
+
+        {/* Blurred Duplicate Background Layer (For aspect-ratio clipping correction) */}
         {ad.image_url && (
-          <div className="sm:w-1/3 relative overflow-hidden aspect-video sm:aspect-auto">
-            <img 
-              src={`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}${ad.image_url}`} 
-              alt={ad.ad_title} 
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t sm:bg-gradient-to-r from-slate-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-          </div>
+          <div 
+            className="absolute inset-0 w-full h-full bg-cover bg-center blur-2xl opacity-20 dark:opacity-30 scale-110 pointer-events-none transition-transform duration-700 group-hover:scale-115"
+            style={{ backgroundImage: `url(${adImgSrc})` }}
+          />
         )}
-        
-        <div className="p-6 sm:p-8 flex-1 flex flex-col justify-center bg-gradient-to-br from-blue-50/50 to-transparent dark:from-slate-800/20 dark:to-transparent">
-          <div className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-600 dark:text-blue-400 mb-2">
-            {ad.company_name}
-          </div>
-          <h3 className="text-xl sm:text-2xl font-black text-slate-800 dark:text-white tracking-tight mb-3 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-            {ad.ad_title}
-          </h3>
-          <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed">
-            {ad.ad_description}
-          </p>
-          <div className="mt-4 flex items-center gap-2 text-blue-600 dark:text-blue-400 font-bold text-xs uppercase tracking-widest group-hover:translate-x-2 transition-transform">
-            Learn More <span aria-hidden="true">&rarr;</span>
+
+        <div className="flex flex-col sm:flex-row h-full relative z-10">
+          {ad.image_url && (
+            <div className="sm:w-1/3 relative overflow-hidden aspect-video sm:aspect-auto select-none bg-slate-900/10 min-h-[160px] sm:min-h-0">
+              <img 
+                src={adImgSrc} 
+                alt={ad.ad_title} 
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 pointer-events-none"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t sm:bg-gradient-to-r from-black/40 to-transparent pointer-events-none" />
+            </div>
+          )}
+          
+          <div className="p-6 sm:p-8 flex-1 flex flex-col justify-center">
+            <div className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-600 dark:text-blue-400 mb-1.5">
+              {ad.company_name}
+            </div>
+            <h3 className="text-lg sm:text-xl font-black text-slate-800 dark:text-white tracking-tight mb-2.5 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors line-clamp-2">
+              {ad.ad_title}
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">
+              {ad.ad_description}
+            </p>
+            <div className="mt-4 flex items-center gap-1 text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest group-hover:gap-2 transition-all">
+              Learn More 
+              <LuArrowRight className="w-3.5 h-3.5 transition-transform" />
+            </div>
           </div>
         </div>
-      </div>
-    </a>
+      </a>
+    </motion.div>
   );
 };
 

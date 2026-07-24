@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
     LuArrowRight, LuGraduationCap, LuSearch, LuArrowLeft, LuPlus,
     LuHeart, LuMapPin, LuBedDouble, LuShowerHead, LuWifi, LuMap
@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, Link } from "react-router-dom";
 import universitiesData from "../../constants/annex/Universities.json";
 import PremiumPageLoader from "../../components/ui/PremiumPageLoader";
+import AdNativeFeed from "../../components/advertise/AdNativeFeed";
 
 // Dynamic Leaflet map rendering component using dynamic CDN script injections
 const LeafletListMap = ({ items, centerUniId }: { items: any[], centerUniId: string }) => {
@@ -441,104 +442,110 @@ const AnnexList = () => {
                                                 : "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=800";
                                                 
                                             return (
-                                                <motion.div
-                                                    key={item.id}
-                                                    layout
-                                                    initial={{ opacity: 0, y: 40 }}
-                                                    animate={{ opacity: 1, y: 0 }}
-                                                    exit={{ opacity: 0, scale: 0.9 }}
-                                                    transition={{ duration: 0.5, delay: index * 0.05 }}
-                                                    className="group relative h-full bg-white/45 dark:bg-slate-900/45 backdrop-blur-[24px] border border-white/40 dark:border-slate-800 rounded-[2.5rem] p-4 hover:shadow-[0_40px_80px_-20px_rgba(0,63,221,0.12)] transition-all duration-500 flex flex-col"
-                                                >
-                                                    <div className="relative h-[280px] rounded-[2rem] overflow-hidden mb-6">
-                                                        <img
-                                                            alt={item.title}
-                                                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                                            src={coverImage}
-                                                        />
+                                                <React.Fragment key={item.id}>
+                                                    <motion.div
+                                                        layout
+                                                        initial={{ opacity: 0, y: 40 }}
+                                                        animate={{ opacity: 1, y: 0 }}
+                                                        exit={{ opacity: 0, scale: 0.9 }}
+                                                        transition={{ duration: 0.5, delay: index * 0.05 }}
+                                                        className="group relative h-full bg-white/45 dark:bg-slate-900/45 backdrop-blur-[24px] border border-white/40 dark:border-slate-800 rounded-[2.5rem] p-4 hover:shadow-[0_40px_80px_-20px_rgba(0,63,221,0.12)] transition-all duration-500 flex flex-col"
+                                                    >
+                                                        <div className="relative h-[280px] rounded-[2rem] overflow-hidden mb-6">
+                                                            <img
+                                                                alt={item.title}
+                                                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                                                src={coverImage}
+                                                            />
 
-                                                        {/* Verified Badge */}
-                                                        {item.status === 'Approved' && (
-                                                            <div className="absolute top-4 left-4 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm border border-white/20 dark:border-slate-700/50">
-                                                                <span className="material-symbols-outlined text-green-600 dark:text-green-400 text-[16px]" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
-                                                                <span className="text-[10px] font-extrabold uppercase tracking-widest text-slate-800 dark:text-slate-200">Verified</span>
-                                                            </div>
-                                                        )}
+                                                            {/* Verified Badge */}
+                                                            {item.status === 'Approved' && (
+                                                                <div className="absolute top-4 left-4 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm border border-white/20 dark:border-slate-700/50">
+                                                                    <span className="material-symbols-outlined text-green-600 dark:text-green-400 text-[16px]" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
+                                                                    <span className="text-[10px] font-extrabold uppercase tracking-widest text-slate-800 dark:text-slate-200">Verified</span>
+                                                                </div>
+                                                            )}
 
-                                                        {/* Listing Type Tag */}
-                                                        <div className="absolute bottom-4 left-4 bg-slate-950/70 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-1 border border-white/10 text-white shadow-lg">
-                                                            <span className="text-[9px] font-black uppercase tracking-widest flex items-center gap-1">
-                                                                {item.listing_type === 'ROOMMATE_WANTED' ? (
-                                                                    <>
-                                                                        <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse"></span>
-                                                                        Roommate Finder
-                                                                    </>
-                                                                ) : (
-                                                                    <>
-                                                                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                                                                        Landlord Annex
-                                                                    </>
-                                                                )}
-                                                            </span>
-                                                        </div>
-
-                                                        {/* Favorite Button */}
-                                                        <button
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                toggleFavorite(item.id);
-                                                            }}
-                                                            className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/80 dark:bg-slate-800/80 backdrop-blur-md flex items-center justify-center transition-all hover:scale-110 shadow-sm border border-white/20 dark:border-slate-700/50"
-                                                        >
-                                                            <LuHeart className={`text-xl transition-colors ${favorites.includes(item.id) ? 'fill-red-500 text-red-500' : 'text-slate-400 dark:text-slate-300'}`} />
-                                                        </button>
-                                                    </div>
-
-                                                    <div className="px-3 space-y-4 flex-grow flex flex-col">
-                                                        <div className="flex justify-between items-start">
-                                                            <div>
-                                                                <h3 className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-blue-800 dark:group-hover:text-blue-400 transition-colors uppercase tracking-tight line-clamp-1">
-                                                                    {item.title}
-                                                                </h3>
-                                                                <p className="text-slate-500 dark:text-slate-400 text-xs flex items-center gap-1 mt-1 font-medium line-clamp-1">
-                                                                    <LuMapPin className="text-[14px] text-blue-800/60 dark:text-blue-400/60 flex-shrink-0" />
-                                                                    {item.address} {item.distanceToUni && `(📍 ${item.distanceToUni} km to campus)`}
-                                                                </p>
-                                                            </div>
-                                                        </div>
-
-                                                        {/* Amenities Row */}
-                                                        <div className="flex items-center gap-4 py-4 border-y border-slate-200/50 dark:border-slate-800/50 mt-auto">
-                                                            <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 text-sm font-medium">
-                                                                <LuBedDouble className="text-lg text-slate-400 dark:text-slate-500" /> {item.beds} Beds
-                                                            </div>
-                                                            <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 text-sm font-medium">
-                                                                <LuShowerHead className="text-lg text-slate-400 dark:text-slate-500" /> {item.bath || "Shared Bath"}
-                                                            </div>
-                                                            <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 text-sm font-medium">
-                                                                <LuWifi className="text-lg text-slate-400 dark:text-slate-500" /> Wi-Fi
-                                                            </div>
-                                                        </div>
-
-                                                        {/* Action Button */}
-                                                        <div className="mt-auto pt-4 flex flex-row items-end justify-between gap-2 border-t border-slate-100 dark:border-slate-800/50">
-                                                            <div className="flex flex-col">
-                                                                <span className="text-[9px] font-semibold uppercase tracking-[0.2em] text-slate-400 mb-0.5">Monthly Fee</span>
-                                                                <span className="text-xl md:text-2xl font-extrabold text-blue-800 dark:text-blue-400 leading-none">
-                                                                    <span className="text-xs mr-0.5">Rs.</span>{parseFloat(item.price).toLocaleString()}
+                                                            {/* Listing Type Tag */}
+                                                            <div className="absolute bottom-4 left-4 bg-slate-950/70 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-1 border border-white/10 text-white shadow-lg">
+                                                                <span className="text-[9px] font-black uppercase tracking-widest flex items-center gap-1">
+                                                                    {item.listing_type === 'ROOMMATE_WANTED' ? (
+                                                                        <>
+                                                                            <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse"></span>
+                                                                            Roommate Finder
+                                                                        </>
+                                                                    ) : (
+                                                                        <>
+                                                                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                                                                            Landlord Annex
+                                                                        </>
+                                                                    )}
                                                                 </span>
                                                             </div>
-                                                            <motion.button
-                                                                whileHover={{ scale: 1.05 }}
-                                                                whileTap={{ scale: 0.95 }}
-                                                                onClick={() => navigate(`/annex/${item.id}`)}
-                                                                className="w-auto text-[11px] md:text-sm bg-blue-50 dark:bg-slate-800/80 hover:bg-blue-800 hover:text-white dark:hover:bg-blue-800 text-blue-800 dark:text-blue-300 border border-blue-100 dark:border-slate-700 px-4 md:px-6 py-2.5 rounded-xl font-bold transition-all shadow-sm flex items-center justify-center"
+
+                                                            {/* Favorite Button */}
+                                                            <button
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    toggleFavorite(item.id);
+                                                                }}
+                                                                className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/80 dark:bg-slate-800/80 backdrop-blur-md flex items-center justify-center transition-all hover:scale-110 shadow-sm border border-white/20 dark:border-slate-700/50"
                                                             >
-                                                                Details
-                                                            </motion.button>
+                                                                <LuHeart className={`text-xl transition-colors ${favorites.includes(item.id) ? 'fill-red-500 text-red-500' : 'text-slate-400 dark:text-slate-300'}`} />
+                                                            </button>
                                                         </div>
-                                                    </div>
-                                                </motion.div>
+
+                                                        <div className="px-3 space-y-4 flex-grow flex flex-col">
+                                                            <div className="flex justify-between items-start">
+                                                                <div>
+                                                                    <h3 className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-blue-800 dark:group-hover:text-blue-400 transition-colors uppercase tracking-tight line-clamp-1">
+                                                                        {item.title}
+                                                                    </h3>
+                                                                    <p className="text-slate-500 dark:text-slate-400 text-xs flex items-center gap-1 mt-1 font-medium line-clamp-1">
+                                                                        <LuMapPin className="text-[14px] text-blue-800/60 dark:text-blue-400/60 flex-shrink-0" />
+                                                                        {item.address} {item.distanceToUni && `(📍 ${item.distanceToUni} km to campus)`}
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+
+                                                            {/* Amenities Row */}
+                                                            <div className="flex items-center gap-4 py-4 border-y border-slate-200/50 dark:border-slate-800/50 mt-auto">
+                                                                <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 text-sm font-medium">
+                                                                    <LuBedDouble className="text-lg text-slate-400 dark:text-slate-500" /> {item.beds} Beds
+                                                                </div>
+                                                                <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 text-sm font-medium">
+                                                                    <LuShowerHead className="text-lg text-slate-400 dark:text-slate-500" /> {item.bath || "Shared Bath"}
+                                                                </div>
+                                                                <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 text-sm font-medium">
+                                                                    <LuWifi className="text-lg text-slate-400 dark:text-slate-500" /> Wi-Fi
+                                                                </div>
+                                                            </div>
+
+                                                            {/* Action Button */}
+                                                            <div className="mt-auto pt-4 flex flex-row items-end justify-between gap-2 border-t border-slate-100 dark:border-slate-800/50">
+                                                                <div className="flex flex-col">
+                                                                    <span className="text-[9px] font-semibold uppercase tracking-[0.2em] text-slate-400 mb-0.5">Monthly Fee</span>
+                                                                    <span className="text-xl md:text-2xl font-extrabold text-blue-800 dark:text-blue-400 leading-none">
+                                                                        <span className="text-xs mr-0.5">Rs.</span>{parseFloat(item.price).toLocaleString()}
+                                                                    </span>
+                                                                </div>
+                                                                <motion.button
+                                                                    whileHover={{ scale: 1.05 }}
+                                                                    whileTap={{ scale: 0.95 }}
+                                                                    onClick={() => navigate(`/annex/${item.id}`)}
+                                                                    className="w-auto text-[11px] md:text-sm bg-blue-50 dark:bg-slate-800/80 hover:bg-blue-800 hover:text-white dark:hover:bg-blue-800 text-blue-800 dark:text-blue-300 border border-blue-100 dark:border-slate-700 px-4 md:px-6 py-2.5 rounded-xl font-bold transition-all shadow-sm flex items-center justify-center"
+                                                                >
+                                                                    Details
+                                                                </motion.button>
+                                                            </div>
+                                                        </div>
+                                                    </motion.div>
+                                                    {(index + 1) % 6 === 0 && (
+                                                        <div className="col-span-1 md:col-span-2 lg:col-span-3">
+                                                            <AdNativeFeed adIndex={Math.floor((index + 1) / 6) - 1} />
+                                                        </div>
+                                                    )}
+                                                </React.Fragment>
                                             );
                                         })}
                                     </AnimatePresence>

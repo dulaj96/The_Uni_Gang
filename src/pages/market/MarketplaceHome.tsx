@@ -9,6 +9,8 @@ import MarketplaceCard from '../../components/market/MarketplaceCard';
 import CreateListingModal from '../../components/market/CreateListingModal';
 import toast from 'react-hot-toast';
 import { api } from '../../api';
+import AdBanner from '../../components/advertise/AdBanner';
+import AdNativeFeed from '../../components/advertise/AdNativeFeed';
 
 const MarketplaceHome: React.FC = () => {
   const [filter, setFilter] = useState<'All' | 'PRODUCT' | 'GIG' | 'OFFICIAL_PRODUCT'>('All');
@@ -450,8 +452,12 @@ const MarketplaceHome: React.FC = () => {
                 </div>
               </motion.div>
             </div>
-
           </div>
+        </div>
+
+        {/* Ad Placement */}
+        <div className="mb-10">
+          <AdBanner placement="BANNER" />
         </div>
 
         {/* Filters and Search */}
@@ -501,16 +507,22 @@ const MarketplaceHome: React.FC = () => {
           </div>
         ) : filteredItems.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filteredItems.map((item) => (
-              <MarketplaceCard
-                key={item.id}
-                item={item}
-                onClick={() => {
-                  setSelectedItem(item);
-                  setActiveImgIndex(0);
-                }}
-                onAddToCart={(item) => addToCart(item, 1, false)}
-              />
+            {filteredItems.map((item, index) => (
+              <React.Fragment key={item.id}>
+                <MarketplaceCard
+                  item={item}
+                  onClick={() => {
+                    setSelectedItem(item);
+                    setActiveImgIndex(0);
+                  }}
+                  onAddToCart={(item) => addToCart(item, 1, false)}
+                />
+                {(index + 1) % 8 === 0 && (
+                  <div className="col-span-1 sm:col-span-2 lg:col-span-3 xl:col-span-4">
+                    <AdNativeFeed adIndex={Math.floor((index + 1) / 8) - 1} />
+                  </div>
+                )}
+              </React.Fragment>
             ))}
           </div>
         ) : (

@@ -9,6 +9,7 @@ import PremiumPageLoader from '../../components/ui/PremiumPageLoader';
 import toast from 'react-hot-toast';
 import confetti from 'canvas-confetti';
 import ArticleCard from './ArticleCard';
+import AdSidebarWidget from '../../components/advertise/AdSidebarWidget';
 
 const getLoggedInUserEmail = (): string | null => {
   const token = localStorage.getItem('userToken');
@@ -518,6 +519,11 @@ const BlogDetail: React.FC = () => {
                         <span className="font-bold text-slate-900 dark:text-white">{blog.likes}</span>
                       </div>
                     </div>
+                  </div>
+
+                  {/* Sidebar Ad Placement */}
+                  <div className="mt-12 pt-10 border-t border-slate-100 dark:border-slate-800/60">
+                    <AdSidebarWidget />
                   </div>
                 </div>
               </aside>

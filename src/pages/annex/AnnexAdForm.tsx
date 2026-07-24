@@ -161,7 +161,7 @@ const formSchema = z.object({
   address: z.string().min(5, 'Exact address is required'),
   universityId: z.string().min(1, 'Selecting a university or institution is required'),
   customInstitution: z.string().optional(),
-  listingType: z.enum(['LANDLORD_RENT', 'ROOMMATE_WANTED']).default('LANDLORD_RENT'),
+  listingType: z.enum(['LANDLORD_RENT', 'ROOMMATE_WANTED']),
   beds: z.string().min(1, 'Beds capacity is required'),
   bath: z.string().min(1, 'Bathroom type is required'),
   houseRules: z.string().min(1, 'House rules are required (e.g. Girls Only)'),

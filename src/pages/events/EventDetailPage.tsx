@@ -8,6 +8,7 @@ import {
 import { api } from '../../api';
 import toast from 'react-hot-toast';
 import SEO from '../../components/SEO';
+import AdBanner from '../../components/advertise/AdBanner';
 
 interface EventData {
     id: number;
@@ -381,6 +382,11 @@ const EventDetailPage: React.FC = () => {
                         </AnimatePresence>
                     </div>
                 </div>
+            </div>
+
+            {/* Ad Placement */}
+            <div className="mt-10">
+                <AdBanner placement="BANNER" />
             </div>
         </div>
     );

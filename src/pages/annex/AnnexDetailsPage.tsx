@@ -9,6 +9,7 @@ import PremiumPageLoader from '../../components/ui/PremiumPageLoader';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
+import AdSidebarWidget from '../../components/advertise/AdSidebarWidget';
 
 // Dynamic Leaflet Map connecting campus center and property pin
 const LeafletDetailMap = ({ propertyLat, propertyLng, uniLat, uniLng, uniName, address }: {
@@ -396,6 +397,11 @@ const AnnexDetailsPage = () => {
                       </button>
                     </form>
                   )}
+                </div>
+
+                {/* Ad Placement */}
+                <div className="flex justify-center border-t border-slate-200/50 dark:border-slate-700/50 pt-8 w-full">
+                  <AdSidebarWidget />
                 </div>
 
                 {/* Footer Sticky Contact */}

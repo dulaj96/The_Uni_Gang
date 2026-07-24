@@ -19,12 +19,15 @@ const MarketSection = () => {
 
   return (
     <section id="market" className="relative py-32 bg-slate-50 dark:bg-[#020617] overflow-hidden">
+      {/* Smooth Section Blend Overlays */}
+      <div className="absolute top-0 left-0 right-0 h-48 bg-gradient-to-b from-slate-50 via-slate-50 dark:from-[#020617] dark:via-[#020617] to-transparent pointer-events-none z-10" />
+      <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-slate-50 via-slate-50 dark:from-[#020617] dark:via-[#020617] to-transparent pointer-events-none z-10" />
       <PremiumPageLoader isLoading={isNavigating} message="Entering The Hustle Hub..." />
-      
+
       {/* 🌌 High-End Mesh Gradient Background */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_80%_20%,rgba(139,92,246,0.08),transparent_50%)]" />
-        <div className="absolute bottom-0 left-0 w-full h-full bg-[radial-gradient(circle_at_20%_80%,rgba(99,102,241,0.08),transparent_50%)]" />
+        <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_80%_35%,rgba(139,92,246,0.08),transparent_50%)]" />
+        <div className="absolute bottom-0 left-0 w-full h-full bg-[radial-gradient(circle_at_20%_65%,rgba(99,102,241,0.08),transparent_50%)]" />
 
         {/* Animated Orbs */}
         <motion.div
@@ -46,9 +49,9 @@ const MarketSection = () => {
           transition={{ duration: 0.8 }}
           className="text-center mb-20"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 font-black text-[10px] uppercase tracking-widest mb-4">
+          {/* <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 font-black text-[10px] uppercase tracking-widest mb-4">
             <LuTrendingUp className="text-sm" /> The Hustle Hub
-          </div>
+          </div> */}
           <h2 className="text-4xl md:text-6xl font-extrabold text-slate-900 dark:text-white mb-6 tracking-tight">
             Campus <span className="text-purple-600 italic">Marketplace</span>
           </h2>
@@ -163,7 +166,7 @@ const MarketSection = () => {
           >
             <div className="flex-1 group relative bg-gradient-to-b from-amber-500/10 via-purple-500/5 to-indigo-500/10 dark:from-amber-500/5 dark:via-purple-500/5 dark:to-[#090d1f] backdrop-blur-md p-8 rounded-[2.5rem] border border-amber-500/30 dark:border-amber-500/25 hover:border-amber-500/60 transition-all hover:shadow-[0_20px_50px_rgba(245,158,11,0.15)] flex flex-col justify-between overflow-hidden h-full min-h-[480px]">
               <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-              
+
               <div>
                 <div className="flex items-center justify-between mb-8">
                   <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-amber-500 bg-amber-500/10 group-hover:scale-110 transition-transform">
@@ -173,7 +176,7 @@ const MarketSection = () => {
                     Verified Store
                   </span>
                 </div>
-                
+
                 <h3 className="text-2xl font-extrabold text-slate-900 dark:text-white mb-4">
                   Uni Gang Official Store
                 </h3>
@@ -242,11 +245,11 @@ const MarketSection = () => {
                   className="flex-1 group relative bg-white dark:bg-slate-800/40 backdrop-blur-md p-5 rounded-[1.8rem] border border-slate-100 dark:border-slate-700/50 hover:border-purple-500/40 transition-all hover:shadow-[0_8px_30px_rgba(139,92,246,0.06)] overflow-hidden flex items-start gap-4"
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                  
+
                   <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-${item.color}-500 bg-${item.color}-500/10 shrink-0 group-hover:scale-110 transition-transform`}>
                     {item.icon}
                   </div>
-                  
+
                   <div className="flex-1">
                     <h4 className="text-base font-extrabold text-slate-900 dark:text-white mb-1">
                       {item.title}

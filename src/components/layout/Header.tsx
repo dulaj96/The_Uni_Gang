@@ -6,9 +6,10 @@ import logo from '../../assets/logoImage.jpg';
 
 import { 
   LuMenu, LuX, LuUser, LuLogOut, LuLayoutDashboard, LuSun, LuMoon, 
-  LuArrowRight, LuShoppingBag, LuHome, LuBed, LuBriefcase, 
+  LuArrowRight, LuShoppingBag, LuBed, LuBriefcase, 
   LuCalendar, LuFileText, LuMegaphone, LuMessageSquare 
 } from 'react-icons/lu';
+import { FiHome } from 'react-icons/fi';
 import { useTheme } from '../../context/ThemeContext';
 import { dispatchAuthUpdate, listenToAuthUpdate } from '../../utils/authEvents';
 import toast from 'react-hot-toast';
@@ -200,7 +201,7 @@ const Header = () => {
   };
 
   const navLinks = [
-    { name: 'Home', path: '/#home', id: 'home', icon: LuHome },
+    { name: 'Home', path: '/#home', id: 'home', icon: FiHome },
     { name: 'Annex', path: '/#annex', id: 'annex', icon: LuBed },
     { name: 'Market', path: '/#market', id: 'market', icon: LuShoppingBag },
     { name: 'Services', path: '/#services', id: 'services', icon: LuBriefcase },

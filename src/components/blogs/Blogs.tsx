@@ -103,11 +103,14 @@ const Blogs = () => {
 
   return (
     <section id="blogs" className="relative py-32 bg-slate-150 dark:bg-[#020617] overflow-hidden">
+      {/* Smooth Section Blend Overlays */}
+      <div className="absolute top-0 left-0 right-0 h-48 bg-gradient-to-b from-slate-150 via-slate-150 dark:from-[#020617] dark:via-[#020617] to-transparent pointer-events-none z-10" />
+      <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-slate-150 via-slate-150 dark:from-[#020617] dark:via-[#020617] to-transparent pointer-events-none z-10" />
       <PremiumPageLoader isLoading={isNavigating} message="Opening the blog archive..." />
       {/* 🌌 High-End Mesh Gradient Background */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_80%_20%,rgba(59,130,246,0.08),transparent_50%)]" />
-        <div className="absolute bottom-0 left-0 w-full h-full bg-[radial-gradient(circle_at_20%_80%,rgba(99,102,241,0.08),transparent_50%)]" />
+        <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_80%_35%,rgba(59,130,246,0.08),transparent_50%)]" />
+        <div className="absolute bottom-0 left-0 w-full h-full bg-[radial-gradient(circle_at_20%_65%,rgba(99,102,241,0.08),transparent_50%)]" />
 
         {/* Animated Orbs */}
         <motion.div
