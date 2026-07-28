@@ -26,10 +26,10 @@ const Annex = () => {
       {/* Smooth Section Blend Overlays */}
       <div className="absolute top-0 left-0 right-0 h-48 bg-gradient-to-b from-white via-white dark:from-[#020617] dark:via-[#020617] to-transparent pointer-events-none z-10" />
       <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-white via-white dark:from-[#020617] dark:via-[#020617] to-transparent pointer-events-none z-10" />
-      
+
       {/* 🌌 Ambient Background (Blue/Teal — distinct from Market's purple/amber) */}
       <div className="absolute inset-0 pointer-events-none">
-        <div 
+        <div
           className="absolute inset-0 opacity-[0.02] dark:opacity-[0.04]"
           style={{
             backgroundImage: 'radial-gradient(circle, #3b82f6 1px, transparent 1px)',
@@ -59,7 +59,7 @@ const Annex = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 lg:px-12 relative z-10">
-        
+
         {/* ── Section Header ── */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -68,9 +68,9 @@ const Annex = () => {
           transition={{ duration: 0.8 }}
           className="text-center mb-20"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 font-black text-[10px] uppercase tracking-widest mb-4">
+          {/* <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 font-black text-[10px] uppercase tracking-widest mb-4">
             <LuTrendingUp className="text-sm" /> Student Lodgings Hub
-          </div>
+          </div> */}
           <h2 className="text-4xl md:text-6xl font-extrabold text-slate-900 dark:text-white mb-6 tracking-tight">
             Campus <span className="text-blue-600 italic">Accommodations</span>
           </h2>
@@ -81,7 +81,7 @@ const Annex = () => {
 
         {/* ── Asymmetric Layout (Splits 60/40, completely different from Market's 3-column stack) ── */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          
+
           {/* LEFT: Premium Lifestyle Collage with Floating Badges (7/12 cols) */}
           <motion.div
             initial={{ opacity: 0, x: -40 }}
@@ -91,7 +91,7 @@ const Annex = () => {
             className="lg:col-span-7 flex justify-center relative"
           >
             <div className="relative w-full max-w-lg h-[460px] flex items-center justify-center">
-              
+
               {/* Background decorative circular rings (blue/teal) */}
               <div className="absolute inset-0 flex items-center justify-center opacity-30">
                 <div className="w-[420px] h-[420px] border border-blue-500/20 rounded-full animate-[spin_30s_linear_infinite]" />
@@ -102,7 +102,7 @@ const Annex = () => {
               <TiltCard className="w-full relative z-20">
                 <div className="relative group">
                   <div className="absolute -inset-1.5 bg-gradient-to-r from-blue-600 to-teal-500 rounded-[3rem] blur opacity-25 group-hover:opacity-45 transition duration-1000" />
-                  
+
                   <div className="relative bg-white dark:bg-slate-900 rounded-[2.5rem] p-4 border border-white/50 dark:border-slate-800 shadow-2xl">
                     <div className="relative h-[360px] rounded-[2rem] overflow-hidden">
                       <img
@@ -111,7 +111,7 @@ const Annex = () => {
                         className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-slate-900/20 to-transparent" />
-                      
+
                       {/* Floating testimonial inside photo */}
                       <div className="absolute bottom-6 left-6 right-6">
                         <div className="flex items-center gap-2 mb-2">
@@ -171,7 +171,7 @@ const Annex = () => {
           {/* RIGHT: Descriptive Feature Progression (5/12 cols) */}
           <div className="lg:col-span-5 flex flex-col justify-between h-full min-h-[460px] gap-8">
             <div className="space-y-6">
-              
+
               {/* Feature 1 */}
               <div className="group flex gap-4 p-5 rounded-2xl bg-slate-50/50 dark:bg-slate-900/30 border border-slate-100 dark:border-slate-800/80 hover:border-blue-500/30 hover:bg-white dark:hover:bg-slate-900/80 transition-all duration-300">
                 <div className="w-11 h-11 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">

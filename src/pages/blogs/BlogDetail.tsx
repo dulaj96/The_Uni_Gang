@@ -14,16 +14,18 @@ import AdSidebarWidget from '../../components/advertise/AdSidebarWidget';
 const getLoggedInUserEmail = (): string | null => {
   const token = localStorage.getItem('userToken');
   if (token) {
-    if (token === 'dummy_token') return 'john@example.com';
-    if (token.startsWith('mock_token:')) return token.split(':')[1] || null;
+    if (import.meta.env.DEV) {
+      if (token === 'dummy_token') return 'john@example.com';
+      if (token.startsWith('mock_token:')) return token.split(':')[1] || null;
+    }
     try {
       const base64Url = token.split('.')[1];
       const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
-          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
       }).join(''));
       return JSON.parse(jsonPayload).email || null;
-    } catch (e) {}
+    } catch (e) { }
   }
   return localStorage.getItem('userEmail') || null;
 };
@@ -35,7 +37,7 @@ const BlogDetail: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   // TOC State
-  const [headings, setHeadings] = useState<{id: string, text: string, level: number}[]>([]);
+  const [headings, setHeadings] = useState<{ id: string, text: string, level: number }[]>([]);
   const [activeHeadingId, setActiveHeadingId] = useState<string>('');
 
   // Comments state
@@ -57,7 +59,7 @@ const BlogDetail: React.FC = () => {
         const data = await api.getBlogBySlug(slug);
         if (data) {
           setBlog(data);
-          
+
           // Check if current user is following author
           const token = localStorage.getItem('userToken');
           if (token) {
@@ -114,12 +116,12 @@ const BlogDetail: React.FC = () => {
   // TOC Scroll Spy
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) setActiveHeadingId(entry.target.id);
-        });
-      }, { rootMargin: '0px 0px -80% 0px' }
+      entries.forEach(entry => {
+        if (entry.isIntersecting) setActiveHeadingId(entry.target.id);
+      });
+    }, { rootMargin: '0px 0px -80% 0px' }
     );
-    
+
     headings.forEach(h => {
       const el = document.getElementById(h.id);
       if (el) observer.observe(el);
@@ -193,13 +195,13 @@ const BlogDetail: React.FC = () => {
         <div className="flex justify-end gap-2 mt-1">
           <button onClick={() => toast.dismiss(t.id)} className="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold transition-all border border-slate-700">Cancel</button>
           <button onClick={async () => {
-              toast.dismiss(t.id);
-              try {
-                await api.deleteComment(blog.id, commentId, token);
-                setBlog(prev => prev ? { ...prev, comments: (prev.comments || []).filter(c => c.id !== commentId) } : null);
-                toast.success('Comment removed.', { style: { borderRadius: '20px', background: '#1e293b', color: '#fff' } });
-              } catch (err) { toast.error('Failed to delete comment.'); }
-            }}
+            toast.dismiss(t.id);
+            try {
+              await api.deleteComment(blog.id, commentId, token);
+              setBlog(prev => prev ? { ...prev, comments: (prev.comments || []).filter(c => c.id !== commentId) } : null);
+              toast.success('Comment removed.', { style: { borderRadius: '20px', background: '#1e293b', color: '#fff' } });
+            } catch (err) { toast.error('Failed to delete comment.'); }
+          }}
             className="px-3.5 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-red-600/20"
           >
             Delete
@@ -219,7 +221,7 @@ const BlogDetail: React.FC = () => {
       toast.error('Please login to follow authors.', { style: { borderRadius: '20px', background: '#1e293b', color: '#fff' } });
       return;
     }
-    
+
     setTogglingFollow(true);
     try {
       const result = await api.toggleFollow(blog.author.id, token);
@@ -246,7 +248,7 @@ const BlogDetail: React.FC = () => {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors duration-500 pt-28 pb-32 xl:pb-20 selection:bg-blue-500/30">
       <PremiumPageLoader isLoading={loading} message="Loading Story..." />
-      
+
       <AnimatePresence>
         {!loading && blog && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
@@ -263,7 +265,7 @@ const BlogDetail: React.FC = () => {
                 </button>
                 <span className="text-[10px] font-black text-slate-500 group-hover:text-slate-800 dark:group-hover:text-slate-300 transition-colors">{blog.likes}</span>
               </div>
-              
+
               <div className="flex flex-col items-center gap-1 group">
                 <button onClick={() => document.getElementById('discussion')?.scrollIntoView({ behavior: 'smooth' })} className="p-2.5 rounded-full text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">
                   <LuMessageSquare className="w-5 h-5" />
@@ -272,13 +274,13 @@ const BlogDetail: React.FC = () => {
               </div>
 
               <div className="w-8 h-[1px] bg-slate-200 dark:bg-slate-800 my-1" />
-              
+
               <button onClick={handleShare} className="p-2.5 rounded-full text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-all" title="Copy Link">
                 <LuShare2 className="w-5 h-5" />
               </button>
 
               <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(blog.title)}&url=${encodeURIComponent(window.location.href)}`} target="_blank" rel="noreferrer" className="p-2.5 rounded-full text-slate-400 hover:text-[#1DA1F2] hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg>
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" /></svg>
               </a>
             </div>
 
@@ -302,10 +304,10 @@ const BlogDetail: React.FC = () => {
             </div>
 
             <main className="container mx-auto px-6 max-w-[700px] xl:max-w-[1000px] xl:grid xl:grid-cols-12 xl:gap-16">
-              
+
               {/* Central Content Area */}
               <article className="xl:col-span-8 w-full max-w-[700px] mx-auto">
-                
+
                 {/* Navigation */}
                 <Link to="/blogs" className="mb-8 inline-flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-blue-600 transition-colors bg-white dark:bg-slate-900 px-4 py-2 rounded-full shadow-sm border border-slate-200 dark:border-slate-800 w-fit">
                   <LuArrowLeft className="w-4 h-4" /> Back to Blogs
@@ -319,7 +321,7 @@ const BlogDetail: React.FC = () => {
                     </span>
                   </div>
 
-                  <h1 className="mb-8 text-[2.5rem] md:text-5xl lg:text-[3.5rem] font-black text-slate-900 dark:text-slate-50 tracking-tight leading-[1.1] font-serif">
+                  <h1 className="mb-8 text-[2.5rem] md:text-5xl lg:text-[3.5rem] font-extrabold text-slate-900 dark:text-slate-50 tracking-normal leading-snug lg:leading-[1.3]">
                     {blog.title}
                   </h1>
 
@@ -330,16 +332,15 @@ const BlogDetail: React.FC = () => {
                         <div className="flex items-center gap-3">
                           <p className="font-semibold text-slate-900 dark:text-slate-100">{blog.author.name}</p>
                           {blog.author?.id && (
-                            <button 
+                            <button
                               onClick={handleFollow}
                               disabled={togglingFollow}
-                              className={`text-xs font-bold px-3 py-1 rounded-full transition-all ${
-                                isFollowing 
-                                  ? 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/30' 
-                                  : 'bg-blue-600 text-white hover:bg-blue-700 shadow-md shadow-blue-500/20'
-                              }`}
-                              onMouseEnter={(e) => { if(isFollowing) e.currentTarget.innerText = 'Unfollow' }}
-                              onMouseLeave={(e) => { if(isFollowing) e.currentTarget.innerText = 'Following' }}
+                              className={`text-xs font-bold px-3 py-1 rounded-full transition-all ${isFollowing
+                                ? 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/30'
+                                : 'bg-blue-600 text-white hover:bg-blue-700 shadow-md shadow-blue-500/20'
+                                }`}
+                              onMouseEnter={(e) => { if (isFollowing) e.currentTarget.innerText = 'Unfollow' }}
+                              onMouseLeave={(e) => { if (isFollowing) e.currentTarget.innerText = 'Following' }}
                             >
                               {togglingFollow ? '...' : (isFollowing ? 'Following' : 'Follow')}
                             </button>
@@ -386,16 +387,15 @@ const BlogDetail: React.FC = () => {
                           <h4 className="text-2xl font-black text-slate-900 dark:text-white">{blog.author.name}</h4>
                         </div>
                         {blog.author?.id && (
-                          <button 
+                          <button
                             onClick={handleFollow}
                             disabled={togglingFollow}
-                            className={`text-sm font-bold px-6 py-2 rounded-full transition-all w-full sm:w-auto ${
-                              isFollowing 
-                                ? 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/30' 
-                                : 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:scale-105 shadow-xl'
-                            }`}
-                            onMouseEnter={(e) => { if(isFollowing) e.currentTarget.innerText = 'Unfollow' }}
-                            onMouseLeave={(e) => { if(isFollowing) e.currentTarget.innerText = 'Following' }}
+                            className={`text-sm font-bold px-6 py-2 rounded-full transition-all w-full sm:w-auto ${isFollowing
+                              ? 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/30'
+                              : 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:scale-105 shadow-xl'
+                              }`}
+                            onMouseEnter={(e) => { if (isFollowing) e.currentTarget.innerText = 'Unfollow' }}
+                            onMouseLeave={(e) => { if (isFollowing) e.currentTarget.innerText = 'Following' }}
                           >
                             {togglingFollow ? '...' : (isFollowing ? 'Following' : 'Follow')}
                           </button>
@@ -434,7 +434,7 @@ const BlogDetail: React.FC = () => {
                     </form>
                   ) : (
                     <div className="mb-12 p-8 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200/60 dark:border-slate-800/60 flex flex-col items-center justify-center text-center">
-                      <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-2">What are your thoughts?</h4>
+                      <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Write Your Response</h4>
                       <p className="text-slate-500 text-sm mb-6">Sign in to leave a response.</p>
                       <Link to="/post-ad" className="px-6 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-full text-sm font-bold transition-transform hover:-translate-y-0.5">
                         Sign In
@@ -479,20 +479,20 @@ const BlogDetail: React.FC = () => {
               <aside className="hidden xl:block xl:col-span-4 relative">
                 <div className="sticky top-32 pl-8 border-l border-slate-100 dark:border-slate-800/60 pb-10">
                   <h3 className="font-bold text-slate-900 dark:text-white mb-6 text-sm">On this page</h3>
-                  
+
                   {headings.length > 0 ? (
                     <nav className="flex flex-col gap-3">
                       {headings.map(h => (
-                        <a 
-                          key={h.id} 
+                        <a
+                          key={h.id}
                           href={`#${h.id}`}
                           onClick={(e) => {
                             e.preventDefault();
                             document.getElementById(h.id)?.scrollIntoView({ behavior: 'smooth' });
                           }}
                           className={`text-sm transition-colors duration-200 block truncate
-                            ${activeHeadingId === h.id 
-                              ? 'font-bold text-blue-600 dark:text-blue-400' 
+                            ${activeHeadingId === h.id
+                              ? 'font-bold text-blue-600 dark:text-blue-400'
                               : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-300'
                             }
                             ${h.level === 3 ? 'ml-4' : ''}

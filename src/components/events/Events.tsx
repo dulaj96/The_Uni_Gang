@@ -288,9 +288,9 @@ const Events = () => {
           transition={{ duration: 0.8 }}
           className="text-center mb-20"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-rose-500/10 text-rose-600 dark:text-rose-400 font-black text-[10px] uppercase tracking-widest mb-4">
+          {/* <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-rose-500/10 text-rose-600 dark:text-rose-400 font-black text-[10px] uppercase tracking-widest mb-4">
             <LuTrendingUp className="text-sm" /> Campus Vibe Center
-          </div>
+          </div> */}
           <h2 className="text-4xl md:text-6xl font-extrabold text-slate-900 dark:text-white mb-6 tracking-tight">
             Latest University <span className="text-rose-500 italic">Events</span>
           </h2>

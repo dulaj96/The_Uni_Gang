@@ -8,6 +8,7 @@ import { useNavigate, Link } from "react-router-dom";
 import universitiesData from "../../constants/annex/Universities.json";
 import PremiumPageLoader from "../../components/ui/PremiumPageLoader";
 import AdNativeFeed from "../../components/advertise/AdNativeFeed";
+import SEO from "../../components/SEO";
 
 // Dynamic Leaflet map rendering component using dynamic CDN script injections
 const LeafletListMap = ({ items, centerUniId }: { items: any[], centerUniId: string }) => {
@@ -173,8 +174,9 @@ const AnnexList = () => {
     };
 
     return (
-        <div className="relative z-10 font-sans pb-8 md:pb-0">
-            <PremiumPageLoader isLoading={loading} message="Scouting the best annexes for you..." />
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors duration-500 font-sans selection:bg-blue-500/30 overflow-hidden relative">
+            <SEO title="Find Student Annexes & Boarding Places - The Uni Gang" description="Browse hundreds of verified student accommodations and boarding places near universities in Sri Lanka." />
+            <PremiumPageLoader isLoading={loading} message="Curating available listings..." />
 
             <AnimatePresence>
                 {!loading && (
@@ -367,53 +369,56 @@ const AnnexList = () => {
 
                         {/* Annex Listings Section */}
                         <section className="max-w-[1440px] mx-auto px-4 md:px-8 py-16" id="listing-grid">
-                            <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6">
-                                <div className="space-y-2 flex-grow">
-                                    <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-slate-900 dark:text-white">Refined Accommodations</h2>
-                                    <p className="text-slate-500 dark:text-slate-400">The most coveted listings currently available near top campuses</p>
-                                </div>
-
-                                {/* Category Filter Tabs */}
-                                <div className="flex p-1 bg-slate-100/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200/50 dark:border-slate-800/80 rounded-2xl w-full md:w-auto shrink-0 select-none">
-                                    {(['ALL', 'LANDLORD_RENT', 'ROOMMATE_WANTED'] as const).map((type) => (
-                                        <button
-                                            key={type}
-                                            onClick={() => {
-                                                setActiveCategory(type);
-                                                setCurrentPage(1);
-                                            }}
-                                            className={`flex-1 md:flex-initial px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all duration-300 border-none cursor-pointer ${
-                                                activeCategory === type
-                                                    ? 'bg-blue-800 text-white shadow-md shadow-blue-800/25'
-                                                    : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-200 bg-transparent'
-                                            }`}
-                                        >
-                                            {type === 'ALL' && 'All Listings'}
-                                            {type === 'LANDLORD_RENT' && 'Boarding Places'}
-                                            {type === 'ROOMMATE_WANTED' && 'Roommate Finder'}
-                                        </button>
-                                    ))}
-                                </div>
-
-                                <div className="flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto">
-                                    {/* Toggle Map View button next to Post Ad */}
-                                    <button
-                                        onClick={() => setMapView(!mapView)}
-                                        className="flex items-center justify-center gap-2 px-6 py-3 bg-white/50 dark:bg-slate-900/50 backdrop-blur-md rounded-full text-slate-700 dark:text-slate-300 font-bold border border-white/40 dark:border-slate-800 hover:bg-blue-50 dark:hover:bg-slate-800 transition-all hover:scale-105 active:scale-95 shadow-sm w-full sm:w-auto"
-                                    >
-                                        <LuMap /> {mapView ? "Show Grid View" : "Show Map View"}
-                                    </button>
-
+                            <div className="flex flex-col gap-8 mb-12">
+                                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                                    <div className="space-y-2">
+                                        <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-slate-900 dark:text-white">Refined Accommodations</h2>
+                                        <p className="text-slate-500 dark:text-slate-400">The most coveted listings currently available near top campuses</p>
+                                    </div>
                                     <Link
                                         to="/post-ad"
-                                        className="flex items-center justify-center gap-2 px-6 py-3 bg-blue-800 text-white rounded-full font-bold shadow-lg shadow-blue-800/30 hover:bg-blue-900 transition-all hover:scale-105 active:scale-95 w-full sm:w-auto"
+                                        className="flex items-center justify-center gap-2 px-6 py-3 bg-blue-800 text-white rounded-full font-bold shadow-lg shadow-blue-800/30 hover:bg-blue-900 transition-all hover:scale-105 active:scale-95 w-full md:w-auto shrink-0"
                                     >
-                                        <LuPlus /> Post Advertisement
+                                        <LuPlus className="text-lg" /> Post Advertisement
                                     </Link>
+                                </div>
 
-                                    {/* Pagination Context Info */}
-                                    <div className="text-sm font-semibold text-slate-500 bg-white/40 dark:bg-slate-900/40 px-4 py-3 rounded-full border border-slate-200 dark:border-slate-800 w-full sm:w-auto text-center">
-                                        Showing {annexes.length > 0 ? ((currentPage - 1) * itemsPerPage) + 1 : 0} - {Math.min(currentPage * itemsPerPage, annexes.length)} of {annexes.length}
+                                <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+                                    {/* Category Filter Tabs */}
+                                    <div className="flex p-1 bg-slate-100/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200/50 dark:border-slate-800/80 rounded-2xl w-full lg:w-auto overflow-x-auto custom-scrollbar shrink-0 select-none">
+                                        {(['ALL', 'LANDLORD_RENT', 'ROOMMATE_WANTED'] as const).map((type) => (
+                                            <button
+                                                key={type}
+                                                onClick={() => {
+                                                    setActiveCategory(type);
+                                                    setCurrentPage(1);
+                                                }}
+                                                className={`flex-1 lg:flex-initial whitespace-nowrap px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all duration-300 border-none cursor-pointer ${
+                                                    activeCategory === type
+                                                        ? 'bg-blue-800 text-white shadow-md shadow-blue-800/25'
+                                                        : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-200 bg-transparent'
+                                                }`}
+                                            >
+                                                {type === 'ALL' && 'All Listings'}
+                                                {type === 'LANDLORD_RENT' && 'Boarding Places'}
+                                                {type === 'ROOMMATE_WANTED' && 'Roommate Finder'}
+                                            </button>
+                                        ))}
+                                    </div>
+
+                                    <div className="flex flex-col sm:flex-row items-center gap-4 w-full lg:w-auto">
+                                        {/* Toggle Map View button */}
+                                        <button
+                                            onClick={() => setMapView(!mapView)}
+                                            className="flex items-center justify-center gap-2 px-6 py-3 bg-white/50 dark:bg-slate-900/50 backdrop-blur-md rounded-full text-slate-700 dark:text-slate-300 font-bold border border-white/40 dark:border-slate-800 hover:bg-blue-50 dark:hover:bg-slate-800 transition-all hover:scale-105 active:scale-95 shadow-sm w-full sm:w-auto whitespace-nowrap"
+                                        >
+                                            <LuMap className="text-lg" /> {mapView ? "Show Grid View" : "Show Map View"}
+                                        </button>
+
+                                        {/* Pagination Context Info */}
+                                        <div className="text-sm font-semibold text-slate-500 bg-white/40 dark:bg-slate-900/40 px-4 py-3 rounded-full border border-slate-200 dark:border-slate-800 w-full sm:w-auto text-center whitespace-nowrap">
+                                            Showing {annexes.length > 0 ? ((currentPage - 1) * itemsPerPage) + 1 : 0} - {Math.min(currentPage * itemsPerPage, annexes.length)} of {annexes.length}
+                                        </div>
                                     </div>
                                 </div>
                             </div>

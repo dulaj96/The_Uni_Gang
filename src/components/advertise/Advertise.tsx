@@ -81,25 +81,25 @@ export default function AdvertiseSection() {
       <div className="absolute top-1/2 left-0 w-[400px] h-[400px] bg-purple-500/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        
+
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-6">
-          <motion.div
+          {/* <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-sm font-black uppercase tracking-widest"
           >
             <LuMegaphone className="animate-pulse" /> Partner With Us
-          </motion.div>
+          </motion.div> */}
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-4xl md:text-6xl font-black text-slate-900 dark:text-white uppercase tracking-tighter"
+            className="text-4xl md:text-6xl font-extrabold text-slate-900 dark:text-white mb-6 tracking-tight"
           >
-            Reach the Next <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Generation</span>
+            Reach the Next <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 italic">Generation</span>
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -114,7 +114,7 @@ export default function AdvertiseSection() {
 
         {/* Content Grid - Balanced */}
         <div className="grid lg:grid-cols-2 gap-8 items-stretch">
-          
+
           {/* Left Column */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
@@ -125,7 +125,7 @@ export default function AdvertiseSection() {
             {/* Stats Grid */}
             <div className="grid sm:grid-cols-2 gap-4 flex-1">
               {stats.map((item, i) => (
-                <motion.div 
+                <motion.div
                   key={i}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -135,7 +135,7 @@ export default function AdvertiseSection() {
                 >
                   {/* Hover glow */}
                   <div className={`absolute -top-12 -right-12 w-24 h-24 bg-gradient-to-br ${item.color} opacity-0 group-hover:opacity-20 rounded-full blur-2xl transition-opacity duration-500`} />
-                  
+
                   <div className={`w-11 h-11 mb-4 bg-gradient-to-br ${item.color} rounded-xl flex items-center justify-center text-white text-lg shadow-lg`}>
                     <item.icon />
                   </div>
@@ -158,7 +158,7 @@ export default function AdvertiseSection() {
               <div className="absolute bottom-0 left-0 w-32 h-32 bg-purple-400/20 rounded-full blur-2xl" />
               <div className="absolute top-4 right-4 w-20 h-20 border border-white/10 rounded-full" />
               <div className="absolute top-8 right-8 w-12 h-12 border border-white/10 rounded-full" />
-              
+
               <div className="relative z-10">
                 <h3 className="text-2xl font-black text-white uppercase tracking-tight mb-2">
                   Ready to Grow?
@@ -166,7 +166,7 @@ export default function AdvertiseSection() {
                 <p className="text-white/70 font-medium text-sm mb-6 max-w-xs">
                   Launch your campaign today and connect with the most active student community in Sri Lanka.
                 </p>
-                <button 
+                <button
                   onClick={() => navigate('/advertise/submit')}
                   className="flex items-center gap-2 px-8 py-4 bg-white text-blue-700 font-black text-sm uppercase tracking-widest rounded-2xl hover:bg-blue-50 hover:scale-105 transition-all group shadow-xl"
                 >
@@ -188,7 +188,7 @@ export default function AdvertiseSection() {
               {/* Corner glow */}
               <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/8 rounded-full blur-3xl" />
               <div className="absolute bottom-0 left-0 w-48 h-48 bg-purple-500/5 rounded-full blur-3xl" />
-              
+
               {/* Header */}
               <div className="flex items-center justify-between mb-5 relative z-10">
                 <h3 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
@@ -220,30 +220,27 @@ export default function AdvertiseSection() {
 
                 {/* Mock Website Layout */}
                 <div className="bg-slate-50 dark:bg-slate-850 border-x border-b border-slate-200 dark:border-slate-700/50 rounded-b-2xl overflow-hidden flex-1 flex flex-col relative" style={{ minHeight: '340px' }}>
-                  
+
                   {/* === 1. TOP BANNER ZONE === */}
-                  <div 
+                  <div
                     onClick={() => setActivePlacement(activePlacement === 'banner' ? null : 'banner')}
-                    className={`relative cursor-pointer transition-all duration-300 mx-2 mt-2 rounded-xl overflow-hidden ${
-                      activePlacement === 'banner' 
-                        ? `ring-2 ring-blue-500 ${placementData.banner.glowColor} shadow-lg scale-[1.01]` 
-                        : 'hover:ring-1 hover:ring-blue-400/50'
-                    }`}
+                    className={`relative cursor-pointer transition-all duration-300 mx-2 mt-2 rounded-xl overflow-hidden ${activePlacement === 'banner'
+                      ? `ring-2 ring-blue-500 ${placementData.banner.glowColor} shadow-lg scale-[1.01]`
+                      : 'hover:ring-1 hover:ring-blue-400/50'
+                      }`}
                   >
-                    <div className={`h-12 flex items-center justify-between px-4 transition-all duration-300 ${
-                      activePlacement === 'banner'
-                        ? 'bg-gradient-to-r from-blue-600 to-cyan-500'
-                        : 'bg-gradient-to-r from-blue-600/20 to-cyan-500/20 dark:from-blue-600/30 dark:to-cyan-500/30'
-                    }`}>
+                    <div className={`h-12 flex items-center justify-between px-4 transition-all duration-300 ${activePlacement === 'banner'
+                      ? 'bg-gradient-to-r from-blue-600 to-cyan-500'
+                      : 'bg-gradient-to-r from-blue-600/20 to-cyan-500/20 dark:from-blue-600/30 dark:to-cyan-500/30'
+                      }`}>
                       <div className="flex items-center gap-2">
                         <LuLayoutDashboard className={`text-sm ${activePlacement === 'banner' ? 'text-white' : 'text-blue-500'}`} />
                         <span className={`text-[10px] font-black uppercase tracking-widest ${activePlacement === 'banner' ? 'text-white' : 'text-blue-500 dark:text-blue-400'}`}>
                           Your Banner Ad Here
                         </span>
                       </div>
-                      <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full ${
-                        activePlacement === 'banner' ? 'bg-white/20 text-white' : 'bg-blue-500/15 text-blue-500'
-                      }`}>
+                      <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full ${activePlacement === 'banner' ? 'bg-white/20 text-white' : 'bg-blue-500/15 text-blue-500'
+                        }`}>
                         970×90
                       </span>
                     </div>
@@ -255,7 +252,7 @@ export default function AdvertiseSection() {
 
                   {/* Main Content Area */}
                   <div className="flex flex-1 gap-2 px-2 py-2">
-                    
+
                     {/* Feed / Content Area */}
                     <div className="flex-1 flex flex-col gap-2">
                       {/* Mock Nav Bar */}
@@ -278,33 +275,29 @@ export default function AdvertiseSection() {
                       </div>
 
                       {/* === 3. NATIVE IN-FEED AD ZONE === */}
-                      <div 
+                      <div
                         onClick={() => setActivePlacement(activePlacement === 'infeed' ? null : 'infeed')}
-                        className={`relative cursor-pointer rounded-lg p-2.5 transition-all duration-300 ${
-                          activePlacement === 'infeed'
-                            ? `ring-2 ring-amber-500 ${placementData.infeed.glowColor} shadow-lg bg-gradient-to-r from-amber-500/15 to-orange-500/10 dark:from-amber-500/20 dark:to-orange-500/15 scale-[1.02]`
-                            : 'bg-white dark:bg-slate-800/60 border border-amber-300/30 dark:border-amber-500/20 hover:ring-1 hover:ring-amber-400/50'
-                        }`}
+                        className={`relative cursor-pointer rounded-lg p-2.5 transition-all duration-300 ${activePlacement === 'infeed'
+                          ? `ring-2 ring-amber-500 ${placementData.infeed.glowColor} shadow-lg bg-gradient-to-r from-amber-500/15 to-orange-500/10 dark:from-amber-500/20 dark:to-orange-500/15 scale-[1.02]`
+                          : 'bg-white dark:bg-slate-800/60 border border-amber-300/30 dark:border-amber-500/20 hover:ring-1 hover:ring-amber-400/50'
+                          }`}
                       >
                         <div className="flex gap-2 items-start">
-                          <div className={`w-10 h-10 rounded-lg shrink-0 flex items-center justify-center ${
-                            activePlacement === 'infeed'
-                              ? 'bg-gradient-to-br from-amber-500 to-orange-400'
-                              : 'bg-amber-500/10 dark:bg-amber-500/15'
-                          }`}>
+                          <div className={`w-10 h-10 rounded-lg shrink-0 flex items-center justify-center ${activePlacement === 'infeed'
+                            ? 'bg-gradient-to-br from-amber-500 to-orange-400'
+                            : 'bg-amber-500/10 dark:bg-amber-500/15'
+                            }`}>
                             <LuRss className={`text-xs ${activePlacement === 'infeed' ? 'text-white' : 'text-amber-500'}`} />
                           </div>
                           <div className="flex-1 space-y-1.5">
                             <div className="flex items-center gap-1.5">
-                              <span className={`text-[8px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded ${
-                                activePlacement === 'infeed' ? 'bg-amber-500 text-white' : 'bg-amber-500/15 text-amber-600 dark:text-amber-400'
-                              }`}>
+                              <span className={`text-[8px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded ${activePlacement === 'infeed' ? 'bg-amber-500 text-white' : 'bg-amber-500/15 text-amber-600 dark:text-amber-400'
+                                }`}>
                                 Sponsored
                               </span>
                             </div>
-                            <div className={`text-[9px] font-bold uppercase tracking-wider ${
-                              activePlacement === 'infeed' ? 'text-amber-700 dark:text-amber-300' : 'text-slate-500 dark:text-slate-400'
-                            }`}>
+                            <div className={`text-[9px] font-bold uppercase tracking-wider ${activePlacement === 'infeed' ? 'text-amber-700 dark:text-amber-300' : 'text-slate-500 dark:text-slate-400'
+                              }`}>
                               Your In-Feed Ad Here
                             </div>
                             <div className="w-3/4 h-1.5 bg-slate-100 dark:bg-slate-700/50 rounded-full" />
@@ -326,28 +319,24 @@ export default function AdvertiseSection() {
                     </div>
 
                     {/* === 2. SIDEBAR WIDGET ZONE === */}
-                    <div 
+                    <div
                       onClick={() => setActivePlacement(activePlacement === 'sidebar' ? null : 'sidebar')}
-                      className={`w-[90px] shrink-0 cursor-pointer rounded-lg transition-all duration-300 overflow-hidden ${
-                        activePlacement === 'sidebar'
-                          ? `ring-2 ring-emerald-500 ${placementData.sidebar.glowColor} shadow-lg scale-[1.02]`
-                          : 'hover:ring-1 hover:ring-emerald-400/50'
-                      }`}
+                      className={`w-[90px] shrink-0 cursor-pointer rounded-lg transition-all duration-300 overflow-hidden ${activePlacement === 'sidebar'
+                        ? `ring-2 ring-emerald-500 ${placementData.sidebar.glowColor} shadow-lg scale-[1.02]`
+                        : 'hover:ring-1 hover:ring-emerald-400/50'
+                        }`}
                     >
-                      <div className={`h-full flex flex-col items-center justify-center gap-2 p-2 transition-all duration-300 ${
-                        activePlacement === 'sidebar'
-                          ? 'bg-gradient-to-b from-emerald-500/20 to-teal-500/15 dark:from-emerald-500/25 dark:to-teal-500/20'
-                          : 'bg-white/50 dark:bg-slate-800/40 border border-emerald-300/30 dark:border-emerald-500/20'
-                      }`}>
-                        <LuPanelRight className={`text-lg ${activePlacement === 'sidebar' ? 'text-emerald-500' : 'text-emerald-500/50'}`} />
-                        <span className={`text-[8px] font-black uppercase tracking-wider text-center leading-tight ${
-                          activePlacement === 'sidebar' ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400 dark:text-slate-500'
+                      <div className={`h-full flex flex-col items-center justify-center gap-2 p-2 transition-all duration-300 ${activePlacement === 'sidebar'
+                        ? 'bg-gradient-to-b from-emerald-500/20 to-teal-500/15 dark:from-emerald-500/25 dark:to-teal-500/20'
+                        : 'bg-white/50 dark:bg-slate-800/40 border border-emerald-300/30 dark:border-emerald-500/20'
                         }`}>
+                        <LuPanelRight className={`text-lg ${activePlacement === 'sidebar' ? 'text-emerald-500' : 'text-emerald-500/50'}`} />
+                        <span className={`text-[8px] font-black uppercase tracking-wider text-center leading-tight ${activePlacement === 'sidebar' ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400 dark:text-slate-500'
+                          }`}>
                           Sidebar Ad
                         </span>
-                        <span className={`text-[7px] font-bold px-1.5 py-0.5 rounded-full ${
-                          activePlacement === 'sidebar' ? 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400' : 'bg-slate-100 dark:bg-slate-700 text-slate-400'
-                        }`}>
+                        <span className={`text-[7px] font-bold px-1.5 py-0.5 rounded-full ${activePlacement === 'sidebar' ? 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400' : 'bg-slate-100 dark:bg-slate-700 text-slate-400'
+                          }`}>
                           300×250
                         </span>
                         {/* Mini placeholder blocks */}
@@ -378,7 +367,7 @@ export default function AdvertiseSection() {
                           transition={{ type: 'spring', stiffness: 300, damping: 25 }}
                           className="w-[75%] bg-white dark:bg-slate-800 rounded-2xl p-4 shadow-2xl shadow-purple-500/20 border-2 border-purple-500 relative"
                         >
-                          <button 
+                          <button
                             onClick={(e) => { e.stopPropagation(); setActivePlacement(null); }}
                             className="absolute -top-2 -right-2 w-5 h-5 bg-purple-500 rounded-full flex items-center justify-center text-white hover:bg-purple-600 transition-colors"
                           >
@@ -403,7 +392,7 @@ export default function AdvertiseSection() {
 
                   {/* Popup trigger zone (bottom bar) */}
                   {activePlacement !== 'popup' && (
-                    <div 
+                    <div
                       onClick={() => setActivePlacement('popup')}
                       className="mx-2 mb-2 cursor-pointer"
                     >
@@ -433,22 +422,19 @@ export default function AdvertiseSection() {
                       <button
                         key={key}
                         onClick={() => setActivePlacement(isActive ? null : key)}
-                        className={`flex flex-col items-center gap-1.5 p-3 rounded-xl transition-all duration-300 border ${
-                          isActive 
-                            ? `${data.borderColor} ${data.bgHighlight} shadow-lg ${data.glowColor}` 
-                            : 'border-slate-100 dark:border-slate-700/50 bg-slate-50/80 dark:bg-slate-800/30 hover:border-slate-200 dark:hover:border-slate-600'
-                        }`}
+                        className={`flex flex-col items-center gap-1.5 p-3 rounded-xl transition-all duration-300 border ${isActive
+                          ? `${data.borderColor} ${data.bgHighlight} shadow-lg ${data.glowColor}`
+                          : 'border-slate-100 dark:border-slate-700/50 bg-slate-50/80 dark:bg-slate-800/30 hover:border-slate-200 dark:hover:border-slate-600'
+                          }`}
                       >
-                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300 ${
-                          isActive 
-                            ? `bg-gradient-to-br ${data.accentColor} text-white shadow-md` 
-                            : 'bg-slate-100 dark:bg-slate-700/50 text-slate-400 dark:text-slate-500'
-                        }`}>
+                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300 ${isActive
+                          ? `bg-gradient-to-br ${data.accentColor} text-white shadow-md`
+                          : 'bg-slate-100 dark:bg-slate-700/50 text-slate-400 dark:text-slate-500'
+                          }`}>
                           <Icon size={14} />
                         </div>
-                        <span className={`text-[9px] font-bold uppercase tracking-wider text-center leading-tight transition-colors ${
-                          isActive ? data.textColor : 'text-slate-400 dark:text-slate-500'
-                        }`}>
+                        <span className={`text-[9px] font-bold uppercase tracking-wider text-center leading-tight transition-colors ${isActive ? data.textColor : 'text-slate-400 dark:text-slate-500'
+                          }`}>
                           {data.title}
                         </span>
                       </button>

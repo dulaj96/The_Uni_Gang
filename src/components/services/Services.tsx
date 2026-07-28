@@ -85,7 +85,7 @@ const Services = () => {
 
       {/* ── Background Patterns (Indigo/Blue Theme) ── */}
       <div className="absolute inset-0 pointer-events-none">
-        <div 
+        <div
           className="absolute inset-0 opacity-[0.02] dark:opacity-[0.03]"
           style={{
             backgroundImage: 'radial-gradient(circle, #4f46e5 1px, transparent 1px)',
@@ -113,9 +113,9 @@ const Services = () => {
           transition={{ duration: 0.8 }}
           className="text-center mb-20"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-black text-[10px] uppercase tracking-widest mb-4">
+          {/* <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-black text-[10px] uppercase tracking-widest mb-4">
             <LuTrendingUp className="text-sm" /> Digital Agency Solutions
-          </div>
+          </div> */}
           <h2 className="text-4xl md:text-6xl font-extrabold text-slate-900 dark:text-white mb-6 tracking-tight">
             Our Premium <span className="text-indigo-600 italic">Services</span>
           </h2>
@@ -136,12 +136,12 @@ const Services = () => {
             className="lg:col-span-4 flex flex-col justify-between"
           >
             <TiltCard className="h-full">
-              <div 
+              <div
                 onClick={handleExploreServices}
                 className="relative h-full bg-gradient-to-b from-indigo-500/10 via-blue-500/5 to-slate-900/10 dark:from-indigo-500/5 dark:via-blue-500/5 dark:to-[#090d1f] backdrop-blur-2xl p-8 rounded-[2.5rem] border border-indigo-500/20 dark:border-indigo-500/10 hover:border-indigo-500/50 transition-all duration-500 shadow-2xl flex flex-col justify-between overflow-hidden cursor-pointer group min-h-[420px]"
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                
+
                 <div className="relative z-10">
                   <div className="flex items-center justify-between mb-8">
                     <div className="w-12 h-12 rounded-xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -180,7 +180,7 @@ const Services = () => {
                   <div className="flex items-center justify-around py-5 relative mt-4">
                     {/* Glowing dotted line */}
                     <div className="absolute left-6 right-6 top-1/2 -translate-y-1/2 h-0.5 border-t border-dashed border-indigo-500/20 dark:border-slate-800" />
-                    
+
                     {[
                       { step: '1', label: 'Configure', desc: 'Pick features' },
                       { step: '2', label: 'Calculate', desc: 'Real-time LKR' },
@@ -231,7 +231,7 @@ const Services = () => {
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-slate-950/20 to-transparent" />
-                  
+
                   {/* Floating Icon badge over image */}
                   <div className={`absolute bottom-3 right-3 p-2.5 rounded-xl bg-white/90 dark:bg-slate-950/90 backdrop-blur shadow-lg border border-white/20 ${cat.accentColor} group-hover:scale-110 transition-transform`}>
                     {cat.icon}

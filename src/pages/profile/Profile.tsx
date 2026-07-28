@@ -2565,9 +2565,6 @@ const Profile = () => {
                             if (!res.ok) throw new Error(data.message || 'Failed to send code');
                             
                             toast.success('Verification code generated successfully!');
-                            if (data.debugCode) {
-                              toast.success(`Debug Code: ${data.debugCode}`, { duration: 8000 });
-                            }
                             setEmailVerificationStep('enter_code');
                             setIsVerificationPending(true);
                           } catch (err: any) {

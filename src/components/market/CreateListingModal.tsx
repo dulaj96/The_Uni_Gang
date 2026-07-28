@@ -104,10 +104,6 @@ const CreateListingModal: React.FC<CreateListingModalProps> = ({ isOpen, onClose
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || 'Failed to send verification code');
       
-      if (data.debugCode) {
-        alert(`Development verification code generated: ${data.debugCode}`);
-      }
-
       setEmailStep('enter_code');
     } catch (err: any) {
       setError(err.message || 'Failed to send verification code');

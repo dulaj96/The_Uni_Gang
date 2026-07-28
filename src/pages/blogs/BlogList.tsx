@@ -130,9 +130,9 @@ const BlogList: React.FC = () => {
                     <span className="text-slate-600 dark:text-slate-400">Blogs</span>
                   </div> */}
 
-                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-100/50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs font-black uppercase tracking-widest border border-blue-200/50 dark:border-blue-800/50">
+                  {/* <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-100/50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs font-black uppercase tracking-widest border border-blue-200/50 dark:border-blue-800/50">
                     <LuSparkles className="animate-pulse" /> Intellectual Pulse
-                  </div>
+                  </div> */}
                   <h1 className="text-6xl md:text-8xl font-black text-slate-900 dark:text-white leading-[0.9] tracking-tighter">
                     Campus <br />
                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Blogs.</span>
