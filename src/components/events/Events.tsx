@@ -10,13 +10,10 @@ import {
   LuSparkles,
   LuGraduationCap,
   LuMapPin,
-  LuClock,
   LuTrendingUp,
   LuMusic,
   LuCode,
-  LuTrophy,
-  LuUsers,
-  LuCheck
+  LuTrophy
 } from 'react-icons/lu';
 import TiltCard from '../ui/TiltCard.tsx';
 import PremiumPageLoader from '../ui/PremiumPageLoader';

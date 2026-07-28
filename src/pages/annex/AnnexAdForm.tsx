@@ -662,6 +662,31 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
                       >
                         {geocodeLoading ? 'Searching...' : 'Search'}
                       </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (navigator.geolocation) {
+                            toast.loading('Detecting your GPS location...', { id: 'gps' });
+                            navigator.geolocation.getCurrentPosition(
+                              (pos) => {
+                                const lat = parseFloat(pos.coords.latitude.toFixed(6));
+                                const lng = parseFloat(pos.coords.longitude.toFixed(6));
+                                setValue('latitude', lat);
+                                setValue('longitude', lng);
+                                toast.success('Exact GPS Location pinned!', { id: 'gps' });
+                              },
+                              () => {
+                                toast.error('Unable to fetch GPS. Please enable location permissions.', { id: 'gps' });
+                              }
+                            );
+                          } else {
+                            toast.error('Geolocation is not supported by your browser.');
+                          }
+                        }}
+                        className="px-4 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl hover:shadow-lg transition-all active:scale-95 shrink-0 border-none cursor-pointer flex items-center gap-1"
+                      >
+                        📍 GPS
+                      </button>
                     </div>
 
                     {/* Suggestions Dropdown */}

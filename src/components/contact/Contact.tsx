@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LuSend, LuPhone, LuMail, LuMapPin, LuMessageSquareQuote, LuMonitor, LuSearch, LuCalendarDays, LuUsers, LuStar, LuChevronDown, LuUser, LuCopy, LuCheck, LuGraduationCap } from 'react-icons/lu';
-import { FiHome } from 'react-icons/fi';
+import { LuSend, LuPhone, LuMail, LuMapPin, LuMessageSquareQuote, LuStar, LuChevronDown, LuUser, LuCopy, LuCheck } from 'react-icons/lu';
 import TiltCard from '../ui/TiltCard.tsx';
 import toast from 'react-hot-toast';
 import { api } from '../../api';

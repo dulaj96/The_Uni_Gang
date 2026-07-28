@@ -1,11 +1,9 @@
 import { motion } from 'framer-motion';
 import {
-  LuMapPin, LuUsers, LuShieldCheck, LuArrowRight, LuTrendingUp,
-  LuSparkles, LuCheckCircle2, LuHelpCircle, LuSearch
+  LuMapPin, LuUsers, LuShieldCheck, LuArrowRight
 } from 'react-icons/lu';
 import { FiHome } from 'react-icons/fi';
 import TiltCard from '../ui/TiltCard.tsx';
-import PremiumTraceButton from '../ui/PremiumTraceButton';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 

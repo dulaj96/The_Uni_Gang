@@ -153,7 +153,77 @@ const Profile = () => {
 
   // Unified Inbox states
   const [showInboxModal, setShowInboxModal] = useState(false);
-  const [inboxTab, setInboxTab] = useState<'marketplace' | 'events' | 'support'>('marketplace');
+  const [inboxTab, setInboxTab] = useState<'annex' | 'marketplace' | 'events' | 'support'>('annex');
+
+  // Annex Chat states
+  const [annexChats, setAnnexChats] = useState<any[]>([]);
+  const [loadingAnnexChats, setLoadingAnnexChats] = useState(false);
+  const [selectedAnnexChat, setSelectedAnnexChat] = useState<any | null>(null);
+  const [annexChatMessages, setAnnexChatMessages] = useState<any[]>([]);
+  const [annexChatText, setAnnexChatText] = useState('');
+
+  const fetchAnnexChats = async () => {
+    try {
+      setLoadingAnnexChats(true);
+      const token = localStorage.getItem('userToken');
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}/api/annexes/chats`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data.success) {
+        setAnnexChats(data.chats || []);
+      }
+    } catch (err) {
+      console.error('Failed to load annex chats:', err);
+    } finally {
+      setLoadingAnnexChats(false);
+    }
+  };
+
+  const fetchAnnexMessages = async (chatId: string) => {
+    try {
+      const token = localStorage.getItem('userToken');
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}/api/annexes/chats/${chatId}/messages`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data.success) {
+        setAnnexChatMessages(data.messages || []);
+      }
+    } catch (err) {
+      console.error('Failed to load annex messages:', err);
+    }
+  };
+
+  const handleSendAnnexMessage = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedAnnexChat || !annexChatText.trim()) return;
+
+    try {
+      const token = localStorage.getItem('userToken');
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}/api/annexes/chats/${selectedAnnexChat.id}/messages`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ message: annexChatText.trim() })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setAnnexChatMessages(prev => [...prev, data.message]);
+        setAnnexChatText('');
+      }
+    } catch (err) {
+      console.error('Failed to send message:', err);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedAnnexChat) {
+      fetchAnnexMessages(selectedAnnexChat.id);
+    }
+  }, [selectedAnnexChat]);
 
   // Marketplace states
   const [marketplaceChats, setMarketplaceChats] = useState<any[]>([]);
@@ -2074,8 +2144,22 @@ const Profile = () => {
                       </div>
 
                       {/* Tab Selection Row (Hidden if a specific chat or ticket detail is open) */}
-                      {!selectedChat && !selectedEventChat && !selectedSupportTicket && (
+                      {!selectedChat && !selectedEventChat && !selectedSupportTicket && !selectedAnnexChat && (
                         <div className="flex flex-wrap gap-2 mb-6 bg-slate-100 dark:bg-slate-900/50 p-1.5 rounded-2xl w-fit">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setInboxTab('annex');
+                              fetchAnnexChats();
+                            }}
+                            className={`px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
+                              inboxTab === 'annex'
+                                ? 'bg-blue-600 text-white shadow-md'
+                                : 'text-slate-400 hover:text-slate-700 dark:hover:text-white bg-transparent border-none cursor-pointer'
+                            }`}
+                          >
+                            🏠 Bodim / Annexes ({annexChats.length})
+                          </button>
                           <button
                             type="button"
                             onClick={() => setInboxTab('marketplace')}
@@ -2113,6 +2197,137 @@ const Profile = () => {
                       )}
 
                       <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
+                        {/* ── ANNEX TAB CONTENT ── */}
+                        {inboxTab === 'annex' && (
+                          <AnimatePresence mode="wait">
+                            {!selectedAnnexChat ? (
+                              <motion.div
+                                key="annex-list"
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: 10 }}
+                                className="space-y-4"
+                              >
+                                {loadingAnnexChats ? (
+                                  <div className="py-20 text-center text-slate-400 dark:text-slate-500 animate-pulse font-black uppercase tracking-widest text-xs">
+                                    Synchronizing annex inquiries...
+                                  </div>
+                                ) : annexChats.length === 0 ? (
+                                  <div className="py-20 text-center bg-slate-500/5 border border-slate-200/10 dark:border-white/10 rounded-3xl">
+                                    <p className="text-slate-500 font-bold uppercase tracking-widest text-xs mb-2">No Annex Inquiries Yet</p>
+                                    <p className="text-[10px] text-slate-400 font-semibold">Click "Send Inquiry" on any Annex card to chat with landlords in real-time.</p>
+                                  </div>
+                                ) : (
+                                  <div className="grid grid-cols-1 gap-4">
+                                    {annexChats.map((chat) => {
+                                      const currentUserId = localStorage.getItem('userId');
+                                      const otherUser = chat.student_id === currentUserId ? chat.landlord : chat.student;
+                                      const otherName = otherUser?.name || 'Landlord / Student';
+                                      const otherPic = otherUser?.profile_pic || `https://api.dicebear.com/7.x/avataaars/svg?seed=${otherName}`;
+                                      const annexTitle = chat.annex?.title || 'Annex Listing';
+
+                                      return (
+                                        <div
+                                          key={chat.id}
+                                          onClick={() => setSelectedAnnexChat(chat)}
+                                          className="cursor-pointer p-5 bg-slate-50 dark:bg-slate-900/40 border border-slate-100 dark:border-white/10 rounded-3xl hover:border-blue-500/30 hover:bg-slate-100/50 dark:hover:bg-slate-800/40 transition-all duration-300 shadow-sm flex items-center justify-between gap-4 group"
+                                        >
+                                          <div className="flex items-center gap-4 min-w-0">
+                                            <img src={otherPic} alt={otherName} className="w-12 h-12 rounded-full object-cover border border-slate-200 dark:border-white/10 shrink-0" />
+                                            <div className="min-w-0 text-left">
+                                              <h4 className="text-base font-black text-slate-800 dark:text-white group-hover:text-blue-500 transition-colors truncate">
+                                                {otherName}
+                                              </h4>
+                                              <p className="text-slate-400 dark:text-slate-500 text-xs font-bold truncate mt-0.5">Regarding: 🏠 {annexTitle}</p>
+                                            </div>
+                                          </div>
+                                          <LuChevronRight size={18} className="text-slate-400 group-hover:translate-x-1 transition-transform flex-shrink-0" />
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                )}
+                              </motion.div>
+                            ) : (
+                              <motion.div
+                                key="annex-detail"
+                                initial={{ opacity: 0, x: 10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -10 }}
+                                className="flex flex-col h-full overflow-hidden text-left"
+                              >
+                                <div className="flex justify-between items-start mb-4 border-b border-slate-100 dark:border-white/5 pb-4">
+                                  <div className="flex items-center gap-3">
+                                    <button
+                                      type="button"
+                                      onClick={() => setSelectedAnnexChat(null)}
+                                      className="text-xs font-black uppercase text-blue-500 hover:text-blue-600 mr-2 bg-transparent border-none cursor-pointer font-bold"
+                                    >
+                                      ← Back
+                                    </button>
+                                    <img
+                                      src={(selectedAnnexChat.student_id === localStorage.getItem('userId') ? selectedAnnexChat.landlord : selectedAnnexChat.student)?.profile_pic || `https://api.dicebear.com/7.x/avataaars/svg?seed=${(selectedAnnexChat.student_id === localStorage.getItem('userId') ? selectedAnnexChat.landlord : selectedAnnexChat.student)?.name}`}
+                                      alt="Avatar"
+                                      className="w-10 h-10 rounded-full object-cover"
+                                    />
+                                    <div className="text-left">
+                                      <h3 className="text-lg font-black text-slate-800 dark:text-white leading-tight">
+                                        {(selectedAnnexChat.student_id === localStorage.getItem('userId') ? selectedAnnexChat.landlord : selectedAnnexChat.student)?.name}
+                                      </h3>
+                                      <p className="text-slate-400 dark:text-slate-500 text-xs font-bold truncate">Listing: 🏠 {selectedAnnexChat.annex?.title}</p>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div className="h-[320px] overflow-y-auto pr-1 space-y-3 custom-scrollbar flex flex-col bg-slate-50 dark:bg-slate-950/20 p-4 rounded-3xl mb-4">
+                                  {annexChatMessages.length === 0 ? (
+                                    <div className="my-auto text-center text-slate-400 text-xs font-bold">
+                                      No messages yet. Send a message to start inquiry.
+                                    </div>
+                                  ) : (
+                                    annexChatMessages.map((msg) => {
+                                      const isMe = msg.sender_id === localStorage.getItem('userId');
+                                      return (
+                                        <div
+                                          key={msg.id}
+                                          className={`flex flex-col max-w-[80%] ${isMe ? 'self-end items-end text-right' : 'self-start items-start text-left'}`}
+                                        >
+                                          <span className="text-[9px] font-bold text-slate-400 dark:text-slate-550 mb-0.5 px-1.5">
+                                            {isMe ? 'You' : msg.sender?.name} • {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                          </span>
+                                          <div className={`p-3.5 rounded-2xl text-xs font-semibold leading-relaxed ${
+                                            isMe
+                                              ? 'bg-blue-600 text-white rounded-tr-none'
+                                              : 'bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-tl-none'
+                                          }`}>
+                                            {msg.message}
+                                          </div>
+                                        </div>
+                                      );
+                                    })
+                                  )}
+                                </div>
+
+                                <form onSubmit={handleSendAnnexMessage} className="flex gap-2">
+                                  <input
+                                    type="text"
+                                    placeholder="Type your inquiry message here..."
+                                    value={annexChatText}
+                                    onChange={(e) => setAnnexChatText(e.target.value)}
+                                    className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/5 rounded-xl px-4 py-3.5 text-xs text-slate-700 dark:text-slate-250 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                  />
+                                  <button
+                                    type="submit"
+                                    className="bg-blue-600 hover:bg-blue-700 text-white px-5 rounded-xl transition-all shadow-xs flex items-center justify-center cursor-pointer border-none"
+                                  >
+                                    <LuSend size={15} />
+                                  </button>
+                                </form>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        )}
+
                         {/* ── MARKETPLACE TAB CONTENT ── */}
                         {inboxTab === 'marketplace' && (
                           <AnimatePresence mode="wait">

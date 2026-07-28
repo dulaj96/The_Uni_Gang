@@ -6,8 +6,6 @@ import {
   LuCamera,
   LuSearch,
   LuArrowRight,
-  LuTrendingUp,
-  LuSparkles,
   LuCheck,
   LuDollarSign,
   LuClock,

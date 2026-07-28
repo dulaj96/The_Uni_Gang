@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import {
     LuArrowRight, LuGraduationCap, LuSearch, LuArrowLeft, LuPlus,
-    LuHeart, LuMapPin, LuBedDouble, LuShowerHead, LuWifi, LuMap
+    LuHeart, LuMapPin, LuBedDouble, LuMap
 } from "react-icons/lu";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, Link } from "react-router-dom";
@@ -506,24 +506,38 @@ const AnnexList = () => {
                                                                     <h3 className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-blue-800 dark:group-hover:text-blue-400 transition-colors uppercase tracking-tight line-clamp-1">
                                                                         {item.title}
                                                                     </h3>
-                                                                    <p className="text-slate-500 dark:text-slate-400 text-xs flex items-center gap-1 mt-1 font-medium line-clamp-1">
-                                                                        <LuMapPin className="text-[14px] text-blue-800/60 dark:text-blue-400/60 flex-shrink-0" />
-                                                                        {item.address} {item.distanceToUni && `(📍 ${item.distanceToUni} km to campus)`}
-                                                                    </p>
+                                                                    <div className="flex flex-wrap items-center gap-2 mt-1">
+                                                                        <p className="text-slate-500 dark:text-slate-400 text-xs flex items-center gap-1 font-medium line-clamp-1">
+                                                                            <LuMapPin className="text-[14px] text-blue-800/60 dark:text-blue-400/60 flex-shrink-0" />
+                                                                            {item.address}
+                                                                        </p>
+                                                                        <span className="text-[10px] font-black bg-blue-500/10 text-blue-700 dark:text-blue-400 px-2 py-0.5 rounded-full border border-blue-500/20">
+                                                                            🚶 {item.walk_time_mins || item.walkTimeMins || 5} mins walk to gate
+                                                                        </span>
+                                                                    </div>
                                                                 </div>
                                                             </div>
 
-                                                            {/* Amenities Row */}
-                                                            <div className="flex items-center gap-4 py-4 border-y border-slate-200/50 dark:border-slate-800/50 mt-auto">
-                                                                <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 text-sm font-medium">
-                                                                    <LuBedDouble className="text-lg text-slate-400 dark:text-slate-500" /> {item.beds} Beds
-                                                                </div>
-                                                                <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 text-sm font-medium">
-                                                                    <LuShowerHead className="text-lg text-slate-400 dark:text-slate-500" /> {item.bath || "Shared Bath"}
-                                                                </div>
-                                                                <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 text-sm font-medium">
-                                                                    <LuWifi className="text-lg text-slate-400 dark:text-slate-500" /> Wi-Fi
-                                                                </div>
+                                                            {/* Amenities & SL Utilities Chips */}
+                                                            <div className="flex flex-wrap items-center gap-2 py-3 border-y border-slate-200/50 dark:border-slate-800/50 mt-auto">
+                                                                <span className="text-[10px] font-bold text-slate-600 dark:text-slate-300 flex items-center gap-1">
+                                                                    <LuBedDouble className="text-sm text-slate-400" /> {item.beds} Beds
+                                                                </span>
+                                                                {item.has_power_backup || item.hasPowerBackup ? (
+                                                                    <span className="text-[9px] font-black bg-amber-500/10 text-amber-600 dark:text-amber-400 px-2 py-0.5 rounded-md">
+                                                                        ⚡ Generator/UPS
+                                                                    </span>
+                                                                ) : null}
+                                                                {(item.has_water_tank !== false && item.hasWaterTank !== false) ? (
+                                                                    <span className="text-[9px] font-black bg-cyan-500/10 text-cyan-700 dark:text-cyan-400 px-2 py-0.5 rounded-md">
+                                                                        🚰 Water Tank
+                                                                    </span>
+                                                                ) : null}
+                                                                {(item.is_cooking_allowed !== false && item.isCookingAllowed !== false) ? (
+                                                                    <span className="text-[9px] font-black bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 px-2 py-0.5 rounded-md">
+                                                                        🍳 Cooking Allowed
+                                                                    </span>
+                                                                ) : null}
                                                             </div>
 
                                                             {/* Action Button */}
