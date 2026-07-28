@@ -11,6 +11,7 @@ import toast from 'react-hot-toast';
 import { api } from '../../api';
 import AdBanner from '../../components/advertise/AdBanner';
 import AdNativeFeed from '../../components/advertise/AdNativeFeed';
+import SEO from '../../components/SEO';
 
 const MarketplaceHome: React.FC = () => {
   const [filter, setFilter] = useState<'All' | 'PRODUCT' | 'GIG' | 'OFFICIAL_PRODUCT'>('All');
@@ -343,6 +344,30 @@ const MarketplaceHome: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#f8fafc] dark:bg-slate-950 pt-5 pb-20 transition-colors duration-500">
+      <SEO
+        title="Campus Marketplace & Hustle Hub | The Uni Gang"
+        description="Buy & sell cheap student gear, scientific calculators, textbooks, hoodies, and freelance services in Sri Lanka."
+        schemaData={{
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          "name": "Uni Gang Campus Marketplace",
+          "itemListElement": items.slice(0, 10).map((item, idx) => ({
+            "@type": "ListItem",
+            "position": idx + 1,
+            "item": {
+              "@type": "Product",
+              "name": item.title,
+              "description": item.description,
+              "offers": {
+                "@type": "Offer",
+                "price": item.price,
+                "priceCurrency": "LKR",
+                "availability": "https://schema.org/InStock"
+              }
+            }
+          }))
+        }}
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Premium Advanced Hero Section */}

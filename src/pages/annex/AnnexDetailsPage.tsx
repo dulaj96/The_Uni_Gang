@@ -188,7 +188,26 @@ const AnnexDetailsPage = () => {
 
       <SEO
         title={annex ? `${annex.title} - Annex details` : "Loading details..."}
-        description={annex ? annex.description : "Accommodation details."}
+        description={annex ? `🚶 ${annex.walkTimeMins || 5} mins walk to ${annex.university ? annex.university.name : 'Campus'}. ${annex.address}. Verified Student Accommodation.` : undefined}
+        image={annex && annex.images && annex.images[0] ? `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}${annex.images[0].imageUrl}` : undefined}
+        schemaData={annex ? {
+          "@context": "https://schema.org",
+          "@type": "Accommodation",
+          "name": annex.title,
+          "description": annex.address,
+          "image": annex.images && annex.images[0] ? `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}${annex.images[0].imageUrl}` : undefined,
+          "offers": {
+            "@type": "Offer",
+            "price": annex.price,
+            "priceCurrency": "LKR",
+            "availability": "https://schema.org/InStock"
+          },
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": annex.university ? annex.university.name : "Sri Lanka",
+            "addressCountry": "LK"
+          }
+        } : undefined}
       />
 
       <AnimatePresence>

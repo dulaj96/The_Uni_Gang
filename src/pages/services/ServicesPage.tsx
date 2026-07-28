@@ -19,6 +19,7 @@ import {
 import { api } from '../../api';
 import AuthCard from '../../components/auth/AuthCard';
 import AdBanner from '../../components/advertise/AdBanner';
+import SEO from '../../components/SEO';
 
 interface ServiceItem {
   id: number;
@@ -445,6 +446,33 @@ const ServicesPage = () => {
 
   return (
     <section className="relative py-20 bg-slate-50 dark:bg-[#020617] font-sans overflow-hidden min-h-screen">
+      <SEO
+        title="Digital & Creative Services | The Uni Gang"
+        description="Cutting-edge Web Development, Mobile Apps, SEO, Graphic Design, and Video Production for Sri Lankan businesses and student startups."
+        schemaData={{
+          "@context": "https://schema.org",
+          "@type": "Service",
+          "serviceType": "Software & Creative Digital Services",
+          "provider": {
+            "@type": "Organization",
+            "name": "The Uni Gang Digital Agency",
+            "url": "https://unigang.lk"
+          },
+          "areaServed": "LK",
+          "hasOfferCatalog": {
+            "@type": "OfferCatalog",
+            "name": "Uni Gang Digital Services",
+            "itemListElement": servicesData.map(s => ({
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": s.title,
+                "description": s.description
+              }
+            }))
+          }
+        }}
+      />
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none opacity-25 dark:opacity-40">
         <div className="absolute top-[10%] left-[5%] w-72 h-72 bg-blue-500/10 blur-[120px] rounded-full animate-pulse"></div>
         <div className="absolute bottom-[10%] right-[5%] w-96 h-96 bg-indigo-500/10 blur-[150px] rounded-full animate-pulse [animation-delay:2s]"></div>

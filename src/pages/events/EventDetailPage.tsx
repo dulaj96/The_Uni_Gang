@@ -159,6 +159,38 @@ const EventDetailPage: React.FC = () => {
             <SEO 
                 title={`${event.title} - The Uni Gang`}
                 description={event.description}
+                image={imageUrl}
+                schemaData={{
+                    "@context": "https://schema.org",
+                    "@type": "Event",
+                    "name": event.title,
+                    "startDate": event.date,
+                    "eventStatus": "https://schema.org/EventScheduled",
+                    "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+                    "location": {
+                        "@type": "Place",
+                        "name": event.location,
+                        "address": {
+                            "@type": "PostalAddress",
+                            "addressLocality": event.uni || "Sri Lanka",
+                            "addressCountry": "LK"
+                        }
+                    },
+                    "image": [imageUrl],
+                    "description": event.description,
+                    "offers": {
+                        "@type": "Offer",
+                        "url": window.location.href,
+                        "price": "0",
+                        "priceCurrency": "LKR",
+                        "availability": "https://schema.org/InStock"
+                    },
+                    "organizer": {
+                        "@type": "Organization",
+                        "name": event.uni || "The Uni Gang",
+                        "url": "https://unigang.lk"
+                    }
+                }}
             />
             
             {/* Back Button */}
