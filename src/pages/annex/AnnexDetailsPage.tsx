@@ -487,8 +487,16 @@ const AnnexDetailsPage = () => {
                       }}
                       className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3.5 rounded-full font-bold shadow-lg shadow-indigo-600/30 transition-all flex items-center justify-center gap-2 active:scale-95 text-sm cursor-pointer border-none"
                     >
-                      <LuMessageCircle className="text-xl shrink-0" /> 💬 Send Inquiry to Landlord
+                      <LuMessageCircle className="text-xl shrink-0" /> 💬 Send Inquiry
                     </button>
+                    <a
+                      href={`https://api.whatsapp.com/send?text=${encodeURIComponent(`Check out this student accommodation on The Uni Gang: ${annex.title}\n\nhttps://unigang.lk/share/annex/${annex.id}`)}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="bg-[#25D366] hover:bg-[#20bd5a] text-white px-5 py-3.5 rounded-full font-bold shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2 active:scale-95 text-sm cursor-pointer border-none decoration-none whitespace-nowrap"
+                    >
+                      📲 Share Link
+                    </a>
                   </div>
                 </div>
               </section>
