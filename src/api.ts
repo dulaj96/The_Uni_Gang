@@ -690,5 +690,162 @@ export const api = {
     if (!response.ok) throw new Error('Failed to fetch support tickets');
     const data = await response.json();
     return data.problems || [];
+  },
+
+  // ─── ADMIN MODERATION DASHBOARD API ────────────────────────────
+  getAdminUsers: async (token: string): Promise<any[]> => {
+    const response = await fetch(`${BASE_URL}/api/admin/users`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!response.ok) throw new Error('Failed to fetch admin users');
+    return response.json();
+  },
+
+  verifyAdminUser: async (userId: string, token: string): Promise<any> => {
+    const response = await fetch(`${BASE_URL}/api/admin/users/${userId}/verify`, {
+      method: 'PUT',
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!response.ok) throw new Error('Failed to verify user');
+    return response.json();
+  },
+
+  updateAdminUser: async (userId: string, data: any, token: string): Promise<any> => {
+    const response = await fetch(`${BASE_URL}/api/admin/users/${userId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify(data)
+    });
+    if (!response.ok) throw new Error('Failed to update user');
+    return response.json();
+  },
+
+  getAdminAnnexes: async (token: string): Promise<any[]> => {
+    const response = await fetch(`${BASE_URL}/api/annexes/admin`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!response.ok) throw new Error('Failed to fetch admin annexes');
+    return response.json();
+  },
+
+  updateAdminAnnexStatus: async (annexId: string, status: string, token: string): Promise<any> => {
+    const response = await fetch(`${BASE_URL}/api/annexes/${annexId}/status`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({ status })
+    });
+    if (!response.ok) throw new Error('Failed to update annex status');
+    return response.json();
+  },
+
+  deleteAdminAnnex: async (annexId: string, token: string): Promise<any> => {
+    const response = await fetch(`${BASE_URL}/api/annexes/${annexId}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!response.ok) throw new Error('Failed to delete annex');
+    return response.json();
+  },
+
+  getAdminMarketItems: async (token: string): Promise<any[]> => {
+    const response = await fetch(`${BASE_URL}/api/admin/market`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!response.ok) throw new Error('Failed to fetch admin market items');
+    return response.json();
+  },
+
+  updateAdminMarketStatus: async (itemId: string, status: string, token: string): Promise<any> => {
+    const response = await fetch(`${BASE_URL}/api/admin/market/${itemId}/status`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({ status })
+    });
+    if (!response.ok) throw new Error('Failed to update market status');
+    return response.json();
+  },
+
+  deleteAdminMarketItem: async (itemId: string, token: string): Promise<any> => {
+    const response = await fetch(`${BASE_URL}/api/admin/market/${itemId}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!response.ok) throw new Error('Failed to delete market item');
+    return response.json();
+  },
+
+  getAdminEvents: async (token: string): Promise<any[]> => {
+    const response = await fetch(`${BASE_URL}/api/events/admin/all`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!response.ok) throw new Error('Failed to fetch admin events');
+    const result = await response.json();
+    return result.data || [];
+  },
+
+  updateAdminEventStatus: async (eventId: string, status: string, token: string): Promise<any> => {
+    const response = await fetch(`${BASE_URL}/api/events/${eventId}/status`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({ status })
+    });
+    if (!response.ok) throw new Error('Failed to update event status');
+    return response.json();
+  },
+
+  getAdminFeedbacks: async (token: string): Promise<any[]> => {
+    const response = await fetch(`${BASE_URL}/api/support/admin/feedbacks`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!response.ok) throw new Error('Failed to fetch admin feedbacks');
+    const data = await response.json();
+    return data.feedbacks || [];
+  },
+
+  updateAdminFeedbackStatus: async (id: string, is_approved: boolean, token: string): Promise<any> => {
+    const response = await fetch(`${BASE_URL}/api/support/admin/feedbacks/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({ is_approved })
+    });
+    if (!response.ok) throw new Error('Failed to update feedback approval status');
+    return response.json();
+  },
+
+  getAdminProblems: async (token: string): Promise<any[]> => {
+    const response = await fetch(`${BASE_URL}/api/support/admin/problems`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!response.ok) throw new Error('Failed to fetch admin problem reports');
+    const data = await response.json();
+    return data.problems || [];
+  },
+
+  replyAdminProblem: async (id: string, status: string, adminReply: string, token: string): Promise<any> => {
+    const response = await fetch(`${BASE_URL}/api/support/admin/problems/${id}/reply`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({ status, adminReply })
+    });
+    if (!response.ok) throw new Error('Failed to submit reply');
+    return response.json();
   }
 };

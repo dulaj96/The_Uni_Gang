@@ -12,6 +12,7 @@ import SEO from '../../components/SEO';
 import toast from 'react-hot-toast';
 import { api } from '../../api';
 import { celebrate } from '../../utils/celebrate';
+import { playNotificationSound, requestNotificationPermission, triggerPushNotification } from '../../utils/sound';
 
 import PremiumPageLoader from '../../components/ui/PremiumPageLoader';
 
@@ -211,6 +212,7 @@ const Profile = () => {
       });
       const data = await res.json();
       if (data.success) {
+        playNotificationSound();
         setAnnexChatMessages(prev => [...prev, data.message]);
         setAnnexChatText('');
       }
@@ -224,6 +226,46 @@ const Profile = () => {
       fetchAnnexMessages(selectedAnnexChat.id);
     }
   }, [selectedAnnexChat]);
+
+  // 🔔 Real-time Socket Audio Chimes & Desktop Push Notifications Listener
+  useEffect(() => {
+    requestNotificationPermission();
+
+    const socketUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001';
+    const socket = io(socketUrl);
+
+    const userId = localStorage.getItem('userId');
+    if (userId) {
+      socket.emit('join_user_room', userId);
+    }
+
+    socket.on('new_annex_message', (data: any) => {
+      playNotificationSound();
+      triggerPushNotification('🏠 New Annex Inquiry Message', {
+        body: data.message?.message || 'You received a new inquiry message for your annex listing.'
+      });
+      fetchAnnexChats();
+    });
+
+    socket.on('new_market_message', (data: any) => {
+      playNotificationSound();
+      triggerPushNotification('🎁 New Marketplace Message', {
+        body: data.message?.message || 'You received a new message regarding a marketplace item.'
+      });
+    });
+
+    socket.on('new_event_message', (data: any) => {
+      playNotificationSound();
+      triggerPushNotification('📅 New Event Inquiry Message', {
+        body: data.message?.message || 'You received a new message regarding a campus event.'
+      });
+      fetchEventChats();
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   // Marketplace states
   const [marketplaceChats, setMarketplaceChats] = useState<any[]>([]);

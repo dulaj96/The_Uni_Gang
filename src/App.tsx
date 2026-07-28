@@ -41,6 +41,7 @@ import AdPopup from './components/advertise/AdPopup';
 
 import MarketplaceHome from './pages/market/MarketplaceHome';
 import ServicesPage from './pages/services/ServicesPage';
+import AdminDashboard from './pages/admin/AdminDashboard';
 import GoogleOneTap from './components/auth/GoogleOneTap';
 
 function App() {
@@ -123,6 +124,9 @@ function App() {
 
         {/* Services Dedicated Route */}
         <Route path="/services" element={<SubLayout><ServicesPage /></SubLayout>} />
+
+        {/* Admin Moderation Route */}
+        <Route path="/admin" element={<SubLayout><AdminDashboard /></SubLayout>} />
       </Routes>
 
       <WhatsAppButton />
