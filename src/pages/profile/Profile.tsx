@@ -996,213 +996,433 @@ const Profile = () => {
                   })}
                 </div>
 
-                <form onSubmit={handleSave} className="grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-12">
-                  {/* ── Personal Info Section ──────────────────────── */}
-                  <div className="space-y-10">
-                    
-                    {/* ── Verification Banner — 3 states ─── */}
-                    {!isVerifiedStudent && (
-                      isVerificationPending ? (
-                        /* Pending state — email entered, awaiting verification code */
-                        <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-3xl p-6 relative overflow-hidden">
-                          <div className="flex items-start gap-4 relative z-10">
-                            <div className="w-10 h-10 shrink-0 bg-amber-500/15 rounded-full flex items-center justify-center">
-                              <LuClock className="w-5 h-5 text-amber-600" />
-                            </div>
-                            <div>
-                              <h3 className="text-base font-black text-amber-900 mb-1">Verify Campus Email</h3>
-                              <p className="text-sm text-amber-700 font-medium">
-                                A verification code has been generated for your university email. Please enter the code to complete verification.
-                              </p>
-                              <button
-                                type="button"
-                                onClick={() => { setEmailVerificationStep('enter_code'); setShowVerifyIdModal(true); }}
-                                className="mt-4 inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white px-5 py-2.5 rounded-xl font-bold text-sm cursor-pointer transition-colors shadow-md shadow-amber-500/20"
-                              >
-                                <LuShieldCheck className="w-4 h-4" /> Enter Verification Code
-                              </button>
-                            </div>
-                          </div>
-                          <LuClock className="absolute -right-4 -bottom-4 w-28 h-28 text-amber-500/10" />
-                        </div>
-                      ) : (
-                        /* Not submitted — show verify email trigger */
-                        <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-3xl p-6 relative overflow-hidden shadow-xl border border-blue-400/30">
-                          <div className="flex items-start justify-between gap-4 relative z-10">
-                            <div>
-                              <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-bold uppercase tracking-wider mb-2">
-                                🎓 Official Student Verification
+                {/* ── TAB 1: OVERVIEW & PROFILE ──────────────────────────── */}
+                {activeProfileTab === 'overview' && (
+                  <form onSubmit={handleSave} className="grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-12 animate-in fade-in duration-300">
+                    {/* ── Personal Info Section ──────────────────────── */}
+                    <div className="space-y-10">
+                      
+                      {/* ── Verification Banner — 3 states ─── */}
+                      {!isVerifiedStudent && (
+                        isVerificationPending ? (
+                          /* Pending state — email entered, awaiting verification code */
+                          <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-3xl p-6 relative overflow-hidden">
+                            <div className="flex items-start gap-4 relative z-10">
+                              <div className="w-10 h-10 shrink-0 bg-amber-500/15 rounded-full flex items-center justify-center">
+                                <LuClock className="w-5 h-5 text-amber-600" />
                               </div>
-                              <h3 className="text-xl font-black text-white mb-2 flex items-center gap-2">
-                                Verify your .ac.lk Email for Instant Auto-Approval & Blue Badge!
-                              </h3>
-                              <p className="text-sm text-blue-100 font-medium mb-5 max-w-xl leading-relaxed">
-                                Get instant 10-second verification using your Sri Lankan university email (e.g. .ac.lk, sliit.lk, nsbm.ac.lk). Enjoy auto-approved marketplace ads and 3x higher trust!
-                              </p>
+                              <div>
+                                <h3 className="text-base font-black text-amber-900 mb-1">Verify Campus Email</h3>
+                                <p className="text-sm text-amber-700 font-medium">
+                                  A verification code has been generated for your university email. Please enter the code to complete verification.
+                                </p>
+                                <button
+                                  type="button"
+                                  onClick={() => { setEmailVerificationStep('enter_code'); setShowVerifyIdModal(true); }}
+                                  className="mt-4 inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white px-5 py-2.5 rounded-xl font-bold text-sm cursor-pointer transition-colors shadow-md shadow-amber-500/20 border-none"
+                                >
+                                  <LuShieldCheck className="w-4 h-4" /> Enter Verification Code
+                                </button>
+                              </div>
+                            </div>
+                            <LuClock className="absolute -right-4 -bottom-4 w-28 h-28 text-amber-500/10" />
+                          </div>
+                        ) : (
+                          /* Not submitted — show verify email trigger */
+                          <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-3xl p-6 relative overflow-hidden shadow-xl border border-blue-400/30">
+                            <div className="flex items-start justify-between gap-4 relative z-10">
+                              <div>
+                                <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-bold uppercase tracking-wider mb-2">
+                                  🎓 Official Student Verification
+                                </div>
+                                <h3 className="text-xl font-black text-white mb-2 flex items-center gap-2">
+                                  Verify your .ac.lk Email for Instant Auto-Approval & Blue Badge!
+                                </h3>
+                                <p className="text-sm text-blue-100 font-medium mb-5 max-w-xl leading-relaxed">
+                                  Get instant 10-second verification using your Sri Lankan university email (e.g. .ac.lk, sliit.lk, nsbm.ac.lk). Enjoy auto-approved marketplace ads and 3x higher trust!
+                                </p>
+                                <button
+                                  type="button"
+                                  onClick={() => { setEmailVerificationStep('enter_email'); setShowVerifyIdModal(true); }}
+                                  className="inline-flex items-center gap-2 bg-white text-blue-800 hover:bg-blue-50 px-6 py-3 rounded-2xl font-black text-sm cursor-pointer transition-all shadow-lg hover:scale-105 active:scale-95 border-none"
+                                >
+                                  <LuShieldCheck className="w-5 h-5 text-blue-600" /> Verify with Campus Email Now
+                                </button>
+                              </div>
+                            </div>
+                            <LuShieldCheck className="absolute -right-6 -bottom-6 w-36 h-36 text-white/10" />
+                          </div>
+                        )
+                      )}
+
+                      <div className="flex items-center gap-4 pb-4 border-b border-slate-100 dark:border-slate-800/60 mt-8">
+                        <div className="p-3 bg-blue-500/10 rounded-2xl text-blue-500"><LuUser className="w-6 h-6" /></div>
+                        <h2 className="text-xl font-black text-slate-800 dark:text-white tracking-tight">Personal Details</h2>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                        <div className="group space-y-3">
+                          <label className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 dark:text-slate-400 ml-2 group-focus-within:text-blue-500 dark:group-focus-within:text-blue-400 transition-colors">Forename</label>
+                          <div className="relative flex items-center">
+                            <div className={getIconClasses(isEditing, 'blue')}>
+                              <LuUser className="w-4 h-4" />
+                            </div>
+                            <input
+                              type="text"
+                              value={firstName}
+                              onChange={(e) => setFirstName(e.target.value)}
+                              disabled={!isEditing}
+                              className={getInputClasses(isEditing, 'blue')}
+                            />
+                          </div>
+                        </div>
+                        <div className="group space-y-3">
+                          <label className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 dark:text-slate-400 ml-2 group-focus-within:text-blue-500 dark:group-focus-within:text-blue-400 transition-colors">Surname</label>
+                          <div className="relative flex items-center">
+                            <div className={getIconClasses(isEditing, 'blue')}>
+                              <LuUser className="w-4 h-4" />
+                            </div>
+                            <input
+                              type="text"
+                              value={lastName}
+                              onChange={(e) => setLastName(e.target.value)}
+                              disabled={!isEditing}
+                              className={getInputClasses(isEditing, 'blue')}
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="group space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 dark:text-slate-400 ml-2 group-focus-within:text-blue-500 dark:group-focus-within:text-blue-400 transition-colors">Contact Number</label>
+                        <div className="relative flex items-center">
+                          <div className={getIconClasses(isEditing, 'blue')}>
+                            <LuPhone className="w-4 h-4" />
+                          </div>
+                          <input
+                            type="tel"
+                            value={phoneNumber}
+                            onChange={(e) => setPhoneNumber(e.target.value)}
+                            disabled={!isEditing}
+                            className={getInputClasses(isEditing, 'blue')}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="group space-y-3 opacity-90">
+                        <label className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 dark:text-slate-400 ml-2">Digital Signature (Email)</label>
+                        <div className="relative flex items-center">
+                          <div className="absolute left-3 p-2 rounded-full bg-slate-500/5 text-slate-400 dark:text-slate-500">
+                            <LuMail className="w-4 h-4" />
+                          </div>
+                          <input
+                            type="email"
+                            value={email}
+                            disabled={true}
+                            className="w-full pl-14 pr-8 py-5 rounded-full bg-slate-100/30 dark:bg-slate-800/10 border border-slate-200/40 dark:border-white/5 text-sm font-bold text-slate-500 dark:text-slate-400 cursor-not-allowed"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* ── Social & Academic Section ───────────────────── */}
+                    <div className="space-y-10">
+                      <div className="flex items-center gap-4 pb-4 border-b border-slate-100 dark:border-slate-800/60">
+                        <div className="p-3 bg-purple-500/10 rounded-2xl text-purple-500"><LuBuilding className="w-6 h-6" /></div>
+                        <h2 className="text-xl font-black text-slate-800 dark:text-white tracking-tight">University & Social Networks</h2>
+                      </div>
+
+                      <div className="group space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 dark:text-slate-400 ml-2 group-focus-within:text-purple-500 dark:group-focus-within:text-purple-400 transition-colors">Affiliated Institution</label>
+                        <div className="relative flex items-center">
+                          <div className={getIconClasses(isEditing, 'purple')}>
+                            <LuBuilding className="w-4 h-4" />
+                          </div>
+                          <input
+                            type="text"
+                            value={university}
+                            onChange={(e) => setUniversity(e.target.value)}
+                            disabled={!isEditing}
+                            placeholder="e.g. University of Moratuwa"
+                            className={getInputClasses(isEditing, 'purple')}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                        <div className="group space-y-3">
+                          <label className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 dark:text-slate-400 ml-2 group-focus-within:text-blue-600 dark:group-focus-within:text-blue-400 transition-colors">Facebook Profile</label>
+                          <div className="relative flex items-center">
+                            <div className={getIconClasses(isEditing, 'blue')}>
+                              <LuFacebook className="w-4 h-4" />
+                            </div>
+                            <input
+                              type="text"
+                              value={fbHandle}
+                              placeholder="@username"
+                              onChange={(e) => setFbHandle(e.target.value)}
+                              disabled={!isEditing}
+                              className={getInputClasses(isEditing, 'blue')}
+                            />
+                          </div>
+                        </div>
+                        <div className="group space-y-3">
+                          <label className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 dark:text-slate-400 ml-2 group-focus-within:text-indigo-600 dark:group-focus-within:text-indigo-400 transition-colors">LinkedIn Profile</label>
+                          <div className="relative flex items-center">
+                            <div className={getIconClasses(isEditing, 'indigo')}>
+                              <LuLinkedin className="w-4 h-4" />
+                            </div>
+                            <input
+                              type="text"
+                              value={linkedinHandle}
+                              placeholder="profile-id"
+                              onChange={(e) => setLinkedinHandle(e.target.value)}
+                              disabled={!isEditing}
+                              className={getInputClasses(isEditing, 'indigo')}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                )}
+
+                {/* ── TAB 2: MY ANNEXES & BOARDING PLACES ───────────────── */}
+                {activeProfileTab === 'annexes' && (
+                  <div className="space-y-8 animate-in fade-in duration-300">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-6 border-b border-slate-200/60 dark:border-slate-800">
+                      <div>
+                        <h2 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">My Boarding Places & Annexes</h2>
+                        <p className="text-sm text-slate-500 dark:text-slate-400">Manage your active boarding listings and view student inquiries</p>
+                      </div>
+                      <div className="flex gap-3 flex-wrap">
+                        <button
+                          type="button"
+                          onClick={() => { setShowInboxModal(true); setInboxTab('annex'); fetchAnnexChats(); }}
+                          className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs transition-all shadow-md flex items-center gap-2 border-none cursor-pointer"
+                        >
+                          <LuMessageSquare className="w-4 h-4" /> Annex Inquiries ({annexChats.length})
+                        </button>
+                        <a
+                          href="/post-ad"
+                          className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs transition-all shadow-md flex items-center gap-2 border-none cursor-pointer text-decoration-none"
+                        >
+                          <LuBuilding className="w-4 h-4" /> + Post New Annex
+                        </a>
+                      </div>
+                    </div>
+
+                    {myAnnexes.length > 0 ? (
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {myAnnexes.map((annexItem: any) => (
+                          <div key={annexItem.id} className="p-5 rounded-3xl bg-white/60 dark:bg-slate-900/60 border border-slate-200/60 dark:border-white/10 shadow-sm flex flex-col justify-between space-y-4">
+                            <div>
+                              <div className="flex justify-between items-start mb-2">
+                                <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${annexItem.status === 'Approved' ? 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-600 border border-amber-500/20'}`}>
+                                  {annexItem.status || 'Approved'}
+                                </span>
+                                <span className="text-lg font-black text-blue-600 dark:text-blue-400">Rs. {parseFloat(annexItem.price || 0).toLocaleString()}</span>
+                              </div>
+                              <h4 className="text-lg font-bold text-slate-900 dark:text-white line-clamp-1">{annexItem.title}</h4>
+                              <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1 mt-1">{annexItem.address}</p>
+                            </div>
+                            <a
+                              href={`/annex/${annexItem.id}`}
+                              className="w-full py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-blue-600 hover:text-white text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl text-center transition-all block text-decoration-none"
+                            >
+                              View Listing Details
+                            </a>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="p-12 text-center rounded-3xl bg-slate-100/50 dark:bg-slate-900/40 border border-dashed border-slate-300 dark:border-slate-800">
+                        <LuBuilding className="w-12 h-12 text-slate-400 mx-auto mb-3" />
+                        <h3 className="text-lg font-bold text-slate-800 dark:text-white">No Annex Listings Found</h3>
+                        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 mb-4">You have not posted any boarding places or annexes yet.</p>
+                        <a href="/post-ad" className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-bold text-xs rounded-xl shadow-md text-decoration-none">
+                          + Post Your Boarding Place
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* ── TAB 3: MARKETPLACE & ORDERS ──────────────────────── */}
+                {activeProfileTab === 'marketplace' && (
+                  <div className="space-y-8 animate-in fade-in duration-300">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-6 border-b border-slate-200/60 dark:border-slate-800">
+                      <div>
+                        <h2 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Marketplace & Orders</h2>
+                        <p className="text-sm text-slate-500 dark:text-slate-400">Manage your items for sale and view your buyer orders</p>
+                      </div>
+                      <div className="flex gap-3 flex-wrap">
+                        <button
+                          type="button"
+                          onClick={() => { setShowOrdersModal(true); fetchMyOrders(); }}
+                          className="px-5 py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl text-xs transition-all shadow-md flex items-center gap-2 border-none cursor-pointer"
+                        >
+                          <LuShoppingBag className="w-4 h-4" /> My Orders ({myOrders.length})
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => { setShowInboxModal(true); setInboxTab('marketplace'); fetchChats(); }}
+                          className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs transition-all shadow-md flex items-center gap-2 border-none cursor-pointer"
+                        >
+                          <LuMessageSquare className="w-4 h-4" /> Buyer Chats ({marketplaceChats.length})
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setShowListingsModal(true)}
+                          className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs transition-all shadow-md flex items-center gap-2 border-none cursor-pointer"
+                        >
+                          <LuLayoutGrid className="w-4 h-4" /> Manage Listings ({myListings.length})
+                        </button>
+                      </div>
+                    </div>
+
+                    {myListings.length > 0 ? (
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {myListings.map((item: any) => (
+                          <div key={item.id} className="p-5 rounded-3xl bg-white/60 dark:bg-slate-900/60 border border-slate-200/60 dark:border-white/10 shadow-sm flex flex-col justify-between space-y-4">
+                            <div>
+                              <div className="flex justify-between items-start mb-2">
+                                <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${item.status === 'AVAILABLE' ? 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-600 border border-amber-500/20'}`}>
+                                  {item.status || 'AVAILABLE'}
+                                </span>
+                                <span className="text-lg font-black text-indigo-600 dark:text-indigo-400">Rs. {parseFloat(item.price || 0).toLocaleString()}</span>
+                              </div>
+                              <h4 className="text-lg font-bold text-slate-900 dark:text-white line-clamp-1">{item.title}</h4>
+                              <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 mt-1">{item.description}</p>
+                            </div>
+                            <div className="flex gap-2">
                               <button
                                 type="button"
-                                onClick={() => { setEmailVerificationStep('enter_email'); setShowVerifyIdModal(true); }}
-                                className="inline-flex items-center gap-2 bg-white text-blue-800 hover:bg-blue-50 px-6 py-3 rounded-2xl font-black text-sm cursor-pointer transition-all shadow-lg hover:scale-105 active:scale-95 border-none"
+                                onClick={() => handleDeleteListing(item.id)}
+                                className="flex-1 py-2 bg-red-500/10 hover:bg-red-500 text-red-600 hover:text-white text-xs font-bold rounded-xl transition-all border-none cursor-pointer"
                               >
-                                <LuShieldCheck className="w-5 h-5 text-blue-600" /> Verify with Campus Email Now
+                                Delete
                               </button>
                             </div>
                           </div>
-                          <LuShieldCheck className="absolute -right-6 -bottom-6 w-36 h-36 text-white/10" />
-                        </div>
-                      )
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="p-12 text-center rounded-3xl bg-slate-100/50 dark:bg-slate-900/40 border border-dashed border-slate-300 dark:border-slate-800">
+                        <LuLayoutGrid className="w-12 h-12 text-slate-400 mx-auto mb-3" />
+                        <h3 className="text-lg font-bold text-slate-800 dark:text-white">No Marketplace Items</h3>
+                        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 mb-4">You have not listed any items for sale in the Hustle Hub yet.</p>
+                      </div>
                     )}
+                  </div>
+                )}
 
-                    <div className="flex items-center gap-4 pb-4 border-b border-slate-100 dark:border-slate-800/60 mt-8">
-                      <div className="p-3 bg-blue-500/10 rounded-2xl text-blue-500"><LuUser className="w-6 h-6" /></div>
-                      <h2 className="text-xl font-black text-slate-800 dark:text-white tracking-tight">Personal Details</h2>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                      <div className="group space-y-3">
-                        <label className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 dark:text-slate-400 ml-2 group-focus-within:text-blue-500 dark:group-focus-within:text-blue-400 transition-colors">Forename</label>
-                        <div className="relative flex items-center">
-                          <div className={getIconClasses(isEditing, 'blue')}>
-                            <LuUser className="w-4 h-4" />
-                          </div>
-                          <input
-                            type="text"
-                            value={firstName}
-                            onChange={(e) => setFirstName(e.target.value)}
-                            disabled={!isEditing}
-                            className={getInputClasses(isEditing, 'blue')}
-                          />
-                        </div>
+                {/* ── TAB 4: EVENTS, SERVICES & BLOGS ─────────────────── */}
+                {activeProfileTab === 'events' && (
+                  <div className="space-y-8 animate-in fade-in duration-300">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-6 border-b border-slate-200/60 dark:border-slate-800">
+                      <div>
+                        <h2 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Events, Services & Blogs</h2>
+                        <p className="text-sm text-slate-500 dark:text-slate-400">Manage your campus contributions and service requests</p>
                       </div>
-                      <div className="group space-y-3">
-                        <label className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 dark:text-slate-400 ml-2 group-focus-within:text-blue-500 dark:group-focus-within:text-blue-400 transition-colors">Surname</label>
-                        <div className="relative flex items-center">
-                          <div className={getIconClasses(isEditing, 'blue')}>
-                            <LuUser className="w-4 h-4" />
-                          </div>
-                          <input
-                            type="text"
-                            value={lastName}
-                            onChange={(e) => setLastName(e.target.value)}
-                            disabled={!isEditing}
-                            className={getInputClasses(isEditing, 'blue')}
-                          />
-                        </div>
+                      <div className="flex gap-3 flex-wrap">
+                        <button
+                          type="button"
+                          onClick={() => setShowEventsModal(true)}
+                          className="px-5 py-2.5 bg-pink-600 hover:bg-pink-700 text-white font-bold rounded-xl text-xs transition-all shadow-md flex items-center gap-2 border-none cursor-pointer"
+                        >
+                          <LuCalendar className="w-4 h-4" /> My Events ({submittedEvents.length})
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setShowServicesModal(true)}
+                          className="px-5 py-2.5 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl text-xs transition-all shadow-md flex items-center gap-2 border-none cursor-pointer"
+                        >
+                          <LuBriefcase className="w-4 h-4" /> Services ({serviceRequests.length})
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setShowBlogsModal(true)}
+                          className="px-5 py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl text-xs transition-all shadow-md flex items-center gap-2 border-none cursor-pointer"
+                        >
+                          <LuMessageSquare className="w-4 h-4" /> My Blogs ({submittedBlogs.length})
+                        </button>
                       </div>
                     </div>
 
-                    <div className="group space-y-3">
-                      <label className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 dark:text-slate-400 ml-2 group-focus-within:text-blue-500 dark:group-focus-within:text-blue-400 transition-colors">Contact Number</label>
-                      <div className="relative flex items-center">
-                        <div className={getIconClasses(isEditing, 'blue')}>
-                          <LuPhone className="w-4 h-4" />
-                        </div>
-                        <input
-                          type="tel"
-                          value={phoneNumber}
-                          onChange={(e) => setPhoneNumber(e.target.value)}
-                          disabled={!isEditing}
-                          className={getInputClasses(isEditing, 'blue')}
-                        />
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      <div className="p-6 rounded-3xl bg-pink-500/5 border border-pink-500/20 space-y-3">
+                        <LuCalendar className="w-8 h-8 text-pink-500" />
+                        <h3 className="text-lg font-extrabold text-slate-900 dark:text-white">Campus Events</h3>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">You have submitted {submittedEvents.length} campus event concepts.</p>
+                        <button type="button" onClick={() => setShowEventsModal(true)} className="px-4 py-2 bg-pink-600 text-white font-bold rounded-xl text-xs border-none cursor-pointer">View Events</button>
                       </div>
-                    </div>
 
-                    <div className="group space-y-3 opacity-90">
-                      <label className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 dark:text-slate-400 ml-2">Digital Signature (Email)</label>
-                      <div className="relative flex items-center">
-                        <div className="absolute left-3 p-2 rounded-full bg-slate-500/5 text-slate-400 dark:text-slate-500">
-                          <LuMail className="w-4 h-4" />
-                        </div>
-                        <input
-                          type="email"
-                          value={email}
-                          disabled={true}
-                          className="w-full pl-14 pr-8 py-5 rounded-full bg-slate-100/30 dark:bg-slate-800/10 border border-slate-200/40 dark:border-white/5 text-sm font-bold text-slate-500 dark:text-slate-400 cursor-not-allowed"
-                        />
+                      <div className="p-6 rounded-3xl bg-sky-500/5 border border-sky-500/20 space-y-3">
+                        <LuBriefcase className="w-8 h-8 text-sky-500" />
+                        <h3 className="text-lg font-extrabold text-slate-900 dark:text-white">Service Requests</h3>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">You have {serviceRequests.length} active service requests.</p>
+                        <button type="button" onClick={() => setShowServicesModal(true)} className="px-4 py-2 bg-sky-600 text-white font-bold rounded-xl text-xs border-none cursor-pointer">View Services</button>
+                      </div>
+
+                      <div className="p-6 rounded-3xl bg-purple-500/5 border border-purple-500/20 space-y-3">
+                        <LuMessageSquare className="w-8 h-8 text-purple-500" />
+                        <h3 className="text-lg font-extrabold text-slate-900 dark:text-white">Student Blogs</h3>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">You have written {submittedBlogs.length} blog articles.</p>
+                        <button type="button" onClick={() => setShowBlogsModal(true)} className="px-4 py-2 bg-purple-600 text-white font-bold rounded-xl text-xs border-none cursor-pointer">View Blogs</button>
                       </div>
                     </div>
                   </div>
+                )}
 
-                  {/* ── Connectivity & Security Section ───────────────── */}
-                  <div className="space-y-10">
-                    <div className="flex items-center gap-4 pb-4 border-b border-slate-100 dark:border-slate-800/60">
-                      <div className="p-3 bg-purple-500/10 rounded-2xl text-purple-500"><LuLock className="w-6 h-6" /></div>
-                      <h2 className="text-xl font-black text-slate-800 dark:text-white tracking-tight">Connectivity</h2>
+                {/* ── TAB 5: SECURITY & PREFERENCES ────────────────────── */}
+                {activeProfileTab === 'security' && (
+                  <div className="space-y-8 animate-in fade-in duration-300 max-w-2xl mx-auto">
+                    <div className="pb-6 border-b border-slate-200/60 dark:border-slate-800">
+                      <h2 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Security & Preferences</h2>
+                      <p className="text-sm text-slate-500 dark:text-slate-400">Manage your password, sound notifications, and account options</p>
                     </div>
 
-                    <div className="group space-y-3">
-                      <label className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 dark:text-slate-400 ml-2 group-focus-within:text-purple-500 dark:group-focus-within:text-purple-400 transition-colors">Alma Mater</label>
-                      <div className="relative flex items-center">
-                        <div className={getIconClasses(isEditing, 'purple')}>
-                          <LuBuilding className="w-4 h-4" />
-                        </div>
-                        <input
-                          type="text"
-                          value={university}
-                          onChange={(e) => setUniversity(e.target.value)}
-                          disabled={!isEditing}
-                          className={getInputClasses(isEditing, 'purple')}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                    <form onSubmit={handleSave} className="space-y-6 bg-white/40 dark:bg-slate-900/40 p-6 rounded-3xl border border-slate-200/60 dark:border-white/10">
                       <div className="group space-y-3">
-                        <label className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 dark:text-slate-400 ml-2 group-focus-within:text-blue-600 dark:group-focus-within:text-blue-400 transition-colors">Facebook ID</label>
+                        <label className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 dark:text-slate-400 ml-2">Security Key (Password)</label>
                         <div className="relative flex items-center">
-                          <div className={getIconClasses(isEditing, 'blue')}>
-                            <LuFacebook className="w-4 h-4" />
+                          <div className={getIconClasses(isEditing, 'brand')}>
+                            <LuLock className="w-4 h-4" />
                           </div>
                           <input
-                            type="text"
-                            value={fbHandle}
-                            placeholder="@username"
-                            onChange={(e) => setFbHandle(e.target.value)}
+                            type={showPassword ? "text" : "password"}
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
                             disabled={!isEditing}
-                            className={getInputClasses(isEditing, 'blue')}
+                            className={getInputClasses(isEditing, 'brand', true)}
                           />
+                          {isEditing && (
+                            <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-6 text-slate-400 hover:text-red-500 transition-colors">
+                              {showPassword ? <LuEyeOff size={18} /> : <LuEye size={18} />}
+                            </button>
+                          )}
                         </div>
                       </div>
-                      <div className="group space-y-3">
-                        <label className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 dark:text-slate-400 ml-2 group-focus-within:text-indigo-600 dark:group-focus-within:text-indigo-400 transition-colors">LinkedIn Profile</label>
-                        <div className="relative flex items-center">
-                          <div className={getIconClasses(isEditing, 'indigo')}>
-                            <LuLinkedin className="w-4 h-4" />
-                          </div>
-                          <input
-                            type="text"
-                            value={linkedinHandle}
-                            placeholder="profile-id"
-                            onChange={(e) => setLinkedinHandle(e.target.value)}
-                            disabled={!isEditing}
-                            className={getInputClasses(isEditing, 'indigo')}
-                          />
-                        </div>
-                      </div>
-                    </div>
 
-                    <div className="group space-y-3">
-                      <label className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 dark:text-slate-400 ml-2 group-focus-within:text-red-500 dark:group-focus-within:text-red-400 transition-colors">Security Key</label>
-                      <div className="relative flex items-center">
-                        <div className={getIconClasses(isEditing, 'brand')}>
-                          <LuLock className="w-4 h-4" />
-                        </div>
-                        <input
-                          type={showPassword ? "text" : "password"}
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                          disabled={!isEditing}
-                          className={getInputClasses(isEditing, 'brand', true)}
-                        />
-                        {isEditing && (
-                          <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-6 text-slate-400 hover:text-red-500 transition-colors">
-                            {showPassword ? <LuEyeOff size={18} /> : <LuEye size={18} />}
-                          </button>
-                        )}
+                      {isEditing && (
+                        <button type="submit" className="w-full py-3 bg-blue-600 text-white font-bold rounded-2xl text-xs shadow-md border-none cursor-pointer">
+                          Update Security Credentials
+                        </button>
+                      )}
+                    </form>
+
+                    <div className="p-6 rounded-3xl bg-slate-100/50 dark:bg-slate-900/40 border border-slate-200/60 dark:border-white/10 space-y-4">
+                      <h3 className="text-sm font-extrabold text-slate-900 dark:text-white uppercase tracking-wider">Audio Notifications</h3>
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs text-slate-600 dark:text-slate-400 font-medium">Web Audio Notification Sound Chimes</span>
+                        <button type="button" onClick={() => playNotificationSound()} className="px-4 py-2 bg-blue-500/10 text-blue-600 font-bold rounded-xl text-xs border border-blue-500/20 cursor-pointer">
+                          Test Sound Chime 🔔
+                        </button>
                       </div>
                     </div>
                   </div>
-                </form>
+                )}
 
                 {/* ── Minimalist Footer ──────────────────────────────────── */}
                 <div className="mt-20 pt-10 border-t border-slate-100 dark:border-slate-800/60 flex flex-col items-center gap-4">
