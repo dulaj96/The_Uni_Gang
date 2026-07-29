@@ -11,8 +11,8 @@ import AdNativeFeed from "../../components/advertise/AdNativeFeed";
 import SEO from "../../components/SEO";
 import VerifiedBadge from "../../components/ui/VerifiedBadge";
 
-// Dynamic Leaflet map rendering component using dynamic CDN script injections
-const LeafletListMap = ({ items, centerUniId }: { items: any[], centerUniId: string }) => {
+// Dynamic Leaflet map rendering component with Proximity Radius Circle overlay
+const LeafletListMap = ({ items, centerUniId, maxDistance }: { items: any[], centerUniId: string, maxDistance: string }) => {
     useEffect(() => {
         let map: any;
 
@@ -25,21 +25,17 @@ const LeafletListMap = ({ items, centerUniId }: { items: any[], centerUniId: str
                 container._leaflet_id = null; // Prevent dual rendering errors
             }
 
-            // Defaults center
+            // Default center: Moratuwa University
             let centerLat = 6.7969;
             let centerLng = 79.9018;
+            let selectedUniName = "Campus";
 
             if (centerUniId && centerUniId !== "All Universities") {
-                const campusCoords: Record<string, [number, number]> = {
-                    "1": [6.9016, 79.8589],   // Colombo
-                    "2": [7.2549, 80.5925],   // Peradeniya
-                    "3": [6.9062, 79.9018],   // USJ
-                    "4": [6.9740, 79.9160],   // Kelaniya
-                    "5": [6.7969, 79.9018],   // Moratuwa
-                    "12": [6.7136, 80.7872],  // Sabaragamuwa (SUSL)
-                };
-                if (campusCoords[centerUniId]) {
-                    [centerLat, centerLng] = campusCoords[centerUniId];
+                const foundUni = universitiesData.find(u => String(u.id) === String(centerUniId));
+                if (foundUni && foundUni.latitude && foundUni.longitude) {
+                    centerLat = foundUni.latitude;
+                    centerLng = foundUni.longitude;
+                    selectedUniName = foundUni.name;
                 }
             }
 
@@ -49,29 +45,60 @@ const LeafletListMap = ({ items, centerUniId }: { items: any[], centerUniId: str
                 attribution: '© OpenStreetMap contributors'
             }).addTo(map);
 
-            // Seed University Marker
+            // 1. Seed University Center Marker
             if (centerUniId && centerUniId !== "All Universities") {
                 L.marker([centerLat, centerLng], {
                     icon: L.divIcon({
                         className: 'custom-div-icon',
-                        html: "<div style='background-color:#1e40af; color:white; padding:5px 10px; border-radius:10px; font-weight:bold; font-size:10px; border:2px solid white; box-shadow:0 10px 15px rgba(0,0,0,0.1);'>CAMPUS</div>",
-                        iconSize: [60, 30]
+                        html: `<div style='background: linear-gradient(135deg, #1e40af, #3b82f6); color:white; padding:6px 12px; border-radius:12px; font-weight:900; font-size:10px; border:2px solid white; box-shadow:0 10px 20px rgba(30,64,175,0.3); text-transform:uppercase; letter-spacing:0.5px;'>🏫 ${selectedUniName}</div>`,
+                        iconSize: [140, 36]
                     })
                 }).addTo(map);
+
+                // 2. Draw Interactive Luminous Proximity Radius Circle if maxDistance selected
+                if (maxDistance && maxDistance !== "Any Distance") {
+                    const radiusKm = parseFloat(maxDistance);
+                    const radiusMeters = radiusKm * 1000;
+
+                    const radiusCircle = L.circle([centerLat, centerLng], {
+                        radius: radiusMeters,
+                        color: '#2563eb',
+                        fillColor: '#3b82f6',
+                        fillOpacity: 0.14,
+                        weight: 2.5,
+                        dashArray: '6, 6'
+                    }).addTo(map);
+
+                    // Radius Tag Popup Label
+                    radiusCircle.bindTooltip(`📍 ${radiusKm} KM Proximity Radius around ${selectedUniName}`, {
+                        permanent: true,
+                        direction: 'top',
+                        className: 'bg-blue-900 text-white text-xs font-bold px-2 py-1 rounded-md border border-white/30'
+                    });
+
+                    // Smoothly fit map view to the radius circle bounds
+                    map.fitBounds(radiusCircle.getBounds(), { padding: [30, 30] });
+                }
             }
 
-            // Map Listing pins
+            // 3. Map Listing Pins
             items.forEach((item: any) => {
                 if (item.latitude && item.longitude) {
-                    const price = item.price;
+                    const price = parseFloat(item.price || 0).toLocaleString();
+                    const walkTime = item.walk_time_mins || item.walkTimeMins || 5;
+                    const distanceStr = item.distanceToUni ? `🚶 ${walkTime} mins walk (${item.distanceToUni} km)` : `🚶 ${walkTime} mins walk to gate`;
+
                     const marker = L.marker([parseFloat(item.latitude), parseFloat(item.longitude)]).addTo(map);
                     marker.bindPopup(`
-                        <div style="font-family:sans-serif; padding:5px; max-width:200px;">
-                            <h4 style="margin:0 0 5px 0; color:#1e40af; font-weight:bold; font-size:12px;">${item.title}</h4>
-                            <p style="margin:0 0 5px 0; font-size:10px; color:#666;">${item.address}</p>
-                            <p style="margin:0 0 5px 0; font-size:10px; font-weight:bold; color:#22c55e;">${item.distanceToUni ? `${item.distanceToUni} km from campus` : ''}</p>
-                            <p style="margin:0 0 5px 0; font-weight:black; color:#1e40af; font-size:12px;">Rs. ${price}</p>
-                            <button onclick="window.location.href='/annex/${item.id}'" style="width:100%; display:inline-block; margin-top:5px; font-size:10px; font-weight:bold; background-color:#1e40af; color:white; border:none; padding:5px; border-radius:5px; cursor:pointer;">View Details</button>
+                        <div style="font-family:sans-serif; padding:6px; max-width:220px;">
+                            <span style="font-size:9px; font-weight:bold; background:#dbeafe; color:#1e40af; padding:2px 6px; border-radius:10px; text-transform:uppercase;">${item.listing_type === 'ROOMMATE_WANTED' ? 'Roommate Finder' : 'Landlord Annex'}</span>
+                            <h4 style="margin:6px 0 4px 0; color:#0f172a; font-weight:bold; font-size:13px; line-height:1.2;">${item.title}</h4>
+                            <p style="margin:0 0 4px 0; font-size:10px; color:#64748b;">${item.address}</p>
+                            <p style="margin:0 0 6px 0; font-size:10px; font-weight:bold; color:#2563eb;">${distanceStr}</p>
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px; pt:6px; border-top:1px solid #f1f5f9;">
+                                <span style="font-weight:900; color:#1e40af; font-size:13px;">Rs. ${price}<span style="font-size:9px; color:#64748b; font-weight:normal;">/mo</span></span>
+                                <button onclick="window.location.href='/annex/${item.id}'" style="font-size:10px; font-weight:bold; background:#1e40af; color:white; border:none; padding:5px 10px; border-radius:8px; cursor:pointer;">View</button>
+                            </div>
                         </div>
                     `);
                 }
@@ -85,7 +112,7 @@ const LeafletListMap = ({ items, centerUniId }: { items: any[], centerUniId: str
                 map.remove();
             }
         };
-    }, [items, centerUniId]);
+    }, [items, centerUniId, maxDistance]);
 
     return (
         <div 
@@ -432,7 +459,7 @@ const AnnexList = () => {
                                     transition={{ duration: 0.5 }}
                                     className="mb-10"
                                 >
-                                    <LeafletListMap items={annexes} centerUniId={selectedUni} />
+                                    <LeafletListMap items={annexes} centerUniId={selectedUni} maxDistance={maxDistance} />
                                 </motion.div>
                             ) : (
                                 /* Animated Grid */
