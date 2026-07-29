@@ -9,6 +9,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { io } from 'socket.io-client';
 import SEO from '../../components/SEO';
+import VerifiedBadge from '../../components/ui/VerifiedBadge';
 import toast from 'react-hot-toast';
 import { api } from '../../api';
 import { celebrate } from '../../utils/celebrate';
@@ -123,6 +124,7 @@ const Profile = () => {
   const [isSendingCode, setIsSendingCode] = useState(false);
   const [isVerifyingCode, setIsVerifyingCode] = useState(false);
   const [emailVerificationStep, setEmailVerificationStep] = useState<'enter_email' | 'enter_code'>('enter_email');
+  const [activeProfileTab, setActiveProfileTab] = useState<'overview' | 'annexes' | 'marketplace' | 'events' | 'security'>('overview');
 
   const [showOrdersModal, setShowOrdersModal] = useState(false);
   const [myOrders, setMyOrders] = useState<any[]>([]);
@@ -854,9 +856,9 @@ const Profile = () => {
                           {firstName} {lastName}
                         </h1>
                         {(isVerifiedStudent || isVerifiedLandlord) ? (
-                          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-500/10 to-yellow-500/10 dark:from-amber-500/20 dark:to-yellow-500/10 border border-amber-500/30 dark:border-amber-500/20 text-amber-600 dark:text-amber-400 shadow-sm shadow-amber-500/5 cursor-default select-none">
-                            <LuShieldCheck className="w-5 h-5 text-amber-500" />
-                            <span className="text-[10px] font-black uppercase tracking-widest hidden sm:block">Verified</span>
+                          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-blue-500/10 to-indigo-500/10 dark:from-blue-500/20 dark:to-indigo-500/10 border border-blue-500/30 dark:border-blue-500/20 text-blue-600 dark:text-blue-400 shadow-sm cursor-default select-none">
+                            <VerifiedBadge size={18} title="Verified Student Member" />
+                            <span className="text-[10px] font-black uppercase tracking-widest hidden sm:block">Verified Student</span>
                           </div>
                         ) : (
                           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-500/10 dark:bg-blue-500/20 border border-blue-500/20 dark:border-blue-500/10 text-blue-600 dark:text-blue-400 shadow-sm cursor-default select-none">
@@ -931,6 +933,31 @@ const Profile = () => {
                       )}
                     </AnimatePresence>
                   </div>
+                </div>
+
+                {/* ── Segmented Navigation Tab Bar ─────────────────── */}
+                <div className="mb-10 flex overflow-x-auto custom-scrollbar p-1.5 bg-slate-200/50 dark:bg-slate-900/60 backdrop-blur-xl rounded-2xl border border-slate-300/40 dark:border-white/10 shrink-0">
+                  {[
+                    { id: 'overview', label: 'Overview & Profile', icon: LuUser },
+                    { id: 'annexes', label: `My Annexes (${myAnnexes.length})`, icon: LuBuilding },
+                    { id: 'marketplace', label: `Marketplace (${myListings.length})`, icon: LuLayoutGrid },
+                    { id: 'events', label: `Events & Services (${submittedEvents.length + serviceRequests.length})`, icon: LuCalendar },
+                    { id: 'security', label: 'Security & Preferences', icon: LuLock }
+                  ].map((tab) => (
+                    <button
+                      key={tab.id}
+                      type="button"
+                      onClick={() => setActiveProfileTab(tab.id as any)}
+                      className={`flex-1 min-w-[150px] flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl text-xs font-black uppercase tracking-wider transition-all duration-300 border-none cursor-pointer ${
+                        activeProfileTab === tab.id
+                          ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30'
+                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white bg-transparent'
+                      }`}
+                    >
+                      <tab.icon className="w-4 h-4" />
+                      <span>{tab.label}</span>
+                    </button>
+                  ))}
                 </div>
 
                 {/* ── Subdued Stats Section ────────────────────────── */}
