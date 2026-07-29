@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://theunigang.com/sitemap.xml
+Sitemap: https://unigang.lk/sitemap.xml

@@ -1,22 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://theunigang.com/</loc>
-    <changefreq>weekly</changefreq>
+    <loc>https://unigang.lk/</loc>
+    <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://theunigang.com/find-accommodation</loc>
+    <loc>https://unigang.lk/annexes</loc>
     <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://unigang.lk/market</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://unigang.lk/events</loc>
+    <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://theunigang.com/post-ad</loc>
-    <changefreq>monthly</changefreq>
+    <loc>https://unigang.lk/services</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://unigang.lk/blogs</loc>
+    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://theunigang.com/contact-us</loc>
+    <loc>https://unigang.lk/post-ad</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
