@@ -646,7 +646,7 @@ const ServicesPage = () => {
                     animate="visible"
                   >
                     {showAuthGate ? (
-                      <div className="pt-4">
+                      <div className="pt-4 flex flex-col items-center justify-center w-full">
                         <div className="text-center mb-8">
                           <h4 className="text-2xl font-black tracking-tight dark:text-white uppercase">Authentication Required</h4>
                           <div className="h-1.5 w-16 bg-blue-600 rounded-full mt-3 mb-3 mx-auto" />
@@ -654,7 +654,9 @@ const ServicesPage = () => {
                             Sign in to automatically finalize your request
                           </p>
                         </div>
-                        <AuthCard onAuthSuccess={handleAuthSuccess} />
+                        <div className="w-full flex justify-center">
+                          <AuthCard onAuthSuccess={handleAuthSuccess} />
+                        </div>
                       </div>
                     ) : (
                       <>
