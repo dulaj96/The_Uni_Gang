@@ -60,7 +60,52 @@ const Events = () => {
 
   // Auth gate and dynamic events state
   const [showAuthGate, setShowAuthGate] = useState(false);
-  const [, setLiveEvents] = useState<any[]>([]);
+  const [liveEvents, setLiveEvents] = useState<any[]>([]);
+
+  const defaultEventsList = [
+    {
+      id: 1,
+      title: "Neon Nights: The University Concert",
+      uni: "University of Moratuwa",
+      date: "OCT 24",
+      price: "Free",
+      image: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=600&auto=format&fit=crop"
+    },
+    {
+      id: 2,
+      title: "AI & Robotics Hackathon 2024",
+      uni: "SLIIT Malabe",
+      date: "NOV 05",
+      price: "LKR 1,000",
+      image: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=500&auto=format&fit=crop"
+    },
+    {
+      id: 3,
+      title: "Inter-Uni Cricket Championship 2024",
+      uni: "University of Peradeniya",
+      date: "NOV 12",
+      price: "Free",
+      image: "https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?q=80&w=500&auto=format&fit=crop"
+    },
+    {
+      id: 4,
+      title: "Batch Party '24 - Retro Night",
+      uni: "University of Sri Jayewardenepura",
+      date: "NOV 18",
+      price: "LKR 1,500",
+      image: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=500&auto=format&fit=crop"
+    },
+    {
+      id: 5,
+      title: "CodeSprint IX Annual Summit",
+      uni: "University of Kelaniya",
+      date: "DEC 02",
+      price: "Free",
+      image: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=500&auto=format&fit=crop"
+    }
+  ];
+
+  const displayEventsList = liveEvents.length > 0 ? liveEvents : defaultEventsList;
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -481,12 +526,60 @@ const Events = () => {
                     <img key={img} src={`https://i.pravatar.cc/100?u=${img}`} className="w-6 h-6 rounded-full border border-slate-950 object-cover" alt="user" />
                   ))}
                 </div>
-                <span className="text-[10px] font-black uppercase tracking-wider text-rose-200">1.2k+ Interested</span>
               </motion.div>
-
             </div>
           </motion.div>
+        </div>
 
+        {/* ── Live Auto-Scrolling Latest Events Ticker Marquee Carousel ── */}
+        <div className="mt-16 mb-6">
+          <div className="flex items-center justify-between mb-4 px-2">
+            <div className="flex items-center gap-2">
+              <span className="relative flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-rose-500"></span>
+              </span>
+              <h4 className="text-xs font-black uppercase tracking-[0.2em] text-slate-800 dark:text-white">
+                Live Campus Events Ticker
+              </h4>
+            </div>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest hidden sm:inline-block">
+              Hover to Pause • Click to Explore
+            </span>
+          </div>
+
+          <div className="w-full overflow-hidden relative group/marquee py-2">
+            {/* Ambient gradient fade edges */}
+            <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-white dark:from-[#020617] to-transparent z-20 pointer-events-none" />
+            <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-white dark:from-[#020617] to-transparent z-20 pointer-events-none" />
+
+            <div className="flex gap-5 animate-marquee whitespace-nowrap">
+              {[...displayEventsList, ...displayEventsList].map((event, idx) => (
+                <div 
+                  key={idx}
+                  onClick={() => navigate('/event-list')}
+                  className="inline-flex items-center gap-4 p-3 pr-6 rounded-2xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/60 dark:border-white/10 shadow-lg hover:border-rose-500/50 hover:bg-white dark:hover:bg-slate-900 transition-all cursor-pointer shrink-0"
+                >
+                  <img 
+                    src={event.image || 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=300'} 
+                    alt={event.title}
+                    className="w-14 h-14 rounded-xl object-cover border border-slate-200 dark:border-slate-800 shrink-0" 
+                  />
+                  <div className="text-left max-w-[210px]">
+                    <span className="text-[9px] font-black uppercase tracking-wider text-rose-500 block truncate">
+                      📍 {event.uni || event.university || 'Campus Fest'}
+                    </span>
+                    <h4 className="text-sm font-extrabold text-slate-900 dark:text-white truncate my-0.5">
+                      {event.title}
+                    </h4>
+                    <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 block">
+                      📅 {event.date || 'Upcoming'} • {event.price ? `Rs. ${event.price}` : 'Free Entry'}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* ── Premium Stats Section (3 Columns) ── */}
