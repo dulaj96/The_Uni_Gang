@@ -188,7 +188,7 @@ const AuthCard: React.FC<AuthCardProps> = ({ onAuthSuccess }) => {
     };
 
     return (
-        <div className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-3xl rounded-[2.5rem] shadow-2xl overflow-hidden max-w-md w-full border border-white/20 dark:border-slate-800 relative mx-auto">
+        <div className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-3xl rounded-[2.5rem] shadow-2xl overflow-hidden max-w-xl w-full border border-white/20 dark:border-slate-800 relative mx-auto">
             <PremiumPageLoader isLoading={loading} message={isRegistering ? "Creating your account..." : "Securing access..."} />
             
             <div className="p-10 pb-8">
