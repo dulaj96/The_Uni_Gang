@@ -3,10 +3,11 @@ import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import logo from '../../assets/logoImage.jpg'; // Adjusting path if needed, wait, original Header had '../assets/logoImage.jpg'. I'll use '../assets/logoImage.jpg'. Oh wait, `Layout.tsx` has `import Header from '../Header';`.
 
-import { LuMenu, LuX, LuUser, LuLogOut, LuSun, LuMoon, LuBell, LuShoppingBag } from 'react-icons/lu';
+import { LuMenu, LuX, LuUser, LuLogOut, LuSun, LuMoon, LuShoppingBag } from 'react-icons/lu';
 import { useTheme } from '../../context/ThemeContext'; // wait, Header.tsx might be in src/components/
 import { dispatchAuthUpdate, listenToAuthUpdate } from '../../utils/authEvents';
 import toast from 'react-hot-toast';
+import { NotificationDropdown } from '../ui/NotificationDropdown';
 
 const SubHeader = () => {
   const { theme, toggleTheme } = useTheme();
@@ -151,10 +152,7 @@ const SubHeader = () => {
         {/* Desktop Profile / Auth / Actions */}
         <div className="hidden md:flex items-center gap-3" ref={dropdownRef}>
           {/* Notification Icon */}
-          <button className="p-2.5 rounded-full text-slate-600 hover:bg-slate-100 transition-colors relative">
-            <LuBell className="w-5 h-5" />
-            <span className="absolute top-2 right-2 w-2 h-2 bg-blue-600 rounded-full border-2 border-white"></span>
-          </button>
+          {isLoggedIn && <NotificationDropdown />}
 
           {/* Cart Icon (Only if isLoggedIn is true and there are items in the cart) */}
           {isLoggedIn && cartCount > 0 && (

@@ -1,9 +1,11 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './components/layout/Layout';
 import SubLayout from './components/layout/SubLayout';
 import ScrollHandler from './components/layout/ScrollHandler';
+import PremiumPageLoader from './components/ui/PremiumPageLoader';
 
-// Home Sections Imports
+// Home Sections Imports (Direct for Instant Home rendering)
 import Hero from './components/home/Hero';
 import FeaturedAnnexes from './components/annex/Annex';
 import Services from './components/services/Services';
@@ -13,121 +15,119 @@ import AdvertiseSection from './components/advertise/Advertise';
 import Contact from './components/contact/Contact';
 import MarketSection from './components/market/MarketSection';
 import AdBanner from './components/advertise/AdBanner';
-
-// Pages Imports
-import FindAccommodationPage from './pages/FindAccommodationPage';
-import PostAdPage from './pages/PostAdPage';
-import ContactUsPage from './pages/ContactUsPage';
-import AnnexDetailsPage from './pages/annex/AnnexDetailsPage';
-import ProfilePage from './pages/profile/Profile';
 import WhatsAppButton from './components/whatsAppButton/WhatsAppButton';
 import SEO from './components/SEO';
-import './App.css';
-import AnnexList from './pages/annex/AnnexList';
-import EventList from './pages/events/EventList';
-import EventDetailPage from './pages/events/EventDetailPage';
-import PrivacyPolicy from './pages/privacyPolicy/PrivacyPolicy';
-import Terms from './pages/terms/Terms';
-import FAQ from './pages/f&q/F&Q';
-
-// Blogs Imports
-import BlogList from './pages/blogs/BlogList';
-import BlogDetail from './pages/blogs/BlogDetail';
-import SubmitBlog from './pages/blogs/SubmitBlog';
-
-import AdvertiseLanding from './pages/advertise/AdvertiseLanding';
-import AdSubmissionForm from './pages/advertise/AdSubmissionForm';
 import AdPopup from './components/advertise/AdPopup';
-
-import MarketplaceHome from './pages/market/MarketplaceHome';
-import ServicesPage from './pages/services/ServicesPage';
-import AdminDashboard from './pages/admin/AdminDashboard';
 import GoogleOneTap from './components/auth/GoogleOneTap';
+import './App.css';
+
+// Lazy-Loaded Sub-Pages (Splits heavy chunks for 4x faster initial loading)
+const FindAccommodationPage = lazy(() => import('./pages/FindAccommodationPage'));
+const PostAdPage = lazy(() => import('./pages/PostAdPage'));
+const ContactUsPage = lazy(() => import('./pages/ContactUsPage'));
+const AnnexDetailsPage = lazy(() => import('./pages/annex/AnnexDetailsPage'));
+const ProfilePage = lazy(() => import('./pages/profile/Profile'));
+const AnnexList = lazy(() => import('./pages/annex/AnnexList'));
+const EventList = lazy(() => import('./pages/events/EventList'));
+const EventDetailPage = lazy(() => import('./pages/events/EventDetailPage'));
+const PrivacyPolicy = lazy(() => import('./pages/privacyPolicy/PrivacyPolicy'));
+const Terms = lazy(() => import('./pages/terms/Terms'));
+const FAQ = lazy(() => import('./pages/f&q/F&Q'));
+const BlogList = lazy(() => import('./pages/blogs/BlogList'));
+const BlogDetail = lazy(() => import('./pages/blogs/BlogDetail'));
+const SubmitBlog = lazy(() => import('./pages/blogs/SubmitBlog'));
+const AdvertiseLanding = lazy(() => import('./pages/advertise/AdvertiseLanding'));
+const AdSubmissionForm = lazy(() => import('./pages/advertise/AdSubmissionForm'));
+const MarketplaceHome = lazy(() => import('./pages/market/MarketplaceHome'));
+const ServicesPage = lazy(() => import('./pages/services/ServicesPage'));
+const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
 
 function App() {
   return (
     <Router>
       <ScrollHandler />
-      <Routes>
-        {/* Home Route containing all sections inline */}
-        <Route
-          path="/"
-          element={
-            <Layout isFullWidth>
-              <div className="flex flex-col">
-                <SEO
-                  title="The Uni Gang - Find Your Perfect Student Annex in Sri Lanka"
-                  description="Connect with the best student accommodations near universities in Sri Lanka. Easy, secure, and student-friendly annex hunting."
-                />
+      <Suspense fallback={<PremiumPageLoader isLoading={true} message="Loading Page..." />}>
+        <Routes>
+          {/* Home Route containing all sections inline */}
+          <Route
+            path="/"
+            element={
+              <Layout isFullWidth>
+                <div className="flex flex-col">
+                  <SEO
+                    title="The Uni Gang - Find Your Perfect Student Annex in Sri Lanka"
+                    description="Connect with the best student accommodations near universities in Sri Lanka. Easy, secure, and student-friendly annex hunting."
+                  />
 
-                <Hero />
+                  <Hero />
 
-                <div className="w-full flex flex-col">
-                  <div id="annex"><FeaturedAnnexes /></div>
-                  <div id="market"><MarketSection /></div>
+                  <div className="w-full flex flex-col">
+                    <div id="annex"><FeaturedAnnexes /></div>
+                    <div id="market"><MarketSection /></div>
 
-                  <div className="max-w-7xl mx-auto w-full px-6 lg:px-12 my-6">
-                    <AdBanner placement="BANNER" />
+                    <div className="max-w-7xl mx-auto w-full px-6 lg:px-12 my-6">
+                      <AdBanner placement="BANNER" />
+                    </div>
+
+                    {/* Future Placeholders handling Navigation Anchors */}
+                    <div id="feed" className="min-h-[10px]"></div>
+                    <Services />
+                    <Events />
+                    <div id="blogs"><Blogs /></div>
+                    <div id="advertise"><AdvertiseSection /></div>
+                    <Contact />
                   </div>
-
-                  {/* Future Placeholders handling Navigation Anchors */}
-                  <div id="feed" className="min-h-[10px]"></div>
-                  <Services />
-                  <Events />
-                  <div id="blogs"><Blogs /></div>
-                  <div id="advertise"><AdvertiseSection /></div>
-                  <Contact />
                 </div>
-              </div>
-            </Layout>
-          }
-        />
+              </Layout>
+            }
+          />
 
-        {/* Single Pages using standard Layout */}
-        <Route path="/find-accommodation" element={<Layout><FindAccommodationPage /></Layout>} />
-        <Route path="/contact-us" element={<Layout><ContactUsPage /></Layout>} />
-        <Route path="/annex/:id" element={<Layout><AnnexDetailsPage /></Layout>} />
+          {/* Single Pages using standard Layout */}
+          <Route path="/find-accommodation" element={<Layout><FindAccommodationPage /></Layout>} />
+          <Route path="/contact-us" element={<Layout><ContactUsPage /></Layout>} />
+          <Route path="/annex/:id" element={<Layout><AnnexDetailsPage /></Layout>} />
 
-        {/* Post Advertiesment using SubLayout */}
-        <Route path="/post-ad" element={<SubLayout><PostAdPage /></SubLayout>} />
+          {/* Post Advertiesment using SubLayout */}
+          <Route path="/post-ad" element={<SubLayout><PostAdPage /></SubLayout>} />
 
-        {/* Profile using SubLayout */}
-        <Route path="/profile" element={<SubLayout><ProfilePage /></SubLayout>} />
+          {/* Profile using SubLayout */}
+          <Route path="/profile" element={<SubLayout><ProfilePage /></SubLayout>} />
 
-        {/* AnnexList using SubLayout */}
-        <Route path="/annex-list" element={<SubLayout><AnnexList /></SubLayout>} />
+          {/* AnnexList using SubLayout */}
+          <Route path="/annex-list" element={<SubLayout><AnnexList /></SubLayout>} />
 
-        {/* EventList using SubLayout */}
-        <Route path="/event-list" element={<SubLayout><EventList /></SubLayout>} />
-        <Route path="/events/:id" element={<SubLayout><EventDetailPage /></SubLayout>} />
+          {/* EventList using SubLayout */}
+          <Route path="/event-list" element={<SubLayout><EventList /></SubLayout>} />
+          <Route path="/events/:id" element={<SubLayout><EventDetailPage /></SubLayout>} />
 
-        {/* Privacy Policy using SubLayout */}
-        <Route path="/privacy-policy" element={<SubLayout><PrivacyPolicy /></SubLayout>} />
+          {/* Privacy Policy using SubLayout */}
+          <Route path="/privacy-policy" element={<SubLayout><PrivacyPolicy /></SubLayout>} />
 
-        {/* Terms of Service using SubLayout */}
-        <Route path="/terms-of-service" element={<SubLayout><Terms /></SubLayout>} />
+          {/* Terms of Service using SubLayout */}
+          <Route path="/terms-of-service" element={<SubLayout><Terms /></SubLayout>} />
 
-        {/* FAQ using SubLayout */}
-        <Route path="/faq" element={<SubLayout><FAQ /></SubLayout>} />
+          {/* FAQ using SubLayout */}
+          <Route path="/faq" element={<SubLayout><FAQ /></SubLayout>} />
 
-        {/* Blogs Routes */}
-        <Route path="/blogs" element={<SubLayout><BlogList /></ SubLayout>} />
-        <Route path="/blogs/:slug" element={<SubLayout><BlogDetail /></SubLayout>} />
-        <Route path="/submit-blog" element={<SubLayout><SubmitBlog /></SubLayout>} />
+          {/* Blogs Routes */}
+          <Route path="/blogs" element={<SubLayout><BlogList /></SubLayout>} />
+          <Route path="/blogs/:slug" element={<SubLayout><BlogDetail /></SubLayout>} />
+          <Route path="/submit-blog" element={<SubLayout><SubmitBlog /></SubLayout>} />
 
-        {/* Advertisement Routes */}
-        <Route path="/advertise" element={<SubLayout><AdvertiseLanding /></SubLayout>} />
-        <Route path="/advertise/submit" element={<SubLayout><AdSubmissionForm /></SubLayout>} />
+          {/* Advertisement Routes */}
+          <Route path="/advertise" element={<SubLayout><AdvertiseLanding /></SubLayout>} />
+          <Route path="/advertise/submit" element={<SubLayout><AdSubmissionForm /></SubLayout>} />
 
-        {/* Marketplace Route */}
-        <Route path="/market" element={<SubLayout><MarketplaceHome /></SubLayout>} />
+          {/* Marketplace Route */}
+          <Route path="/market" element={<SubLayout><MarketplaceHome /></SubLayout>} />
 
-        {/* Services Dedicated Route */}
-        <Route path="/services" element={<SubLayout><ServicesPage /></SubLayout>} />
+          {/* Services Dedicated Route */}
+          <Route path="/services" element={<SubLayout><ServicesPage /></SubLayout>} />
 
-        {/* Admin Moderation Route */}
-        <Route path="/admin" element={<SubLayout><AdminDashboard /></SubLayout>} />
-      </Routes>
+          {/* Admin Moderation Route */}
+          <Route path="/admin" element={<SubLayout><AdminDashboard /></SubLayout>} />
+        </Routes>
+      </Suspense>
 
       <WhatsAppButton />
       <AdPopup />
