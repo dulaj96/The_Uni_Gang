@@ -5,6 +5,7 @@ import {
   LuMessageCircle, LuX, LuCircleCheckBig, LuCheck
 } from 'react-icons/lu';
 import SEO from '../../components/SEO';
+import VerifiedBadge from '../../components/ui/VerifiedBadge';
 import PremiumPageLoader from '../../components/ui/PremiumPageLoader';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useState } from 'react';
@@ -469,7 +470,7 @@ const AnnexDetailsPage = () => {
                       <div className="flex items-center gap-1">
                         <p className="text-base font-bold text-slate-900 dark:text-white">{annex.owner ? annex.owner.name : "Mr. Landlord"}</p>
                         {annex.owner && (annex.owner.is_verified_landlord || annex.owner.is_verified_student) && (
-                          <LuBadgeCheck className={`w-4 h-4 shrink-0 ${annex.owner.is_verified_landlord ? 'text-amber-500' : 'text-blue-500'}`} title="Verified Provider" />
+                          <VerifiedBadge size={18} title="Verified Provider" />
                         )}
                       </div>
                     </div>

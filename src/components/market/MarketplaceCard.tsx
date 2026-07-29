@@ -1,6 +1,7 @@
 import React from 'react';
 import { LuBadgeCheck, LuStar, LuClock, LuShoppingBag } from 'react-icons/lu';
 import { formatDistanceToNow } from 'date-fns';
+import VerifiedBadge from '../ui/VerifiedBadge';
 
 interface MarketplaceCardProps {
   item: {
@@ -141,7 +142,7 @@ const MarketplaceCard: React.FC<MarketplaceCardProps> = ({ item, onClick, onAddT
                 <div className="flex items-center gap-1">
                   <span className="text-xs font-medium text-gray-900 dark:text-white line-clamp-1">{sellerName}</span>
                   {isVerified && (
-                    <LuBadgeCheck className="w-3.5 h-3.5 text-blue-500" title="Verified Student" />
+                    <VerifiedBadge size={16} title="Verified Student" />
                   )}
                 </div>
                 <span className="text-[10px] text-gray-400 dark:text-slate-500 flex items-center gap-1">

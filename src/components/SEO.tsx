@@ -28,6 +28,7 @@ const SEO = ({
       <meta name="description" content={description} />
       <meta name="keywords" content={keywords} />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <meta name="google-site-verification" content="W4NtoyD15d0At3uM7Q7IfY6vfT45nOmv0mSOIXEW9dQ" />
 
       {/* Open Graph / Facebook / WhatsApp */}
       <meta property="og:type" content="website" />

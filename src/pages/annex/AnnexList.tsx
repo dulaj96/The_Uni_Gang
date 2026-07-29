@@ -9,6 +9,7 @@ import universitiesData from "../../constants/annex/Universities.json";
 import PremiumPageLoader from "../../components/ui/PremiumPageLoader";
 import AdNativeFeed from "../../components/advertise/AdNativeFeed";
 import SEO from "../../components/SEO";
+import VerifiedBadge from "../../components/ui/VerifiedBadge";
 
 // Dynamic Leaflet map rendering component using dynamic CDN script injections
 const LeafletListMap = ({ items, centerUniId }: { items: any[], centerUniId: string }) => {
@@ -465,9 +466,11 @@ const AnnexList = () => {
 
                                                             {/* Verified Badge */}
                                                             {item.status === 'Approved' && (
-                                                                <div className="absolute top-4 left-4 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm border border-white/20 dark:border-slate-700/50">
-                                                                    <span className="material-symbols-outlined text-green-600 dark:text-green-400 text-[16px]" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
-                                                                    <span className="text-[10px] font-extrabold uppercase tracking-widest text-slate-800 dark:text-slate-200">Verified</span>
+                                                                <div className="absolute top-4 left-4 bg-slate-950/80 dark:bg-slate-900/90 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg border border-white/20 text-white">
+                                                                    <VerifiedBadge size={16} title="Verified Student Owner" />
+                                                                    <span className="text-[10px] font-extrabold uppercase tracking-wider">
+                                                                        {(item.owner?.is_verified_student || item.owner?.is_verified_landlord) ? 'Verified Owner' : 'Verified Annex'}
+                                                                    </span>
                                                                 </div>
                                                             )}
 

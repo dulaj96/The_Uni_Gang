@@ -1000,25 +1000,28 @@ const Profile = () => {
                         </div>
                       ) : (
                         /* Not submitted — show verify email trigger */
-                        <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-3xl p-6 relative overflow-hidden">
+                        <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-3xl p-6 relative overflow-hidden shadow-xl border border-blue-400/30">
                           <div className="flex items-start justify-between gap-4 relative z-10">
                             <div>
-                              <h3 className="text-lg font-black text-amber-900 mb-1 flex items-center gap-2">
-                                <LuShieldCheck className="w-5 h-5" /> Student Verification Required
+                              <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-bold uppercase tracking-wider mb-2">
+                                🎓 Official Student Verification
+                              </div>
+                              <h3 className="text-xl font-black text-white mb-2 flex items-center gap-2">
+                                Verify your .ac.lk Email for Instant Auto-Approval & Blue Badge!
                               </h3>
-                              <p className="text-sm text-amber-700 font-medium mb-4">
-                                To sell items or post gigs on the Hustle Hub, you must verify your student status using your University Email.
+                              <p className="text-sm text-blue-100 font-medium mb-5 max-w-xl leading-relaxed">
+                                Get instant 10-second verification using your Sri Lankan university email (e.g. .ac.lk, sliit.lk, nsbm.ac.lk). Enjoy auto-approved marketplace ads and 3x higher trust!
                               </p>
                               <button
                                 type="button"
                                 onClick={() => { setEmailVerificationStep('enter_email'); setShowVerifyIdModal(true); }}
-                                className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white px-5 py-2.5 rounded-xl font-bold text-sm cursor-pointer transition-colors shadow-md shadow-amber-500/20"
+                                className="inline-flex items-center gap-2 bg-white text-blue-800 hover:bg-blue-50 px-6 py-3 rounded-2xl font-black text-sm cursor-pointer transition-all shadow-lg hover:scale-105 active:scale-95 border-none"
                               >
-                                <LuShieldCheck className="w-4 h-4" /> Verify with Campus Email
+                                <LuShieldCheck className="w-5 h-5 text-blue-600" /> Verify with Campus Email Now
                               </button>
                             </div>
                           </div>
-                          <LuShieldCheck className="absolute -right-4 -bottom-4 w-32 h-32 text-amber-500/10" />
+                          <LuShieldCheck className="absolute -right-6 -bottom-6 w-36 h-36 text-white/10" />
                         </div>
                       )
                     )}
