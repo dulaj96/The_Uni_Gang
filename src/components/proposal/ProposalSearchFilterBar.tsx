@@ -36,21 +36,21 @@ const ProposalSearchFilterBar = ({ onSearch }: ProposalSearchFilterBarProps) => 
   };
 
   return (
-    <div id="proposal-search-widget" className="p-8 rounded-[2.5rem] bg-slate-900/90 border border-slate-800 shadow-2xl backdrop-blur-2xl mb-12">
+    <div id="proposal-search-widget" className="p-8 rounded-[2.5rem] bg-white/90 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 shadow-2xl backdrop-blur-2xl mb-12 transition-colors duration-300">
       
       {/* Widget Header */}
-      <div className="flex items-center justify-between pb-6 mb-6 border-b border-slate-800">
+      <div className="flex items-center justify-between pb-6 mb-6 border-b border-slate-200/80 dark:border-slate-800">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-rose-500/10 text-rose-400 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-2xl bg-rose-500/10 text-rose-500 dark:text-rose-400 flex items-center justify-center">
             <LuHeart size={20} />
           </div>
           <div>
-            <h3 className="text-xl font-black text-white uppercase tracking-tight">Find Your Perfect Match</h3>
-            <p className="text-xs text-slate-400 font-medium">Filter verified profiles by age, university, profession & district</p>
+            <h3 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Find Your Perfect Match</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Filter verified profiles by age, university, profession & district</p>
           </div>
         </div>
 
-        <span className="px-3.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-500/10 text-rose-400 border border-rose-500/20 hidden sm:inline-block">
+        <span className="px-3.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-500/10 text-rose-500 dark:text-rose-400 border border-rose-500/20 hidden sm:inline-block">
           Instant Smart Search
         </span>
       </div>
@@ -61,11 +61,11 @@ const ProposalSearchFilterBar = ({ onSearch }: ProposalSearchFilterBarProps) => 
           
           {/* Looking For */}
           <div>
-            <label className="text-[10px] font-black text-rose-400 uppercase tracking-widest block mb-1.5">I'm Looking For A</label>
+            <label className="text-[10px] font-black text-rose-600 dark:text-rose-400 uppercase tracking-widest block mb-1.5">I'm Looking For A</label>
             <select
               value={lookingFor}
               onChange={(e) => setLookingFor(e.target.value)}
-              className="w-full px-4 py-3.5 rounded-xl bg-slate-950 border border-slate-800 focus:border-rose-500 text-xs font-bold text-white outline-none"
+              className="w-full px-4 py-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:border-rose-500 text-xs font-bold text-slate-900 dark:text-white outline-none"
             >
               <option value="Any">Any Gender</option>
               <option value="Female">Bride / Female</option>
@@ -75,7 +75,7 @@ const ProposalSearchFilterBar = ({ onSearch }: ProposalSearchFilterBarProps) => 
 
           {/* Age Range */}
           <div>
-            <label className="text-[10px] font-black text-rose-400 uppercase tracking-widest block mb-1.5">Age From - To</label>
+            <label className="text-[10px] font-black text-rose-600 dark:text-rose-400 uppercase tracking-widest block mb-1.5">Age From - To</label>
             <div className="flex items-center gap-2">
               <input
                 type="number"
@@ -83,27 +83,27 @@ const ProposalSearchFilterBar = ({ onSearch }: ProposalSearchFilterBarProps) => 
                 max={60}
                 value={minAge}
                 onChange={(e) => setMinAge(Number(e.target.value))}
-                className="w-1/2 px-3 py-3.5 rounded-xl bg-slate-950 border border-slate-800 text-xs font-bold text-white text-center outline-none"
+                className="w-1/2 px-3 py-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-900 dark:text-white text-center outline-none"
               />
-              <span className="text-slate-500 font-bold text-xs">-</span>
+              <span className="text-slate-400 font-bold text-xs">-</span>
               <input
                 type="number"
                 min={18}
                 max={60}
                 value={maxAge}
                 onChange={(e) => setMaxAge(Number(e.target.value))}
-                className="w-1/2 px-3 py-3.5 rounded-xl bg-slate-950 border border-slate-800 text-xs font-bold text-white text-center outline-none"
+                className="w-1/2 px-3 py-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-900 dark:text-white text-center outline-none"
               />
             </div>
           </div>
 
           {/* Religion */}
           <div>
-            <label className="text-[10px] font-black text-rose-400 uppercase tracking-widest block mb-1.5">Religion / Ethnicity</label>
+            <label className="text-[10px] font-black text-rose-600 dark:text-rose-400 uppercase tracking-widest block mb-1.5">Religion / Ethnicity</label>
             <select
               value={religion}
               onChange={(e) => setReligion(e.target.value)}
-              className="w-full px-4 py-3.5 rounded-xl bg-slate-950 border border-slate-800 focus:border-rose-500 text-xs font-bold text-white outline-none"
+              className="w-full px-4 py-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:border-rose-500 text-xs font-bold text-slate-900 dark:text-white outline-none"
             >
               <option value="Any">Any Religion</option>
               <option value="Buddhism">Buddhism</option>
@@ -115,11 +115,11 @@ const ProposalSearchFilterBar = ({ onSearch }: ProposalSearchFilterBarProps) => 
 
           {/* District */}
           <div>
-            <label className="text-[10px] font-black text-rose-400 uppercase tracking-widest block mb-1.5">District</label>
+            <label className="text-[10px] font-black text-rose-600 dark:text-rose-400 uppercase tracking-widest block mb-1.5">District</label>
             <select
               value={district}
               onChange={(e) => setDistrict(e.target.value)}
-              className="w-full px-4 py-3.5 rounded-xl bg-slate-950 border border-slate-800 focus:border-rose-500 text-xs font-bold text-white outline-none"
+              className="w-full px-4 py-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:border-rose-500 text-xs font-bold text-slate-900 dark:text-white outline-none"
             >
               <option value="Any">Any District</option>
               <option value="Colombo">Colombo</option>
@@ -132,11 +132,11 @@ const ProposalSearchFilterBar = ({ onSearch }: ProposalSearchFilterBarProps) => 
 
           {/* University */}
           <div>
-            <label className="text-[10px] font-black text-rose-400 uppercase tracking-widest block mb-1.5">University / Institute</label>
+            <label className="text-[10px] font-black text-rose-600 dark:text-rose-400 uppercase tracking-widest block mb-1.5">University / Institute</label>
             <select
               value={university}
               onChange={(e) => setUniversity(e.target.value)}
-              className="w-full px-4 py-3.5 rounded-xl bg-slate-950 border border-slate-800 focus:border-rose-500 text-xs font-bold text-white outline-none"
+              className="w-full px-4 py-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:border-rose-500 text-xs font-bold text-slate-900 dark:text-white outline-none"
             >
               <option value="Any">All Universities</option>
               <option value="Moratuwa">Uni of Moratuwa</option>
@@ -148,13 +148,13 @@ const ProposalSearchFilterBar = ({ onSearch }: ProposalSearchFilterBarProps) => 
 
           {/* Keyword Search */}
           <div className="sm:col-span-2 lg:col-span-2">
-            <label className="text-[10px] font-black text-rose-400 uppercase tracking-widest block mb-1.5">Name or Profession Keyword</label>
+            <label className="text-[10px] font-black text-rose-600 dark:text-rose-400 uppercase tracking-widest block mb-1.5">Name or Profession Keyword</label>
             <input
               type="text"
               placeholder="Search keyword (e.g. Engineer, Doctor)..."
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
-              className="w-full px-5 py-3.5 rounded-xl bg-slate-950 border border-slate-800 focus:border-rose-500 text-xs font-bold text-white outline-none"
+              className="w-full px-5 py-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:border-rose-500 text-xs font-bold text-slate-900 dark:text-white outline-none"
             />
           </div>
 

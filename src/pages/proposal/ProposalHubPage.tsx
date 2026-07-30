@@ -36,7 +36,7 @@ const sampleProposalsList = [
     hobbies: ['Photography', 'Hiking', 'Classical Guitar'],
     isVerified: true,
     badgeType: 'Verified Uni Alumni 🏫',
-    badgeClass: 'bg-amber-500/10 text-amber-500 border-amber-500/30',
+    badgeClass: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30',
     images: ['https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=600&auto=format&fit=crop']
   },
   {
@@ -56,7 +56,7 @@ const sampleProposalsList = [
     hobbies: ['Coding', 'Badminton', 'Traveling'],
     isVerified: true,
     badgeType: 'Verified Undergrad 🎓',
-    badgeClass: 'bg-rose-500/10 text-rose-500 border-rose-500/30',
+    badgeClass: 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/30',
     images: ['https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=600&auto=format&fit=crop']
   },
   {
@@ -76,7 +76,7 @@ const sampleProposalsList = [
     hobbies: ['Reading', 'Chess', 'Violin'],
     isVerified: true,
     badgeType: 'Verified Professional 💼',
-    badgeClass: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/30',
+    badgeClass: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30',
     images: ['https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=600&auto=format&fit=crop']
   },
   {
@@ -96,7 +96,7 @@ const sampleProposalsList = [
     hobbies: ['Art', 'Marketing', 'Yoga'],
     isVerified: true,
     badgeType: 'Verified Uni Alumni 🏫',
-    badgeClass: 'bg-purple-500/10 text-purple-500 border-purple-500/30',
+    badgeClass: 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/30',
     images: ['https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=600&auto=format&fit=crop']
   }
 ];
@@ -181,7 +181,7 @@ const ProposalHubPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white pb-28 pt-20 relative overflow-hidden">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white pb-28 pt-20 relative overflow-hidden transition-colors duration-300">
       <SEO
         title="Uni පොරොන්දම් - Verified Campus Proposals & Matchmaking | The Uni Gang"
         description="Discover verified university undergraduates, alumni, and working professionals in Sri Lanka for genuine lifelong connections."
@@ -207,27 +207,27 @@ const ProposalHubPage = () => {
         <div ref={feedRef} className="space-y-8 mb-16">
           
           {/* Feed View Toggle */}
-          <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-900 border border-slate-800">
+          <div className="flex items-center justify-between p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-md">
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setActiveTab('feed')}
-                className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider border-none cursor-pointer ${
-                  activeTab === 'feed' ? 'bg-rose-500 text-white shadow-md' : 'text-slate-400 hover:text-white'
+                className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider border-none cursor-pointer transition-colors ${
+                  activeTab === 'feed' ? 'bg-rose-500 text-white shadow-md' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 💍 Proposals Feed Grid ({filteredProposals.length})
               </button>
               <button
                 onClick={() => setActiveTab('swiper')}
-                className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider border-none cursor-pointer ${
-                  activeTab === 'swiper' ? 'bg-rose-500 text-white shadow-md' : 'text-slate-400 hover:text-white'
+                className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider border-none cursor-pointer transition-colors ${
+                  activeTab === 'swiper' ? 'bg-rose-500 text-white shadow-md' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 🎓 Campus Swiper Deck
               </button>
             </div>
 
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-widest hidden sm:inline-block">
+            <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest hidden sm:inline-block">
               100% Student Verified Profiles
             </span>
           </div>
@@ -237,8 +237,8 @@ const ProposalHubPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredProposals.map((proposal) => (
                 <TiltCard key={proposal.id}>
-                  <div className="relative group bg-slate-900/90 rounded-3xl p-5 border border-slate-800 shadow-xl overflow-hidden flex flex-col justify-between h-full hover:border-rose-500/40 transition-all">
-                    <div className="relative h-64 rounded-2xl overflow-hidden mb-4 bg-slate-950">
+                  <div className="relative group bg-white/90 dark:bg-slate-900/90 rounded-3xl p-5 border border-slate-200/80 dark:border-slate-800 shadow-xl overflow-hidden flex flex-col justify-between h-full hover:border-rose-500/40 transition-all">
+                    <div className="relative h-64 rounded-2xl overflow-hidden mb-4 bg-slate-100 dark:bg-slate-950">
                       <img src={proposal.images[0]} alt={proposal.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                       <span className={`absolute top-3 left-3 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-wider border shadow-md ${proposal.badgeClass}`}>
                         {proposal.badgeType}
@@ -249,12 +249,12 @@ const ProposalHubPage = () => {
                     </div>
 
                     <div className="space-y-2 mb-4">
-                      <h3 className="text-xl font-black text-white uppercase tracking-tight line-clamp-1">{proposal.name}</h3>
-                      <p className="text-xs text-rose-400 font-extrabold uppercase tracking-wider">{proposal.profession}</p>
-                      <p className="text-xs text-slate-400 font-bold flex items-center gap-1">
-                        <LuGraduationCap size={14} className="text-rose-400" /> {proposal.university}
+                      <h3 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight line-clamp-1">{proposal.name}</h3>
+                      <p className="text-xs text-rose-600 dark:text-rose-400 font-extrabold uppercase tracking-wider">{proposal.profession}</p>
+                      <p className="text-xs text-slate-600 dark:text-slate-400 font-bold flex items-center gap-1">
+                        <LuGraduationCap size={14} className="text-rose-500" /> {proposal.university}
                       </p>
-                      <p className="text-xs text-slate-400 font-medium line-clamp-2 leading-relaxed italic pt-1">
+                      <p className="text-xs text-slate-600 dark:text-slate-400 font-medium line-clamp-2 leading-relaxed italic pt-1">
                         "{proposal.bio}"
                       </p>
                     </div>
@@ -277,8 +277,8 @@ const ProposalHubPage = () => {
           {/* SWIPER VIEW */}
           {activeTab === 'swiper' && filteredProposals.length > 0 && (
             <div className="flex flex-col items-center justify-center py-4">
-              <div className="w-full max-w-md bg-slate-900 rounded-[2.5rem] p-6 border border-slate-800 shadow-2xl relative overflow-hidden text-center">
-                <div className="relative h-80 rounded-3xl overflow-hidden mb-5 bg-slate-950">
+              <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-[2.5rem] p-6 border border-slate-200/80 dark:border-slate-800 shadow-2xl relative overflow-hidden text-center">
+                <div className="relative h-80 rounded-3xl overflow-hidden mb-5 bg-slate-100 dark:bg-slate-950">
                   <img src={filteredProposals[currentSwiperIndex]?.images[0]} alt="Swiper Card" className="w-full h-full object-cover" />
                   <span className="absolute top-4 left-4 px-3.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-500 text-white shadow-md">
                     {filteredProposals[currentSwiperIndex]?.badgeType}
@@ -289,14 +289,14 @@ const ProposalHubPage = () => {
                   </div>
                 </div>
 
-                <p className="text-xs text-slate-400 font-medium italic mb-6">
+                <p className="text-xs text-slate-600 dark:text-slate-400 font-medium italic mb-6">
                   "{filteredProposals[currentSwiperIndex]?.bio}"
                 </p>
 
                 <div className="flex items-center justify-center gap-6">
                   <button
                     onClick={handleSwipePass}
-                    className="w-16 h-16 rounded-full bg-slate-800 text-slate-400 hover:text-red-400 flex items-center justify-center text-2xl shadow-lg border-none cursor-pointer active:scale-95 transition-all"
+                    className="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-red-500 flex items-center justify-center text-2xl shadow-lg border-none cursor-pointer active:scale-95 transition-all"
                   >
                     <LuX />
                   </button>
@@ -313,46 +313,46 @@ const ProposalHubPage = () => {
 
           {/* CREATE PROFILE FORM VIEW */}
           {activeTab === 'create' && (
-            <div className="max-w-2xl mx-auto bg-slate-900 rounded-3xl p-8 border border-slate-800 shadow-2xl">
+            <div className="max-w-2xl mx-auto bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-200/80 dark:border-slate-800 shadow-2xl">
               <div className="text-center mb-8">
-                <div className="inline-flex p-3 rounded-2xl bg-rose-500/10 text-rose-400 mb-3">
+                <div className="inline-flex p-3 rounded-2xl bg-rose-500/10 text-rose-500 dark:text-rose-400 mb-3">
                   <LuCirclePlus size={28} />
                 </div>
-                <h2 className="text-3xl font-black text-white uppercase tracking-tight">Post Your Proposal Profile</h2>
-                <p className="text-xs text-slate-400 font-bold uppercase tracking-widest mt-1">Register for free on Uni පොරොන්දම්</p>
+                <h2 className="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Post Your Proposal Profile</h2>
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest mt-1">Register for free on Uni පොරොන්දම්</p>
               </div>
 
               <form onSubmit={(e) => { e.preventDefault(); toast.success("Proposal Profile submitted for review!"); setActiveTab('feed'); }} className="space-y-5">
                 <div>
-                  <label className="text-[10px] font-black text-rose-400 uppercase tracking-widest block mb-1">Full Name / Nickname *</label>
-                  <input required type="text" placeholder="E.g. Kasun Bandara" className="w-full p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs font-bold outline-none text-white" />
+                  <label className="text-[10px] font-black text-rose-600 dark:text-rose-400 uppercase tracking-widest block mb-1">Full Name / Nickname *</label>
+                  <input required type="text" placeholder="E.g. Kasun Bandara" className="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-bold outline-none text-slate-900 dark:text-white" />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-[10px] font-black text-rose-400 uppercase tracking-widest block mb-1">Age *</label>
-                    <input required type="number" placeholder="25" className="w-full p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs font-bold outline-none text-white" />
+                    <label className="text-[10px] font-black text-rose-600 dark:text-rose-400 uppercase tracking-widest block mb-1">Age *</label>
+                    <input required type="number" placeholder="25" className="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-bold outline-none text-slate-900 dark:text-white" />
                   </div>
                   <div>
-                    <label className="text-[10px] font-black text-rose-400 uppercase tracking-widest block mb-1">District *</label>
-                    <input required type="text" placeholder="E.g. Colombo" className="w-full p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs font-bold outline-none text-white" />
+                    <label className="text-[10px] font-black text-rose-600 dark:text-rose-400 uppercase tracking-widest block mb-1">District *</label>
+                    <input required type="text" placeholder="E.g. Colombo" className="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-bold outline-none text-slate-900 dark:text-white" />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-[10px] font-black text-rose-400 uppercase tracking-widest block mb-1">University / Institute *</label>
-                    <input required type="text" placeholder="E.g. University of Moratuwa" className="w-full p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs font-bold outline-none text-white" />
+                    <label className="text-[10px] font-black text-rose-600 dark:text-rose-400 uppercase tracking-widest block mb-1">University / Institute *</label>
+                    <input required type="text" placeholder="E.g. University of Moratuwa" className="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-bold outline-none text-slate-900 dark:text-white" />
                   </div>
                   <div>
-                    <label className="text-[10px] font-black text-rose-400 uppercase tracking-widest block mb-1">Profession / Degree *</label>
-                    <input required type="text" placeholder="E.g. Software Engineer" className="w-full p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs font-bold outline-none text-white" />
+                    <label className="text-[10px] font-black text-rose-600 dark:text-rose-400 uppercase tracking-widest block mb-1">Profession / Degree *</label>
+                    <input required type="text" placeholder="E.g. Software Engineer" className="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-bold outline-none text-slate-900 dark:text-white" />
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-[10px] font-black text-rose-400 uppercase tracking-widest block mb-1">Bio / Looking For *</label>
-                  <textarea required rows={3} placeholder="Describe yourself and what kind of soulmate you are looking for..." className="w-full p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs font-bold outline-none text-white resize-none" />
+                  <label className="text-[10px] font-black text-rose-600 dark:text-rose-400 uppercase tracking-widest block mb-1">Bio / Looking For *</label>
+                  <textarea required rows={3} placeholder="Describe yourself and what kind of soulmate you are looking for..." className="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-bold outline-none text-slate-900 dark:text-white resize-none" />
                 </div>
 
                 <button type="submit" className="w-full py-4 bg-gradient-to-r from-rose-500 to-pink-500 text-white font-black text-xs uppercase tracking-widest rounded-xl shadow-xl border-none cursor-pointer">
@@ -382,7 +382,7 @@ const ProposalHubPage = () => {
             initial={{ opacity: 0, y: 100 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 100 }}
-            className="fixed bottom-4 right-4 z-50 w-full max-w-sm bg-slate-900 rounded-3xl shadow-2xl border border-slate-800 overflow-hidden"
+            className="fixed bottom-4 right-4 z-50 w-full max-w-sm bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden"
           >
             <div className="p-4 bg-gradient-to-r from-rose-500 to-pink-500 text-white flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -397,11 +397,11 @@ const ProposalHubPage = () => {
               </button>
             </div>
 
-            <div className="p-4 h-64 overflow-y-auto space-y-3 bg-slate-950">
+            <div className="p-4 h-64 overflow-y-auto space-y-3 bg-slate-50 dark:bg-slate-950">
               {chatMessages.map((m, i) => (
                 <div key={i} className={`flex ${m.sender === 'me' ? 'justify-end' : 'justify-start'}`}>
                   <div className={`p-3 rounded-2xl max-w-[80%] text-xs font-bold ${
-                    m.sender === 'me' ? 'bg-rose-500 text-white' : 'bg-slate-900 text-slate-200 border border-slate-800'
+                    m.sender === 'me' ? 'bg-rose-500 text-white' : 'bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-800'
                   }`}>
                     {m.text}
                   </div>
@@ -409,13 +409,13 @@ const ProposalHubPage = () => {
               ))}
             </div>
 
-            <form onSubmit={handleSendMessage} className="p-3 border-t border-slate-800 flex gap-2">
+            <form onSubmit={handleSendMessage} className="p-3 border-t border-slate-200 dark:border-slate-800 flex gap-2">
               <input
                 type="text"
                 placeholder="Type a message..."
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
-                className="flex-1 px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs font-bold outline-none text-white"
+                className="flex-1 px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-bold outline-none text-slate-900 dark:text-white"
               />
               <button type="submit" className="p-2.5 rounded-xl bg-rose-500 text-white border-none cursor-pointer">
                 <LuSend size={16} />
@@ -433,18 +433,18 @@ const ProposalHubPage = () => {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="w-full max-w-md bg-slate-900 rounded-3xl p-8 border border-rose-500 shadow-2xl text-center relative"
+              className="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl p-8 border border-rose-500 shadow-2xl text-center relative"
             >
               <button onClick={() => setShowVipPaywall(false)} className="absolute top-4 right-4 p-2 text-slate-400 border-none bg-transparent cursor-pointer">
                 <LuX size={18} />
               </button>
 
-              <div className="w-16 h-16 rounded-full bg-rose-500/10 text-rose-400 flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 rounded-full bg-rose-500/10 text-rose-500 flex items-center justify-center mx-auto mb-4">
                 <LuCrown size={32} />
               </div>
 
-              <h3 className="text-2xl font-black text-white uppercase tracking-tight mb-2">Upgrade to Uni පොරොන්දම් VIP</h3>
-              <p className="text-xs text-slate-400 font-medium mb-6 leading-relaxed">
+              <h3 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight mb-2">Upgrade to Uni පොරොන්දම් VIP</h3>
+              <p className="text-xs text-slate-600 dark:text-slate-400 font-medium mb-6 leading-relaxed">
                 You've enjoyed your 3 FREE messages! Upgrade to VIP to unlock unlimited messaging & direct WhatsApp contact details.
               </p>
 
