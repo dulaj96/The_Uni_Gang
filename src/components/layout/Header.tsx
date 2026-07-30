@@ -44,7 +44,7 @@ const Header = () => {
 
   // Intersection Observer for ScrollSpy
   useEffect(() => {
-    const sectionIds = ['home', 'annex', 'market', 'services', 'events', 'blogs', 'advertise', 'stats', 'contact'];
+    const sectionIds = ['home', 'annex', 'market', 'services', 'events', 'proposals', 'blogs', 'advertise', 'stats', 'contact'];
 
     const observerOptions = {
       root: null,
@@ -248,7 +248,7 @@ const Header = () => {
                   <a
                     href={link.path}
                     onClick={(e) => scrollToSection(e, link.path)}
-                    className={`px-5 py-2 rounded-full text-sm font-semibold transition-colors duration-300 block ${isActive
+                    className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-colors duration-300 block ${isActive
                       ? 'text-white'
                       : 'text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400'
                       }`}
@@ -265,7 +265,7 @@ const Header = () => {
                 ) : (
                   <Link
                     to={link.path}
-                    className={`px-5 py-2 rounded-full text-sm font-semibold transition-colors duration-300 block ${isActive
+                    className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-colors duration-300 block ${isActive
                       ? 'text-white'
                       : 'text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400'
                       }`}
