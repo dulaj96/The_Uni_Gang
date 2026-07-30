@@ -1,22 +1,21 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   LuHeart, 
-  LuSearch, 
-  LuShieldCheck, 
   LuCrown, 
   LuCirclePlus, 
   LuGraduationCap, 
-  LuCheck, 
   LuX, 
   LuSend, 
-  LuLock, 
-  LuMessageSquare,
-  LuFilter,
-  LuUsers
+  LuMessageSquare
 } from 'react-icons/lu';
 import SEO from '../../components/SEO';
 import TiltCard from '../../components/ui/TiltCard';
+import ProposalHeroBanner from '../../components/proposal/ProposalHeroBanner';
+import ProposalSearchFilterBar from '../../components/proposal/ProposalSearchFilterBar';
+import ProposalTrustBadges from '../../components/proposal/ProposalTrustBadges';
+import ProposalPricingCards from '../../components/proposal/ProposalPricingCards';
+import ProposalHowItWorks from '../../components/proposal/ProposalHowItWorks';
 import toast from 'react-hot-toast';
 
 const sampleProposalsList = [
@@ -103,13 +102,18 @@ const sampleProposalsList = [
 ];
 
 const ProposalHubPage = () => {
-  const [activeTab, setActiveTab] = useState<'feed' | 'swiper' | 'create' | 'safety' | 'pricing'>('feed');
+  const [activeTab, setActiveTab] = useState<'feed' | 'swiper' | 'create'>('feed');
 
-  // Search Filters
-  const [districtFilter, setDistrictFilter] = useState('Any');
-  const [uniFilter, setUniFilter] = useState('Any');
-  const [genderFilter, setGenderFilter] = useState('Any');
-  const [searchKeyword, setSearchKeyword] = useState('');
+  // Search Filters State
+  const [filters, setFilters] = useState({
+    lookingFor: 'Any',
+    minAge: 18,
+    maxAge: 45,
+    religion: 'Any',
+    district: 'Any',
+    university: 'Any',
+    keyword: ''
+  });
 
   // Active Swiper Card Index
   const [currentSwiperIndex, setCurrentSwiperIndex] = useState(0);
@@ -122,12 +126,20 @@ const ProposalHubPage = () => {
   const [inputMessage, setInputMessage] = useState('');
   const [showVipPaywall, setShowVipPaywall] = useState(false);
 
+  const feedRef = useRef<HTMLDivElement>(null);
+
+  const scrollToFeed = () => {
+    feedRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   // Filtered List
   const filteredProposals = sampleProposalsList.filter((item) => {
-    if (districtFilter !== 'Any' && item.district.toLowerCase() !== districtFilter.toLowerCase()) return false;
-    if (uniFilter !== 'Any' && !item.university.toLowerCase().includes(uniFilter.toLowerCase())) return false;
-    if (genderFilter !== 'Any' && item.gender.toLowerCase() !== genderFilter.toLowerCase()) return false;
-    if (searchKeyword && !item.profession.toLowerCase().includes(searchKeyword.toLowerCase()) && !item.name.toLowerCase().includes(searchKeyword.toLowerCase())) return false;
+    if (filters.district !== 'Any' && item.district.toLowerCase() !== filters.district.toLowerCase()) return false;
+    if (filters.university !== 'Any' && !item.university.toLowerCase().includes(filters.university.toLowerCase())) return false;
+    if (filters.lookingFor !== 'Any' && item.gender.toLowerCase() !== filters.lookingFor.toLowerCase()) return false;
+    if (filters.religion !== 'Any' && item.religion.toLowerCase() !== filters.religion.toLowerCase()) return false;
+    if (item.age < filters.minAge || item.age > filters.maxAge) return false;
+    if (filters.keyword && !item.profession.toLowerCase().includes(filters.keyword.toLowerCase()) && !item.name.toLowerCase().includes(filters.keyword.toLowerCase())) return false;
     return true;
   });
 
@@ -175,169 +187,53 @@ const ProposalHubPage = () => {
         description="Discover verified university undergraduates, alumni, and working professionals in Sri Lanka for genuine lifelong connections."
       />
 
-      {/* ── Background Ambient Radial Mesh Glows ── */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div
-          className="absolute inset-0 opacity-[0.02]"
-          style={{
-            backgroundImage: 'radial-gradient(circle, #f43f5e 1px, transparent 1px)',
-            backgroundSize: '32px 32px'
-          }}
-        />
-        <div className="absolute top-0 left-1/3 w-[600px] h-[600px] bg-rose-500/10 blur-[160px] rounded-full" />
-        <div className="absolute top-1/2 right-1/3 w-[600px] h-[600px] bg-pink-500/10 blur-[160px] rounded-full" />
-      </div>
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
 
-        {/* ── HERO LANDING HEADER BANNER ── */}
-        <div className="relative py-12 md:py-16 mb-10 rounded-[3rem] bg-gradient-to-b from-slate-900/90 via-slate-900/60 to-slate-950/90 border border-slate-800 backdrop-blur-2xl p-8 md:p-12 text-center overflow-hidden shadow-2xl">
+        {/* ── 1) HERO LANDING SUB-MAIN BANNER ── */}
+        <ProposalHeroBanner
+          onSearchClick={scrollToFeed}
+          onCreateClick={() => setActiveTab('create')}
+        />
+
+        {/* ── 2) "FIND YOUR PERFECT MATCH" MULTI-FILTER SEARCH WIDGET ── */}
+        <ProposalSearchFilterBar
+          onSearch={(newFilters) => {
+            setFilters(newFilters);
+            scrollToFeed();
+          }}
+        />
+
+        {/* ── 3) PROPOSAL FEED & SWIPER DIRECTORY ── */}
+        <div ref={feedRef} className="space-y-8 mb-16">
           
-          {/* Top Pill Tag */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-500/10 text-rose-400 font-black text-xs uppercase tracking-widest mb-4 ring-1 ring-rose-500/30">
-            <LuHeart className="text-sm animate-pulse" /> Verified Campus Matchmaking & Proposal Hub
+          {/* Feed View Toggle */}
+          <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-900 border border-slate-800">
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setActiveTab('feed')}
+                className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider border-none cursor-pointer ${
+                  activeTab === 'feed' ? 'bg-rose-500 text-white shadow-md' : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                💍 Proposals Feed Grid ({filteredProposals.length})
+              </button>
+              <button
+                onClick={() => setActiveTab('swiper')}
+                className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider border-none cursor-pointer ${
+                  activeTab === 'swiper' ? 'bg-rose-500 text-white shadow-md' : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                🎓 Campus Swiper Deck
+              </button>
+            </div>
+
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-widest hidden sm:inline-block">
+              100% Student Verified Profiles
+            </span>
           </div>
 
-          {/* Hero Headline */}
-          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight mb-4 leading-tight">
-            Find Your Educated <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 via-pink-400 to-purple-400 italic">Campus Soulmate</span>
-          </h1>
-
-          {/* Hero Subtitle */}
-          <p className="text-slate-400 text-base md:text-lg max-w-2xl mx-auto mb-8 font-medium leading-relaxed">
-            Sri Lanka's #1 100% Student-Verified Proposal Ecosystem. Discover verified undergraduates, university alumni, and professionals in a safe, encrypted environment.
-          </p>
-
-          {/* Key Metrics Bar */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto pt-6 border-t border-slate-800/80">
-            <div className="p-3 rounded-2xl bg-slate-950/60 border border-slate-800">
-              <span className="text-xl font-black text-rose-400 block">1,400+</span>
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Verified Profiles</span>
-            </div>
-            <div className="p-3 rounded-2xl bg-slate-950/60 border border-slate-800">
-              <span className="text-xl font-black text-pink-400 block">100%</span>
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Student & Alumni</span>
-            </div>
-            <div className="p-3 rounded-2xl bg-slate-950/60 border border-slate-800">
-              <span className="text-xl font-black text-purple-400 block">98%</span>
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Match Accuracy</span>
-            </div>
-            <div className="p-3 rounded-2xl bg-slate-950/60 border border-slate-800">
-              <span className="text-xl font-black text-emerald-400 block">0% Leaks</span>
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Phone Mask Shield</span>
-            </div>
-          </div>
-
-        </div>
-
-        {/* ── UNIFIED 5-TAB EXECUTIVE NAVIGATION SYSTEM ── */}
-        <div className="flex justify-center mb-10 overflow-x-auto hide-scrollbar py-2">
-          <div className="inline-flex p-1.5 rounded-2xl bg-slate-900/90 backdrop-blur-xl border border-slate-800 shadow-xl gap-1.5">
-            {[
-              { id: 'feed', label: '💍 Proposals Feed', icon: LuSearch },
-              { id: 'swiper', label: '🎓 Campus Swiper', icon: LuUsers },
-              { id: 'create', label: '✍️ Post Free Proposal Ad', icon: LuCirclePlus },
-              { id: 'safety', label: '🔒 Safety & Security', icon: LuShieldCheck },
-              { id: 'pricing', label: '👑 Premium VIP Passes', icon: LuCrown }
-            ].map((tab) => {
-              const Icon = tab.icon;
-              const isActive = activeTab === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id as any)}
-                  className={`flex items-center gap-2 px-5 py-3 rounded-xl text-xs font-black uppercase tracking-wider transition-all border-none cursor-pointer shrink-0 ${
-                    isActive
-                      ? 'bg-gradient-to-r from-rose-500 via-pink-500 to-purple-500 text-white shadow-lg shadow-rose-500/30'
-                      : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
-                  }`}
-                >
-                  <Icon size={16} />
-                  <span>{tab.label}</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* ── TAB 1: PROPOSALS FEED ── */}
-        {activeTab === 'feed' && (
-          <div className="space-y-8">
-
-            {/* Search Filter Bar */}
-            <div className="p-6 rounded-3xl bg-slate-900/90 backdrop-blur-2xl border border-slate-800 shadow-xl space-y-6">
-              
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pb-4 border-b border-slate-800">
-                <div className="flex items-center gap-2">
-                  <LuFilter className="text-rose-400" size={18} />
-                  <span className="text-xs font-black uppercase tracking-widest text-white">Filter Proposal Listings</span>
-                </div>
-
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">
-                  Showing {filteredProposals.length} Verified Profiles
-                </span>
-              </div>
-
-              {/* Filters */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div>
-                  <label className="text-[10px] font-black text-rose-400 uppercase tracking-widest block mb-1">Search Name / Profession</label>
-                  <input
-                    type="text"
-                    placeholder="E.g. Engineer, Doctor, Dilini..."
-                    value={searchKeyword}
-                    onChange={(e) => setSearchKeyword(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 focus:border-rose-500 text-xs font-bold outline-none text-white"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-[10px] font-black text-rose-400 uppercase tracking-widest block mb-1">District</label>
-                  <select
-                    value={districtFilter}
-                    onChange={(e) => setDistrictFilter(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 focus:border-rose-500 text-xs font-bold outline-none text-white"
-                  >
-                    <option value="Any">All Districts</option>
-                    <option value="Colombo">Colombo</option>
-                    <option value="Kandy">Kandy</option>
-                    <option value="Gampaha">Gampaha</option>
-                    <option value="Galle">Galle</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="text-[10px] font-black text-rose-400 uppercase tracking-widest block mb-1">University</label>
-                  <select
-                    value={uniFilter}
-                    onChange={(e) => setUniFilter(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 focus:border-rose-500 text-xs font-bold outline-none text-white"
-                  >
-                    <option value="Any">All Universities</option>
-                    <option value="Moratuwa">Uni of Moratuwa</option>
-                    <option value="Peradeniya">Uni of Peradeniya</option>
-                    <option value="Jayewardenepura">Uni of Sri Jayewardenepura</option>
-                    <option value="SLIIT">SLIIT Malabe</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="text-[10px] font-black text-rose-400 uppercase tracking-widest block mb-1">Gender</label>
-                  <select
-                    value={genderFilter}
-                    onChange={(e) => setGenderFilter(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 focus:border-rose-500 text-xs font-bold outline-none text-white"
-                  >
-                    <option value="Any">All Genders</option>
-                    <option value="Male">Looking for Gents</option>
-                    <option value="Female">Looking for Ladies</option>
-                  </select>
-                </div>
-              </div>
-
-            </div>
-
-            {/* DIRECTORY GRID VIEW */}
+          {/* GRID VIEW */}
+          {activeTab === 'feed' && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredProposals.map((proposal) => (
                 <TiltCard key={proposal.id}>
@@ -376,172 +272,106 @@ const ProposalHubPage = () => {
                 </TiltCard>
               ))}
             </div>
+          )}
 
-          </div>
-        )}
+          {/* SWIPER VIEW */}
+          {activeTab === 'swiper' && filteredProposals.length > 0 && (
+            <div className="flex flex-col items-center justify-center py-4">
+              <div className="w-full max-w-md bg-slate-900 rounded-[2.5rem] p-6 border border-slate-800 shadow-2xl relative overflow-hidden text-center">
+                <div className="relative h-80 rounded-3xl overflow-hidden mb-5 bg-slate-950">
+                  <img src={filteredProposals[currentSwiperIndex]?.images[0]} alt="Swiper Card" className="w-full h-full object-cover" />
+                  <span className="absolute top-4 left-4 px-3.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-500 text-white shadow-md">
+                    {filteredProposals[currentSwiperIndex]?.badgeType}
+                  </span>
+                  <div className="absolute bottom-4 left-4 right-4 p-4 rounded-2xl bg-slate-950/80 backdrop-blur-md border border-white/10 text-white text-left">
+                    <h3 className="text-xl font-black uppercase tracking-tight">{filteredProposals[currentSwiperIndex]?.name}, {filteredProposals[currentSwiperIndex]?.age}</h3>
+                    <p className="text-xs text-rose-300 font-bold">{filteredProposals[currentSwiperIndex]?.profession}</p>
+                  </div>
+                </div>
 
-        {/* ── TAB 2: CAMPUS SWIPER DECK ── */}
-        {activeTab === 'swiper' && filteredProposals.length > 0 && (
-          <div className="flex flex-col items-center justify-center py-8">
-            <div className="w-full max-w-md bg-slate-900 rounded-[2.5rem] p-6 border border-slate-800 shadow-2xl relative overflow-hidden text-center">
-              <div className="relative h-80 rounded-3xl overflow-hidden mb-5 bg-slate-950">
-                <img src={filteredProposals[currentSwiperIndex]?.images[0]} alt="Swiper Card" className="w-full h-full object-cover" />
-                <span className="absolute top-4 left-4 px-3.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-500 text-white shadow-md">
-                  {filteredProposals[currentSwiperIndex]?.badgeType}
-                </span>
-                <div className="absolute bottom-4 left-4 right-4 p-4 rounded-2xl bg-slate-950/80 backdrop-blur-md border border-white/10 text-white text-left">
-                  <h3 className="text-xl font-black uppercase tracking-tight">{filteredProposals[currentSwiperIndex]?.name}, {filteredProposals[currentSwiperIndex]?.age}</h3>
-                  <p className="text-xs text-rose-300 font-bold">{filteredProposals[currentSwiperIndex]?.profession}</p>
+                <p className="text-xs text-slate-400 font-medium italic mb-6">
+                  "{filteredProposals[currentSwiperIndex]?.bio}"
+                </p>
+
+                <div className="flex items-center justify-center gap-6">
+                  <button
+                    onClick={handleSwipePass}
+                    className="w-16 h-16 rounded-full bg-slate-800 text-slate-400 hover:text-red-400 flex items-center justify-center text-2xl shadow-lg border-none cursor-pointer active:scale-95 transition-all"
+                  >
+                    <LuX />
+                  </button>
+                  <button
+                    onClick={handleSwipeLike}
+                    className="w-20 h-20 rounded-full bg-gradient-to-r from-rose-500 to-pink-500 text-white flex items-center justify-center text-3xl shadow-xl shadow-rose-500/40 border-none cursor-pointer active:scale-95 transition-all animate-pulse"
+                  >
+                    <LuHeart />
+                  </button>
                 </div>
               </div>
+            </div>
+          )}
 
-              <p className="text-xs text-slate-400 font-medium italic mb-6">
-                "{filteredProposals[currentSwiperIndex]?.bio}"
-              </p>
+          {/* CREATE PROFILE FORM VIEW */}
+          {activeTab === 'create' && (
+            <div className="max-w-2xl mx-auto bg-slate-900 rounded-3xl p-8 border border-slate-800 shadow-2xl">
+              <div className="text-center mb-8">
+                <div className="inline-flex p-3 rounded-2xl bg-rose-500/10 text-rose-400 mb-3">
+                  <LuCirclePlus size={28} />
+                </div>
+                <h2 className="text-3xl font-black text-white uppercase tracking-tight">Post Your Proposal Profile</h2>
+                <p className="text-xs text-slate-400 font-bold uppercase tracking-widest mt-1">Register for free on Uni පොරොන්දම්</p>
+              </div>
 
-              <div className="flex items-center justify-center gap-6">
-                <button
-                  onClick={handleSwipePass}
-                  className="w-16 h-16 rounded-full bg-slate-800 text-slate-400 hover:text-red-400 flex items-center justify-center text-2xl shadow-lg border-none cursor-pointer active:scale-95 transition-all"
-                >
-                  <LuX />
+              <form onSubmit={(e) => { e.preventDefault(); toast.success("Proposal Profile submitted for review!"); setActiveTab('feed'); }} className="space-y-5">
+                <div>
+                  <label className="text-[10px] font-black text-rose-400 uppercase tracking-widest block mb-1">Full Name / Nickname *</label>
+                  <input required type="text" placeholder="E.g. Kasun Bandara" className="w-full p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs font-bold outline-none text-white" />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-[10px] font-black text-rose-400 uppercase tracking-widest block mb-1">Age *</label>
+                    <input required type="number" placeholder="25" className="w-full p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs font-bold outline-none text-white" />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-black text-rose-400 uppercase tracking-widest block mb-1">District *</label>
+                    <input required type="text" placeholder="E.g. Colombo" className="w-full p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs font-bold outline-none text-white" />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-[10px] font-black text-rose-400 uppercase tracking-widest block mb-1">University / Institute *</label>
+                    <input required type="text" placeholder="E.g. University of Moratuwa" className="w-full p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs font-bold outline-none text-white" />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-black text-rose-400 uppercase tracking-widest block mb-1">Profession / Degree *</label>
+                    <input required type="text" placeholder="E.g. Software Engineer" className="w-full p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs font-bold outline-none text-white" />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-[10px] font-black text-rose-400 uppercase tracking-widest block mb-1">Bio / Looking For *</label>
+                  <textarea required rows={3} placeholder="Describe yourself and what kind of soulmate you are looking for..." className="w-full p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs font-bold outline-none text-white resize-none" />
+                </div>
+
+                <button type="submit" className="w-full py-4 bg-gradient-to-r from-rose-500 to-pink-500 text-white font-black text-xs uppercase tracking-widest rounded-xl shadow-xl border-none cursor-pointer">
+                  Submit Proposal Profile
                 </button>
-                <button
-                  onClick={handleSwipeLike}
-                  className="w-20 h-20 rounded-full bg-gradient-to-r from-rose-500 to-pink-500 text-white flex items-center justify-center text-3xl shadow-xl shadow-rose-500/40 border-none cursor-pointer active:scale-95 transition-all animate-pulse"
-                >
-                  <LuHeart />
-                </button>
-              </div>
+              </form>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* ── TAB 3: POST PROPOSAL AD ── */}
-        {activeTab === 'create' && (
-          <div className="max-w-2xl mx-auto bg-slate-900 rounded-3xl p-8 border border-slate-800 shadow-2xl">
-            <div className="text-center mb-8">
-              <div className="inline-flex p-3 rounded-2xl bg-rose-500/10 text-rose-400 mb-3">
-                <LuCirclePlus size={28} />
-              </div>
-              <h2 className="text-3xl font-black text-white uppercase tracking-tight">Post Your Proposal Profile</h2>
-              <p className="text-xs text-slate-400 font-bold uppercase tracking-widest mt-1">Register for free on Uni පොරොන්දම්</p>
-            </div>
+        </div>
 
-            <form onSubmit={(e) => { e.preventDefault(); toast.success("Proposal Profile submitted for review!"); setActiveTab('feed'); }} className="space-y-5">
-              <div>
-                <label className="text-[10px] font-black text-rose-400 uppercase tracking-widest block mb-1">Full Name / Nickname *</label>
-                <input required type="text" placeholder="E.g. Kasun Bandara" className="w-full p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs font-bold outline-none text-white" />
-              </div>
+        {/* ── 4) TRUST & TARGET AUDIENCE CARDS ── */}
+        <ProposalTrustBadges />
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-[10px] font-black text-rose-400 uppercase tracking-widest block mb-1">Age *</label>
-                  <input required type="number" placeholder="25" className="w-full p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs font-bold outline-none text-white" />
-                </div>
-                <div>
-                  <label className="text-[10px] font-black text-rose-400 uppercase tracking-widest block mb-1">District *</label>
-                  <input required type="text" placeholder="E.g. Colombo" className="w-full p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs font-bold outline-none text-white" />
-                </div>
-              </div>
+        {/* ── 5) FREE VS VIP PRICING CARDS & PAYMENT FLOW ── */}
+        <ProposalPricingCards onSubscribeClick={() => setShowVipPaywall(true)} />
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-[10px] font-black text-rose-400 uppercase tracking-widest block mb-1">University / Institute *</label>
-                  <input required type="text" placeholder="E.g. University of Moratuwa" className="w-full p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs font-bold outline-none text-white" />
-                </div>
-                <div>
-                  <label className="text-[10px] font-black text-rose-400 uppercase tracking-widest block mb-1">Profession / Degree *</label>
-                  <input required type="text" placeholder="E.g. Software Engineer" className="w-full p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs font-bold outline-none text-white" />
-                </div>
-              </div>
-
-              <div>
-                <label className="text-[10px] font-black text-rose-400 uppercase tracking-widest block mb-1">Bio / Looking For *</label>
-                <textarea required rows={3} placeholder="Describe yourself and what kind of soulmate you are looking for..." className="w-full p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs font-bold outline-none text-white resize-none" />
-              </div>
-
-              <button type="submit" className="w-full py-4 bg-gradient-to-r from-rose-500 to-pink-500 text-white font-black text-xs uppercase tracking-widest rounded-xl shadow-xl border-none cursor-pointer">
-                Submit Proposal Profile
-              </button>
-            </form>
-          </div>
-        )}
-
-        {/* ── TAB 4: SAFETY & PRIVACY ── */}
-        {activeTab === 'safety' && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="p-8 rounded-3xl bg-slate-900 border border-slate-800 shadow-xl text-center">
-              <div className="inline-flex p-4 rounded-2xl bg-rose-500/10 text-rose-400 mb-4">
-                <LuShieldCheck size={32} />
-              </div>
-              <h3 className="text-lg font-black text-white uppercase tracking-tight mb-2">Anti-Leak Phone Masking</h3>
-              <p className="text-xs text-slate-400 font-medium leading-relaxed">
-                In-app chat automatically scans and masks phone numbers to protect student privacy until mutual contact unlock.
-              </p>
-            </div>
-
-            <div className="p-8 rounded-3xl bg-slate-900 border border-slate-800 shadow-xl text-center">
-              <div className="inline-flex p-4 rounded-2xl bg-blue-500/10 text-blue-400 mb-4">
-                <LuGraduationCap size={32} />
-              </div>
-              <h3 className="text-lg font-black text-white uppercase tracking-tight mb-2">Student ID Verification</h3>
-              <p className="text-xs text-slate-400 font-medium leading-relaxed">
-                Verified via Student ID photo or `.ac.lk` email to guarantee genuine Sri Lankan undergraduates & graduates.
-              </p>
-            </div>
-
-            <div className="p-8 rounded-3xl bg-slate-900 border border-slate-800 shadow-xl text-center">
-              <div className="inline-flex p-4 rounded-2xl bg-purple-500/10 text-purple-400 mb-4">
-                <LuLock size={32} />
-              </div>
-              <h3 className="text-lg font-black text-white uppercase tracking-tight mb-2">Photo Privacy Guard</h3>
-              <p className="text-xs text-slate-400 font-medium leading-relaxed">
-                Students can choose to blur their photos and reveal them only to approved, mutual matches.
-              </p>
-            </div>
-          </div>
-        )}
-
-        {/* ── TAB 5: PREMIUM VIP TIERS ── */}
-        {activeTab === 'pricing' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {/* Free Tier */}
-            <div className="p-8 rounded-3xl bg-slate-900 border border-slate-800 shadow-xl flex flex-col justify-between">
-              <div>
-                <span className="text-xs font-black uppercase tracking-widest text-slate-400 block mb-1">Standard Plan</span>
-                <h3 className="text-3xl font-black text-white mb-4">Free Plan</h3>
-                <ul className="space-y-3 text-xs font-bold text-slate-300 mb-8">
-                  <li className="flex items-center gap-2"><LuCheck className="text-emerald-400" /> Create & View Proposal Profiles</li>
-                  <li className="flex items-center gap-2"><LuCheck className="text-emerald-400" /> 5 Swipes / Likes per day</li>
-                  <li className="flex items-center gap-2"><LuCheck className="text-emerald-400" /> 3 Messages FREE per Match</li>
-                  <li className="flex items-center gap-2 opacity-50"><LuX className="text-red-400" /> Phone / WhatsApp Contact Reveal</li>
-                </ul>
-              </div>
-              <button onClick={() => setActiveTab('create')} className="w-full py-4 bg-slate-800 text-white font-black text-xs uppercase tracking-widest rounded-xl border-none cursor-pointer">
-                Get Started Free
-              </button>
-            </div>
-
-            {/* VIP Pass */}
-            <div className="p-8 rounded-3xl bg-gradient-to-b from-rose-500/10 via-pink-500/10 to-purple-500/10 border-2 border-rose-500 shadow-2xl flex flex-col justify-between relative overflow-hidden">
-              <span className="absolute top-4 right-4 px-3 py-1 rounded-full text-[9px] font-black uppercase bg-rose-500 text-white shadow-md">Most Popular</span>
-              <div>
-                <span className="text-xs font-black uppercase tracking-widest text-rose-400 block mb-1">VIP Membership</span>
-                <h3 className="text-3xl font-black text-white mb-2">LKR 990 <span className="text-xs font-bold text-slate-400">/ month</span></h3>
-                <ul className="space-y-3 text-xs font-bold text-slate-300 mb-8">
-                  <li className="flex items-center gap-2"><LuCheck className="text-rose-400" /> Unlimited Swipes & Likes ♾️</li>
-                  <li className="flex items-center gap-2"><LuCheck className="text-rose-400" /> Unlimited In-App Chat Messages</li>
-                  <li className="flex items-center gap-2"><LuCheck className="text-rose-400" /> Unlimited Phone & WhatsApp Contact Unlock</li>
-                  <li className="flex items-center gap-2"><LuCheck className="text-rose-400" /> See Who Liked Your Profile</li>
-                </ul>
-              </div>
-              <button onClick={() => setShowVipPaywall(true)} className="w-full py-4 bg-gradient-to-r from-rose-500 via-pink-500 to-purple-500 text-white font-black text-xs uppercase tracking-widest rounded-xl shadow-xl border-none cursor-pointer">
-                Upgrade to VIP Pass
-              </button>
-            </div>
-          </div>
-        )}
+        {/* ── 6) 3-STEP HOW IT WORKS JOURNEY ── */}
+        <ProposalHowItWorks />
 
       </div>
 
@@ -554,7 +384,6 @@ const ProposalHubPage = () => {
             exit={{ opacity: 0, y: 100 }}
             className="fixed bottom-4 right-4 z-50 w-full max-w-sm bg-slate-900 rounded-3xl shadow-2xl border border-slate-800 overflow-hidden"
           >
-            {/* Header */}
             <div className="p-4 bg-gradient-to-r from-rose-500 to-pink-500 text-white flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <img src={activeChatProfile.images[0]} alt="Match" className="w-10 h-10 rounded-full object-cover border border-white" />
@@ -568,7 +397,6 @@ const ProposalHubPage = () => {
               </button>
             </div>
 
-            {/* Chat Body */}
             <div className="p-4 h-64 overflow-y-auto space-y-3 bg-slate-950">
               {chatMessages.map((m, i) => (
                 <div key={i} className={`flex ${m.sender === 'me' ? 'justify-end' : 'justify-start'}`}>
@@ -581,7 +409,6 @@ const ProposalHubPage = () => {
               ))}
             </div>
 
-            {/* Form */}
             <form onSubmit={handleSendMessage} className="p-3 border-t border-slate-800 flex gap-2">
               <input
                 type="text"
