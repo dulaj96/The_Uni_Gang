@@ -238,9 +238,9 @@ const ProposalTeaserSection = () => {
                   <LuGraduationCap size={20} />
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-white mb-0.5">100% Student & Alumni Verification</h4>
+                  <h4 className="text-sm font-bold text-white mb-0.5">🎓 100% Student & Alumni Verification</h4>
                   <p className="text-xs text-slate-400 font-medium leading-relaxed">
-                    Verified via Student ID photo or `.ac.lk` email to guarantee authentic Sri Lankan university matches.
+                    Student ID & `.ac.lk` mail මගින් 100% Genuine ශ්‍රී ලාංකික Campus matches බව තහවුරු කිරීම.
                   </p>
                 </div>
               </div>
@@ -250,9 +250,9 @@ const ProposalTeaserSection = () => {
                   <LuLock size={20} />
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-white mb-0.5">Anti-Leak Phone Masking Filter</h4>
+                  <h4 className="text-sm font-bold text-white mb-0.5">🔒 Anti-Leak Contact Security Filter</h4>
                   <p className="text-xs text-slate-400 font-medium leading-relaxed">
-                    Automated in-app Regex filter masks phone numbers in messages to protect privacy until mutual contact unlock.
+                    Phone Numbers / Contact Leaks වැළැක්වීමේ automated Regex Privacy Engine එක.
                   </p>
                 </div>
               </div>
@@ -262,9 +262,9 @@ const ProposalTeaserSection = () => {
                   <LuMessageSquare size={20} />
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-white mb-0.5">In-App Chat with Free 3-Message Teaser</h4>
+                  <h4 className="text-sm font-bold text-white mb-0.5">💬 Encrypted In-App Chat & Free Teaser</h4>
                   <p className="text-xs text-slate-400 font-medium leading-relaxed">
-                    Chat safely within the app for free before upgrading to VIP for unlimited messaging & contact details.
+                    Messages 3ක් නොමිලේ යවා Chat කිරීමට සහ VIP Upgrade එක ලබාගැනීමට ඇති පහසුකම.
                   </p>
                 </div>
               </div>
