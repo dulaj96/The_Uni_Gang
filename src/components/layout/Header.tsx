@@ -7,7 +7,7 @@ import logo from '../../assets/logoImage.jpg';
 import { 
   LuMenu, LuX, LuUser, LuLogOut, LuLayoutDashboard, LuSun, LuMoon, 
   LuArrowRight, LuShoppingBag, LuBed, LuBriefcase, 
-  LuCalendar, LuFileText, LuMegaphone, LuMessageSquare 
+  LuCalendar, LuFileText, LuMegaphone, LuMessageSquare, LuHeart 
 } from 'react-icons/lu';
 import { FiHome } from 'react-icons/fi';
 import { useTheme } from '../../context/ThemeContext';
@@ -206,6 +206,7 @@ const Header = () => {
     { name: 'Market', path: '/#market', id: 'market', icon: LuShoppingBag },
     { name: 'Services', path: '/#services', id: 'services', icon: LuBriefcase },
     { name: 'Events', path: '/#events', id: 'events', icon: LuCalendar },
+    { name: 'Uni පොරොන්දම්', path: '/#proposals', id: 'proposals', icon: LuHeart },
     { name: 'Blogs', path: '/#blogs', id: 'blogs', icon: LuFileText },
     { name: 'Advertise', path: '/#advertise', id: 'advertise', icon: LuMegaphone },
     { name: 'Contact', path: '/#contact', id: 'contact', icon: LuMessageSquare },

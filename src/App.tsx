@@ -15,6 +15,7 @@ import AdvertiseSection from './components/advertise/Advertise';
 import Contact from './components/contact/Contact';
 import MarketSection from './components/market/MarketSection';
 import AdBanner from './components/advertise/AdBanner';
+import ProposalTeaserSection from './components/proposal/ProposalTeaserSection';
 import WhatsAppButton from './components/whatsAppButton/WhatsAppButton';
 import SEO from './components/SEO';
 import AdPopup from './components/advertise/AdPopup';
@@ -40,6 +41,7 @@ const AdvertiseLanding = lazy(() => import('./pages/advertise/AdvertiseLanding')
 const AdSubmissionForm = lazy(() => import('./pages/advertise/AdSubmissionForm'));
 const MarketplaceHome = lazy(() => import('./pages/market/MarketplaceHome'));
 const ServicesPage = lazy(() => import('./pages/services/ServicesPage'));
+const ProposalHubPage = lazy(() => import('./pages/proposal/ProposalHubPage'));
 const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
 
 function App() {
@@ -73,6 +75,7 @@ function App() {
                     <div id="feed" className="min-h-[10px]"></div>
                     <Services />
                     <Events />
+                    <ProposalTeaserSection />
                     <div id="blogs"><Blogs /></div>
                     <div id="advertise"><AdvertiseSection /></div>
                     <Contact />
@@ -123,6 +126,9 @@ function App() {
 
           {/* Services Dedicated Route */}
           <Route path="/services" element={<SubLayout><ServicesPage /></SubLayout>} />
+
+          {/* Uni Porondam Proposal Hub Route */}
+          <Route path="/proposals" element={<SubLayout><ProposalHubPage /></SubLayout>} />
 
           {/* Admin Moderation Route */}
           <Route path="/admin" element={<SubLayout><AdminDashboard /></SubLayout>} />
