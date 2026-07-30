@@ -371,7 +371,7 @@ const Events = () => {
               {/* Host promotional info banner card */}
               <div className="p-5 rounded-2xl bg-rose-500/5 dark:bg-slate-950/40 border border-rose-500/10 dark:border-slate-800/60">
                 <h4 className="text-xs font-black text-rose-500 dark:text-rose-400 uppercase tracking-widest mb-1.5 flex items-center gap-1">
-                  <LuSparkles size={12} /> Host Your Campus Event
+                  Host Your Campus Event
                 </h4>
                 <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
                   Got an upcoming batch party, charity drive, or technical summit? Post your event details to immediately reach over 10,000+ active students islandwide.
@@ -555,15 +555,15 @@ const Events = () => {
 
             <div className="flex gap-5 animate-marquee whitespace-nowrap">
               {[...displayEventsList, ...displayEventsList].map((event, idx) => (
-                <div 
+                <div
                   key={idx}
                   onClick={() => navigate('/event-list')}
                   className="inline-flex items-center gap-4 p-3 pr-6 rounded-2xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/60 dark:border-white/10 shadow-lg hover:border-rose-500/50 hover:bg-white dark:hover:bg-slate-900 transition-all cursor-pointer shrink-0"
                 >
-                  <img 
-                    src={event.image || 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=300'} 
+                  <img
+                    src={event.image || 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=300'}
                     alt={event.title}
-                    className="w-14 h-14 rounded-xl object-cover border border-slate-200 dark:border-slate-800 shrink-0" 
+                    className="w-14 h-14 rounded-xl object-cover border border-slate-200 dark:border-slate-800 shrink-0"
                   />
                   <div className="text-left max-w-[210px]">
                     <span className="text-[9px] font-black uppercase tracking-wider text-rose-500 block truncate">

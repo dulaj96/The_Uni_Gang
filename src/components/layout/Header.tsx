@@ -248,7 +248,7 @@ const Header = () => {
                   <a
                     href={link.path}
                     onClick={(e) => scrollToSection(e, link.path)}
-                    className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-colors duration-300 block ${isActive
+                    className={`px-4 py-2 rounded-full text-[13px] font-bold transition-colors duration-300 block ${isActive
                       ? 'text-white'
                       : 'text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400'
                       }`}
@@ -265,7 +265,7 @@ const Header = () => {
                 ) : (
                   <Link
                     to={link.path}
-                    className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-colors duration-300 block ${isActive
+                    className={`px-4 py-2 rounded-full text-[13px] font-bold transition-colors duration-300 block ${isActive
                       ? 'text-white'
                       : 'text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400'
                       }`}

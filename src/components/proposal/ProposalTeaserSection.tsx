@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  LuHeart, 
-  LuSparkles, 
-  LuGraduationCap, 
-  LuMessageSquare, 
+import {
+  LuHeart,
+  LuSparkles,
+  LuGraduationCap,
+  LuShieldCheck,
+  LuMessageSquare,
   LuChevronRight,
   LuLock
 } from 'react-icons/lu';
@@ -54,24 +55,62 @@ const ProposalTeaserSection = () => {
           </p>
         </div>
 
-        {/* ── Hero Split Layout (Refined Interactive Left Showcase / Value Pitch Right) ── */}
+        {/* ── Hero Split Layout (Enhanced Orbiting Left Showcase / World-Class Pitch Right) ── */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
 
-          {/* LEFT: Distinct Dual Glassmorphism Container Card Visual (7 Cols) */}
+          {/* LEFT: Multi-Floating Motion Icon Glass Container (7 Cols) */}
           <motion.div
             initial={{ opacity: 0, x: -40 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="lg:col-span-7 relative flex justify-center items-center min-h-[480px]"
+            className="lg:col-span-7 relative flex justify-center items-center min-h-[520px]"
           >
             <div className="relative w-full max-w-lg">
 
+              {/* Floating Motion Badges Around Left Visual Container */}
+
+              {/* Floating Icon 1: Pulsing Heart (Top Left) */}
+              <motion.div
+                animate={{ y: [0, -15, 0], rotate: [0, 15, 0] }}
+                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+                className="absolute -top-6 -left-4 z-40 px-3.5 py-2 rounded-2xl bg-rose-500/20 border border-rose-500/40 text-rose-300 backdrop-blur-xl shadow-2xl flex items-center gap-2 text-xs font-black uppercase tracking-wider"
+              >
+                <LuHeart className="text-rose-400 animate-bounce" size={16} /> 98% Match Rate
+              </motion.div>
+
+              {/* Floating Icon 2: Sparkles (Top Right) */}
+              <motion.div
+                animate={{ y: [0, 12, 0], rotate: [0, -12, 0] }}
+                transition={{ duration: 4.8, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+                className="absolute -top-5 -right-3 z-40 w-11 h-11 rounded-2xl bg-pink-500/20 border border-pink-500/40 text-pink-300 backdrop-blur-xl shadow-2xl flex items-center justify-center"
+              >
+                <LuSparkles size={20} className="animate-spin-slow" />
+              </motion.div>
+
+              {/* Floating Icon 3: Student Verified (Mid Left) */}
+              <motion.div
+                animate={{ y: [0, 14, 0] }}
+                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+                className="absolute top-1/2 -left-8 -translate-y-1/2 z-40 px-3.5 py-2 rounded-2xl bg-blue-500/20 border border-blue-500/40 text-blue-300 backdrop-blur-xl shadow-2xl flex items-center gap-2 text-xs font-black uppercase tracking-wider"
+              >
+                <LuGraduationCap size={16} /> Student Verified 🎓
+              </motion.div>
+
+              {/* Floating Icon 4: Phone Masking Shield (Mid Right) */}
+              <motion.div
+                animate={{ y: [0, -12, 0] }}
+                transition={{ duration: 4.2, repeat: Infinity, ease: 'easeInOut', delay: 0.8 }}
+                className="absolute top-1/2 -right-6 -translate-y-1/2 z-40 px-3.5 py-2 rounded-2xl bg-purple-500/20 border border-purple-500/40 text-purple-300 backdrop-blur-xl shadow-2xl flex items-center gap-2 text-xs font-black uppercase tracking-wider"
+              >
+                <LuShieldCheck size={16} /> Privacy Shield 🔒
+              </motion.div>
+
               {/* Outer Glowing Glass Wrapper Container */}
-              <div className="relative p-6 sm:p-8 rounded-[2.5rem] bg-gradient-to-b from-slate-900/90 to-slate-950/90 border border-slate-800 shadow-2xl backdrop-blur-xl">
+              <div className="relative p-6 sm:p-8 rounded-[2.5rem] bg-gradient-to-b from-slate-900/95 to-slate-950/95 border border-slate-800 shadow-2xl backdrop-blur-xl hover:border-rose-500/40 transition-all duration-500">
 
                 {/* Top Status Header */}
-                <div className="flex items-center justify-between pb-6 mb-6 border-b border-slate-800/80">
+                <div className="flex items-center justify-between pb-5 mb-5 border-b border-slate-800/80">
                   <div className="flex items-center gap-2">
                     <span className="relative flex h-3 w-3">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
@@ -92,7 +131,7 @@ const ProposalTeaserSection = () => {
 
                   {/* Card 1: Female Undergrad */}
                   <TiltCard>
-                    <div className="group bg-slate-950/80 rounded-3xl p-4 border border-rose-500/30 hover:border-rose-500 transition-all cursor-pointer shadow-xl" onClick={handleOpenHub}>
+                    <div className="group bg-slate-950/90 rounded-3xl p-4 border border-rose-500/30 hover:border-rose-500 transition-all cursor-pointer shadow-xl" onClick={handleOpenHub}>
                       <div className="relative h-56 rounded-2xl overflow-hidden mb-3 bg-slate-900">
                         <img
                           src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=500&auto=format&fit=crop"
@@ -118,7 +157,7 @@ const ProposalTeaserSection = () => {
 
                   {/* Card 2: Male Uni Alumni */}
                   <TiltCard>
-                    <div className="group bg-slate-950/80 rounded-3xl p-4 border border-amber-500/30 hover:border-amber-500 transition-all cursor-pointer shadow-xl" onClick={handleOpenHub}>
+                    <div className="group bg-slate-950/90 rounded-3xl p-4 border border-amber-500/30 hover:border-amber-500 transition-all cursor-pointer shadow-xl" onClick={handleOpenHub}>
                       <div className="relative h-56 rounded-2xl overflow-hidden mb-3 bg-slate-900">
                         <img
                           src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=500&auto=format&fit=crop"
@@ -144,7 +183,7 @@ const ProposalTeaserSection = () => {
 
                 </div>
 
-                {/* Floating Bottom Match Badge */}
+                {/* Floating Bottom Match Notification Bar */}
                 <div className="mt-5 p-3 rounded-2xl bg-gradient-to-r from-rose-500/20 to-pink-500/20 border border-rose-500/30 flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
                     <div className="w-8 h-8 rounded-full bg-rose-500 text-white flex items-center justify-center text-sm shadow-md animate-bounce">
@@ -169,7 +208,7 @@ const ProposalTeaserSection = () => {
             </div>
           </motion.div>
 
-          {/* RIGHT: Value Proposition & Feature Cards (5 Cols) */}
+          {/* RIGHT: World-Class Value Pitch & Pillar Feature Cards (5 Cols) */}
           <motion.div
             initial={{ opacity: 0, x: 40 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -178,9 +217,9 @@ const ProposalTeaserSection = () => {
             className="lg:col-span-5 space-y-6"
           >
             <div>
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-500/10 text-rose-400 font-black text-[10px] uppercase tracking-widest mb-3 ring-1 ring-rose-500/30">
+              {/* <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-500/10 text-rose-400 font-black text-[10px] uppercase tracking-widest mb-3 ring-1 ring-rose-500/30">
                 <LuSparkles className="text-sm animate-pulse" /> Verified Sri Lankan Proposals
-              </div>
+              </div> */}
 
               <h3 className="text-2xl md:text-3xl font-black text-white tracking-tight uppercase">
                 Find Your Educated <span className="text-rose-400 italic">Soulmate</span>
@@ -191,10 +230,10 @@ const ProposalTeaserSection = () => {
               </p>
             </div>
 
-            {/* Feature Cards Stack */}
+            {/* Feature Cards Stack (Pillar Highlights) */}
             <div className="space-y-3.5 pt-1">
 
-              <div className="flex items-start gap-4 p-4 rounded-2xl bg-slate-900/70 border border-slate-800">
+              <div className="flex items-start gap-4 p-4 rounded-2xl bg-slate-900/70 border border-slate-800 hover:border-rose-500/30 transition-colors">
                 <div className="p-3 rounded-xl bg-rose-500/10 text-rose-400 shrink-0 mt-0.5">
                   <LuGraduationCap size={20} />
                 </div>
@@ -206,7 +245,7 @@ const ProposalTeaserSection = () => {
                 </div>
               </div>
 
-              <div className="flex items-start gap-4 p-4 rounded-2xl bg-slate-900/70 border border-slate-800">
+              <div className="flex items-start gap-4 p-4 rounded-2xl bg-slate-900/70 border border-slate-800 hover:border-purple-500/30 transition-colors">
                 <div className="p-3 rounded-xl bg-purple-500/10 text-purple-400 shrink-0 mt-0.5">
                   <LuLock size={20} />
                 </div>
@@ -218,7 +257,7 @@ const ProposalTeaserSection = () => {
                 </div>
               </div>
 
-              <div className="flex items-start gap-4 p-4 rounded-2xl bg-slate-900/70 border border-slate-800">
+              <div className="flex items-start gap-4 p-4 rounded-2xl bg-slate-900/70 border border-slate-800 hover:border-pink-500/30 transition-colors">
                 <div className="p-3 rounded-xl bg-pink-500/10 text-pink-400 shrink-0 mt-0.5">
                   <LuMessageSquare size={20} />
                 </div>
