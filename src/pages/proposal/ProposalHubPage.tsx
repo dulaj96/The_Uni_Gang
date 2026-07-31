@@ -7,12 +7,15 @@ import {
   LuGraduationCap, 
   LuX, 
   LuSend, 
-  LuMessageSquare
+  LuMessageSquare,
+  LuSearch,
+  LuFilter,
+  LuShieldCheck,
+  LuUsers
 } from 'react-icons/lu';
 import SEO from '../../components/SEO';
 import TiltCard from '../../components/ui/TiltCard';
 import ProposalHeroBanner from '../../components/proposal/ProposalHeroBanner';
-import ProposalSearchFilterBar from '../../components/proposal/ProposalSearchFilterBar';
 import ProposalTrustBadges from '../../components/proposal/ProposalTrustBadges';
 import ProposalPricingCards from '../../components/proposal/ProposalPricingCards';
 import ProposalHowItWorks from '../../components/proposal/ProposalHowItWorks';
@@ -102,18 +105,13 @@ const sampleProposalsList = [
 ];
 
 const ProposalHubPage = () => {
-  const [activeTab, setActiveTab] = useState<'feed' | 'swiper' | 'create'>('feed');
+  const [activeTab, setActiveTab] = useState<'feed' | 'swiper' | 'create' | 'safety' | 'pricing'>('feed');
 
   // Search Filters State
-  const [filters, setFilters] = useState({
-    lookingFor: 'Any',
-    minAge: 18,
-    maxAge: 45,
-    religion: 'Any',
-    district: 'Any',
-    university: 'Any',
-    keyword: ''
-  });
+  const [districtFilter, setDistrictFilter] = useState('Any');
+  const [uniFilter, setUniFilter] = useState('Any');
+  const [genderFilter, setGenderFilter] = useState('Any');
+  const [searchKeyword, setSearchKeyword] = useState('');
 
   // Active Swiper Card Index
   const [currentSwiperIndex, setCurrentSwiperIndex] = useState(0);
@@ -134,12 +132,10 @@ const ProposalHubPage = () => {
 
   // Filtered List
   const filteredProposals = sampleProposalsList.filter((item) => {
-    if (filters.district !== 'Any' && item.district.toLowerCase() !== filters.district.toLowerCase()) return false;
-    if (filters.university !== 'Any' && !item.university.toLowerCase().includes(filters.university.toLowerCase())) return false;
-    if (filters.lookingFor !== 'Any' && item.gender.toLowerCase() !== filters.lookingFor.toLowerCase()) return false;
-    if (filters.religion !== 'Any' && item.religion.toLowerCase() !== filters.religion.toLowerCase()) return false;
-    if (item.age < filters.minAge || item.age > filters.maxAge) return false;
-    if (filters.keyword && !item.profession.toLowerCase().includes(filters.keyword.toLowerCase()) && !item.name.toLowerCase().includes(filters.keyword.toLowerCase())) return false;
+    if (districtFilter !== 'Any' && item.district.toLowerCase() !== districtFilter.toLowerCase()) return false;
+    if (uniFilter !== 'Any' && !item.university.toLowerCase().includes(uniFilter.toLowerCase())) return false;
+    if (genderFilter !== 'Any' && item.gender.toLowerCase() !== genderFilter.toLowerCase()) return false;
+    if (searchKeyword && !item.profession.toLowerCase().includes(searchKeyword.toLowerCase()) && !item.name.toLowerCase().includes(searchKeyword.toLowerCase())) return false;
     return true;
   });
 
@@ -189,51 +185,120 @@ const ProposalHubPage = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
 
-        {/* ── 1) HERO LANDING SUB-MAIN BANNER ── */}
+        {/* ── 1) HERO LANDING HEADER BANNER ── */}
         <ProposalHeroBanner
           onSearchClick={scrollToFeed}
           onCreateClick={() => setActiveTab('create')}
         />
 
-        {/* ── 2) "FIND YOUR PERFECT MATCH" MULTI-FILTER SEARCH WIDGET ── */}
-        <ProposalSearchFilterBar
-          onSearch={(newFilters) => {
-            setFilters(newFilters);
-            scrollToFeed();
-          }}
-        />
+        {/* ── 2) UNIFIED EXECUTIVE TAB SWITCHER ── */}
+        <div className="flex justify-center mb-8 overflow-x-auto hide-scrollbar py-2">
+          <div className="inline-flex p-1.5 rounded-2xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800 shadow-xl gap-1.5">
+            {[
+              { id: 'feed', label: '💍 Proposals Feed', icon: LuSearch },
+              { id: 'swiper', label: '🔥 Campus Swiper Deck', icon: LuUsers },
+              { id: 'create', label: '✍️ Post Free Proposal Ad', icon: LuCirclePlus },
+              { id: 'safety', label: '🔒 Safety & Security', icon: LuShieldCheck },
+              { id: 'pricing', label: '👑 VIP Membership', icon: LuCrown }
+            ].map((tab) => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id as any)}
+                  className={`flex items-center gap-2 px-4.5 py-3 rounded-xl text-xs font-black uppercase tracking-wider transition-all border-none cursor-pointer shrink-0 ${
+                    isActive
+                      ? 'bg-gradient-to-r from-rose-500 via-pink-500 to-purple-500 text-white shadow-lg shadow-rose-500/30'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
+                  }`}
+                >
+                  <Icon size={16} />
+                  <span>{tab.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
 
-        {/* ── 3) PROPOSAL FEED & SWIPER DIRECTORY ── */}
-        <div ref={feedRef} className="space-y-8 mb-16">
-          
-          {/* Feed View Toggle */}
-          <div className="flex items-center justify-between p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-md">
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setActiveTab('feed')}
-                className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider border-none cursor-pointer transition-colors ${
-                  activeTab === 'feed' ? 'bg-rose-500 text-white shadow-md' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                }`}
-              >
-                💍 Proposals Feed Grid ({filteredProposals.length})
-              </button>
-              <button
-                onClick={() => setActiveTab('swiper')}
-                className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider border-none cursor-pointer transition-colors ${
-                  activeTab === 'swiper' ? 'bg-rose-500 text-white shadow-md' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                }`}
-              >
-                🎓 Campus Swiper Deck
-              </button>
+        {/* ── TAB 1: PROPOSALS FEED & INTEGRATED FILTER BAR ── */}
+        {activeTab === 'feed' && (
+          <div ref={feedRef} className="space-y-6 mb-16">
+
+            {/* Compact Integrated Search Filter Console */}
+            <div className="p-5 rounded-3xl bg-white/90 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 shadow-lg space-y-4">
+              
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pb-3 border-b border-slate-200/60 dark:border-slate-800">
+                <div className="flex items-center gap-2">
+                  <LuFilter className="text-rose-500" size={16} />
+                  <span className="text-xs font-black uppercase tracking-widest text-slate-900 dark:text-white">Smart Match Filters</span>
+                </div>
+
+                <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
+                  Showing {filteredProposals.length} Verified Profiles
+                </span>
+              </div>
+
+              {/* Filters Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                <div>
+                  <label className="text-[9px] font-black text-rose-500 uppercase tracking-widest block mb-1">Keyword Search</label>
+                  <input
+                    type="text"
+                    placeholder="Search Engineer, Doctor..."
+                    value={searchKeyword}
+                    onChange={(e) => setSearchKeyword(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-900 dark:text-white outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-[9px] font-black text-rose-500 uppercase tracking-widest block mb-1">Looking For</label>
+                  <select
+                    value={genderFilter}
+                    onChange={(e) => setGenderFilter(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-900 dark:text-white outline-none"
+                  >
+                    <option value="Any">Any Gender</option>
+                    <option value="Male">Looking for Gents</option>
+                    <option value="Female">Looking for Ladies</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="text-[9px] font-black text-rose-500 uppercase tracking-widest block mb-1">District</label>
+                  <select
+                    value={districtFilter}
+                    onChange={(e) => setDistrictFilter(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-900 dark:text-white outline-none"
+                  >
+                    <option value="Any">All Districts</option>
+                    <option value="Colombo">Colombo</option>
+                    <option value="Kandy">Kandy</option>
+                    <option value="Gampaha">Gampaha</option>
+                    <option value="Galle">Galle</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="text-[9px] font-black text-rose-500 uppercase tracking-widest block mb-1">University</label>
+                  <select
+                    value={uniFilter}
+                    onChange={(e) => setUniFilter(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-900 dark:text-white outline-none"
+                  >
+                    <option value="Any">All Universities</option>
+                    <option value="Moratuwa">Uni of Moratuwa</option>
+                    <option value="Peradeniya">Uni of Peradeniya</option>
+                    <option value="Jayewardenepura">USJ / Japura</option>
+                    <option value="SLIIT">SLIIT Malabe</option>
+                  </select>
+                </div>
+              </div>
+
             </div>
 
-            <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest hidden sm:inline-block">
-              100% Student Verified Profiles
-            </span>
-          </div>
-
-          {/* GRID VIEW */}
-          {activeTab === 'feed' && (
+            {/* DIRECTORY GRID */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredProposals.map((proposal) => (
                 <TiltCard key={proposal.id}>
@@ -272,106 +337,110 @@ const ProposalHubPage = () => {
                 </TiltCard>
               ))}
             </div>
-          )}
 
-          {/* SWIPER VIEW */}
-          {activeTab === 'swiper' && filteredProposals.length > 0 && (
-            <div className="flex flex-col items-center justify-center py-4">
-              <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-[2.5rem] p-6 border border-slate-200/80 dark:border-slate-800 shadow-2xl relative overflow-hidden text-center">
-                <div className="relative h-80 rounded-3xl overflow-hidden mb-5 bg-slate-100 dark:bg-slate-950">
-                  <img src={filteredProposals[currentSwiperIndex]?.images[0]} alt="Swiper Card" className="w-full h-full object-cover" />
-                  <span className="absolute top-4 left-4 px-3.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-500 text-white shadow-md">
-                    {filteredProposals[currentSwiperIndex]?.badgeType}
-                  </span>
-                  <div className="absolute bottom-4 left-4 right-4 p-4 rounded-2xl bg-slate-950/80 backdrop-blur-md border border-white/10 text-white text-left">
-                    <h3 className="text-xl font-black uppercase tracking-tight">{filteredProposals[currentSwiperIndex]?.name}, {filteredProposals[currentSwiperIndex]?.age}</h3>
-                    <p className="text-xs text-rose-300 font-bold">{filteredProposals[currentSwiperIndex]?.profession}</p>
-                  </div>
-                </div>
+          </div>
+        )}
 
-                <p className="text-xs text-slate-600 dark:text-slate-400 font-medium italic mb-6">
-                  "{filteredProposals[currentSwiperIndex]?.bio}"
-                </p>
-
-                <div className="flex items-center justify-center gap-6">
-                  <button
-                    onClick={handleSwipePass}
-                    className="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-red-500 flex items-center justify-center text-2xl shadow-lg border-none cursor-pointer active:scale-95 transition-all"
-                  >
-                    <LuX />
-                  </button>
-                  <button
-                    onClick={handleSwipeLike}
-                    className="w-20 h-20 rounded-full bg-gradient-to-r from-rose-500 to-pink-500 text-white flex items-center justify-center text-3xl shadow-xl shadow-rose-500/40 border-none cursor-pointer active:scale-95 transition-all animate-pulse"
-                  >
-                    <LuHeart />
-                  </button>
+        {/* ── TAB 2: CAMPUS SWIPER DECK ── */}
+        {activeTab === 'swiper' && filteredProposals.length > 0 && (
+          <div className="flex flex-col items-center justify-center py-6">
+            <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-[2.5rem] p-6 border border-slate-200/80 dark:border-slate-800 shadow-2xl relative overflow-hidden text-center">
+              <div className="relative h-80 rounded-3xl overflow-hidden mb-5 bg-slate-100 dark:bg-slate-950">
+                <img src={filteredProposals[currentSwiperIndex]?.images[0]} alt="Swiper Card" className="w-full h-full object-cover" />
+                <span className="absolute top-4 left-4 px-3.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-500 text-white shadow-md">
+                  {filteredProposals[currentSwiperIndex]?.badgeType}
+                </span>
+                <div className="absolute bottom-4 left-4 right-4 p-4 rounded-2xl bg-slate-950/80 backdrop-blur-md border border-white/10 text-white text-left">
+                  <h3 className="text-xl font-black uppercase tracking-tight">{filteredProposals[currentSwiperIndex]?.name}, {filteredProposals[currentSwiperIndex]?.age}</h3>
+                  <p className="text-xs text-rose-300 font-bold">{filteredProposals[currentSwiperIndex]?.profession}</p>
                 </div>
               </div>
-            </div>
-          )}
 
-          {/* CREATE PROFILE FORM VIEW */}
-          {activeTab === 'create' && (
-            <div className="max-w-2xl mx-auto bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-200/80 dark:border-slate-800 shadow-2xl">
-              <div className="text-center mb-8">
-                <div className="inline-flex p-3 rounded-2xl bg-rose-500/10 text-rose-500 dark:text-rose-400 mb-3">
-                  <LuCirclePlus size={28} />
-                </div>
-                <h2 className="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Post Your Proposal Profile</h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest mt-1">Register for free on Uni පොරොන්දම්</p>
-              </div>
+              <p className="text-xs text-slate-600 dark:text-slate-400 font-medium italic mb-6">
+                "{filteredProposals[currentSwiperIndex]?.bio}"
+              </p>
 
-              <form onSubmit={(e) => { e.preventDefault(); toast.success("Proposal Profile submitted for review!"); setActiveTab('feed'); }} className="space-y-5">
-                <div>
-                  <label className="text-[10px] font-black text-rose-600 dark:text-rose-400 uppercase tracking-widest block mb-1">Full Name / Nickname *</label>
-                  <input required type="text" placeholder="E.g. Kasun Bandara" className="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-bold outline-none text-slate-900 dark:text-white" />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-[10px] font-black text-rose-600 dark:text-rose-400 uppercase tracking-widest block mb-1">Age *</label>
-                    <input required type="number" placeholder="25" className="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-bold outline-none text-slate-900 dark:text-white" />
-                  </div>
-                  <div>
-                    <label className="text-[10px] font-black text-rose-600 dark:text-rose-400 uppercase tracking-widest block mb-1">District *</label>
-                    <input required type="text" placeholder="E.g. Colombo" className="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-bold outline-none text-slate-900 dark:text-white" />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-[10px] font-black text-rose-600 dark:text-rose-400 uppercase tracking-widest block mb-1">University / Institute *</label>
-                    <input required type="text" placeholder="E.g. University of Moratuwa" className="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-bold outline-none text-slate-900 dark:text-white" />
-                  </div>
-                  <div>
-                    <label className="text-[10px] font-black text-rose-600 dark:text-rose-400 uppercase tracking-widest block mb-1">Profession / Degree *</label>
-                    <input required type="text" placeholder="E.g. Software Engineer" className="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-bold outline-none text-slate-900 dark:text-white" />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="text-[10px] font-black text-rose-600 dark:text-rose-400 uppercase tracking-widest block mb-1">Bio / Looking For *</label>
-                  <textarea required rows={3} placeholder="Describe yourself and what kind of soulmate you are looking for..." className="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-bold outline-none text-slate-900 dark:text-white resize-none" />
-                </div>
-
-                <button type="submit" className="w-full py-4 bg-gradient-to-r from-rose-500 to-pink-500 text-white font-black text-xs uppercase tracking-widest rounded-xl shadow-xl border-none cursor-pointer">
-                  Submit Proposal Profile
+              <div className="flex items-center justify-center gap-6">
+                <button
+                  onClick={handleSwipePass}
+                  className="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-red-500 flex items-center justify-center text-2xl shadow-lg border-none cursor-pointer active:scale-95 transition-all"
+                >
+                  <LuX />
                 </button>
-              </form>
+                <button
+                  onClick={handleSwipeLike}
+                  className="w-20 h-20 rounded-full bg-gradient-to-r from-rose-500 to-pink-500 text-white flex items-center justify-center text-3xl shadow-xl shadow-rose-500/40 border-none cursor-pointer active:scale-95 transition-all animate-pulse"
+                >
+                  <LuHeart />
+                </button>
+              </div>
             </div>
-          )}
+          </div>
+        )}
 
-        </div>
+        {/* ── TAB 3: POST PROPOSAL AD ── */}
+        {activeTab === 'create' && (
+          <div className="max-w-2xl mx-auto bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-200/80 dark:border-slate-800 shadow-2xl">
+            <div className="text-center mb-8">
+              <div className="inline-flex p-3 rounded-2xl bg-rose-500/10 text-rose-500 dark:text-rose-400 mb-3">
+                <LuCirclePlus size={28} />
+              </div>
+              <h2 className="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Post Your Proposal Profile</h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest mt-1">Register for free on Uni පොරොන්දම්</p>
+            </div>
 
-        {/* ── 4) TRUST & TARGET AUDIENCE CARDS ── */}
-        <ProposalTrustBadges />
+            <form onSubmit={(e) => { e.preventDefault(); toast.success("Proposal Profile submitted for review!"); setActiveTab('feed'); }} className="space-y-4">
+              <div>
+                <label className="text-[10px] font-black text-rose-600 dark:text-rose-400 uppercase tracking-widest block mb-1">Full Name / Nickname *</label>
+                <input required type="text" placeholder="E.g. Kasun Bandara" className="w-full p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-bold outline-none text-slate-900 dark:text-white" />
+              </div>
 
-        {/* ── 5) FREE VS VIP PRICING CARDS & PAYMENT FLOW ── */}
-        <ProposalPricingCards onSubscribeClick={() => setShowVipPaywall(true)} />
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-[10px] font-black text-rose-600 dark:text-rose-400 uppercase tracking-widest block mb-1">Age *</label>
+                  <input required type="number" placeholder="25" className="w-full p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-bold outline-none text-slate-900 dark:text-white" />
+                </div>
+                <div>
+                  <label className="text-[10px] font-black text-rose-600 dark:text-rose-400 uppercase tracking-widest block mb-1">District *</label>
+                  <input required type="text" placeholder="E.g. Colombo" className="w-full p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-bold outline-none text-slate-900 dark:text-white" />
+                </div>
+              </div>
 
-        {/* ── 6) 3-STEP HOW IT WORKS JOURNEY ── */}
-        <ProposalHowItWorks />
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-[10px] font-black text-rose-600 dark:text-rose-400 uppercase tracking-widest block mb-1">University / Institute *</label>
+                  <input required type="text" placeholder="E.g. University of Moratuwa" className="w-full p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-bold outline-none text-slate-900 dark:text-white" />
+                </div>
+                <div>
+                  <label className="text-[10px] font-black text-rose-600 dark:text-rose-400 uppercase tracking-widest block mb-1">Profession / Degree *</label>
+                  <input required type="text" placeholder="E.g. Software Engineer" className="w-full p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-bold outline-none text-slate-900 dark:text-white" />
+                </div>
+              </div>
+
+              <div>
+                <label className="text-[10px] font-black text-rose-600 dark:text-rose-400 uppercase tracking-widest block mb-1">Bio / Looking For *</label>
+                <textarea required rows={3} placeholder="Describe yourself and what kind of soulmate you are looking for..." className="w-full p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-bold outline-none text-slate-900 dark:text-white resize-none" />
+              </div>
+
+              <button type="submit" className="w-full py-4 bg-gradient-to-r from-rose-500 to-pink-500 text-white font-black text-xs uppercase tracking-widest rounded-xl shadow-xl border-none cursor-pointer">
+                Submit Proposal Profile
+              </button>
+            </form>
+          </div>
+        )}
+
+        {/* ── TAB 4: SAFETY & SECURITY ── */}
+        {activeTab === 'safety' && (
+          <ProposalTrustBadges />
+        )}
+
+        {/* ── TAB 5: VIP MEMBERSHIP PRICING ── */}
+        {activeTab === 'pricing' && (
+          <div>
+            <ProposalPricingCards onSubscribeClick={() => setShowVipPaywall(true)} />
+            <ProposalHowItWorks />
+          </div>
+        )}
 
       </div>
 
