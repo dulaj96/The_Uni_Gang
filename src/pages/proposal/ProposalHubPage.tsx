@@ -8,13 +8,11 @@ import {
   LuX, 
   LuSend, 
   LuMessageSquare,
-  LuSearch,
-  LuFilter,
-  LuShieldCheck,
-  LuUsers
+  LuFilter
 } from 'react-icons/lu';
 import SEO from '../../components/SEO';
 import TiltCard from '../../components/ui/TiltCard';
+import ProposalSubNavbar from '../../components/proposal/ProposalSubNavbar';
 import ProposalHeroBanner from '../../components/proposal/ProposalHeroBanner';
 import ProposalTrustBadges from '../../components/proposal/ProposalTrustBadges';
 import ProposalPricingCards from '../../components/proposal/ProposalPricingCards';
@@ -105,7 +103,7 @@ const sampleProposalsList = [
 ];
 
 const ProposalHubPage = () => {
-  const [activeTab, setActiveTab] = useState<'feed' | 'swiper' | 'create' | 'safety' | 'pricing'>('feed');
+  const [activeSubNav, setActiveSubNav] = useState<'directory' | 'swiper' | 'create' | 'safety' | 'pricing' | 'howItWorks'>('directory');
 
   // Search Filters State
   const [districtFilter, setDistrictFilter] = useState('Any');
@@ -177,173 +175,162 @@ const ProposalHubPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white pb-28 pt-20 relative overflow-hidden transition-colors duration-300">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white pb-28 pt-16 relative overflow-hidden transition-colors duration-300">
       <SEO
-        title="Uni පොරොන්දම් - Verified Campus Proposals & Matchmaking | The Uni Gang"
+        title="Uni පොරොන්දම් Sub-Main Portal - Verified Campus Proposals & Matchmaking | The Uni Gang"
         description="Discover verified university undergraduates, alumni, and working professionals in Sri Lanka for genuine lifelong connections."
       />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      {/* ── 1) DEDICATED PROPOSALS SUB-NAVBAR (Pinned under Main Header) ── */}
+      <ProposalSubNavbar
+        activeSubNav={activeSubNav}
+        onSubNavChange={(newTab) => setActiveSubNav(newTab)}
+      />
 
-        {/* ── 1) HERO LANDING HEADER BANNER ── */}
-        <ProposalHeroBanner
-          onSearchClick={scrollToFeed}
-          onCreateClick={() => setActiveTab('create')}
-        />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 pt-8">
 
-        {/* ── 2) UNIFIED EXECUTIVE TAB SWITCHER ── */}
-        <div className="flex justify-center mb-8 overflow-x-auto hide-scrollbar py-2">
-          <div className="inline-flex p-1.5 rounded-2xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800 shadow-xl gap-1.5">
-            {[
-              { id: 'feed', label: '💍 Proposals Feed', icon: LuSearch },
-              { id: 'swiper', label: '🔥 Campus Swiper Deck', icon: LuUsers },
-              { id: 'create', label: '✍️ Post Free Proposal Ad', icon: LuCirclePlus },
-              { id: 'safety', label: '🔒 Safety & Security', icon: LuShieldCheck },
-              { id: 'pricing', label: '👑 VIP Membership', icon: LuCrown }
-            ].map((tab) => {
-              const Icon = tab.icon;
-              const isActive = activeTab === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id as any)}
-                  className={`flex items-center gap-2 px-4.5 py-3 rounded-xl text-xs font-black uppercase tracking-wider transition-all border-none cursor-pointer shrink-0 ${
-                    isActive
-                      ? 'bg-gradient-to-r from-rose-500 via-pink-500 to-purple-500 text-white shadow-lg shadow-rose-500/30'
-                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
-                  }`}
-                >
-                  <Icon size={16} />
-                  <span>{tab.label}</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
+        {/* ── SUB-VIEW 1: PROPOSALS DIRECTORY & HERO BANNER ── */}
+        {activeSubNav === 'directory' && (
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            className="space-y-10"
+          >
+            {/* Sub-Main Hero Banner */}
+            <ProposalHeroBanner
+              onSearchClick={scrollToFeed}
+              onCreateClick={() => setActiveSubNav('create')}
+            />
 
-        {/* ── TAB 1: PROPOSALS FEED & INTEGRATED FILTER BAR ── */}
-        {activeTab === 'feed' && (
-          <div ref={feedRef} className="space-y-6 mb-16">
+            {/* Directory Section with Integrated Filters */}
+            <div ref={feedRef} className="space-y-6 mb-16">
 
-            {/* Compact Integrated Search Filter Console */}
-            <div className="p-5 rounded-3xl bg-white/90 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 shadow-lg space-y-4">
-              
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pb-3 border-b border-slate-200/60 dark:border-slate-800">
-                <div className="flex items-center gap-2">
-                  <LuFilter className="text-rose-500" size={16} />
-                  <span className="text-xs font-black uppercase tracking-widest text-slate-900 dark:text-white">Smart Match Filters</span>
-                </div>
-
-                <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
-                  Showing {filteredProposals.length} Verified Profiles
-                </span>
-              </div>
-
-              {/* Filters Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                <div>
-                  <label className="text-[9px] font-black text-rose-500 uppercase tracking-widest block mb-1">Keyword Search</label>
-                  <input
-                    type="text"
-                    placeholder="Search Engineer, Doctor..."
-                    value={searchKeyword}
-                    onChange={(e) => setSearchKeyword(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-900 dark:text-white outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-[9px] font-black text-rose-500 uppercase tracking-widest block mb-1">Looking For</label>
-                  <select
-                    value={genderFilter}
-                    onChange={(e) => setGenderFilter(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-900 dark:text-white outline-none"
-                  >
-                    <option value="Any">Any Gender</option>
-                    <option value="Male">Looking for Gents</option>
-                    <option value="Female">Looking for Ladies</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="text-[9px] font-black text-rose-500 uppercase tracking-widest block mb-1">District</label>
-                  <select
-                    value={districtFilter}
-                    onChange={(e) => setDistrictFilter(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-900 dark:text-white outline-none"
-                  >
-                    <option value="Any">All Districts</option>
-                    <option value="Colombo">Colombo</option>
-                    <option value="Kandy">Kandy</option>
-                    <option value="Gampaha">Gampaha</option>
-                    <option value="Galle">Galle</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="text-[9px] font-black text-rose-500 uppercase tracking-widest block mb-1">University</label>
-                  <select
-                    value={uniFilter}
-                    onChange={(e) => setUniFilter(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-900 dark:text-white outline-none"
-                  >
-                    <option value="Any">All Universities</option>
-                    <option value="Moratuwa">Uni of Moratuwa</option>
-                    <option value="Peradeniya">Uni of Peradeniya</option>
-                    <option value="Jayewardenepura">USJ / Japura</option>
-                    <option value="SLIIT">SLIIT Malabe</option>
-                  </select>
-                </div>
-              </div>
-
-            </div>
-
-            {/* DIRECTORY GRID */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredProposals.map((proposal) => (
-                <TiltCard key={proposal.id}>
-                  <div className="relative group bg-white/90 dark:bg-slate-900/90 rounded-3xl p-5 border border-slate-200/80 dark:border-slate-800 shadow-xl overflow-hidden flex flex-col justify-between h-full hover:border-rose-500/40 transition-all">
-                    <div className="relative h-64 rounded-2xl overflow-hidden mb-4 bg-slate-100 dark:bg-slate-950">
-                      <img src={proposal.images[0]} alt={proposal.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                      <span className={`absolute top-3 left-3 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-wider border shadow-md ${proposal.badgeClass}`}>
-                        {proposal.badgeType}
-                      </span>
-                      <span className="absolute bottom-3 left-3 px-3 py-1 rounded-full text-[10px] font-bold bg-slate-950/80 backdrop-blur-md text-white border border-white/20">
-                        📍 {proposal.district} • {proposal.age} yrs
-                      </span>
-                    </div>
-
-                    <div className="space-y-2 mb-4">
-                      <h3 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight line-clamp-1">{proposal.name}</h3>
-                      <p className="text-xs text-rose-600 dark:text-rose-400 font-extrabold uppercase tracking-wider">{proposal.profession}</p>
-                      <p className="text-xs text-slate-600 dark:text-slate-400 font-bold flex items-center gap-1">
-                        <LuGraduationCap size={14} className="text-rose-500" /> {proposal.university}
-                      </p>
-                      <p className="text-xs text-slate-600 dark:text-slate-400 font-medium line-clamp-2 leading-relaxed italic pt-1">
-                        "{proposal.bio}"
-                      </p>
-                    </div>
-
-                    <button
-                      onClick={() => {
-                        setActiveChatProfile(proposal);
-                        toast.success(`Connected with ${proposal.name}!`);
-                      }}
-                      className="w-full py-3.5 bg-gradient-to-r from-rose-500 to-pink-500 text-white font-black text-xs uppercase tracking-widest rounded-xl shadow-lg hover:shadow-rose-500/30 transition-all border-none cursor-pointer flex items-center justify-center gap-2"
-                    >
-                      <LuMessageSquare size={16} /> Start Conversation
-                    </button>
+              {/* Integrated Search Filter Console */}
+              <div className="p-5 rounded-3xl bg-white/90 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 shadow-lg space-y-4">
+                
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pb-3 border-b border-slate-200/60 dark:border-slate-800">
+                  <div className="flex items-center gap-2">
+                    <LuFilter className="text-rose-500" size={16} />
+                    <span className="text-xs font-black uppercase tracking-widest text-slate-900 dark:text-white">Smart Match Filters</span>
                   </div>
-                </TiltCard>
-              ))}
-            </div>
 
-          </div>
+                  <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
+                    Showing {filteredProposals.length} Verified Profiles
+                  </span>
+                </div>
+
+                {/* Filters Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                  <div>
+                    <label className="text-[9px] font-black text-rose-500 uppercase tracking-widest block mb-1">Keyword Search</label>
+                    <input
+                      type="text"
+                      placeholder="Search Engineer, Doctor..."
+                      value={searchKeyword}
+                      onChange={(e) => setSearchKeyword(e.target.value)}
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-900 dark:text-white outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-[9px] font-black text-rose-500 uppercase tracking-widest block mb-1">Looking For</label>
+                    <select
+                      value={genderFilter}
+                      onChange={(e) => setGenderFilter(e.target.value)}
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-900 dark:text-white outline-none"
+                    >
+                      <option value="Any">Any Gender</option>
+                      <option value="Male">Looking for Gents</option>
+                      <option value="Female">Looking for Ladies</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="text-[9px] font-black text-rose-500 uppercase tracking-widest block mb-1">District</label>
+                    <select
+                      value={districtFilter}
+                      onChange={(e) => setDistrictFilter(e.target.value)}
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-900 dark:text-white outline-none"
+                    >
+                      <option value="Any">All Districts</option>
+                      <option value="Colombo">Colombo</option>
+                      <option value="Kandy">Kandy</option>
+                      <option value="Gampaha">Gampaha</option>
+                      <option value="Galle">Galle</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="text-[9px] font-black text-rose-500 uppercase tracking-widest block mb-1">University</label>
+                    <select
+                      value={uniFilter}
+                      onChange={(e) => setUniFilter(e.target.value)}
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-900 dark:text-white outline-none"
+                    >
+                      <option value="Any">All Universities</option>
+                      <option value="Moratuwa">Uni of Moratuwa</option>
+                      <option value="Peradeniya">Uni of Peradeniya</option>
+                      <option value="Jayewardenepura">USJ / Japura</option>
+                      <option value="SLIIT">SLIIT Malabe</option>
+                    </select>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* DIRECTORY GRID */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredProposals.map((proposal) => (
+                  <TiltCard key={proposal.id}>
+                    <div className="relative group bg-white/90 dark:bg-slate-900/90 rounded-3xl p-5 border border-slate-200/80 dark:border-slate-800 shadow-xl overflow-hidden flex flex-col justify-between h-full hover:border-rose-500/40 transition-all">
+                      <div className="relative h-64 rounded-2xl overflow-hidden mb-4 bg-slate-100 dark:bg-slate-950">
+                        <img src={proposal.images[0]} alt={proposal.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                        <span className={`absolute top-3 left-3 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-wider border shadow-md ${proposal.badgeClass}`}>
+                          {proposal.badgeType}
+                        </span>
+                        <span className="absolute bottom-3 left-3 px-3 py-1 rounded-full text-[10px] font-bold bg-slate-950/80 backdrop-blur-md text-white border border-white/20">
+                          📍 {proposal.district} • {proposal.age} yrs
+                        </span>
+                      </div>
+
+                      <div className="space-y-2 mb-4">
+                        <h3 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight line-clamp-1">{proposal.name}</h3>
+                        <p className="text-xs text-rose-600 dark:text-rose-400 font-extrabold uppercase tracking-wider">{proposal.profession}</p>
+                        <p className="text-xs text-slate-600 dark:text-slate-400 font-bold flex items-center gap-1">
+                          <LuGraduationCap size={14} className="text-rose-500" /> {proposal.university}
+                        </p>
+                        <p className="text-xs text-slate-600 dark:text-slate-400 font-medium line-clamp-2 leading-relaxed italic pt-1">
+                          "{proposal.bio}"
+                        </p>
+                      </div>
+
+                      <button
+                        onClick={() => {
+                          setActiveChatProfile(proposal);
+                          toast.success(`Connected with ${proposal.name}!`);
+                        }}
+                        className="w-full py-3.5 bg-gradient-to-r from-rose-500 to-pink-500 text-white font-black text-xs uppercase tracking-widest rounded-xl shadow-lg hover:shadow-rose-500/30 transition-all border-none cursor-pointer flex items-center justify-center gap-2"
+                      >
+                        <LuMessageSquare size={16} /> Start Conversation
+                      </button>
+                    </div>
+                  </TiltCard>
+                ))}
+              </div>
+
+            </div>
+          </motion.div>
         )}
 
-        {/* ── TAB 2: CAMPUS SWIPER DECK ── */}
-        {activeTab === 'swiper' && filteredProposals.length > 0 && (
-          <div className="flex flex-col items-center justify-center py-6">
+        {/* ── SUB-VIEW 2: CAMPUS SWIPER DECK ── */}
+        {activeSubNav === 'swiper' && filteredProposals.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            className="flex flex-col items-center justify-center py-6"
+          >
             <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-[2.5rem] p-6 border border-slate-200/80 dark:border-slate-800 shadow-2xl relative overflow-hidden text-center">
               <div className="relative h-80 rounded-3xl overflow-hidden mb-5 bg-slate-100 dark:bg-slate-950">
                 <img src={filteredProposals[currentSwiperIndex]?.images[0]} alt="Swiper Card" className="w-full h-full object-cover" />
@@ -375,21 +362,26 @@ const ProposalHubPage = () => {
                 </button>
               </div>
             </div>
-          </div>
+          </motion.div>
         )}
 
-        {/* ── TAB 3: POST PROPOSAL AD ── */}
-        {activeTab === 'create' && (
-          <div className="max-w-2xl mx-auto bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-200/80 dark:border-slate-800 shadow-2xl">
+        {/* ── SUB-VIEW 3: POST PROPOSAL AD ── */}
+        {activeSubNav === 'create' && (
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            className="max-w-2xl mx-auto bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-200/80 dark:border-slate-800 shadow-2xl"
+          >
             <div className="text-center mb-8">
               <div className="inline-flex p-3 rounded-2xl bg-rose-500/10 text-rose-500 dark:text-rose-400 mb-3">
                 <LuCirclePlus size={28} />
               </div>
               <h2 className="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Post Your Proposal Profile</h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest mt-1">Register for free on Uni පොරොන්දම්</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest mt-1">Register for free on Uni පොරොන්දම් Sub-Main Portal</p>
             </div>
 
-            <form onSubmit={(e) => { e.preventDefault(); toast.success("Proposal Profile submitted for review!"); setActiveTab('feed'); }} className="space-y-4">
+            <form onSubmit={(e) => { e.preventDefault(); toast.success("Proposal Profile submitted for review!"); setActiveSubNav('directory'); }} className="space-y-4">
               <div>
                 <label className="text-[10px] font-black text-rose-600 dark:text-rose-400 uppercase tracking-widest block mb-1">Full Name / Nickname *</label>
                 <input required type="text" placeholder="E.g. Kasun Bandara" className="w-full p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-bold outline-none text-slate-900 dark:text-white" />
@@ -426,20 +418,40 @@ const ProposalHubPage = () => {
                 Submit Proposal Profile
               </button>
             </form>
-          </div>
+          </motion.div>
         )}
 
-        {/* ── TAB 4: SAFETY & SECURITY ── */}
-        {activeTab === 'safety' && (
-          <ProposalTrustBadges />
+        {/* ── SUB-VIEW 4: SAFETY & PRIVACY ── */}
+        {activeSubNav === 'safety' && (
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+          >
+            <ProposalTrustBadges />
+          </motion.div>
         )}
 
-        {/* ── TAB 5: VIP MEMBERSHIP PRICING ── */}
-        {activeTab === 'pricing' && (
-          <div>
+        {/* ── SUB-VIEW 5: VIP MEMBERSHIP PRICING ── */}
+        {activeSubNav === 'pricing' && (
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+          >
             <ProposalPricingCards onSubscribeClick={() => setShowVipPaywall(true)} />
+          </motion.div>
+        )}
+
+        {/* ── SUB-VIEW 6: HOW IT WORKS ── */}
+        {activeSubNav === 'howItWorks' && (
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+          >
             <ProposalHowItWorks />
-          </div>
+          </motion.div>
         )}
 
       </div>
