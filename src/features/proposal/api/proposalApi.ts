@@ -2,9 +2,13 @@ import { io, Socket } from 'socket.io-client';
 
 const API_URL = '/api/proposals'; 
 
-const getHeaders = () => {
+const getHeaders = (): HeadersInit => {
   const token = localStorage.getItem('userToken');
-  return token ? { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` } : { 'Content-Type': 'application/json' };
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  return headers;
 };
 
 export const proposalApi = {

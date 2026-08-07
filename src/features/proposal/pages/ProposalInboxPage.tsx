@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
 import { ChevronLeft, Search, MoreVertical, Phone, Video, Send, Paperclip, Smile, Check, CheckCheck } from 'lucide-react';
-import { cx, GhostButton } from '../components/ui/ProposalPrimitives';
+import { cx } from '../components/ui/ProposalPrimitives';
 import { proposalApi, proposalSocketService } from '../api/proposalApi';
 import { ScreenshotBlocker } from '../components/privacy/ScreenshotBlocker';
 

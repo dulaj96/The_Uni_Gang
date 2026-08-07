@@ -3,7 +3,7 @@ import { Heart, Sparkles } from 'lucide-react';
 
 export const cx = (...a: (string | undefined | null | false)[]) => a.filter(Boolean).join(" ");
 
-export function Logo({ dark }: { dark: boolean }) {
+export function Logo() {
   return (
     <div className="flex items-center gap-2 mb-2">
       <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-rose-500 to-fuchsia-600 grid place-items-center shadow-lg shadow-rose-500/20 shrink-0">
@@ -40,7 +40,7 @@ export function PrimaryButton({ children, className, icon: Icon, small, ...props
   );
 }
 
-export function GhostButton({ children, className, icon: Icon, small, dark, ...props }: ButtonProps) {
+export function GhostButton({ children, className, icon: Icon, small, ...props }: ButtonProps) {
   return (
     <button
       className={cx(

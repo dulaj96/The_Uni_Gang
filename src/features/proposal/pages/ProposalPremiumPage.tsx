@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { motion } from 'framer-motion';
 import { ChevronLeft, Crown, CheckCircle2, Star, Sparkles, Heart, ShieldCheck, Zap, Video, Undo2, Lock } from 'lucide-react';
 import { PrimaryButton, GhostButton, cx } from '../components/ui/ProposalPrimitives';

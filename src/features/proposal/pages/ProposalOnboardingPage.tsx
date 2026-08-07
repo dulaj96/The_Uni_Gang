@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Check, CheckCircle2, ArrowLeft, ArrowRight, Upload } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { CheckCircle2, ArrowLeft, ArrowRight, Upload } from 'lucide-react';
 import { cx, Logo, Card, PrimaryButton, GhostButton, Field } from '../components/ui/ProposalPrimitives';
 
 const ONBOARDING_STEPS = ["Basic Info", "Physical & Lifestyle", "Education & Family", "About You", "Preferences", "Photos"];

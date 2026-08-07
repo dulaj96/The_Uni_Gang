@@ -1,15 +1,12 @@
-import React from 'react';
-import { ArrowRight, PlayCircle, ShieldCheck, Heart, School, CheckCircle, Crown, Lock, MessageCircle, Video, Phone, CheckCircle2, Star, Sparkles, Users, UserCheck } from 'lucide-react';
-import { cx, Logo, PrimaryButton, GhostButton, Card } from '../components/ui/ProposalPrimitives';
+import { ArrowRight, PlayCircle, ShieldCheck, Heart, School, CheckCircle, Crown, Lock, Video, CheckCircle2, Star, Sparkles, UserCheck } from 'lucide-react';
+import { PrimaryButton, GhostButton, Card } from '../components/ui/ProposalPrimitives';
 import { SUCCESS_STORIES } from '../data/mockProposalData';
 
 export default function ProposalLandingPage({
   dark,
-  onLogin,
   onGetStarted
 }: {
   dark: boolean;
-  onLogin: () => void;
   onGetStarted: () => void;
 }) {
   return (
@@ -253,14 +250,14 @@ export default function ProposalLandingPage({
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {SUCCESS_STORIES.slice(0, 3).map((story, i) => (
+          {SUCCESS_STORIES.slice(0, 3).map((story) => (
             <Card key={story.id} className="p-6 flex flex-col hover:-translate-y-2 transition-transform duration-500 border-slate-200/60 dark:border-slate-800/60">
               <div className="relative h-48 rounded-2xl overflow-hidden mb-6">
                 <img src={story.image} alt="Couple" className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
                 <div className="absolute bottom-4 left-4">
-                  <p className="text-white font-black text-lg">{story.coupleName}</p>
-                  <p className="text-rose-400 font-bold text-xs">Married {story.marriageDate}</p>
+                  <p className="text-white font-black text-lg">{story.names}</p>
+                  <p className="text-rose-400 font-bold text-xs">Married {story.date}</p>
                 </div>
               </div>
               <div className="flex-1">

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, X, Sparkles, Filter, ChevronLeft, MapPin, Briefcase, GraduationCap, Info, Crown } from 'lucide-react';
 import { cx, GhostButton } from '../components/ui/ProposalPrimitives';

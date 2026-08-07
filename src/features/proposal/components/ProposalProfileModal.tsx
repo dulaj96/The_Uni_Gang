@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, MoreVertical, Heart, X, ShieldCheck, MapPin, Briefcase, GraduationCap, AlertTriangle, UserX, Sparkles } from 'lucide-react';
+import { ChevronDown, MoreVertical, Heart, X, ShieldCheck, MapPin, Briefcase, GraduationCap, AlertTriangle, UserX } from 'lucide-react';
 import { cx } from './ui/ProposalPrimitives';
 
 export default function ProposalProfileModal({ profile, onClose }: { profile: any; onClose: () => void }) {

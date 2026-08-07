@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, Camera, User, Settings2, Heart, Save } from 'lucide-react';
 import { PrimaryButton, Card, cx } from '../components/ui/ProposalPrimitives';
