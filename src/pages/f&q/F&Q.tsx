@@ -6,7 +6,9 @@ import {
     LuShieldCheck,
     LuMegaphone,
     LuChevronDown,
-    LuMessageSquare
+    LuMessageSquare,
+    LuHeartHandshake,
+    LuFileText
 } from 'react-icons/lu';
 import PremiumPageLoader from '../../components/ui/PremiumPageLoader';
 
@@ -102,6 +104,44 @@ const FAQ = () => {
             ]
         },
         {
+            title: "Student Blogs",
+            icon: LuFileText,
+            color: "text-amber-500 dark:text-amber-400",
+            bg: "bg-amber-100 dark:bg-amber-900/30",
+            border: "border-amber-200 dark:border-amber-800/50",
+            questions: [
+                {
+                    question: "Who can submit a blog article?",
+                    answer: "Any verified university student can submit a blog article! We encourage students to share their campus experiences, study tips, or creative writing."
+                },
+                {
+                    question: "Do I retain ownership of my writing?",
+                    answer: "Yes. You retain full intellectual property ownership of your work. By submitting, you grant us a license to display it on the platform, but you are always credited as the author."
+                }
+            ]
+        },
+        {
+            title: "Uni Proposals (Matchmaking)",
+            icon: LuHeartHandshake,
+            color: "text-rose-500 dark:text-rose-400",
+            bg: "bg-rose-100 dark:bg-rose-900/30",
+            border: "border-rose-200 dark:border-rose-800/50",
+            questions: [
+                {
+                    question: "Who can see my proposal profile?",
+                    answer: "Only verified university undergraduates and alumni can view proposal profiles. We strictly do not index these profiles on Google or any public search engines."
+                },
+                {
+                    question: "What is Photo Blurring?",
+                    answer: "Privacy is key. You can choose to blur your photos by default. Your clear photos will only be revealed to someone if you explicitly accept their proposal."
+                },
+                {
+                    question: "How does Premium Phone Masking work?",
+                    answer: "For Premium users, you can initiate voice or video calls directly within the app without ever revealing your actual mobile number. This ensures a safe environment to get to know your match."
+                }
+            ]
+        },
+        {
             title: "Safety & Privacy",
             icon: LuShieldCheck,
             color: "text-purple-500 dark:text-purple-400",
@@ -121,9 +161,9 @@ const FAQ = () => {
         {
             title: "Advertising & Partnerships",
             icon: LuMegaphone,
-            color: "text-rose-500 dark:text-rose-400",
-            bg: "bg-rose-100 dark:bg-rose-900/30",
-            border: "border-rose-200 dark:border-rose-800/50",
+            color: "text-indigo-500 dark:text-indigo-400",
+            bg: "bg-indigo-100 dark:bg-indigo-900/30",
+            border: "border-indigo-200 dark:border-indigo-800/50",
             questions: [
                 {
                     question: "How can my club or organization post an event ad?",
@@ -173,7 +213,7 @@ const FAQ = () => {
                                 Frequently Asked <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-orange-500">Questions</span>
                             </h1>
                             <p className="text-slate-500 dark:text-slate-400 font-medium text-lg max-w-xl mx-auto">
-                                Everything you need to know about how The Uni Gang platform works, from events to finding your next annex.
+                                Everything you need to know about how The Uni Gang platform works, from events and student blogs to finding your next annex.
                             </p>
                         </motion.div>
 

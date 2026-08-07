@@ -8,7 +8,8 @@ import {
     LuClock,
     LuBan,
     LuShieldAlert,
-    LuMail
+    LuMail,
+    LuHeartHandshake
 } from 'react-icons/lu';
 import PremiumPageLoader from '../../components/ui/PremiumPageLoader';
 
@@ -30,12 +31,12 @@ const Terms = () => {
                 <div className="space-y-3">
                     <p>
                         "The Uni Gang" operates exclusively as a digital platform and aggregator designed to connect university students
-                        with relevant campus information, events, and local accommodations.
+                        with relevant campus information, events, local accommodations, student blogs, and matchmaking proposals.
                     </p>
                     <div className="p-4 rounded-xl bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800/30">
                         <p className="font-medium text-slate-700 dark:text-slate-300">
                             We act solely as a facilitator. We do <strong>not</strong> own, manage, endorse, or guarantee the quality, safety,
-                            or legality of any external services, events, or rental properties listed on our platform.
+                            or legality of any external services, event tickets, rental properties, or third-party advertisements listed on our platform.
                         </p>
                     </div>
                 </div>
@@ -47,10 +48,8 @@ const Terms = () => {
             title: "2. User Content Responsibility",
             content: (
                 <p>
-                    As a community-driven platform, users are permitted to post event details, upload annex photos, and share
-                    academic information. By submitting content to "The Uni Gang", you agree that you are <strong>100% responsible
-                        for the accuracy, legality, and licensing</strong> of the content you upload. We reserve the right to remove
-                    any content that violates our standards or is flagged as fraudulent, offensive, or inaccurate without prior notice.
+                    As a community-driven platform, users are permitted to post event details, upload annex photos, submit student blogs, and create matchmaking profiles. By submitting content to "The Uni Gang", you agree that you are <strong>100% responsible
+                        for the accuracy, legality, and licensing</strong> of the content you upload. For Student Blogs, you retain ownership of your work but grant us a non-exclusive license to display it. We reserve the right to remove any content that involves plagiarism, violates our standards, or is flagged as fraudulent without prior notice.
                 </p>
             )
         },
@@ -91,17 +90,34 @@ const Terms = () => {
             )
         },
         {
+            id: "matchmaking-rules",
+            icon: LuHeartHandshake,
+            title: "5. Uni Proposals & Matchmaking Rules",
+            content: (
+                <div className="space-y-3">
+                    <p>
+                        The "Uni Proposals" (Matchmaking) feature is designed exclusively for verified undergraduates and alumni looking for serious relationships. By using this feature, you agree to:
+                    </p>
+                    <ul className="list-disc pl-5 mt-3 space-y-2 opacity-90 text-slate-700 dark:text-slate-300">
+                        <li><strong>Respect Boundaries:</strong> Any form of harassment, hate speech, or unsolicited inappropriate content will result in an immediate and permanent ban.</li>
+                        <li><strong>Premium Subscriptions:</strong> Purchasing a Premium Membership unlocks advanced features (e.g., unlimited proposals, video calls). Subscriptions are billed monthly and can be canceled at any time. Refunds for partial months are not provided.</li>
+                        <li><strong>Authenticity:</strong> You must use your real identity and accurate academic details. Fake profiles discovered during or after verification will be removed.</li>
+                    </ul>
+                </div>
+            )
+        },
+        {
             id: "prohibited-use",
             icon: LuBan,
-            title: "5. Prohibited Activities",
+            title: "6. Prohibited Activities",
             content: (
                 <p>
                     While using our platform, you agree not to engage in any of the following prohibited behaviors:
                     <ul className="list-disc pl-5 mt-3 space-y-2 opacity-90">
-                        <li>Spamming community feeds or mass-messaging users.</li>
-                        <li>Using automated scraping tools to extract accommodation or user data.</li>
-                        <li>Providing fake, misleading, or deceptive university and faculty affiliations.</li>
-                        <li>Attempting to bypass security protocols or reverse-engineer the platform.</li>
+                        <li>Spamming community feeds, mass-messaging users, or scraping platform data.</li>
+                        <li>Posting illegal, fraudulent, or academically dishonest advertisements (e.g., essay writing services).</li>
+                        <li>Plagiarizing articles in the Student Blogs section.</li>
+                        <li>Providing fake, misleading, or deceptive university/faculty affiliations for matchmaking.</li>
                     </ul>
                     Violating these rules may result in immediate and permanent suspension from the service.
                 </p>
@@ -110,13 +126,12 @@ const Terms = () => {
         {
             id: "liability",
             icon: LuShieldAlert,
-            title: "6. Limitation of Liability",
+            title: "7. Limitation of Liability",
             content: (
                 <p>
                     To the maximum extent permitted by applicable law, "The Uni Gang", its creators, and affiliates shall not be
                     held liable for any direct, indirect, incidental, or consequential damages resulting from the use or inability
-                    to use the platform. This includes, but is not limited to, legal issues arising from canceled university events,
-                    misrepresented accommodations, or disputes strictly between students and landlords.
+                    to use the platform. This includes, but is not limited to, ticketing issues or refunds for canceled university events, misrepresented accommodations, false advertising by third parties, or disputes strictly between students and landlords.
                 </p>
             )
         }

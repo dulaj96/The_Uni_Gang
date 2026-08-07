@@ -51,12 +51,33 @@ const PrivacyPolicy = () => {
                             <LuUserCheck className="text-blue-500" /> Voluntary Information
                         </h4>
                         <p className="text-sm">
-                            We collect personal information that you voluntarily provide to us when you register on the specified platform, express
-                            an interest in obtaining information about us or our products, or when you interact with our features. This includes your
-                            <strong> Name, Email Address, University/Faculty details</strong>, and interaction data (such as when you click
-                            "Interested" on an event).
+                            We collect personal information that you voluntarily provide to us when you register or interact with our features:
                         </p>
+                        <ul className="list-disc pl-5 mt-2 text-sm space-y-1">
+                            <li><strong>General Accounts:</strong> Name, Email Address, University/Faculty details.</li>
+                            <li><strong>Accommodations (Annexes):</strong> Property photos, location data, and landlord contact details when posting an ad.</li>
+                            <li><strong>Events:</strong> Interaction data (e.g., clicking "Interested") and organization details when posting an event.</li>
+                            <li><strong>Student Blogs:</strong> Author names, biographies, and the content of the blog submitted.</li>
+                            <li><strong>Matchmaking (Proposals):</strong> Profile photos, preferences, and interaction history.</li>
+                        </ul>
                     </div>
+                </div>
+            )
+        },
+        {
+            id: "matchmaking-privacy",
+            icon: LuLock,
+            title: "Matchmaking & Proposal Privacy",
+            content: (
+                <div className="space-y-3">
+                    <p>
+                        Our Uni Proposals feature is built with your privacy and safety as the top priority. We use strict verification to ensure a secure environment:
+                    </p>
+                    <ul className="list-disc pl-5 mt-3 space-y-2 opacity-90">
+                        <li><strong>Photo Blurring:</strong> You have full control over your visibility. You can choose to blur your photos, which will only be revealed to users whose proposals you accept.</li>
+                        <li><strong>Phone Number Masking:</strong> Premium members have access to AI Phone Number Masking, allowing secure voice/video calls without exposing actual phone numbers.</li>
+                        <li><strong>Profile Visibility:</strong> Only verified undergraduates and alumni can view matchmaking profiles. Your profile will not be indexed by external search engines like Google.</li>
+                    </ul>
                 </div>
             )
         },
@@ -71,10 +92,11 @@ const PrivacyPolicy = () => {
                         with our legal obligations, and/or your consent. Specifically, we use your data to:
                     </p>
                     <ul className="list-disc pl-5 mt-3 space-y-2 opacity-90">
-                        <li>Personalize your university and event engagement experience.</li>
-                        <li>Manage your user account and verify your identity.</li>
-                        <li>Send you important event updates, notifications, and administrative information.</li>
-                        <li>Deliver targeted advertising and show relevant campus services/annexes based on your preferences.</li>
+                        <li><strong>Account & Matchmaking:</strong> Manage your user account, verify your university identity, and operate the Uni Proposals matchmaking system securely.</li>
+                        <li><strong>Events & Accommodations:</strong> Personalize your event feed and show relevant campus services/annexes based on your university.</li>
+                        <li><strong>Content Publishing:</strong> Display and attribute your submitted Student Blogs.</li>
+                        <li><strong>Communications:</strong> Send you important event updates, premium subscription notices, and administrative information.</li>
+                        <li><strong>Advertising:</strong> Deliver targeted advertising and measure the effectiveness of third-party advertisements on our platform.</li>
                     </ul>
                 </div>
             )
@@ -121,8 +143,8 @@ const PrivacyPolicy = () => {
             content: (
                 <p>
                     We may share your information with third-party vendors, service providers, or contractors who perform services for us or on our behalf.
-                    This includes payment processors (for secure ticketing or transactions) and analytics/advertising partners. Please note that these third
-                    parties have their own privacy policies, and their handling of your data is governed by those specific agreements when you interact with their plugins or links on our platform.
+                    This includes payment processors (for Premium Subscriptions and Ticketing), analytics, and advertising partners. Please note that these third
+                    parties have their own privacy policies. When you click on third-party event links, ticketing gateways, or WhatsApp links for landlords, their handling of your data is governed by those specific agreements.
                 </p>
             )
         },

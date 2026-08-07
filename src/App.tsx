@@ -41,7 +41,7 @@ const AdvertiseLanding = lazy(() => import('./pages/advertise/AdvertiseLanding')
 const AdSubmissionForm = lazy(() => import('./pages/advertise/AdSubmissionForm'));
 const MarketplaceHome = lazy(() => import('./pages/market/MarketplaceHome'));
 const ServicesPage = lazy(() => import('./pages/services/ServicesPage'));
-const ProposalHubPage = lazy(() => import('./pages/proposal/ProposalHubPage'));
+const ProposalHubEntry = lazy(() => import('./features/proposal/ProposalHubEntry'));
 const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
 
 function App() {
@@ -128,7 +128,7 @@ function App() {
           <Route path="/services" element={<SubLayout><ServicesPage /></SubLayout>} />
 
           {/* Uni Porondam Proposal Hub Route */}
-          <Route path="/proposals" element={<SubLayout><ProposalHubPage /></SubLayout>} />
+          <Route path="/proposals" element={<SubLayout isFullWidth><ProposalHubEntry /></SubLayout>} />
 
           {/* Admin Moderation Route */}
           <Route path="/admin" element={<SubLayout><AdminDashboard /></SubLayout>} />

@@ -15,18 +15,18 @@ import logo from '../../assets/logoImage.jpg';
 ───────────────────────────────────────── */
 const footerColumns = [
   {
-    heading: 'Explore',
+    heading: 'Features',
     links: [
-      { label: 'Find Annex', to: '/find-accommodation' },
-      { label: 'Post an Ad', to: '/post-ad' },
-      { label: 'Annex List', to: '/annex-list' },
-      { label: 'Event List', to: '/event-list' },
+      { label: 'Uni Proposals (Matchmaking)', to: '/proposals', highlight: true },
+      { label: 'Find Annexes', to: '/annex-list' },
+      { label: 'Campus Events', to: '/event-list' },
+      { label: 'Student Blogs', to: '/blogs' },
     ],
   },
   {
     heading: 'Resources',
     links: [
-      { label: 'Blogs', to: '/blogs', highlight: true },
+      { label: 'Post an Ad', to: '/post-ad' },
       { label: 'Submit a Blog', to: '/submit-blog' },
       { label: 'FAQ', to: '/faq' },
       { label: 'Contact Us', to: '/contact-us' },
@@ -36,8 +36,7 @@ const footerColumns = [
     heading: 'Company',
     links: [
       { label: 'About Us', to: '/#home' },
-      { label: 'Services', to: '/#services' },
-      { label: 'Advertise', to: '/advertise' },
+      { label: 'Advertise with Us', to: '/advertise' },
       { label: 'Privacy Policy', to: '/privacy-policy' },
       { label: 'Terms of Service', to: '/terms-of-service' },
     ],
@@ -112,8 +111,7 @@ const Footer = () => {
 
             {/* Tagline */}
             <p className="text-slate-400 text-sm leading-relaxed">
-              Empowering students to find their perfect accommodation, connect
-              with peers, and thrive throughout university life.
+              The ultimate platform for Sri Lankan undergraduates. Find your perfect match, discover student accommodation, events, and thrive in your university life.
             </p>
 
             {/* Social icons */}
