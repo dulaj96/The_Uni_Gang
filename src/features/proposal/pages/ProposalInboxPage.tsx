@@ -299,6 +299,7 @@ export default function ProposalInboxPage({ setPage }: { setPage: (p: any) => vo
                   </button>
                 </div>
               </div>
+                </div>
               </ScreenshotBlocker>
             </>
           )}
