@@ -1,18 +1,34 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, X, Sparkles, Filter, ChevronLeft, MapPin, Briefcase, GraduationCap, Info, Crown } from 'lucide-react';
+import { Heart, X, Sparkles, Filter, ChevronLeft, MapPin, Briefcase, GraduationCap, Info, Crown, Loader2 } from 'lucide-react';
 import { cx, GhostButton } from '../components/ui/ProposalPrimitives';
 import { WatermarkOverlay } from '../components/privacy/WatermarkOverlay';
-import { DISCOVER_PROFILES, CURRENT_USER } from '../data/mockProposalData';
-import { calculateCompatibility } from '../utils/matchingAlgorithm';
+import { CURRENT_USER } from '../data/mockProposalData';
+import { proposalApi } from '../api/proposalApi';
 
 export default function ProposalDiscoverPage({ setPage, openProfile }: { setPage: (p: any) => void, openProfile: (p: any) => void }) {
-  const [profiles, setProfiles] = useState(DISCOVER_PROFILES);
+  const [profiles, setProfiles] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [showFilters, setShowFilters] = useState(false);
   const [direction, setDirection] = useState<'left' | 'right' | null>(null);
 
+  useEffect(() => {
+    const fetchFeed = async () => {
+      try {
+        const res = await proposalApi.getFeed({});
+        if (res.success) {
+          setProfiles(res.data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch feed:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchFeed();
+  }, []);
+
   const activeProfile = profiles[0];
-  const compatibility = activeProfile ? calculateCompatibility(CURRENT_USER, activeProfile) : null;
 
   const handleSwipe = (dir: 'left' | 'right') => {
     setDirection(dir);
@@ -44,7 +60,12 @@ export default function ProposalDiscoverPage({ setPage, openProfile }: { setPage
         {/* Main Swipe Area */}
         <div className="flex-1 flex flex-col items-center justify-center relative perspective-1000">
           
-          {profiles.length === 0 ? (
+          {loading ? (
+            <div className="flex flex-col items-center justify-center p-12">
+              <Loader2 size={48} className="text-rose-500 animate-spin mb-4" />
+              <p className="text-sm font-bold text-slate-500">Finding your perfect matches...</p>
+            </div>
+          ) : profiles.length === 0 ? (
             <div className="text-center p-12">
               <div className="w-24 h-24 rounded-full bg-slate-100 dark:bg-slate-800 grid place-items-center mx-auto mb-6">
                 <Sparkles size={40} className="text-slate-400" />
@@ -84,9 +105,9 @@ export default function ProposalDiscoverPage({ setPage, openProfile }: { setPage
                     
                     {/* Floating Badges */}
                     <div className="absolute top-6 left-6 flex flex-col gap-2 z-20">
-                      {compatibility && (
+                      {activeProfile.matchPercentage && (
                         <div className="bg-rose-500/90 backdrop-blur-md px-3 py-1.5 rounded-full text-xs font-bold text-white flex items-center gap-1.5 border border-white/20 shadow-lg">
-                          <Heart size={14} fill="currentColor" /> {compatibility.matchPercentage}% Match
+                          <Heart size={14} fill="currentColor" /> {activeProfile.matchPercentage}% Match
                         </div>
                       )}
                       {activeProfile.isVerified && (
@@ -110,7 +131,7 @@ export default function ProposalDiscoverPage({ setPage, openProfile }: { setPage
 
                       {/* Hobbies Tags */}
                       <div className="flex flex-wrap gap-2 mt-4">
-                        {activeProfile.hobbies?.map(h => (
+                        {activeProfile.hobbies?.map((h: string) => (
                           <span key={h} className="bg-white/20 backdrop-blur-md border border-white/30 px-3 py-1 rounded-full text-[10px] font-bold text-white uppercase tracking-wider">
                             {h}
                           </span>
@@ -118,10 +139,10 @@ export default function ProposalDiscoverPage({ setPage, openProfile }: { setPage
                       </div>
 
                       {/* Why We Match Bubble */}
-                      {compatibility && (
+                      {activeProfile.matchSummary && (
                         <div className="mt-4 p-3 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 text-white shadow-lg">
                           <p className="text-xs font-bold text-rose-300 mb-1 flex items-center gap-1.5"><Sparkles size={12} /> Why you match</p>
-                          <p className="text-sm font-medium leading-tight">{compatibility.matchSummary}</p>
+                          <p className="text-sm font-medium leading-tight">{activeProfile.matchSummary}</p>
                         </div>
                       )}
                     </div>
