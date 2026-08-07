@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import ProposalLandingPage from './pages/ProposalLandingPage';
 import ProposalOnboardingPage from './pages/ProposalOnboardingPage';
 import ProposalHomePage from './pages/ProposalHomePage';
@@ -51,12 +51,12 @@ export default function ProposalHubEntry() {
 
   return (
     <ErrorBoundary>
-      {subPage === 'discover' && <ProposalDiscoverPage setPage={setSubPage} openProfile={(p) => handleOpenProfile(p, 'discover')} />}
-      {subPage === 'premium' && <ProposalPremiumPage setPage={setSubPage} />}
-      {subPage === 'inbox' && <ProposalInboxPage setPage={setSubPage} />}
-      {subPage === 'profile' && <ProposalProfilePage setPage={setSubPage} />}
-      {subPage === 'settings' && <ProposalSettingsPage setPage={setSubPage} />}
-      {subPage === 'dashboard' && <ProposalHomePage setPage={setSubPage} openProfile={(p) => handleOpenProfile(p, 'dashboard')} goToLanding={handleGoToLanding} />}
+      {subPage === 'discover' && <ProposalDiscoverPage setPage={(p) => setSubPage(p as any)} openProfile={(p) => handleOpenProfile(p, 'discover')} />}
+      {subPage === 'premium' && <ProposalPremiumPage setPage={(p) => setSubPage(p as any)} />}
+      {subPage === 'inbox' && <ProposalInboxPage setPage={(p) => setSubPage(p as any)} />}
+      {subPage === 'profile' && <ProposalProfilePage setPage={(p) => setSubPage(p as any)} />}
+      {subPage === 'settings' && <ProposalSettingsPage setPage={(p) => setSubPage(p as any)} />}
+      {subPage === 'dashboard' && <ProposalHomePage setPage={(p) => setSubPage(p as any)} openProfile={(p) => handleOpenProfile(p, 'dashboard')} goToLanding={handleGoToLanding} />}
       {subPage === 'view_profile' && <ProposalFullProfilePage profile={selectedProfile} goBack={() => setSubPage(previousSubPage)} />}
     </ErrorBoundary>
   );

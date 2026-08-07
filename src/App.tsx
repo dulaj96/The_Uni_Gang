@@ -128,7 +128,7 @@ function App() {
           <Route path="/services" element={<SubLayout><ServicesPage /></SubLayout>} />
 
           {/* Uni Porondam Proposal Hub Route */}
-          <Route path="/proposals" element={<SubLayout isFullWidth><ProposalHubEntry /></SubLayout>} />
+          <Route path="/proposals" element={<SubLayout><ProposalHubEntry /></SubLayout>} />
 
           {/* Admin Moderation Route */}
           <Route path="/admin" element={<SubLayout><AdminDashboard /></SubLayout>} />

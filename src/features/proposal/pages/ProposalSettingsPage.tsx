@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+
 import { ChevronLeft, ShieldCheck, Mail, Link as LinkIcon, Smartphone, MessageCircle, Crown, Lock, EyeOff } from 'lucide-react';
 import { PrimaryButton, Card, cx } from '../components/ui/ProposalPrimitives';
 

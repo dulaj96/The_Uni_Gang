@@ -24,7 +24,7 @@ export default function ProposalOnboardingPage({
   return (
     <div className="w-full flex flex-col py-6">
       <header className="max-w-2xl w-full mx-auto flex items-center justify-between mb-8">
-        <button onClick={onBack} className="hover:opacity-80 transition-opacity"><Logo dark={dark} /></button>
+        <button onClick={onBack} className="hover:opacity-80 transition-opacity"><Logo /></button>
         <span className="text-xs font-bold text-slate-500 uppercase tracking-wider bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded-full">
           Step {step + 1} of {ONBOARDING_STEPS.length}
         </span>

@@ -57,7 +57,7 @@ export function GhostButton({ children, className, icon: Icon, small, ...props }
   );
 }
 
-export function Eyebrow({ children, dark }: { children: React.ReactNode; dark: boolean }) {
+export function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
     <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.15em] px-3 py-1 rounded-full bg-rose-100/80 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-200/50 dark:border-rose-500/20 backdrop-blur-md">
       <Sparkles size={12} /> {children}
