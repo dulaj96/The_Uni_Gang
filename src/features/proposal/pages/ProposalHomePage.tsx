@@ -3,6 +3,8 @@ import { Compass, Send, Heart, Eye, CheckCircle2, Crown, ArrowRight, ShieldCheck
 import { cx, PrimaryButton, Card } from '../components/ui/ProposalPrimitives';
 import { ACTIVITY_FEED } from '../data/mockProposalData';
 import { proposalApi } from '../api/proposalApi';
+import { ProfileGamification } from '../components/profile/ProfileGamification';
+import { PremiumTrialCountdown } from '../components/premium/PremiumTrialCountdown';
 
 export default function ProposalHomePage({
   setPage,
@@ -14,7 +16,12 @@ export default function ProposalHomePage({
   goToLanding: () => void;
 }) {
   const [discoverProfiles, setDiscoverProfiles] = useState<any[]>([]);
-  const [currentUser, setCurrentUser] = useState<any>({ name: 'User', profileCompletion: 0, plan: 'free' });
+  const [currentUser, setCurrentUser] = useState<any>({ name: 'User', profileCompletion: 85, plan: 'free' });
+
+  const handleTaskClick = () => {
+    // Navigate to profile edit in a real app. Here we mock reaching 100% for testing.
+    setCurrentUser((prev: any) => ({ ...prev, profileCompletion: 100 }));
+  };
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -109,22 +116,35 @@ export default function ProposalHomePage({
         ))}
       </div>
 
-      {currentUser.plan === "free" && (
-        <div className="rounded-2xl p-5 mb-8 flex items-center justify-between gap-4 flex-wrap premium-glass bg-gradient-to-r from-rose-500/10 to-fuchsia-500/10 border border-rose-500/20">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 grid place-items-center text-white shadow-lg shadow-amber-500/20 shrink-0">
-              <Crown size={20} strokeWidth={2.5} />
+      <div className="grid lg:grid-cols-2 gap-8 mb-8">
+        <ProfileGamification 
+          completionPct={currentUser.profileCompletion} 
+          missingTasks={currentUser.profileCompletion < 100 ? [
+            { id: 'hobbies', label: 'Add your hobbies & interests', reward: 10 },
+            { id: 'preferences', label: 'Set partner preferences', reward: 5 }
+          ] : []} 
+          onTaskClick={handleTaskClick} 
+        />
+        
+        {currentUser.plan === 'free' && currentUser.profileCompletion === 100 ? (
+          <PremiumTrialCountdown onUpgrade={() => setPage("premium")} />
+        ) : currentUser.plan === "free" ? (
+          <div className="rounded-2xl p-6 flex flex-col justify-center h-full premium-glass bg-gradient-to-r from-rose-500/10 to-fuchsia-500/10 border border-rose-500/20 shadow-xl shadow-rose-500/5 group">
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 grid place-items-center text-white shadow-lg shadow-amber-500/20 shrink-0 transform group-hover:scale-110 transition-transform">
+                <Crown size={20} strokeWidth={2.5} />
+              </div>
+              <div>
+                <p className="text-lg font-black text-slate-900 dark:text-white">Upgrade to Premium</p>
+                <p className="text-xs font-medium text-slate-600 dark:text-slate-400 mt-1">See who liked you and unlock unlimited proposals.</p>
+              </div>
             </div>
-            <div>
-              <p className="text-base font-bold text-slate-900 dark:text-white">Upgrade to Premium</p>
-              <p className="text-xs font-medium text-slate-600 dark:text-slate-400 mt-0.5">See who liked you and unlock unlimited proposals.</p>
-            </div>
+            <PrimaryButton onClick={() => setPage("premium")} className="w-full bg-gradient-to-r from-amber-500 to-orange-500 shadow-amber-500/20 hover:shadow-amber-500/30 border-none">
+              View Premium Plans
+            </PrimaryButton>
           </div>
-          <PrimaryButton small onClick={() => setPage("premium")} className="bg-gradient-to-r from-amber-500 to-orange-500 shadow-amber-500/20 hover:shadow-amber-500/30">
-            View Plans
-          </PrimaryButton>
-        </div>
-      )}
+        ) : null}
+      </div>
 
       <div className="grid lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { CheckCircle2, ArrowLeft, ArrowRight, Upload } from 'lucide-react';
 import { cx, Logo, Card, PrimaryButton, GhostButton, Field } from '../components/ui/ProposalPrimitives';
 
-const ONBOARDING_STEPS = ["Basic Info", "Physical & Lifestyle", "Education & Family", "About You", "Preferences", "Photos"];
+const ONBOARDING_STEPS = ["Basic Info", "Education", "Photos"];
 
 export default function ProposalOnboardingPage({
   dark,
@@ -14,7 +14,6 @@ export default function ProposalOnboardingPage({
   onBack: () => void;
 }) {
   const [step, setStep] = useState(0);
-  const [selectedHobbies, setSelectedHobbies] = useState<string[]>([]);
   const last = step === ONBOARDING_STEPS.length - 1;
 
   useEffect(() => {
@@ -68,11 +67,8 @@ export default function ProposalOnboardingPage({
           </h2>
           <p className="text-sm font-medium mb-8 text-slate-500 dark:text-slate-400">
             {step === 0 && "Let's start with the basics."}
-            {step === 1 && "Physical traits and lifestyle habits."}
-            {step === 2 && "Tell us about your studies, career, and family background."}
-            {step === 3 && "Give future matches a sense of who you are."}
-            {step === 4 && "Who are you hoping to meet?"}
-            {step === 5 && "Add a few clear photos — you choose what stays blurred."}
+            {step === 1 && "Tell us about your studies and career."}
+            {step === 2 && "Add a few clear photos — you choose what stays blurred."}
           </p>
 
           <div className="min-h-[300px]">
@@ -87,76 +83,17 @@ export default function ProposalOnboardingPage({
                 <Field label="Ethnicity" placeholder="Select" isSelect options={["Sinhalese", "Tamil", "Muslim", "Burgher", "Malay", "Other"]} required />
               </div>
             )}
+            
             {step === 1 && (
-              <div className="grid sm:grid-cols-2 gap-5 animate-fade-up">
-                <Field label="Height" placeholder="e.g. 5' 10&quot;" required />
-                <Field label="Weight (kg)" placeholder="e.g. 70" required />
-                <Field label="Complexion / Skin Tone" placeholder="Fair / Medium / Dark" isSelect required />
-                <Field label="Diet" placeholder="Vegetarian / Non-Veg" isSelect required />
-                <Field label="Smoking" placeholder="No / Yes / Occasionally" isSelect required />
-                <Field label="Drinking" placeholder="No / Yes / Occasionally" isSelect required />
-              </div>
-            )}
-            {step === 2 && (
               <div className="grid sm:grid-cols-2 gap-5 animate-fade-up">
                 <Field label="University" placeholder="e.g. University of Moratuwa" required />
                 <Field label="Faculty" placeholder="e.g. Engineering - Civil" required />
                 <Field label="Status" placeholder="Undergraduate / Alumni" isSelect required />
                 <Field label="Profession" placeholder="e.g. Civil Engineer" required />
-                <Field label="Father's Profession" placeholder="e.g. Teacher" required />
-                <Field label="Mother's Profession" placeholder="e.g. Housewife" required />
-                <Field label="Number of Siblings" placeholder="e.g. 2 (1 Brother, 1 Sister)" required />
               </div>
             )}
-            {step === 3 && (
-              <div className="animate-fade-up space-y-6">
-                <div>
-                  <label className="text-[11px] font-bold uppercase tracking-wider mb-2 block text-slate-600 dark:text-slate-400">
-                    Your Bio
-                  </label>
-                  <textarea
-                    rows={5}
-                    placeholder="Tell us about yourself — your interests, what a weekend looks like, and what you're looking for..."
-                    className="w-full text-sm rounded-xl px-4 py-3 outline-none resize-none transition-all bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20"
-                  />
-                </div>
-                <div>
-                  <label className="text-[11px] font-bold uppercase tracking-wider mb-2 block text-slate-600 dark:text-slate-400">
-                    Hobbies
-                  </label>
-                  <div className="flex flex-wrap gap-2.5">
-                    {["Photography", "Hiking", "Reading", "Cooking", "Traveling", "Music", "Cricket", "Yoga"].map((h) => (
-                      <button
-                        key={h}
-                        type="button"
-                        onClick={() => setSelectedHobbies(prev => prev.includes(h) ? prev.filter(x => x !== h) : [...prev, h])}
-                        className={cx(
-                          "text-xs font-bold px-4 py-2 rounded-lg border-2 transition-colors",
-                          selectedHobbies.includes(h)
-                            ? "border-rose-500 text-rose-500 bg-rose-50 dark:bg-rose-500/10"
-                            : "border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-rose-500 hover:text-rose-500 dark:hover:border-rose-400 dark:hover:text-rose-400"
-                        )}
-                      >
-                        {h}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
-            {step === 4 && (
-              <div className="grid sm:grid-cols-2 gap-5 animate-fade-up">
-                <Field label="Looking For" placeholder="Male / Female" isSelect options={["Male", "Female"]} required />
-                <Field label="Age Range" placeholder="e.g. 24 – 30" required />
-                <Field label="Minimum Height" placeholder="e.g. Above 5' 2&quot;" isSelect options={["Doesn't Matter", "Above 5' 0\"", "Above 5' 2\"", "Above 5' 4\"", "Above 5' 6\"", "Above 5' 8\"", "Above 5' 10\"", "Above 6' 0\""]} required />
-                <Field label="Preferred District" placeholder="Any" isSelect options={["Any", "Colombo", "Gampaha", "Kalutara", "Kandy", "Matale", "Nuwara Eliya", "Galle", "Matara", "Hambantota", "Jaffna", "Kilinochchi", "Mannar", "Vavuniya", "Mullaitivu", "Batticaloa", "Ampara", "Trincomalee", "Kurunegala", "Puttalam", "Anuradhapura", "Polonnaruwa", "Badulla", "Moneragala", "Ratnapura", "Kegalle"]} required />
-                <Field label="Preferred Religion" placeholder="Any" isSelect options={["Any", "Buddhist", "Hindu", "Muslim", "Catholic", "Christian", "Other"]} required />
-                <Field label="Preferred Ethnicity" placeholder="Any" isSelect options={["Any", "Sinhalese", "Tamil", "Muslim", "Burgher", "Malay", "Other"]} required />
-                <Field label="Accepts Smoking/Drinking?" placeholder="Yes / No / Doesn't Matter" isSelect options={["Doesn't Matter", "No Smoking/Drinking", "Occasional is fine", "Yes"]} required />
-                <Field label="Diet Requirement" placeholder="Must be Vegetarian / Any" isSelect options={["Any", "Must be Vegetarian", "Non-Vegetarian", "Vegan"]} required />
-              </div>
-            )}
-            {step === 5 && (
+            
+            {step === 2 && (
               <div className="animate-fade-up space-y-6">
                 <div className="grid grid-cols-3 gap-4">
                   {[1, 2, 3, 4, 5, 6].map((i) => (
