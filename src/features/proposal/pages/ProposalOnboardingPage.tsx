@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { CheckCircle2, ArrowLeft, ArrowRight, Upload } from 'lucide-react';
+import { CheckCircle2, ArrowLeft, ArrowRight, Upload, X } from 'lucide-react';
 import { cx, Logo, Card, PrimaryButton, GhostButton, Field } from '../components/ui/ProposalPrimitives';
 
 const ONBOARDING_STEPS = ["Basic Info", "Education", "Photos"];
@@ -15,6 +15,27 @@ export default function ProposalOnboardingPage({
 }) {
   const [step, setStep] = useState(0);
   const last = step === ONBOARDING_STEPS.length - 1;
+
+  const [images, setImages] = useState<(string | null)[]>([null, null, null, null, null, null]);
+
+  const handleImageUpload = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const newImages = [...images];
+        newImages[index] = event.target?.result as string;
+        setImages(newImages);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveImage = (index: number) => {
+    const newImages = [...images];
+    newImages[index] = null;
+    setImages(newImages);
+  };
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -88,7 +109,7 @@ export default function ProposalOnboardingPage({
               <div className="grid sm:grid-cols-2 gap-5 animate-fade-up">
                 <Field label="University" placeholder="e.g. University of Moratuwa" required />
                 <Field label="Faculty" placeholder="e.g. Engineering - Civil" required />
-                <Field label="Status" placeholder="Undergraduate / Alumni" isSelect required />
+                <Field label="Status" placeholder="Undergraduate / Graduate" isSelect options={["Undergraduate", "Graduate"]} required />
                 <Field label="Profession" placeholder="e.g. Civil Engineer" required />
               </div>
             )}
@@ -96,14 +117,27 @@ export default function ProposalOnboardingPage({
             {step === 2 && (
               <div className="animate-fade-up space-y-6">
                 <div className="grid grid-cols-3 gap-4">
-                  {[1, 2, 3, 4, 5, 6].map((i) => (
-                    <label
-                      key={i}
-                      className="aspect-[4/5] rounded-2xl grid place-items-center border-2 border-dashed transition-colors cursor-pointer bg-slate-50 dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-slate-400 hover:border-rose-500 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10"
-                    >
-                      <input type="file" accept="image/*" className="hidden" />
-                      <Upload size={24} strokeWidth={2.5} />
-                    </label>
+                  {images.map((img, i) => (
+                    img ? (
+                      <div key={i} className="relative aspect-[4/5] rounded-2xl overflow-hidden shadow-sm group">
+                        <img src={img} alt={`Upload ${i}`} className="w-full h-full object-cover" />
+                        <button 
+                          type="button"
+                          onClick={() => handleRemoveImage(i)}
+                          className="absolute top-2 right-2 w-7 h-7 bg-black/50 hover:bg-rose-500 rounded-full flex items-center justify-center text-white backdrop-blur-sm transition-colors opacity-0 group-hover:opacity-100"
+                        >
+                          <X size={14} strokeWidth={3} />
+                        </button>
+                      </div>
+                    ) : (
+                      <label
+                        key={i}
+                        className="aspect-[4/5] rounded-2xl grid place-items-center border-2 border-dashed transition-colors cursor-pointer bg-slate-50 dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-slate-400 hover:border-rose-500 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10"
+                      >
+                        <input type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(i, e)} />
+                        <Upload size={24} strokeWidth={2.5} />
+                      </label>
+                    )
                   ))}
                 </div>
                 
