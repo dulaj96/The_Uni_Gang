@@ -57,6 +57,7 @@ export default function ProposalHomePage({
         if (userRes.success && userRes.profile && gamificationRes.success) {
           setCurrentUser({
             name: userRes.profile.user?.name || 'User',
+            images: userRes.profile.images || [],
             profileCompletion: gamificationRes.completionPct || 0,
             plan: gamificationRes.isPremium ? 'premium' : 'free',
             missingTasks: gamificationRes.missingTasks || []
@@ -78,13 +79,22 @@ export default function ProposalHomePage({
   return (
     <div className="w-full max-w-7xl mx-auto px-6 lg:px-12 py-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-        <div>
-          <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">
-            Ayubowan, {currentUser.name.split(" ")[0]} 👋
-          </h1>
-          <p className="text-sm font-medium mt-1.5 text-slate-600 dark:text-slate-400">
-            Here's what's happening with your matches today.
-          </p>
+        <div className="flex items-center gap-4">
+          <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 shrink-0">
+            {currentUser.images && currentUser.images.length > 0 ? (
+              <img src={currentUser.images[0]} alt="Profile" className="w-full h-full object-cover" />
+            ) : (
+              <User className="w-full h-full p-3 text-slate-400" />
+            )}
+          </div>
+          <div>
+            <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
+              Ayubowan, {currentUser.name.split(" ")[0]} <span className="animate-wave inline-block origin-bottom-right">👋</span>
+            </h1>
+            <p className="text-sm font-medium mt-1.5 text-slate-600 dark:text-slate-400">
+              Here's what's happening with your matches today.
+            </p>
+          </div>
         </div>
         <div className="flex items-center gap-3">
           <button 
