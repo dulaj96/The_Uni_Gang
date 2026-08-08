@@ -19,8 +19,22 @@ export default function ProposalHomePage({
   const [currentUser, setCurrentUser] = useState<any>({ name: 'User', profileCompletion: 85, plan: 'free' });
 
   const handleTaskClick = () => {
-    // Navigate to profile edit in a real app. Here we mock reaching 100% for testing.
-    setCurrentUser((prev: any) => ({ ...prev, profileCompletion: 100 }));
+    setPage('profile');
+  };
+
+  const handleClaimPremium = async () => {
+    try {
+      const res = await proposalApi.claimPremiumTrial();
+      if (res.success) {
+        setCurrentUser((prev: any) => ({ ...prev, plan: 'premium' }));
+        alert('Premium Trial Activated!');
+      } else {
+        alert(res.message || 'Error claiming trial');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error claiming trial');
+    }
   };
 
   useEffect(() => {
@@ -30,11 +44,14 @@ export default function ProposalHomePage({
     const fetchData = async () => {
       try {
         const userRes = await proposalApi.getMyProfile();
-        if (userRes.success && userRes.profile) {
+        const gamificationRes = await proposalApi.getGamificationStatus();
+        
+        if (userRes.success && userRes.profile && gamificationRes.success) {
           setCurrentUser({
             name: userRes.profile.user?.name || 'User',
-            profileCompletion: 85, // Mock completion for now
-            plan: 'free'
+            profileCompletion: gamificationRes.completionPct || 0,
+            plan: gamificationRes.isPremium ? 'premium' : 'free',
+            missingTasks: gamificationRes.missingTasks || []
           });
         }
         
@@ -119,15 +136,14 @@ export default function ProposalHomePage({
       <div className="grid lg:grid-cols-2 gap-8 mb-8">
         <ProfileGamification 
           completionPct={currentUser.profileCompletion} 
-          missingTasks={currentUser.profileCompletion < 100 ? [
-            { id: 'hobbies', label: 'Add your hobbies & interests', reward: 10 },
-            { id: 'preferences', label: 'Set partner preferences', reward: 5 }
-          ] : []} 
+          missingTasks={currentUser.missingTasks || []} 
           onTaskClick={handleTaskClick} 
         />
         
         {currentUser.plan === 'free' && currentUser.profileCompletion === 100 ? (
-          <PremiumTrialCountdown onUpgrade={() => setPage("premium")} />
+          <div onClick={handleClaimPremium} className="cursor-pointer">
+            <PremiumTrialCountdown onUpgrade={() => setPage("premium")} />
+          </div>
         ) : currentUser.plan === "free" ? (
           <div className="rounded-2xl p-6 flex flex-col justify-center h-full premium-glass bg-gradient-to-r from-rose-500/10 to-fuchsia-500/10 border border-rose-500/20 shadow-xl shadow-rose-500/5 group">
             <div className="flex items-center gap-4 mb-4">

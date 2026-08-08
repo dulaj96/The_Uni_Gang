@@ -69,6 +69,22 @@ export const proposalApi = {
     if (!response.ok) throw new Error('Failed to send message');
     return response.json();
   },
+
+  // Gamification
+  getGamificationStatus: async () => {
+    const response = await fetch(`${API_URL}/gamification/status`, { headers: getHeaders() });
+    if (!response.ok) throw new Error('Failed to fetch gamification status');
+    return response.json();
+  },
+
+  claimPremiumTrial: async () => {
+    const response = await fetch(`${API_URL}/gamification/claim-trial`, { 
+      method: 'POST', 
+      headers: getHeaders() 
+    });
+    if (!response.ok) throw new Error('Failed to claim trial');
+    return response.json();
+  },
 };
 
 // Socket.io Service
