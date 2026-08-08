@@ -3,9 +3,9 @@ import { Clock, Crown, Zap } from 'lucide-react';
 import { PrimaryButton } from '../ui/ProposalPrimitives';
 
 export function PremiumTrialCountdown({ onUpgrade }: { onUpgrade: () => void }) {
-  // Hardcoded for demo: 71 hours, 59 minutes, 59 seconds from now
+  // Hardcoded for demo: 47 hours, 59 minutes, 59 seconds from now
   // In a real app, you'd fetch the trial end date from the backend
-  const [timeLeft, setTimeLeft] = useState({ hours: 71, minutes: 59, seconds: 59 });
+  const [timeLeft, setTimeLeft] = useState({ hours: 47, minutes: 59, seconds: 59 });
 
   useEffect(() => {
     const timer = setInterval(() => {

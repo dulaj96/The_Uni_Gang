@@ -30,7 +30,7 @@ export function ProfileGamification({ completionPct, missingTasks, onTaskClick }
             )}
           </h3>
           <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">
-            {completionPct === 100 ? "Your profile is fully complete. You have earned 3 days of Premium!" : "Complete your profile to unlock a free Premium trial and a Verified badge."}
+            {completionPct === 100 ? "Your profile is fully complete. You have earned 2 days of Premium!" : "Complete your profile to unlock a free Premium trial and a Verified badge."}
           </p>
         </div>
         <div className="w-14 h-14 rounded-full border-4 border-slate-100 dark:border-slate-800 flex items-center justify-center relative shadow-inner shrink-0">
@@ -72,7 +72,7 @@ export function ProfileGamification({ completionPct, missingTasks, onTaskClick }
             <Trophy size={24} className="text-emerald-100 drop-shadow-md" />
             <div>
               <p className="text-sm font-black">Free Premium Activated!</p>
-              <p className="text-xs font-medium text-emerald-100">Enjoy full access for 3 days.</p>
+              <p className="text-xs font-medium text-emerald-100">Enjoy full access for 2 days.</p>
             </div>
           </div>
         </div>

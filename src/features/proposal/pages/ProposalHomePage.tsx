@@ -16,7 +16,15 @@ export default function ProposalHomePage({
   goToLanding: () => void;
 }) {
   const [discoverProfiles, setDiscoverProfiles] = useState<any[]>([]);
-  const [currentUser, setCurrentUser] = useState<any>({ name: 'User', profileCompletion: 85, plan: 'free' });
+  const [currentUser, setCurrentUser] = useState<any>({ 
+    name: 'User', 
+    profileCompletion: 85, 
+    plan: 'free',
+    missingTasks: [
+      { id: 'hobbies', label: 'Add your hobbies & interests', reward: 10 },
+      { id: 'preferences', label: 'Set partner preferences', reward: 5 }
+    ]
+  });
 
   const handleTaskClick = () => {
     setPage('profile');
