@@ -5,23 +5,16 @@ import { celebrate } from '../../../../utils/celebrate';
 
 export function ProfileGamification({ completionPct, missingTasks, onTaskClick }: { completionPct: number, missingTasks: { id: string, label: string, reward: number }[], onTaskClick: (taskId: string) => void }) {
   const [hasCelebrated, setHasCelebrated] = useState(false);
-  const [prevPct, setPrevPct] = useState(completionPct);
-  const [animatePop, setAnimatePop] = useState(false);
 
   useEffect(() => {
     if (completionPct === 100 && !hasCelebrated) {
       celebrate();
       setHasCelebrated(true);
     }
-    if (completionPct > prevPct) {
-      setAnimatePop(true);
-      setTimeout(() => setAnimatePop(false), 500);
-    }
-    setPrevPct(completionPct);
-  }, [completionPct, hasCelebrated, prevPct]);
+  }, [completionPct, hasCelebrated]);
 
   return (
-    <Card className="p-6 overflow-hidden relative group border-none bg-transparent shadow-none dark:bg-transparent">
+    <Card className="p-6 overflow-hidden relative group">
       {/* Background glow if 100% */}
       {completionPct === 100 && (
         <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-emerald-500/5 dark:from-emerald-900/20 dark:to-transparent pointer-events-none" />
@@ -40,12 +33,12 @@ export function ProfileGamification({ completionPct, missingTasks, onTaskClick }
             {completionPct === 100 ? "Your profile is fully complete. You have earned 2 days of Premium!" : "Complete your profile to unlock a free Premium trial and a Verified badge."}
           </p>
         </div>
-        <div className={`w-14 h-14 rounded-full border-4 border-slate-100 dark:border-slate-800 flex items-center justify-center relative shadow-inner shrink-0 transition-transform duration-300 ${animatePop ? 'scale-125 shadow-rose-500/50' : 'scale-100'}`}>
+        <div className="w-14 h-14 rounded-full border-4 border-slate-100 dark:border-slate-800 flex items-center justify-center relative shadow-inner shrink-0">
           <svg className="absolute inset-0 w-full h-full -rotate-90">
             <circle cx="24" cy="24" r="24" className="stroke-slate-100 dark:stroke-slate-800" strokeWidth="4" fill="none" />
             <circle cx="24" cy="24" r="24" className={`stroke-${completionPct === 100 ? 'emerald' : 'rose'}-500 transition-all duration-1000 ease-out`} strokeWidth="4" fill="none" strokeDasharray="150" strokeDashoffset={150 - (150 * completionPct) / 100} strokeLinecap="round" />
           </svg>
-          <span className={`text-sm font-bold ${completionPct === 100 ? 'text-emerald-500' : 'text-slate-900 dark:text-white'} transition-colors duration-300 ${animatePop ? 'text-rose-500 dark:text-rose-400' : ''}`}>{completionPct}%</span>
+          <span className={`text-sm font-bold ${completionPct === 100 ? 'text-emerald-500' : 'text-slate-900 dark:text-white'}`}>{completionPct}%</span>
         </div>
       </div>
 

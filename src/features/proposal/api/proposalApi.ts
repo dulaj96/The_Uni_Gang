@@ -85,6 +85,16 @@ export const proposalApi = {
     if (!response.ok) throw new Error('Failed to claim trial');
     return response.json();
   },
+
+  // Developer / Testing
+  seedTestData: async () => {
+    const response = await fetch(`${API_URL}/seed-test-data`, {
+      method: 'POST',
+      headers: getHeaders()
+    });
+    if (!response.ok) throw new Error('Failed to generate test data');
+    return response.json();
+  },
 };
 
 // Socket.io Service

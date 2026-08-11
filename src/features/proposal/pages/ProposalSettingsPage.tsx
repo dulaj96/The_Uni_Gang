@@ -138,6 +138,30 @@ export default function ProposalSettingsPage({ setPage }: { setPage: (p: string)
           </div>
         </Card>
 
+        {/* Developer Options (Hidden in Prod usually) */}
+        <Card className="p-6 sm:p-8 bg-slate-50 dark:bg-slate-900/50 border-dashed border-2">
+          <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">🛠️ Developer Options</h2>
+          <p className="text-sm text-slate-500 mb-6">Use these tools to test features like Inbox and Calls.</p>
+          
+          <PrimaryButton 
+            className="w-full bg-slate-800 hover:bg-slate-700 dark:bg-slate-200 dark:text-slate-900 dark:hover:bg-white"
+            onClick={async () => {
+              try {
+                const { proposalApi } = await import('../api/proposalApi');
+                const res = await proposalApi.seedTestData();
+                if (res.success) {
+                  alert(res.message);
+                }
+              } catch (err) {
+                console.error(err);
+                alert("Failed to generate test data");
+              }
+            }}
+          >
+            Generate Test Dummy Data
+          </PrimaryButton>
+        </Card>
+
       </div>
     </div>
   );

@@ -16,7 +16,7 @@ export default function ProposalOnboardingPage({
   const [step, setStep] = useState(0);
   const last = step === ONBOARDING_STEPS.length - 1;
 
-  const [images, setImages] = useState<(string | null)[]>([null, null, null, null, null, null]);
+  const [images, setImages] = useState<(string | null)[]>([null, null, null]);
 
   const handleImageUpload = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

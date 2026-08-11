@@ -4,10 +4,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import logo from '../../assets/logoImage.jpg';
 
 
-import { 
-  LuMenu, LuX, LuUser, LuLogOut, LuLayoutDashboard, LuSun, LuMoon, 
-  LuArrowRight, LuShoppingBag, LuBed, LuBriefcase, 
-  LuCalendar, LuFileText, LuMegaphone, LuMessageSquare, LuHeart 
+import {
+  LuMenu, LuX, LuUser, LuLogOut, LuLayoutDashboard, LuSun, LuMoon,
+  LuArrowRight, LuShoppingBag, LuBed, LuBriefcase,
+  LuCalendar, LuFileText, LuMegaphone, LuMessageSquare, LuHeart
 } from 'react-icons/lu';
 import { FiHome } from 'react-icons/fi';
 import { useTheme } from '../../context/ThemeContext';
@@ -326,11 +326,10 @@ const Header = () => {
                 className="flex items-center gap-3 focus:outline-none transition-all hover:bg-slate-50 dark:hover:bg-slate-800 p-1.5 pr-3 rounded-full border border-transparent hover:border-slate-100"
               >
                 {userProfilePic ? (
-                  <div className={`p-[2px] rounded-full shrink-0 ${
-                    isVerifiedStudent
+                  <div className={`p-[2px] rounded-full shrink-0 ${isVerifiedStudent
                       ? 'bg-gradient-to-tr from-amber-400 via-yellow-300 to-orange-400 shadow-sm shadow-amber-400/30'
                       : 'bg-linear-to-tr from-blue-300 via-indigo-300 to-purple-300'
-                  }`}>
+                    }`}>
                     <img src={userProfilePic} alt="Profile" className="w-8 h-8 rounded-full border border-white dark:border-slate-900 object-cover" />
                   </div>
                 ) : (
@@ -469,8 +468,8 @@ const Header = () => {
                               setIsMobileMenuOpen(false);
                             }}
                             className={`group flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 border ${isActive
-                                ? 'bg-blue-600/10 dark:bg-blue-500/10 border-blue-500/20 text-blue-600 dark:text-blue-400 font-bold'
-                                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100/50 dark:hover:bg-slate-800/30 border-transparent'
+                              ? 'bg-blue-600/10 dark:bg-blue-500/10 border-blue-500/20 text-blue-600 dark:text-blue-400 font-bold'
+                              : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100/50 dark:hover:bg-slate-800/30 border-transparent'
                               }`}
                           >
                             <div className="flex items-center gap-3.5">
@@ -484,8 +483,8 @@ const Header = () => {
                             to={link.path}
                             onClick={() => setIsMobileMenuOpen(false)}
                             className={`group flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 border ${isActive
-                                ? 'bg-blue-600/10 dark:bg-blue-500/10 border-blue-500/20 text-blue-600 dark:text-blue-400 font-bold'
-                                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100/50 dark:hover:bg-slate-800/30 border-transparent'
+                              ? 'bg-blue-600/10 dark:bg-blue-500/10 border-blue-500/20 text-blue-600 dark:text-blue-400 font-bold'
+                              : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100/50 dark:hover:bg-slate-800/30 border-transparent'
                               }`}
                           >
                             <div className="flex items-center gap-3.5">

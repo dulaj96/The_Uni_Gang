@@ -18,12 +18,9 @@ export default function ProposalHomePage({
   const [discoverProfiles, setDiscoverProfiles] = useState<any[]>([]);
   const [currentUser, setCurrentUser] = useState<any>({ 
     name: 'User', 
-    profileCompletion: 85, 
+    profileCompletion: 0, 
     plan: 'free',
-    missingTasks: [
-      { id: 'hobbies', label: 'Add your hobbies & interests', reward: 10 },
-      { id: 'preferences', label: 'Set partner preferences', reward: 5 }
-    ]
+    missingTasks: []
   });
 
   const handleTaskClick = () => {
@@ -54,10 +51,13 @@ export default function ProposalHomePage({
         const userRes = await proposalApi.getMyProfile();
         const gamificationRes = await proposalApi.getGamificationStatus();
         
-        if (userRes.success && userRes.profile && gamificationRes.success) {
+        if (userRes.success && gamificationRes.success) {
+          const profileData = userRes.profile || null;
+          
           setCurrentUser({
-            name: userRes.profile.user?.name || 'User',
-            images: userRes.profile.images || [],
+            ...profileData,
+            name: profileData?.user?.name || 'User',
+            avatar: profileData?.images?.[0] || profileData?.user?.profile_pic || '',
             profileCompletion: gamificationRes.completionPct || 0,
             plan: gamificationRes.isPremium ? 'premium' : 'free',
             missingTasks: gamificationRes.missingTasks || []
@@ -80,16 +80,16 @@ export default function ProposalHomePage({
     <div className="w-full max-w-7xl mx-auto px-6 lg:px-12 py-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 shrink-0">
-            {currentUser.images && currentUser.images.length > 0 ? (
-              <img src={currentUser.images[0]} alt="Profile" className="w-full h-full object-cover" />
-            ) : (
-              <User className="w-full h-full p-3 text-slate-400" />
-            )}
-          </div>
+          {currentUser.avatar ? (
+            <img src={currentUser.avatar} alt="Profile" className="w-14 h-14 rounded-xl object-cover shadow-sm border-2 border-white dark:border-slate-800" />
+          ) : (
+            <div className="w-14 h-14 rounded-xl bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-xl font-bold">
+              {currentUser.name.charAt(0)}
+            </div>
+          )}
           <div>
-            <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
-              Ayubowan, {currentUser.name.split(" ")[0]} <span className="animate-wave inline-block origin-bottom-right">👋</span>
+            <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+              Ayubowan, {currentUser.name.split(" ")[0]} 👋
             </h1>
             <p className="text-sm font-medium mt-1.5 text-slate-600 dark:text-slate-400">
               Here's what's happening with your matches today.
@@ -106,9 +106,9 @@ export default function ProposalHomePage({
           </button>
           <div className="w-px h-8 bg-slate-200 dark:bg-slate-800 mx-1"></div>
           <button 
-            onClick={() => setPage('profile')}
+            onClick={() => setPage('settings')}
             className="p-3.5 rounded-2xl bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
-            title="Edit Profile"
+            title="Settings"
           >
             <User size={20} />
           </button>
