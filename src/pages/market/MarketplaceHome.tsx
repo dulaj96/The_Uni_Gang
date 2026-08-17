@@ -6,6 +6,8 @@ import {
   LuTrash2, LuArrowLeft, LuUpload
 } from 'react-icons/lu';
 import MarketplaceCard from '../../components/market/MarketplaceCard';
+import { VerificationModal } from '../../features/proposal/components/verification/VerificationModal';
+import AuthCard from '../../components/auth/AuthCard';
 import CreateListingModal from '../../components/market/CreateListingModal';
 import toast from 'react-hot-toast';
 import { api } from '../../api';
@@ -17,6 +19,9 @@ const MarketplaceHome: React.FC = () => {
   const [filter, setFilter] = useState<'All' | 'PRODUCT' | 'GIG' | 'OFFICIAL_PRODUCT'>('All');
   const [search, setSearch] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showVerificationModal, setShowVerificationModal] = useState(false);
+  const [authTarget, setAuthTarget] = useState<'post_ad' | 'checkout' | null>(null);
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -192,6 +197,42 @@ const MarketplaceHome: React.FC = () => {
       setItems([]);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handlePostAdClick = () => {
+    const token = localStorage.getItem('userToken');
+    if (!token) {
+      setAuthTarget('post_ad');
+      setShowAuthModal(true);
+      return;
+    }
+    const isStudentVerified = localStorage.getItem('userIsVerifiedStudent') === 'true';
+    const isProfessionalVerified = localStorage.getItem('userIsVerifiedProfessional') === 'true';
+    if (!isStudentVerified && !isProfessionalVerified) {
+      setShowVerificationModal(true);
+      return;
+    }
+    setIsModalOpen(true);
+  };
+
+  const handleCheckoutClick = () => {
+    verifyCartPrices();
+    const token = localStorage.getItem('userToken');
+    if (!token) {
+      setAuthTarget('checkout');
+      setShowAuthModal(true);
+      return;
+    }
+    setCartStep(2);
+  };
+
+  const handleAuthSuccess = () => {
+    setShowAuthModal(false);
+    if (authTarget === 'post_ad') {
+      handlePostAdClick(); // Re-trigger check (might show verification modal now)
+    } else if (authTarget === 'checkout') {
+      setCartStep(2);
     }
   };
 
@@ -415,7 +456,7 @@ const MarketplaceHome: React.FC = () => {
                 transition={{ delay: 0.3 }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={() => setIsModalOpen(true)}
+                onClick={handlePostAdClick}
                 className="group relative inline-flex items-center justify-center gap-3 bg-white text-slate-950 px-8 py-4 rounded-2xl font-black text-lg hover:bg-purple-50 transition-all overflow-hidden shadow-[0_0_40px_rgba(168,85,247,0.3)] w-full sm:w-auto"
               >
                 <span className="relative z-10 flex items-center gap-2">
@@ -561,7 +602,30 @@ const MarketplaceHome: React.FC = () => {
         )}
 
       </div>
+      {showAuthModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 md:p-10 w-full max-w-md shadow-2xl border border-slate-200 dark:border-slate-800 relative">
+            <button 
+              onClick={() => setShowAuthModal(false)}
+              className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-full text-slate-500 hover:text-slate-900 dark:hover:text-white"
+            >
+              <LuX size={16} />
+            </button>
+            <div className="text-center mb-6">
+              <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-2">Login Required</h2>
+              <p className="text-slate-500 text-sm">Please create an account or log in to {authTarget === 'checkout' ? 'complete your purchase' : 'post an advertisement'}.</p>
+            </div>
+            <AuthCard onAuthSuccess={handleAuthSuccess} />
+          </div>
+        </div>
+      )}
 
+      {showVerificationModal && (
+        <VerificationModal 
+          isOpen={true} 
+          onClose={() => setShowVerificationModal(false)} 
+        />
+      )}
       <CreateListingModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -987,10 +1051,7 @@ const MarketplaceHome: React.FC = () => {
                         </span>
                       </div>
                       <button
-                        onClick={() => {
-                          verifyCartPrices();
-                          setCartStep(2);
-                        }}
+                        onClick={handleCheckoutClick}
                         className="w-full py-4 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-2xl font-black text-sm uppercase tracking-wider transition-all shadow-lg shadow-orange-500/20 cursor-pointer border-none active:scale-95"
                       >
                         Proceed to Checkout

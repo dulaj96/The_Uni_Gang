@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { CheckCircle2, ArrowLeft, ArrowRight, Upload, X } from 'lucide-react';
-import { cx, Logo, Card, PrimaryButton, GhostButton, Field } from '../components/ui/ProposalPrimitives';
+import { CheckCircle2, ArrowLeft, ArrowRight, Upload, X, Briefcase, GraduationCap } from 'lucide-react';
+import { cx, Logo, Card, PrimaryButton, GhostButton } from '../components/ui/ProposalPrimitives';
+import { proposalApi } from '../api/proposalApi';
 
-const ONBOARDING_STEPS = ["Basic Info", "Education", "Photos"];
+const ONBOARDING_STEPS = ["Basic Info", "Education & Career", "Photos"];
 
 export default function ProposalOnboardingPage({
   dark,
@@ -14,7 +15,32 @@ export default function ProposalOnboardingPage({
   onBack: () => void;
 }) {
   const [step, setStep] = useState(0);
+  const [loading, setLoading] = useState(false);
   const last = step === ONBOARDING_STEPS.length - 1;
+
+  // Form State
+  const [formData, setFormData] = useState({
+    name: '',
+    age: '',
+    gender: 'Male',
+    civil_status: 'Never Married',
+    district: 'Colombo',
+    religion: 'Buddhist',
+    ethnicity: 'Sinhalese',
+    
+    // Education & Career
+    education_category: 'University',
+    university: '',
+    workplace_or_institute: '',
+    faculty: '',
+    status: 'Undergraduate',
+    profession: '',
+  });
+
+  const handleChange = (e: any) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
 
   const [images, setImages] = useState<(string | null)[]>([null, null, null]);
 
@@ -77,10 +103,29 @@ export default function ProposalOnboardingPage({
       </div>
 
       <main className="max-w-2xl w-full mx-auto flex-1">
-        <form onSubmit={(e) => {
+        <form onSubmit={async (e) => {
           e.preventDefault();
-          if (last) onComplete();
-          else setStep((s) => s + 1);
+          if (last) {
+            setLoading(true);
+            try {
+              const payload = {
+                ...formData,
+                age: parseInt(formData.age) || 18,
+                lookingFor: formData.gender === 'Male' ? 'Female' : 'Male', // Default assumption
+                images: images.filter(Boolean),
+                blur_photo: true // Default
+              };
+              await proposalApi.submitProfile(payload);
+              onComplete();
+            } catch (error) {
+              console.error(error);
+              alert("Failed to submit profile. Please try again.");
+            } finally {
+              setLoading(false);
+            }
+          } else {
+            setStep((s) => s + 1);
+          }
         }}>
           <Card className="p-8 sm:p-10 shadow-xl shadow-rose-500/5">
             <h2 className="text-3xl font-black mb-2 text-slate-900 dark:text-white tracking-tight">
@@ -95,22 +140,93 @@ export default function ProposalOnboardingPage({
           <div className="min-h-[300px]">
             {step === 0 && (
               <div className="grid sm:grid-cols-2 gap-5 animate-fade-up">
-                <Field label="Full Name" placeholder="e.g. Kasun Bandara" required />
-                <Field label="Age" placeholder="e.g. 27" required />
-                <Field label="Gender" placeholder="Select" isSelect options={["Male", "Female"]} required />
-                <Field label="Civil Status" placeholder="Select" isSelect options={["Never Married", "Divorced", "Widowed"]} required />
-                <Field label="District" placeholder="Select" isSelect options={["Colombo", "Gampaha", "Kalutara", "Kandy", "Matale", "Nuwara Eliya", "Galle", "Matara", "Hambantota", "Jaffna", "Kilinochchi", "Mannar", "Vavuniya", "Mullaitivu", "Batticaloa", "Ampara", "Trincomalee", "Kurunegala", "Puttalam", "Anuradhapura", "Polonnaruwa", "Badulla", "Moneragala", "Ratnapura", "Kegalle"]} required />
-                <Field label="Religion" placeholder="Select" isSelect options={["Buddhist", "Hindu", "Muslim", "Catholic", "Christian", "Other"]} required />
-                <Field label="Ethnicity" placeholder="Select" isSelect options={["Sinhalese", "Tamil", "Muslim", "Burgher", "Malay", "Other"]} required />
+                <div>
+                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 block">Full Name</label>
+                  <input required name="name" value={formData.name} onChange={handleChange} className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/50" placeholder="e.g. Kasun Bandara" />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 block">Age</label>
+                  <input required type="number" name="age" value={formData.age} onChange={handleChange} className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/50" placeholder="e.g. 27" />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 block">Gender</label>
+                  <select name="gender" value={formData.gender} onChange={handleChange} className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/50">
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 block">Civil Status</label>
+                  <select name="civil_status" value={formData.civil_status} onChange={handleChange} className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/50">
+                    <option value="Never Married">Never Married</option>
+                    <option value="Divorced">Divorced</option>
+                    <option value="Widowed">Widowed</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 block">District</label>
+                  <select name="district" value={formData.district} onChange={handleChange} className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/50">
+                    {["Colombo", "Gampaha", "Kalutara", "Kandy", "Matale", "Nuwara Eliya", "Galle", "Matara", "Hambantota", "Jaffna", "Kilinochchi", "Mannar", "Vavuniya", "Mullaitivu", "Batticaloa", "Ampara", "Trincomalee", "Kurunegala", "Puttalam", "Anuradhapura", "Polonnaruwa", "Badulla", "Moneragala", "Ratnapura", "Kegalle"].map(d => <option key={d} value={d}>{d}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 block">Religion</label>
+                  <select name="religion" value={formData.religion} onChange={handleChange} className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/50">
+                    {["Buddhist", "Hindu", "Muslim", "Catholic", "Christian", "Other"].map(d => <option key={d} value={d}>{d}</option>)}
+                  </select>
+                </div>
               </div>
             )}
             
             {step === 1 && (
-              <div className="grid sm:grid-cols-2 gap-5 animate-fade-up">
-                <Field label="University" placeholder="e.g. University of Moratuwa" required />
-                <Field label="Faculty" placeholder="e.g. Engineering - Civil" required />
-                <Field label="Status" placeholder="Undergraduate / Graduate" isSelect options={["Undergraduate", "Graduate"]} required />
-                <Field label="Profession" placeholder="e.g. Civil Engineer" required />
+              <div className="space-y-6 animate-fade-up">
+                
+                {/* Category Selection */}
+                <div>
+                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 block">Who are you?</label>
+                  <div className="grid grid-cols-2 gap-4">
+                    <button type="button" onClick={() => setFormData({...formData, education_category: 'University'})} className={cx("flex flex-col items-center justify-center p-4 rounded-2xl border-2 transition-all", formData.education_category === 'University' ? "border-rose-500 bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400" : "border-slate-200 dark:border-slate-800 hover:border-rose-300 text-slate-500")}>
+                      <GraduationCap size={28} className="mb-2" />
+                      <span className="font-bold text-sm">University Student / Alumni</span>
+                    </button>
+                    <button type="button" onClick={() => setFormData({...formData, education_category: 'Professional Qualification'})} className={cx("flex flex-col items-center justify-center p-4 rounded-2xl border-2 transition-all", formData.education_category !== 'University' ? "border-rose-500 bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400" : "border-slate-200 dark:border-slate-800 hover:border-rose-300 text-slate-500")}>
+                      <Briefcase size={28} className="mb-2" />
+                      <span className="font-bold text-sm">Working Professional / Abroad</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid sm:grid-cols-2 gap-5">
+                  {formData.education_category === 'University' ? (
+                    <>
+                      <div className="sm:col-span-2">
+                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 block">University</label>
+                        <input required name="university" value={formData.university} onChange={handleChange} className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/50" placeholder="e.g. University of Moratuwa" />
+                      </div>
+                      <div>
+                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 block">Faculty</label>
+                        <input name="faculty" value={formData.faculty} onChange={handleChange} className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/50" placeholder="e.g. Engineering" />
+                      </div>
+                      <div>
+                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 block">Status</label>
+                        <select name="status" value={formData.status} onChange={handleChange} className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/50">
+                          <option value="Undergraduate">Undergraduate</option>
+                          <option value="Graduate">Graduate</option>
+                        </select>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="sm:col-span-2">
+                      <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 block">Institute / Workplace / Location</label>
+                      <input required name="workplace_or_institute" value={formData.workplace_or_institute} onChange={handleChange} className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/50" placeholder="e.g. CIMA / Tech Company / Dubai" />
+                    </div>
+                  )}
+                  
+                  <div className="sm:col-span-2">
+                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 block">Profession</label>
+                    <input required name="profession" value={formData.profession} onChange={handleChange} className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/50" placeholder="e.g. Software Engineer" />
+                  </div>
+                </div>
               </div>
             )}
             
@@ -170,8 +286,9 @@ export default function ProposalOnboardingPage({
             <PrimaryButton
               type="submit"
               icon={last ? CheckCircle2 : ArrowRight}
+              disabled={loading}
             >
-              {last ? "Complete Profile" : "Continue"}
+              {loading ? "Submitting..." : (last ? "Complete Profile" : "Continue")}
             </PrimaryButton>
           </div>
         </Card>

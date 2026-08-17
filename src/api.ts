@@ -723,6 +723,28 @@ export const api = {
     return response.json();
   },
 
+  getAdminPremiumPayments: async (token: string): Promise<any[]> => {
+    const response = await fetch(`${BASE_URL}/api/proposals/admin/payments`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!response.ok) throw new Error('Failed to fetch payments');
+    const data = await response.json();
+    return data.payments || [];
+  },
+
+  updateAdminPremiumPaymentStatus: async (paymentId: string, status: string, token: string): Promise<any> => {
+    const response = await fetch(`${BASE_URL}/api/proposals/admin/payments/${paymentId}/status`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({ status })
+    });
+    if (!response.ok) throw new Error('Failed to update payment status');
+    return response.json();
+  },
+
   getAdminAnnexes: async (token: string): Promise<any[]> => {
     const response = await fetch(`${BASE_URL}/api/annexes/admin`, {
       headers: { Authorization: `Bearer ${token}` }

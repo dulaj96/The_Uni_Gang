@@ -301,9 +301,10 @@ export default function ProposalLandingPage({
                 {[
                   "Create a verified profile",
                   "View 15 profiles per day",
-                  "Send 3 proposals per week",
+                  "Send 15 proposals per day",
                   "Basic district & age filtering",
-                  "Real-time text chat with matches",
+                  "10 Messages per match",
+                  "AI Phone Number Masking (Security)",
                 ].map((f, i) => (
                   <li key={i} className="flex items-start gap-4">
                     <CheckCircle2 size={20} className="text-emerald-500 shrink-0 mt-0.5 drop-shadow-sm" />
@@ -346,10 +347,13 @@ export default function ProposalLandingPage({
 
               <ul className="space-y-5 flex-1 relative z-10">
                 {[
-                  "Unlimited profile viewing",
-                  "Unlimited proposals",
-                  "See everyone who liked you",
-                  "Advanced filters (Profession, Diet, etc.)",
+                  "Unlimited profile viewing & proposals",
+                  "See exactly who liked your profile",
+                  "Advanced filters (Profession, Diet, Hobbies)",
+                  "Priority profile placement (5x more views)",
+                  "Read receipts & Undo accidental swipes",
+                  "Exclusive Grid / Gallery View",
+                  "Ad-free experience"
                 ].map((f, i) => (
                   <li key={i} className="flex items-start gap-4">
                     <CheckCircle2 size={20} className="text-amber-500 shrink-0 mt-0.5 drop-shadow-sm" />

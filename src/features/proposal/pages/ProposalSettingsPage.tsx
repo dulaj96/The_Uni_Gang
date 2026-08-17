@@ -1,10 +1,18 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import { ChevronLeft, ShieldCheck, Mail, Link as LinkIcon, Smartphone, MessageCircle, Crown, Lock, EyeOff } from 'lucide-react';
 import { PrimaryButton, Card, cx } from '../components/ui/ProposalPrimitives';
+import { proposalApi } from '../api/proposalApi';
 
 export default function ProposalSettingsPage({ setPage }: { setPage: (p: string) => void }) {
   const [verificationMethod, setVerificationMethod] = useState<'email' | 'linkedin' | 'id' | null>(null);
+  const [profile, setProfile] = useState<any>(null);
+
+  useEffect(() => {
+    proposalApi.getMyProfile().then(res => {
+      if (res.success) setProfile(res.profile);
+    });
+  }, []);
 
   return (
     <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 min-h-[calc(100vh-80px)]">
@@ -60,8 +68,12 @@ export default function ProposalSettingsPage({ setPage }: { setPage: (p: string)
               <div className="flex items-center gap-3">
                 <Smartphone className="text-blue-500" size={20} />
                 <div className="text-left">
-                  <p className="text-sm font-bold text-slate-900 dark:text-white">Upload Campus ID</p>
-                  <p className="text-xs text-slate-500">Upload a photo of your Student ID</p>
+                  <p className="text-sm font-bold text-slate-900 dark:text-white">
+                    {profile?.education_category === 'University' ? 'Upload Campus ID / Degree' : 'Upload NIC / Driving License'}
+                  </p>
+                  <p className="text-xs text-slate-500">
+                    {profile?.education_category === 'University' ? 'Upload a photo of your Student ID or Degree' : 'Upload a photo of your Official ID'}
+                  </p>
                 </div>
               </div>
               <div className={cx("w-4 h-4 rounded-full border-2", verificationMethod === 'id' ? "border-blue-500 bg-blue-500" : "border-slate-300")} />
@@ -138,29 +150,7 @@ export default function ProposalSettingsPage({ setPage }: { setPage: (p: string)
           </div>
         </Card>
 
-        {/* Developer Options (Hidden in Prod usually) */}
-        <Card className="p-6 sm:p-8 bg-slate-50 dark:bg-slate-900/50 border-dashed border-2">
-          <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">🛠️ Developer Options</h2>
-          <p className="text-sm text-slate-500 mb-6">Use these tools to test features like Inbox and Calls.</p>
-          
-          <PrimaryButton 
-            className="w-full bg-slate-800 hover:bg-slate-700 dark:bg-slate-200 dark:text-slate-900 dark:hover:bg-white"
-            onClick={async () => {
-              try {
-                const { proposalApi } = await import('../api/proposalApi');
-                const res = await proposalApi.seedTestData();
-                if (res.success) {
-                  alert(res.message);
-                }
-              } catch (err) {
-                console.error(err);
-                alert("Failed to generate test data");
-              }
-            }}
-          >
-            Generate Test Dummy Data
-          </PrimaryButton>
-        </Card>
+
 
       </div>
     </div>

@@ -9,6 +9,8 @@ import PremiumPageLoader from '../../components/ui/PremiumPageLoader';
 import toast from 'react-hot-toast';
 import confetti from 'canvas-confetti';
 import ArticleCard from './ArticleCard';
+import AdBanner from '../../components/advertise/AdBanner';
+import DOMPurify from 'dompurify';
 import AdSidebarWidget from '../../components/advertise/AdSidebarWidget';
 
 const getLoggedInUserEmail = (): string | null => {
@@ -364,7 +366,7 @@ const BlogDetail: React.FC = () => {
                 {/* Blog Body */}
                 <div className="prose prose-lg md:prose-xl mx-auto max-w-none dark:prose-invert prose-p:text-slate-700 dark:prose-p:text-slate-300 prose-headings:font-black prose-headings:text-slate-900 dark:prose-headings:text-slate-100 prose-headings:tracking-tight prose-a:text-blue-600 hover:prose-a:text-blue-500 prose-img:rounded-2xl font-serif leading-relaxed tracking-wide">
                   {/* Used specifically for ReactQuill rendered content */}
-                  <div className="ql-editor" style={{ padding: 0 }} dangerouslySetInnerHTML={{ __html: blog.content }} />
+                  <div className="ql-editor" style={{ padding: 0 }} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(blog.content) }} />
                 </div>
 
                 {/* Tags */}

@@ -234,7 +234,9 @@ const Profile = () => {
     requestNotificationPermission();
 
     const socketUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001';
-    const socket = io(socketUrl);
+    const socket = io(socketUrl, {
+      auth: { token: localStorage.getItem('userToken') }
+    });
 
     const userId = localStorage.getItem('userId');
     if (userId) {
@@ -565,7 +567,8 @@ const Profile = () => {
 
       // Establish real-time Socket.io link
       socket = io(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}`, {
-        withCredentials: true
+        withCredentials: true,
+        auth: { token: localStorage.getItem('userToken') }
       });
 
       // Join chat room session
@@ -609,7 +612,8 @@ const Profile = () => {
       fetchChatMessages();
 
       socket = io(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}`, {
-        withCredentials: true
+        withCredentials: true,
+        auth: { token: localStorage.getItem('userToken') }
       });
 
       socket.emit('join_chat', selectedEventChat.id);

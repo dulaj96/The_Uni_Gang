@@ -19,6 +19,7 @@ interface MarketplaceCardProps {
       name?: string | null;
       profile_pic?: string | null;
       is_verified_student?: boolean;
+      is_verified_professional?: boolean;
     } | null;
     is_featured?: boolean;
   };
@@ -37,7 +38,8 @@ const MarketplaceCard: React.FC<MarketplaceCardProps> = ({ item, onClick, onAddT
   const sellerPic =
     item.seller?.profile_pic ||
     `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(sellerName)}`;
-  const isVerified = item.seller?.is_verified_student ?? false;
+  const isStudentVerified = item.seller?.is_verified_student ?? false;
+  const isProfessionalVerified = item.seller?.is_verified_professional ?? false;
 
   let timeAgo = 'Recently';
   try {
@@ -141,8 +143,11 @@ const MarketplaceCard: React.FC<MarketplaceCardProps> = ({ item, onClick, onAddT
               <div className="flex flex-col">
                 <div className="flex items-center gap-1">
                   <span className="text-xs font-medium text-gray-900 dark:text-white line-clamp-1">{sellerName}</span>
-                  {isVerified && (
+                  {isStudentVerified && (
                     <VerifiedBadge size={16} title="Verified Student" />
+                  )}
+                  {isProfessionalVerified && !isStudentVerified && (
+                    <VerifiedBadge size={16} title="Verified Professional" />
                   )}
                 </div>
                 <span className="text-[10px] text-gray-400 dark:text-slate-500 flex items-center gap-1">

@@ -20,7 +20,9 @@ export default function ProposalHomePage({
     name: 'User', 
     profileCompletion: 0, 
     plan: 'free',
-    missingTasks: []
+    missingTasks: [],
+    stats: { proposalsSent: 0, matches: 0, profileViews: 0 },
+    activities: []
   });
 
   const handleTaskClick = () => {
@@ -53,14 +55,18 @@ export default function ProposalHomePage({
         
         if (userRes.success && gamificationRes.success) {
           const profileData = userRes.profile || null;
+          const userObj = userRes.user || profileData?.user;
+          const statsRes = await proposalApi.getStats();
           
           setCurrentUser({
             ...profileData,
-            name: profileData?.user?.name || 'User',
-            avatar: profileData?.images?.[0] || profileData?.user?.profile_pic || '',
+            name: userObj?.name || 'User',
+            avatar: profileData?.images?.[0] || userObj?.profile_pic || '',
             profileCompletion: gamificationRes.completionPct || 0,
             plan: gamificationRes.isPremium ? 'premium' : 'free',
-            missingTasks: gamificationRes.missingTasks || []
+            missingTasks: gamificationRes.missingTasks || [],
+            stats: statsRes.stats || { proposalsSent: 0, matches: 0, profileViews: 0 },
+            activities: statsRes.activities || []
           });
         }
         
@@ -70,6 +76,11 @@ export default function ProposalHomePage({
         }
       } catch (err) {
         console.error('Failed to fetch home data:', err);
+        const token = localStorage.getItem('userToken');
+        if (!token) {
+          alert('You must be logged in to view your Proposal Dashboard.');
+          window.location.href = '/login'; // Redirect to login page
+        }
       }
     };
     
@@ -110,13 +121,6 @@ export default function ProposalHomePage({
             className="p-3.5 rounded-2xl bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
             title="Settings"
           >
-            <User size={20} />
-          </button>
-          <button 
-            onClick={() => setPage('settings')}
-            className="p-3.5 rounded-2xl bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
-            title="Settings"
-          >
             <Settings size={20} />
           </button>
           <button 
@@ -127,6 +131,14 @@ export default function ProposalHomePage({
             <MessageCircle size={20} className="transition-transform group-hover:scale-110" />
             <span className="absolute top-2.5 right-2.5 w-2.5 h-2.5 bg-rose-500 rounded-full border-2 border-white dark:border-slate-800" />
           </button>
+          <button 
+            onClick={() => setPage('likes')}
+            className="p-3.5 rounded-2xl bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-amber-500 dark:hover:text-amber-400 transition-colors relative group"
+            title="Likes You"
+          >
+            <Heart size={20} className="transition-transform group-hover:scale-110" />
+            <span className="absolute top-2.5 right-2.5 w-2.5 h-2.5 bg-amber-500 rounded-full border-2 border-white dark:border-slate-800" />
+          </button>
           <PrimaryButton icon={Compass} onClick={() => setPage("discover")}>
             Discover Proposals
           </PrimaryButton>
@@ -136,9 +148,9 @@ export default function ProposalHomePage({
       {/* stat cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {[
-          { label: "Proposals Sent", value: "18", icon: Send },
-          { label: "Matches", value: "6", icon: Heart },
-          { label: "Profile Views", value: "142", icon: Eye },
+          { label: "Proposals Sent", value: currentUser.stats.proposalsSent, icon: Send },
+          { label: "Matches", value: currentUser.stats.matches, icon: Heart },
+          { label: "Profile Views", value: currentUser.stats.profileViews, icon: Eye },
           { label: "Profile Complete", value: `${currentUser.profileCompletion}%`, icon: CheckCircle2 },
         ].map((s) => (
           <Card key={s.label} className="p-5 hover:border-rose-200 dark:hover:border-rose-900/50">
@@ -163,17 +175,17 @@ export default function ProposalHomePage({
             <PremiumTrialCountdown onUpgrade={() => setPage("premium")} />
           </div>
         ) : currentUser.plan === "free" ? (
-          <div className="rounded-2xl p-6 flex flex-col justify-center h-full premium-glass bg-gradient-to-r from-rose-500/10 to-fuchsia-500/10 border border-rose-500/20 shadow-xl shadow-rose-500/5 group">
+          <div className="rounded-2xl p-6 flex flex-col justify-center h-full premium-glass bg-gradient-to-br from-amber-300/10 via-amber-500/5 to-orange-600/10 border border-amber-500/20 shadow-xl shadow-amber-500/5 group hover:border-amber-500/30 transition-all">
             <div className="flex items-center gap-4 mb-4">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 grid place-items-center text-white shadow-lg shadow-amber-500/20 shrink-0 transform group-hover:scale-110 transition-transform">
-                <Crown size={20} strokeWidth={2.5} />
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 grid place-items-center text-white shadow-lg shadow-amber-500/20 shrink-0 transform group-hover:scale-110 group-hover:-rotate-3 transition-transform">
+                <Crown size={24} strokeWidth={2.5} />
               </div>
               <div>
-                <p className="text-lg font-black text-slate-900 dark:text-white">Upgrade to Premium</p>
-                <p className="text-xs font-medium text-slate-600 dark:text-slate-400 mt-1">See who liked you and unlock unlimited proposals.</p>
+                <p className="text-xl font-black text-slate-900 dark:text-white flex items-center gap-2">Premium Gold <span className="text-[10px] bg-amber-500 text-white px-2 py-0.5 rounded-full uppercase">Rs. 1500/mo</span></p>
+                <p className="text-xs font-medium text-slate-600 dark:text-slate-400 mt-1">Unlock Video Calls, Advanced Filters, Grid View & see who liked you.</p>
               </div>
             </div>
-            <PrimaryButton onClick={() => setPage("premium")} className="w-full bg-gradient-to-r from-amber-500 to-orange-500 shadow-amber-500/20 hover:shadow-amber-500/30 border-none">
+            <PrimaryButton onClick={() => setPage("premium")} className="w-full bg-gradient-to-r from-amber-500 to-orange-500 shadow-amber-500/20 hover:shadow-amber-500/40 border-none">
               View Premium Plans
             </PrimaryButton>
           </div>
@@ -241,8 +253,8 @@ export default function ProposalHomePage({
         <div>
           <h3 className="text-xl font-bold mb-5 text-slate-900 dark:text-white">Recent Activity</h3>
           <Card className="p-3">
-            {ACTIVITY_FEED.map((a, i) => (
-              <div key={i} className={cx("flex items-start gap-3 p-3 rounded-xl transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50", i !== ACTIVITY_FEED.length - 1 && "border-b border-slate-100 dark:border-slate-800")}>
+            {currentUser.activities && currentUser.activities.length > 0 ? currentUser.activities.map((a: any, i: number) => (
+              <div key={i} className={cx("flex items-start gap-3 p-3 rounded-xl transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50", i !== currentUser.activities.length - 1 && "border-b border-slate-100 dark:border-slate-800")}>
                 <div className="w-9 h-9 rounded-full grid place-items-center shrink-0 bg-slate-100 dark:bg-slate-800">
                   {a.icon === "Heart" && <Heart size={16} className={a.color} fill="currentColor" />}
                   {a.icon === "Eye" && <Eye size={16} className={a.color} />}
@@ -254,7 +266,9 @@ export default function ProposalHomePage({
                   <p className="text-[11px] font-medium mt-1 text-slate-500">{a.time}</p>
                 </div>
               </div>
-            ))}
+            )) : (
+              <div className="p-4 text-center text-sm text-slate-500">No recent activities.</div>
+            )}
           </Card>
         </div>
       </div>

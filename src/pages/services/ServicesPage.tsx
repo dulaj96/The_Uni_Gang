@@ -385,14 +385,7 @@ const ServicesPage = () => {
         budget: budget || undefined
       }, token);
 
-      const message = `*Project Request: ${selectedService.title}*%0A%0A` +
-        `*WhatsApp:* ${phone}%0A` +
-        (email ? `*Email:* ${email}%0A` : '') +
-        `*Brief:* ${finalBrief}%0A` +
-        `*Deadline:* ${deadline}%0A` +
-        `*Budget:* ${budget}`;
-
-      window.open(`https://wa.me/94724478148?text=${encodeURIComponent(message)}`, '_blank');
+      // window.open(`https://wa.me/94724478148?text=${encodeURIComponent(message)}`, '_blank');
 
       setIsSubmitting(false);
       setSelectedService(null);
@@ -424,14 +417,7 @@ const ServicesPage = () => {
         budget: pendingData.budget || undefined
       }, token);
 
-      const message = `*Project Request: ${pendingData.serviceTitle}*%0A%0A` +
-        `*WhatsApp:* ${pendingData.phone}%0A` +
-        (pendingData.email ? `*Email:* ${pendingData.email}%0A` : '') +
-        `*Brief:* ${pendingData.brief}%0A` +
-        `*Deadline:* ${pendingData.deadline}%0A` +
-        `*Budget:* ${pendingData.budget}`;
-
-      window.open(`https://wa.me/94724478148?text=${encodeURIComponent(message)}`, '_blank');
+      // window.open(`https://wa.me/94724478148?text=${encodeURIComponent(message)}`, '_blank');
 
       localStorage.removeItem('pending_service_request');
       setSelectedService(null);

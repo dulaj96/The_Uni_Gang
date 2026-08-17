@@ -20,6 +20,8 @@ import WhatsAppButton from './components/whatsAppButton/WhatsAppButton';
 import SEO from './components/SEO';
 import AdPopup from './components/advertise/AdPopup';
 import GoogleOneTap from './components/auth/GoogleOneTap';
+import AuthSynchronizer from './components/auth/AuthSynchronizer';
+import NotFound from './pages/NotFound';
 import './App.css';
 
 // Lazy-Loaded Sub-Pages (Splits heavy chunks for 4x faster initial loading)
@@ -132,12 +134,16 @@ function App() {
 
           {/* Admin Moderation Route */}
           <Route path="/admin" element={<SubLayout><AdminDashboard /></SubLayout>} />
+
+          {/* Catch-all 404 Route */}
+          <Route path="*" element={<SubLayout><NotFound /></SubLayout>} />
         </Routes>
       </Suspense>
 
       <WhatsAppButton />
       <AdPopup />
       <GoogleOneTap />
+      <AuthSynchronizer />
     </Router>
   );
 }

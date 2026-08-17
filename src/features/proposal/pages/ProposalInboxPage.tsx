@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronLeft, Search, MoreVertical, Phone, Video, Send, Paperclip, Smile, Check, CheckCheck } from 'lucide-react';
+import { ChevronLeft, Search, MoreVertical, Phone, Video, Send, Paperclip, Smile, Check, CheckCheck, Lock } from 'lucide-react';
+import toast from 'react-hot-toast';
 import { cx } from '../components/ui/ProposalPrimitives';
 import { proposalApi, proposalSocketService } from '../api/proposalApi';
 import { ScreenshotBlocker } from '../components/privacy/ScreenshotBlocker';
@@ -11,6 +12,7 @@ export default function ProposalInboxPage({ setPage }: { setPage: (p: any) => vo
   const [activeMessages, setActiveMessages] = useState<any[]>([]);
   const [message, setMessage] = useState('');
   const [userId, setUserId] = useState<string | null>(null);
+  const [isVerified, setIsVerified] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Fetch initial profile to get my userId (for Socket) and inbox
@@ -22,6 +24,9 @@ export default function ProposalInboxPage({ setPage }: { setPage: (p: any) => vo
           const uid = profile.profile.user_id;
           setUserId(uid);
           proposalSocketService.connect(uid);
+        }
+        if (profile.success && profile.user) {
+          setIsVerified(profile.user.is_verified_student || profile.user.is_verified_professional);
         }
         
         const inbox = await proposalApi.getInbox();
@@ -98,8 +103,14 @@ export default function ProposalInboxPage({ setPage }: { setPage: (p: any) => vo
           c.id === activeChatId ? { ...c, lastMessage: msgText } : c
         ));
       }
-    } catch (err) {
-      console.error(err);
+    } catch (err: any) {
+      if (err.requiresPremium) {
+        toast.error(err.message, { duration: 5000 });
+        setPage('premium'); // Redirect to premium page
+      } else {
+        console.error(err);
+        toast.error('Failed to send message');
+      }
     }
   };
 
@@ -272,32 +283,52 @@ export default function ProposalInboxPage({ setPage }: { setPage: (p: any) => vo
                 <div ref={messagesEndRef} />
               </div>
 
-              {/* Chat Input */}
+              {/* Chat Input or Lock */}
               <div className="p-4 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800">
-                <div className="flex items-end gap-2 bg-slate-50 dark:bg-slate-800/50 rounded-3xl p-2 border border-slate-200 dark:border-slate-700 focus-within:border-blue-500/50 focus-within:ring-2 ring-blue-500/20 transition-all">
-                  <button className="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors shrink-0">
-                    <Smile size={24} />
-                  </button>
-                  <button className="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors shrink-0">
-                    <Paperclip size={24} />
-                  </button>
-                  
-                  <textarea 
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Type a message..."
-                    className="flex-1 bg-transparent border-none focus:ring-0 resize-none py-3 text-sm text-slate-900 dark:text-white max-h-32 min-h-[44px]"
-                    rows={1}
-                  />
-
-                  <button 
-                    disabled={!message.trim()}
-                    onClick={handleSendMessage}
-                    className="w-11 h-11 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white flex items-center justify-center shrink-0 shadow-lg shadow-blue-500/20 disabled:opacity-50 disabled:shadow-none transition-all active:scale-95"
-                  >
-                    <Send size={18} className="ml-1" />
-                  </button>
-                </div>
+                {isVerified ? (
+                  <div className="flex items-end gap-2 bg-slate-50 dark:bg-slate-800/50 rounded-3xl p-2 border border-slate-200 dark:border-slate-700 focus-within:border-blue-500/50 focus-within:ring-2 ring-blue-500/20 transition-all">
+                    <button className="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors shrink-0">
+                      <Smile size={24} />
+                    </button>
+                    <button className="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors shrink-0">
+                      <Paperclip size={24} />
+                    </button>
+                    
+                    <textarea 
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      placeholder="Type a message..."
+                      className="flex-1 bg-transparent border-none focus:ring-0 resize-none py-3 text-sm text-slate-900 dark:text-white max-h-32 min-h-[44px]"
+                      rows={1}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                          e.preventDefault();
+                          handleSendMessage();
+                        }
+                      }}
+                    />
+                    
+                    <button 
+                      onClick={handleSendMessage}
+                      disabled={!message.trim()}
+                      className="p-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 disabled:opacity-50 transition-colors shrink-0 flex items-center justify-center"
+                    >
+                      <Send size={18} className="translate-x-[1px]" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 text-center">
+                    <p className="text-sm font-bold text-slate-700 dark:border-slate-300 mb-2 flex items-center gap-2">
+                      <Lock size={16} className="text-blue-500" /> Verify your profile to unlock messaging
+                    </p>
+                    <button 
+                      onClick={() => setPage('settings')}
+                      className="text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-full transition-colors"
+                    >
+                      Verify Now
+                    </button>
+                  </div>
+                )}
               </div>
                 </div>
               </ScreenshotBlocker>

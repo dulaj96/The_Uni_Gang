@@ -10,8 +10,9 @@ import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { api } from '../../api';
 import SEO from '../../components/SEO';
+import { jwtDecode } from 'jwt-decode';
 
-type AdminTab = 'annexes' | 'market' | 'events' | 'users' | 'feedbacks' | 'problems';
+type AdminTab = 'annexes' | 'market' | 'events' | 'users' | 'feedbacks' | 'problems' | 'payments';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -26,6 +27,7 @@ const AdminDashboard = () => {
   const [users, setUsers] = useState<any[]>([]);
   const [feedbacks, setFeedbacks] = useState<any[]>([]);
   const [problems, setProblems] = useState<any[]>([]);
+  const [payments, setPayments] = useState<any[]>([]);
 
   // Reply modal state for problem reports
   const [replyModalOpen, setReplyModalOpen] = useState(false);
@@ -41,20 +43,34 @@ const AdminDashboard = () => {
       return;
     }
 
+    try {
+      const decoded: any = jwtDecode(token);
+      if (decoded.role !== 'admin') {
+        toast.error('Unauthorized access. Admin only.');
+        navigate('/');
+        return;
+      }
+    } catch (err) {
+      toast.error('Invalid token. Please log in again.');
+      navigate('/');
+      return;
+    }
+
     fetchAdminData();
-  }, [token]);
+  }, [token, navigate]);
 
   const fetchAdminData = async () => {
     if (!token) return;
     setLoading(true);
     try {
-      const [annexData, marketData, eventData, userData, feedbackData, problemData] = await Promise.all([
+      const [annexData, marketData, eventData, userData, feedbackData, problemData, paymentData] = await Promise.all([
         api.getAdminAnnexes(token).catch(() => []),
         api.getAdminMarketItems(token).catch(() => []),
         api.getAdminEvents(token).catch(() => []),
         api.getAdminUsers(token).catch(() => []),
         api.getAdminFeedbacks(token).catch(() => []),
-        api.getAdminProblems(token).catch(() => [])
+        api.getAdminProblems(token).catch(() => []),
+        api.getAdminPremiumPayments(token).catch(() => [])
       ]);
 
       setAnnexes(annexData);
@@ -63,6 +79,7 @@ const AdminDashboard = () => {
       setUsers(userData);
       setFeedbacks(feedbackData);
       setProblems(problemData);
+      setPayments(paymentData);
     } catch (err: any) {
       console.error('Failed to load admin data:', err);
       toast.error('Failed to load some admin data.');
@@ -130,11 +147,26 @@ const AdminDashboard = () => {
   const handleVerifyUser = async (userId: string) => {
     if (!token) return;
     try {
-      await api.verifyAdminUser(userId, token);
-      toast.success('User verified successfully!');
-      setUsers(prev => prev.map(u => u.id === userId ? { ...u, is_verified_student: true, is_verified_landlord: true } : u));
+      await api.verifyUser(userId, token);
+      toast.success('User student verified successfully!');
+      setUsers(prev => prev.map(u => u.id === userId ? { ...u, is_verified_student: true } : u));
     } catch (err: any) {
       toast.error(err.message || 'Failed to verify user');
+    }
+  };
+
+  const handleVerifyProfessional = async (userId: string) => {
+    if (!token) return;
+    try {
+      const response = await fetch(`/api/admin/users/${userId}/verify-professional`, {
+        method: 'PUT',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (!response.ok) throw new Error('Failed to verify professional');
+      toast.success('User verified as professional successfully!');
+      setUsers(prev => prev.map(u => u.id === userId ? { ...u, is_verified_professional: true } : u));
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to verify professional');
     }
   };
 
@@ -166,11 +198,23 @@ const AdminDashboard = () => {
     }
   };
 
+  const handlePaymentStatus = async (id: string, status: string) => {
+    if (!token) return;
+    try {
+      await api.updateAdminPremiumPaymentStatus(id, status, token);
+      toast.success(`Payment status updated to ${status}`);
+      setPayments(prev => prev.map(p => p.id === id ? { ...p, status } : p));
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to update payment status');
+    }
+  };
+
   // Metrics summary
   const pendingAnnexesCount = annexes.filter(a => a.status === 'Pending').length;
   const pendingMarketCount = marketItems.filter(m => m.status === 'PENDING_VERIFICATION' || m.status === 'PENDING').length;
   const pendingEventsCount = events.filter(e => e.status === 'Pending' || e.status === 'PENDING').length;
   const pendingProblemsCount = problems.filter(p => p.status === 'PENDING' || p.status === 'IN_PROGRESS').length;
+  const pendingPaymentsCount = payments.filter(p => p.status === 'pending').length;
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 py-12 px-4 sm:px-6 lg:px-12 font-sans relative overflow-hidden">
@@ -244,7 +288,8 @@ const AdminDashboard = () => {
             { id: 'events', label: `📅 Events (${events.length})`, count: pendingEventsCount },
             { id: 'users', label: `👥 Users & Badges (${users.length})` },
             { id: 'feedbacks', label: `💬 Client Feedbacks (${feedbacks.length})` },
-            { id: 'problems', label: `🛠️ Support Tickets (${problems.length})`, count: pendingProblemsCount }
+            { id: 'problems', label: `🛠️ Support Tickets (${problems.length})`, count: pendingProblemsCount },
+            { id: 'payments', label: `💳 Premium Payments (${payments.length})`, count: pendingPaymentsCount }
           ].map(tab => (
             <button
               key={tab.id}
@@ -467,7 +512,7 @@ const AdminDashboard = () => {
                             <div className="flex gap-2">
                               {user.is_verified_student && (
                                 <span className="px-2.5 py-1 rounded-full text-[9px] font-black bg-blue-500/20 text-blue-400 border border-blue-500/30">
-                                  🎓 Verified Student
+                                  🎓 Verified University
                                 </span>
                               )}
                               {user.is_verified_landlord && (
@@ -475,7 +520,12 @@ const AdminDashboard = () => {
                                   🏠 Verified Landlord
                                 </span>
                               )}
-                              {!user.is_verified_student && !user.is_verified_landlord && (
+                              {user.is_verified_professional && (
+                                <span className="px-2.5 py-1 rounded-full text-[9px] font-black bg-yellow-500/20 text-yellow-400 border border-yellow-500/30">
+                                  💼 Verified Professional
+                                </span>
+                              )}
+                              {!user.is_verified_student && !user.is_verified_landlord && !user.is_verified_professional && (
                                 <span className="px-2.5 py-1 rounded-full text-[9px] font-black bg-slate-800 text-slate-400 border border-slate-700">
                                   Unverified
                                 </span>
@@ -483,14 +533,24 @@ const AdminDashboard = () => {
                             </div>
                           </td>
                           <td className="p-4 text-right">
-                            {!user.is_verified_student && !user.is_verified_landlord && (
-                              <button
-                                onClick={() => handleVerifyUser(user.id)}
-                                className="px-3 py-1.5 rounded-lg bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500 hover:text-white border border-emerald-500/30 text-xs font-bold transition-all cursor-pointer inline-flex items-center gap-1"
-                              >
-                                <LuUserCheck size={14} /> Verify User
-                              </button>
-                            )}
+                            <div className="flex gap-2 justify-end">
+                              {!user.is_verified_student && (
+                                <button
+                                  onClick={() => handleVerifyUser(user.id)}
+                                  className="px-3 py-1.5 rounded-lg bg-blue-500/20 text-blue-400 hover:bg-blue-500 hover:text-white border border-blue-500/30 text-xs font-bold transition-all cursor-pointer inline-flex items-center gap-1"
+                                >
+                                  <LuUserCheck size={14} /> Student
+                                </button>
+                              )}
+                              {!user.is_verified_professional && (
+                                <button
+                                  onClick={() => handleVerifyProfessional(user.id)}
+                                  className="px-3 py-1.5 rounded-lg bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500 hover:text-white border border-yellow-500/30 text-xs font-bold transition-all cursor-pointer inline-flex items-center gap-1"
+                                >
+                                  <LuUserCheck size={14} /> Professional
+                                </button>
+                              )}
+                            </div>
                           </td>
                         </tr>
                       ))}
@@ -575,6 +635,60 @@ const AdminDashboard = () => {
                     </div>
                   </div>
                 ))}
+              </div>
+            )}
+
+            {/* 7. Premium Payments Tab */}
+            {activeTab === 'payments' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {payments
+                  .filter(p => !searchQuery || p.reference_number?.toLowerCase().includes(searchQuery.toLowerCase()) || p.user?.name?.toLowerCase().includes(searchQuery.toLowerCase()))
+                  .map(payment => (
+                    <div key={payment.id} className="p-6 rounded-2xl bg-slate-900/50 border border-slate-800 hover:border-slate-700 transition-all flex flex-col justify-between">
+                      <div>
+                        <div className="flex items-center justify-between mb-3">
+                          <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-wider ${
+                            payment.status === 'approved' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' :
+                            payment.status === 'rejected' ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30' :
+                            'bg-amber-500/20 text-amber-400 border border-amber-500/30 animate-pulse'
+                          }`}>
+                            {payment.status || 'pending'}
+                          </span>
+                          <span className="text-xs font-bold text-amber-400">Rs. {payment.amount}</span>
+                        </div>
+
+                        <h3 className="text-lg font-bold text-white mb-1">User: {payment.user?.name}</h3>
+                        <p className="text-xs text-slate-400 mb-1">Email: {payment.user?.email}</p>
+                        <p className="text-xs text-slate-400 mb-1">WhatsApp: {payment.whatsapp_number}</p>
+                        <p className="text-[10px] text-slate-500 mt-2 font-medium">Ref: {payment.reference_number || 'N/A'} · Date: {new Date(payment.payment_date).toLocaleString()}</p>
+                      </div>
+
+                      <div className="pt-4 mt-4 border-t border-slate-800/80">
+                        <a href={`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}${payment.receipt_url}`} target="_blank" rel="noopener noreferrer" className="text-xs text-indigo-400 hover:underline flex items-center gap-1 font-bold">
+                          <LuExternalLink size={12} /> View Receipt
+                        </a>
+
+                        <div className="flex items-center justify-end gap-2 mt-4">
+                          {payment.status !== 'approved' && (
+                            <button
+                              onClick={() => handlePaymentStatus(payment.id, 'approved')}
+                              className="px-3 py-1.5 rounded-lg bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500 hover:text-white border border-emerald-500/30 text-xs font-bold transition-all cursor-pointer flex items-center gap-1"
+                            >
+                              <LuCheck size={14} /> Approve
+                            </button>
+                          )}
+                          {payment.status !== 'rejected' && (
+                            <button
+                              onClick={() => handlePaymentStatus(payment.id, 'rejected')}
+                              className="px-3 py-1.5 rounded-lg bg-rose-500/20 text-rose-400 hover:bg-rose-500 hover:text-white border border-rose-500/30 text-xs font-bold transition-all cursor-pointer flex items-center gap-1"
+                            >
+                              <LuX size={14} /> Reject
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
               </div>
             )}
           </div>

@@ -5,7 +5,7 @@ import { ShieldAlert, AlertTriangle } from 'lucide-react';
 export function ScreenshotBlocker({ children, currentUserId }: { children: React.ReactNode, currentUserId: string }) {
   const { detected, reset } = useScreenshotDetection(() => {
     // Fire API call to backend to log the attempt
-    fetch('http://localhost:5000/api/proposals/privacy/screenshot-alert', {
+    fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}/api/proposals/privacy/screenshot-alert`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId: currentUserId, timestamp: new Date().toISOString() })

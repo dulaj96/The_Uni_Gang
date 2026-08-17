@@ -29,10 +29,25 @@ export const proposalApi = {
     return response.json();
   },
 
-  getFeed: async (params: any) => {
-    const query = new URLSearchParams(params).toString();
+  getFeed: async (filters: any) => {
+    const query = new URLSearchParams(filters).toString();
     const response = await fetch(`${API_URL}/feed?${query}`, { headers: getHeaders() });
     if (!response.ok) throw new Error('Failed to fetch feed');
+    return response.json();
+  },
+
+  getLikedMe: async () => {
+    const response = await fetch(`${API_URL}/liked-me`, { headers: getHeaders() });
+    if (response.status === 403) {
+      throw { requiresPremium: true };
+    }
+    if (!response.ok) throw new Error('Failed to fetch liked me profiles');
+    return response.json();
+  },
+
+  getStats: async () => {
+    const response = await fetch(`${API_URL}/stats`, { headers: getHeaders() });
+    if (!response.ok) throw new Error('Failed to fetch stats');
     return response.json();
   },
 
@@ -43,8 +58,9 @@ export const proposalApi = {
       headers: getHeaders(),
       body: JSON.stringify({ targetId, action })
     });
-    if (!response.ok) throw new Error('Failed to swipe');
-    return response.json();
+    const data = await response.json();
+    if (!response.ok) throw data;
+    return data;
   },
 
   // Chat
@@ -66,8 +82,14 @@ export const proposalApi = {
       headers: getHeaders(),
       body: JSON.stringify({ matchId, text })
     });
-    if (!response.ok) throw new Error('Failed to send message');
-    return response.json();
+    const data = await response.json();
+    if (!response.ok) {
+      if (response.status === 403 && data.requiresPremium) {
+        throw { requiresPremium: true, message: data.message };
+      }
+      throw new Error(data.message || 'Failed to send message');
+    }
+    return data;
   },
 
   // Gamification
@@ -103,12 +125,14 @@ let socket: Socket | null = null;
 export const proposalSocketService = {
   connect: (userId: string) => {
     if (!socket) {
-      socket = io(process.env.VITE_API_URL || 'http://localhost:5000', {
+      const token = localStorage.getItem('userToken') || '';
+      socket = io(import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001', {
         withCredentials: true,
+        auth: { token },
       });
 
       socket.on('connect', () => {
-        socket?.emit('register', userId);
+        socket?.emit('register'); // Backend now reads user ID from token automatically
       });
     }
   },

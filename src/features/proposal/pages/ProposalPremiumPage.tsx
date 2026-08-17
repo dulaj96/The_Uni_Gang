@@ -1,27 +1,76 @@
-
-import { motion } from 'framer-motion';
-import { ChevronLeft, Crown, CheckCircle2, Star, Sparkles, Heart, ShieldCheck, Zap, Video, Undo2, Lock } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronLeft, Crown, CheckCircle2, Star, Sparkles, Heart, ShieldCheck, Zap, Video, Undo2, Lock, X, UploadCloud, FileImage, CreditCard } from 'lucide-react';
 import { GhostButton } from '../components/ui/ProposalPrimitives';
+import { proposalApi } from '../api/proposalApi';
 
 export default function ProposalPremiumPage({ setPage }: { setPage: (p: string) => void }) {
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [paymentData, setPaymentData] = useState({
+    date: '',
+    reference: '',
+    whatsapp: ''
+  });
+  const [receiptFile, setReceiptFile] = useState<File | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handlePaymentSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!paymentData.date || !paymentData.whatsapp || !receiptFile) {
+      alert("Please fill all required fields and upload the receipt.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const formData = new FormData();
+      formData.append('payment_date', paymentData.date);
+      formData.append('reference_number', paymentData.reference);
+      formData.append('whatsapp_number', paymentData.whatsapp);
+      formData.append('receipt', receiptFile);
+
+      const token = localStorage.getItem('userToken');
+      const res = await fetch('/api/proposals/payment', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData
+      });
+      const data = await res.json();
+      
+      if (data.success) {
+        alert("Payment submitted successfully! An admin will verify your account shortly.");
+        setShowPaymentModal(false);
+        setPage('dashboard');
+      } else {
+        alert(data.message || "Failed to submit payment");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("An error occurred during submission.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const premiumFeatures = [
-    { text: "Secure In-App Video & Audio Calls", icon: Video },
-    { text: "See exactly who liked your profile", icon: Eye },
-    { text: "Unlimited Swipes & Proposals", icon: Heart },
-    { text: "Advanced filtering (Profession, Hobbies)", icon: Filter },
-    { text: "Read receipts in private chats", icon: MessageCircle },
-    { text: "Priority profile placement (5x more views)", icon: Zap },
-    { text: "Undo accidental left swipes (Rewind)", icon: Undo2 },
-    { text: "Ad-free experience", icon: ShieldCheck }
+    "Unlimited profile viewing & proposals",
+    "See exactly who liked your profile",
+    "Advanced filters (Profession, Diet, Hobbies)",
+    "Priority profile placement (5x more views)",
+    "Read receipts & Undo accidental swipes",
+    "Exclusive Grid / Gallery View",
+    "Ad-free experience"
   ];
 
   const freeFeatures = [
     "Create a verified profile",
     "View 15 profiles per day",
-    "Send 3 proposals per week",
+    "Send 15 proposals per day",
     "Basic district & age filtering",
-    "Text chat with mutual matches",
+    "10 Messages per match",
     "AI Phone Number Masking (Security)"
   ];
 
@@ -134,7 +183,7 @@ export default function ProposalPremiumPage({ setPage }: { setPage: (p: string) 
                 <h3 className="text-2xl font-black text-amber-500 mb-2 flex items-center gap-2">Premium <Star size={20} fill="currentColor" /></h3>
                 <div className="flex items-baseline gap-2">
                   <span className="text-5xl font-black text-white drop-shadow-md">
-                    Rs. 990
+                    Rs. 1500
                   </span>
                   <span className="text-sm font-bold text-slate-400">/ month</span>
                 </div>
@@ -143,26 +192,159 @@ export default function ProposalPremiumPage({ setPage }: { setPage: (p: string) 
               <ul className="space-y-5 flex-1 relative z-10">
                 {premiumFeatures.map((f, i) => (
                   <li key={i} className="flex items-start gap-4">
-                    <div className="shrink-0 mt-0.5 relative">
-                      <div className="absolute inset-0 bg-amber-500/20 blur-sm rounded-full" />
-                      <f.icon size={20} className="text-amber-400 relative z-10" />
-                    </div>
-                    <span className="text-sm font-bold text-slate-200 leading-relaxed drop-shadow-sm">{f.text}</span>
+                    <CheckCircle2 size={20} className="text-amber-500 shrink-0 mt-0.5 drop-shadow-sm" />
+                    <span className="text-sm font-bold text-slate-200 leading-relaxed drop-shadow-sm">{f}</span>
                   </li>
                 ))}
+                
+                {/* Highlighted Video Call Feature */}
+                <li className="flex items-start gap-4 p-3 -mx-3 rounded-xl bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20">
+                  <div className="w-6 h-6 rounded-full bg-amber-500 flex items-center justify-center shrink-0 mt-0.5 shadow-lg shadow-amber-500/30">
+                    <Video size={12} className="text-white" fill="white" />
+                  </div>
+                  <span className="text-sm font-black text-amber-500 leading-relaxed drop-shadow-sm">
+                    Exclusive In-App Video & Voice Calling (100% Privacy)
+                  </span>
+                </li>
               </ul>
               
               <div className="mt-10 relative z-10">
-                <button className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 text-white text-base font-black shadow-[0_10px_25px_-5px_rgba(245,158,11,0.4)] hover:shadow-[0_10px_35px_-5px_rgba(245,158,11,0.6)] transform transition-all active:scale-[0.98] flex items-center justify-center gap-2">
+                <button onClick={() => setShowPaymentModal(true)} className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 text-white text-base font-black shadow-[0_10px_25px_-5px_rgba(245,158,11,0.4)] hover:shadow-[0_10px_35px_-5px_rgba(245,158,11,0.6)] transform transition-all active:scale-[0.98] flex items-center justify-center gap-2">
                   Upgrade to Premium <Crown size={20} />
                 </button>
-                <p className="text-center text-xs text-slate-500 font-medium mt-4">Cancel anytime. Billed monthly.</p>
+                <p className="text-center text-xs text-slate-500 font-medium mt-4">One-time manual transfer verification.</p>
               </div>
             </div>
           </div>
 
         </div>
       </div>
+
+      {/* Payment Modal */}
+      <AnimatePresence>
+        {showPaymentModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-black/80 backdrop-blur-sm" 
+              onClick={() => !isSubmitting && setShowPaymentModal(false)} 
+            />
+            
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
+              className="relative w-full max-w-lg bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl z-10"
+            >
+              <div className="p-6 border-b border-slate-800 flex items-center justify-between">
+                <h3 className="text-xl font-black text-white flex items-center gap-2">
+                  <CreditCard className="text-amber-500" /> Manual Bank Transfer
+                </h3>
+                <button onClick={() => !isSubmitting && setShowPaymentModal(false)} className="text-slate-400 hover:text-white">
+                  <X size={24} />
+                </button>
+              </div>
+              
+              <div className="p-6 max-h-[70vh] overflow-y-auto">
+                <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-4 mb-6">
+                  <p className="text-amber-400 text-sm font-bold mb-2 uppercase tracking-wider text-center">Bank Details</p>
+                  <div className="space-y-1 text-center">
+                    <p className="text-white font-medium">Bank: <span className="font-bold">Commercial Bank</span></p>
+                    <p className="text-white font-medium">Branch: <span className="font-bold">Colombo 07</span></p>
+                    <p className="text-white font-medium">Account Name: <span className="font-bold">The Uni Gang (Pvt) Ltd</span></p>
+                    <p className="text-amber-500 text-2xl font-black mt-2">1234 5678 9101</p>
+                  </div>
+                </div>
+
+                <form id="payment-form" onSubmit={handlePaymentSubmit} className="space-y-5">
+                  <div>
+                    <label className="block text-sm font-bold text-slate-300 mb-2">Transfer Date & Time *</label>
+                    <input 
+                      type="datetime-local" 
+                      required
+                      value={paymentData.date}
+                      onChange={e => setPaymentData({...paymentData, date: e.target.value})}
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500 transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-slate-300 mb-2">Reference Number / Remarks</label>
+                    <input 
+                      type="text" 
+                      placeholder="e.g. TR-291039 or 'Premium'"
+                      value={paymentData.reference}
+                      onChange={e => setPaymentData({...paymentData, reference: e.target.value})}
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500 transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-slate-300 mb-2">WhatsApp Number *</label>
+                    <input 
+                      type="tel" 
+                      required
+                      placeholder="07X XXX XXXX"
+                      value={paymentData.whatsapp}
+                      onChange={e => setPaymentData({...paymentData, whatsapp: e.target.value})}
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500 transition-colors"
+                    />
+                    <p className="text-xs text-slate-500 mt-1">We will contact you if there's an issue with the slip.</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-slate-300 mb-2">Upload Transfer Slip (Image/PDF) *</label>
+                    <div 
+                      onClick={() => fileInputRef.current?.click()}
+                      className="w-full h-32 bg-slate-950 border-2 border-dashed border-slate-700 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-amber-500 hover:bg-slate-900 transition-colors"
+                    >
+                      {receiptFile ? (
+                        <>
+                          <FileImage size={32} className="text-amber-500 mb-2" />
+                          <p className="text-white font-bold text-sm">{receiptFile.name}</p>
+                        </>
+                      ) : (
+                        <>
+                          <UploadCloud size={32} className="text-slate-500 mb-2" />
+                          <p className="text-slate-400 font-medium text-sm">Click to browse file</p>
+                        </>
+                      )}
+                    </div>
+                    <input 
+                      type="file" 
+                      ref={fileInputRef} 
+                      className="hidden" 
+                      accept="image/*,application/pdf"
+                      required
+                      onChange={e => {
+                        if (e.target.files?.[0]) setReceiptFile(e.target.files[0]);
+                      }}
+                    />
+                  </div>
+                </form>
+              </div>
+
+              <div className="p-6 border-t border-slate-800 flex gap-4">
+                <button 
+                  onClick={() => setShowPaymentModal(false)}
+                  disabled={isSubmitting}
+                  className="flex-1 py-3 px-4 rounded-xl font-bold text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 transition-colors disabled:opacity-50"
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit"
+                  form="payment-form"
+                  disabled={isSubmitting}
+                  className="flex-1 py-3 px-4 rounded-xl font-bold text-white bg-gradient-to-r from-amber-500 to-orange-500 shadow-lg shadow-amber-500/20 hover:shadow-amber-500/40 disabled:opacity-50 transition-all flex justify-center items-center gap-2"
+                >
+                  {isSubmitting ? (
+                    <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  ) : (
+                    "Submit for Review"
+                  )}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
     </div>
   );
 }

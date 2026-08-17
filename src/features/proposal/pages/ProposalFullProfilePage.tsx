@@ -74,11 +74,16 @@ export default function ProposalFullProfilePage({
           <div className="absolute bottom-0 inset-x-0 p-8 pt-20">
             <h1 className="text-4xl md:text-5xl font-black text-white mb-2 drop-shadow-lg flex items-center gap-3">
               {profile.name}, {profile.age}
+              {profile.isVerified && <ShieldCheck size={24} className="text-blue-400" />}
+              {profile.isVerifiedProfessional && <Crown size={24} className="text-amber-400" />}
             </h1>
             <div className="flex flex-wrap gap-4 text-white/90">
+              {profile.education_category === 'University' ? (
+                <div className="flex items-center gap-1.5 font-medium"><GraduationCap size={18} className="text-rose-400" /> {profile.university}</div>
+              ) : (
+                <div className="flex items-center gap-1.5 font-medium"><Briefcase size={18} className="text-amber-400" /> {profile.workplace_or_institute}</div>
+              )}
               <div className="flex items-center gap-1.5 font-medium"><MapPin size={18} className="text-emerald-400" /> {profile.district}</div>
-              <div className="flex items-center gap-1.5 font-medium"><GraduationCap size={18} className="text-rose-400" /> {profile.university}</div>
-              <div className="flex items-center gap-1.5 font-medium"><Briefcase size={18} className="text-amber-400" /> {profile.professionSector || 'Private Sector'}</div>
             </div>
           </div>
         </div>
@@ -98,12 +103,10 @@ export default function ProposalFullProfilePage({
 
           {/* Highlights Grid */}
           <section>
-            <h2 className="text-lg font-black text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-              <Sparkles size={24} className="text-blue-500" /> Key Highlights
-            </h2>
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-4 uppercase tracking-wider">Basic Info</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
-                { label: 'Education', value: profile.university, icon: GraduationCap, color: 'text-indigo-500', bg: 'bg-indigo-50 dark:bg-indigo-500/10' },
+                { label: 'Education/Work', value: profile.education_category === 'University' ? profile.university : profile.workplace_or_institute, icon: profile.education_category === 'University' ? GraduationCap : Briefcase, color: 'text-indigo-500', bg: 'bg-indigo-50 dark:bg-indigo-500/10' },
                 { label: 'Profession', value: profile.profession || 'Software Engineer', icon: Briefcase, color: 'text-amber-500', bg: 'bg-amber-50 dark:bg-amber-500/10' },
                 { label: 'Religion', value: profile.religion || 'Buddhist', icon: Book, color: 'text-emerald-500', bg: 'bg-emerald-50 dark:bg-emerald-500/10' },
                 { label: 'Civil Status', value: profile.civilStatus || 'Never Married', icon: Crown, color: 'text-rose-500', bg: 'bg-rose-50 dark:bg-rose-500/10' },
