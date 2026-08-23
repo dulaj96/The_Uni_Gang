@@ -171,6 +171,7 @@ const AuthCard: React.FC<AuthCardProps> = ({ onAuthSuccess }) => {
     };
 
     const handleGoogleSuccess = (userData: any, token: string) => {
+        localStorage.getItem('userToken');
         localStorage.setItem('userToken', token);
         localStorage.setItem('userName', userData.name || 'Google User');
         localStorage.setItem('userEmail', userData.email || '');
@@ -184,11 +185,29 @@ const AuthCard: React.FC<AuthCardProps> = ({ onAuthSuccess }) => {
     };
 
     const handleGoogleFailure = (error?: any) => {
-        if (error && error.code === 'auth/unauthorized-domain') {
-            setMessage({ text: 'Google OAuth port restricted for this dev port. Please use Email & Password below!', type: 'error' });
+        console.error('Google Login Error details:', error);
+        const errCode = error?.code || '';
+        if (errCode === 'auth/popup-closed-by-user') {
+            setMessage({ text: 'Google Sign-In popup was closed. Please try again.', type: 'error' });
+        } else if (errCode === 'auth/unauthorized-domain') {
+            setMessage({ text: 'This local port (localhost) is not authorized in Firebase Console. Use Email Sign-In or Demo Login below.', type: 'error' });
         } else {
-            setMessage({ text: 'Google Login cancelled or port mismatch. Please sign in with Email & Password or Sign Up!', type: 'error' });
+            setMessage({ text: 'Google Login failed on local port. Use Email Sign-In or Quick Demo Login below.', type: 'error' });
         }
+    };
+
+    const handleQuickDemoLogin = () => {
+        const demoToken = 'dummy_token';
+        localStorage.setItem('userToken', demoToken);
+        localStorage.setItem('userName', 'Kasun Perera (Demo)');
+        localStorage.setItem('userEmail', 'kasun.demo@unigang.lk');
+        localStorage.setItem('userUniversity', 'University of Moratuwa');
+        localStorage.setItem('userIsVerifiedStudent', 'true');
+        localStorage.setItem('userId', '1');
+        dispatchAuthUpdate();
+        onAuthSuccess();
+        toast.success('Instant Demo Login Successful!');
+        celebrate();
     };
 
     return (
@@ -217,7 +236,7 @@ const AuthCard: React.FC<AuthCardProps> = ({ onAuthSuccess }) => {
                     <motion.div 
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className={`p-4 rounded-2xl mb-8 text-xs font-black uppercase tracking-widest text-center ${message.type === 'error' ? 'bg-red-50 text-red-600 border border-red-100' : 'bg-green-50 text-green-600 border border-green-100'}`}
+                        className={`p-4 rounded-2xl mb-8 text-xs font-black uppercase tracking-widest text-center ${message.type === 'error' ? 'bg-red-50 text-red-600 border border-red-100 dark:bg-red-950/40 dark:text-red-400 dark:border-red-900/50' : 'bg-green-50 text-green-600 border border-green-100'}`}
                     >
                         {message.text}
                     </motion.div>
@@ -270,21 +289,9 @@ const AuthCard: React.FC<AuthCardProps> = ({ onAuthSuccess }) => {
                         {loading ? 'Processing...' : (isRegistering ? 'Sign Up' : 'Sign In')}
                         {!loading && <LuArrowRight className="group-hover:translate-x-1 transition-transform" />}
                     </motion.button>
-
-                    <button
-                        type="button"
-                        onClick={() => {
-                            setAuthEmail('student@unigang.lk');
-                            setAuthPassword('123456');
-                            if (isRegistering) setAuthName('Demo Student');
-                        }}
-                        className="w-full py-2 text-[10px] font-bold text-slate-400 hover:text-blue-500 transition-colors uppercase tracking-wider text-center"
-                    >
-                        ⚡ Auto-fill Test Credentials
-                    </button>
                 </form>
 
-                <div className="relative my-10">
+                <div className="relative my-8">
                     <div className="absolute inset-0 flex items-center">
                         <div className="w-full border-t border-slate-100 dark:border-slate-800"></div>
                     </div>
@@ -293,12 +300,21 @@ const AuthCard: React.FC<AuthCardProps> = ({ onAuthSuccess }) => {
                     </div>
                 </div>
 
-                <div className="flex justify-center">
+                <div className="space-y-3">
                     <GoogleSignInButton
                         onSuccess={handleGoogleSuccess}
                         onFailure={handleGoogleFailure}
                         setLoading={setLoading}
                     />
+
+                    {/* Quick Demo Login Button for instant local testing */}
+                    <button
+                        onClick={handleQuickDemoLogin}
+                        type="button"
+                        className="w-full bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 font-black py-3 rounded-2xl transition-all flex items-center justify-center gap-2 uppercase tracking-widest text-[10px]"
+                    >
+                        <span>⚡ Instant Demo Test Login (1-Click)</span>
+                    </button>
                 </div>
             </div>
 
