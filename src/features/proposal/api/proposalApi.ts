@@ -123,7 +123,7 @@ export const proposalApi = {
 let socket: Socket | null = null;
 
 export const proposalSocketService = {
-  connect: (userId: string) => {
+  connect: (_userId: string) => {
     if (!socket) {
       const token = localStorage.getItem('userToken') || '';
       socket = io(import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001', {

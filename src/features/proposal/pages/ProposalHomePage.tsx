@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Compass, Send, Heart, Eye, CheckCircle2, Crown, ArrowRight, ShieldCheck, Lock, MessageCircle, User, Settings, Home, GraduationCap } from 'lucide-react';
+import { Compass, Send, Heart, Eye, CheckCircle2, Crown, ArrowRight, ShieldCheck, Lock, MessageCircle, Settings, Home, GraduationCap } from 'lucide-react';
 import { cx, PrimaryButton, Card } from '../components/ui/ProposalPrimitives';
-import { ACTIVITY_FEED } from '../data/mockProposalData';
 import { proposalApi } from '../api/proposalApi';
 import { ProfileGamification } from '../components/profile/ProfileGamification';
 import { PremiumTrialCountdown } from '../components/premium/PremiumTrialCountdown';

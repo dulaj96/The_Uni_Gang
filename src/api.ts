@@ -869,5 +869,16 @@ export const api = {
     });
     if (!response.ok) throw new Error('Failed to submit reply');
     return response.json();
+  },
+
+  verifyUser: async (userId: string, token: string): Promise<any> => {
+    const response = await fetch(`${BASE_URL}/api/admin/users/${userId}/verify-student`, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    if (!response.ok) throw new Error('Failed to verify student');
+    return response.json();
   }
 };

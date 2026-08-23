@@ -1,8 +1,7 @@
 import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, Crown, CheckCircle2, Star, Sparkles, Heart, ShieldCheck, Zap, Video, Undo2, Lock, X, UploadCloud, FileImage, CreditCard } from 'lucide-react';
+import { ChevronLeft, Crown, CheckCircle2, Star, Sparkles, Heart, Video, Lock, X, UploadCloud, FileImage, CreditCard } from 'lucide-react';
 import { GhostButton } from '../components/ui/ProposalPrimitives';
-import { proposalApi } from '../api/proposalApi';
 
 export default function ProposalPremiumPage({ setPage }: { setPage: (p: string) => void }) {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
@@ -73,11 +72,6 @@ export default function ProposalPremiumPage({ setPage }: { setPage: (p: string) 
     "10 Messages per match",
     "AI Phone Number Masking (Security)"
   ];
-
-  // Dummy imports for icons used in features list
-  function Eye(props: any) { return <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>; }
-  function Filter(props: any) { return <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>; }
-  function MessageCircle(props: any) { return <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>; }
 
   return (
     <div className="w-full min-h-[calc(100vh-80px)] bg-slate-950 pb-24 relative overflow-hidden font-sans">

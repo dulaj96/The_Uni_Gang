@@ -9,7 +9,6 @@ import PremiumPageLoader from '../../components/ui/PremiumPageLoader';
 import toast from 'react-hot-toast';
 import confetti from 'canvas-confetti';
 import ArticleCard from './ArticleCard';
-import AdBanner from '../../components/advertise/AdBanner';
 import DOMPurify from 'dompurify';
 import AdSidebarWidget from '../../components/advertise/AdSidebarWidget';
 

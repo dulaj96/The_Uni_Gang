@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Heart, Sparkles, MapPin, Briefcase, GraduationCap } from 'lucide-react';
+import { Heart, Sparkles, MapPin, Briefcase } from 'lucide-react';
 import { proposalApi } from '../api/proposalApi';
 import toast from 'react-hot-toast';
 import VerifiedBadge from '../../../components/ui/VerifiedBadge';

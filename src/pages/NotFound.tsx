@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { LuHome, LuSearch } from 'react-icons/lu';
+import { LuSearch } from 'react-icons/lu';
+import { FiHome } from 'react-icons/fi';
 import SEO from '../components/SEO';
 
 const NotFound = () => {
@@ -40,7 +41,7 @@ const NotFound = () => {
                 to="/" 
                 className="w-full sm:w-auto bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-8 py-4 rounded-full font-bold text-sm uppercase tracking-widest shadow-xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2 border border-transparent"
               >
-                <LuHome className="text-lg" /> Back to Home
+                <FiHome className="text-lg" /> Back to Home
               </Link>
               <Link 
                 to="/annex-list" 

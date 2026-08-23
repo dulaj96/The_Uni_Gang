@@ -17,6 +17,11 @@ export default function ProposalDiscoverPage({ setPage, openProfile }: { setPage
   const [isPremium, setIsPremium] = useState(false);
   const [matchData, setMatchData] = useState<any>(null);
   const [showVerificationModal, setShowVerificationModal] = useState(false);
+  const [filters, setFilters] = useState<{ university: string }>({ university: 'Any University' });
+
+  const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setFilters(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
 
   useEffect(() => {
     const init = async () => {

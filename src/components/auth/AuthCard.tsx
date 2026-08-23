@@ -183,8 +183,12 @@ const AuthCard: React.FC<AuthCardProps> = ({ onAuthSuccess }) => {
         celebrate();
     };
 
-    const handleGoogleFailure = () => {
-        setMessage({ text: 'Google Login Failed or Cancelled. Please Try Again.', type: 'error' });
+    const handleGoogleFailure = (error?: any) => {
+        if (error && error.code === 'auth/unauthorized-domain') {
+            setMessage({ text: 'Google OAuth port restricted for this dev port. Please use Email & Password below!', type: 'error' });
+        } else {
+            setMessage({ text: 'Google Login cancelled or port mismatch. Please sign in with Email & Password or Sign Up!', type: 'error' });
+        }
     };
 
     return (
@@ -266,6 +270,18 @@ const AuthCard: React.FC<AuthCardProps> = ({ onAuthSuccess }) => {
                         {loading ? 'Processing...' : (isRegistering ? 'Sign Up' : 'Sign In')}
                         {!loading && <LuArrowRight className="group-hover:translate-x-1 transition-transform" />}
                     </motion.button>
+
+                    <button
+                        type="button"
+                        onClick={() => {
+                            setAuthEmail('student@unigang.lk');
+                            setAuthPassword('123456');
+                            if (isRegistering) setAuthName('Demo Student');
+                        }}
+                        className="w-full py-2 text-[10px] font-bold text-slate-400 hover:text-blue-500 transition-colors uppercase tracking-wider text-center"
+                    >
+                        ⚡ Auto-fill Test Credentials
+                    </button>
                 </form>
 
                 <div className="relative my-10">

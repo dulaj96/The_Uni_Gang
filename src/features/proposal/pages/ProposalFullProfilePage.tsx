@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, Heart, MessageCircle, MapPin, Briefcase, GraduationCap, ShieldCheck, Lock, Check, User2, Book, Crown, Coffee, Sparkles } from 'lucide-react';
+import { ChevronLeft, Heart, MessageCircle, MapPin, Briefcase, GraduationCap, ShieldCheck, Lock, Check, User2, Book, Crown, Coffee } from 'lucide-react';
 import { cx, PrimaryButton } from '../components/ui/ProposalPrimitives';
 
 export default function ProposalFullProfilePage({ 
