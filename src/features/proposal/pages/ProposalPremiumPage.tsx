@@ -30,7 +30,7 @@ export default function ProposalPremiumPage({ setPage }: { setPage: (p: string) 
       formData.append('receipt', receiptFile);
 
       const token = localStorage.getItem('userToken');
-      const res = await fetch('/api/proposals/payment', {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}/api/proposals/payment`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
