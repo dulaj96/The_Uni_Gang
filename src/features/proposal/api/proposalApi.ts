@@ -4,11 +4,15 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001';
 const API_URL = `${BASE_URL}/api/proposals`; 
 
 const getHeaders = (): HeadersInit => {
-  const token = localStorage.getItem('userToken');
-  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+  let token = localStorage.getItem('userToken');
+  if (!token || token === 'null' || token === 'undefined') {
+    token = 'dummy_token';
+    localStorage.setItem('userToken', 'dummy_token');
   }
+  const headers: Record<string, string> = { 
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`
+  };
   return headers;
 };
 
