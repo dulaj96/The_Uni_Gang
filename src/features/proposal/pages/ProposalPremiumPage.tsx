@@ -55,22 +55,24 @@ export default function ProposalPremiumPage({ setPage }: { setPage: (p: string) 
   };
 
   const premiumFeatures = [
-    "Unlimited profile viewing & proposals",
-    "See exactly who liked your profile",
-    "Advanced filters (Profession, Diet, Hobbies)",
-    "Priority profile placement (5x more views)",
+    "Unlimited profile viewing & proposals (No daily limits)",
+    "Instant 'Who Liked You' unlocking & match now",
+    "Sri Lankan Advanced Filters (Hometown, Past Affairs Openness, MSc/PhD Goals)",
+    "Priority profile placement (5x more views in Discover stack)",
     "Read receipts & Undo accidental swipes",
-    "Exclusive Grid / Gallery View",
-    "Ad-free experience"
+    "Exclusive 3x3 Grid / Gallery View",
+    "Ad-free premium experience"
   ];
 
   const freeFeatures = [
-    "Create a verified profile",
-    "View 15 profiles per day",
-    "Send 15 proposals per day",
-    "Basic district & age filtering",
-    "10 Messages per match",
-    "AI Phone Number Masking (Security)"
+    "Create verified student / graduate profile",
+    "Fill Sri Lankan Story & Ideal Partner Prompts",
+    "View 6 profiles per day",
+    "Send 6 proposals per day",
+    "Basic District, Age & Gender filtering",
+    "6 Messages per matched connection",
+    "Automated AI Contact Number & Social Masking (Security)",
+    "Default Photo Blurring & Screenshot Protection"
   ];
 
   return (

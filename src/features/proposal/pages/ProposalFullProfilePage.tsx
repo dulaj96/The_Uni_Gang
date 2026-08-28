@@ -91,14 +91,22 @@ export default function ProposalFullProfilePage({
         {/* Detailed Info Sections */}
         <div className="p-8 max-w-4xl mx-auto space-y-12">
           
-          {/* About Me */}
-          <section>
+          {/* About Me & Prompts */}
+          <section className="space-y-6">
             <h2 className="text-lg font-black text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-              <User2 size={24} className="text-rose-500" /> About Me
+              <User2 size={24} className="text-rose-500" /> About Me & Story
             </h2>
+            
             <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm text-slate-700 dark:text-slate-300 leading-relaxed">
-              {profile.bio || `I'm a final year student at ${profile.university} studying ${profile.faculty}. Looking for someone who shares my passion for tech and traveling. Let's see if we match!`}
+              {profile.prompt_about_me || profile.bio || `I'm a graduate at ${profile.university || 'university'} studying ${profile.faculty || 'my degree'}. Looking for someone grounded and sincere.`}
             </div>
+
+            {profile.prompt_ideal_partner && (
+              <div className="bg-gradient-to-br from-rose-500/10 to-fuchsia-500/10 rounded-3xl p-6 border border-rose-500/20 shadow-sm">
+                <h4 className="text-xs font-black text-rose-500 uppercase tracking-widest mb-2 flex items-center gap-2">🥰 මං හොයන්නේ මෙහෙම කෙනෙක් (What I Look For)</h4>
+                <p className="text-sm font-medium text-slate-800 dark:text-slate-200 leading-relaxed">{profile.prompt_ideal_partner}</p>
+              </div>
+            )}
           </section>
 
           {/* Highlights Grid */}

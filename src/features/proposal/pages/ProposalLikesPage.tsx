@@ -61,16 +61,19 @@ const ProposalLikesPage: React.FC<ProposalLikesPageProps> = ({ setPage }) => {
 
   if (!isPremium) {
     return (
-      <div className="flex-1 flex items-center justify-center p-4 h-full relative">
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-900/50 to-slate-900 z-10 flex flex-col items-center justify-center p-6 text-center backdrop-blur-md">
+      <div className="w-full min-h-[60vh] flex items-center justify-center p-6 my-8">
+        <div className="max-w-xl w-full bg-slate-900/90 border border-amber-500/20 rounded-3xl p-8 md:p-12 text-center shadow-2xl backdrop-blur-xl flex flex-col items-center justify-center relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
           <div className="w-20 h-20 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center mb-6 shadow-[0_0_50px_rgba(245,158,11,0.5)]">
             <Heart size={40} className="text-white drop-shadow-md" fill="white" />
           </div>
           <h2 className="text-3xl font-black text-white mb-4">See Who Liked You</h2>
-          <p className="text-slate-300 mb-8 max-w-md">Upgrade to Premium to instantly see everyone who has swiped right on your profile. Match with them instantly!</p>
+          <p className="text-slate-300 mb-8 max-w-md text-sm leading-relaxed">
+            Upgrade to Premium to instantly see everyone who has swiped right on your profile. Match with them instantly!
+          </p>
           <button 
             onClick={() => setPage('premium')}
-            className="px-8 py-4 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-full font-bold text-lg shadow-xl hover:scale-105 active:scale-95 transition-all flex items-center gap-2"
+            className="px-8 py-4 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-full font-bold text-base shadow-xl hover:scale-105 active:scale-95 transition-all flex items-center gap-2"
           >
             <Sparkles size={20} />
             Upgrade to Premium

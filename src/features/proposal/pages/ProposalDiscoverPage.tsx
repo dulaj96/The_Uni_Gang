@@ -337,19 +337,42 @@ export default function ProposalDiscoverPage({ setPage, openProfile }: { setPage
                   </div>
 
                   <div>
-                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 block">District</label>
+                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 block">Current Living District</label>
                     <select className="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-xl px-4 py-3 text-sm text-slate-700 dark:text-slate-200 outline-none focus:ring-2 ring-rose-500/50">
                       <option>Any District</option>
                       <option>Colombo</option>
                       <option>Gampaha</option>
+                      <option>Kandy</option>
+                      <option>Galle</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 block">Hometown District (ගම)</label>
+                    <select className="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-xl px-4 py-3 text-sm text-slate-700 dark:text-slate-200 outline-none focus:ring-2 ring-rose-500/50">
+                      <option>Any Hometown</option>
+                      <option>Kandy</option>
+                      <option>Kurunegala</option>
+                      <option>Dambulla / Matale</option>
+                      <option>Anuradhapura</option>
+                      <option>Galle</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 block">Past Affairs Openness</label>
+                    <select className="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-xl px-4 py-3 text-sm text-slate-700 dark:text-slate-200 outline-none focus:ring-2 ring-rose-500/50">
+                      <option>Any</option>
+                      <option>Open to partners with past affairs</option>
+                      <option>Never had affairs before</option>
                     </select>
                   </div>
                   
                   <div className="pt-4 border-t border-slate-200 dark:border-slate-800">
                     <div className="p-4 rounded-xl bg-gradient-to-br from-amber-500/10 to-orange-500/10 border border-amber-500/20">
-                      <h4 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-2"><Crown size={16} className="text-amber-500" /> Premium Filters</h4>
-                      <p className="text-xs text-slate-600 dark:text-slate-400 mb-3">Filter by Profession, Caste, and specific Degrees.</p>
-                      <button onClick={() => setPage('premium')} className="text-xs font-bold text-amber-600 dark:text-amber-400 hover:underline">Upgrade Now &rarr;</button>
+                      <h4 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-2"><Crown size={16} className="text-amber-500" /> Premium Filters Active</h4>
+                      <p className="text-xs text-slate-600 dark:text-slate-400 mb-3">Filtering by Hometown, Past Relationship Openness, Profession, MSc/PhD Goals & Lifestyle.</p>
+                      <button onClick={() => setPage('premium')} className="text-xs font-bold text-amber-600 dark:text-amber-400 hover:underline">Manage Subscription &rarr;</button>
                     </div>
                   </div>
                 </div>

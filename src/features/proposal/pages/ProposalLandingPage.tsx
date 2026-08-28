@@ -300,10 +300,10 @@ export default function ProposalLandingPage({
               <ul className="space-y-5 flex-1">
                 {[
                   "Create a verified profile",
-                  "View 15 profiles per day",
-                  "Send 15 proposals per day",
+                  "View 6 profiles per day",
+                  "Send 6 proposals per day",
                   "Basic district & age filtering",
-                  "10 Messages per match",
+                  "6 Messages per match",
                   "AI Phone Number Masking (Security)",
                 ].map((f, i) => (
                   <li key={i} className="flex items-start gap-4">
