@@ -358,7 +358,7 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
   };
 
   return (
-    <div className="bg-white/70 dark:bg-slate-900/70 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_20px_60px_rgba(0,0,0,0.05)] border border-white/50 dark:border-slate-700/50 overflow-hidden w-full max-w-4xl mx-auto my-8 font-sans relative z-10">
+    <div className="bg-white/70 dark:bg-slate-900/70 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_20px_60px_rgba(0,0,0,0.05)] border border-white/50 dark:border-slate-700/50 overflow-hidden w-full max-w-4xl mx-auto mt-2 mb-8 font-sans relative z-10">
 
       {/* Header */}
       <div className="px-8 py-8 md:px-12 md:py-10 border-b border-slate-200/50 dark:border-slate-800/50 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 dark:from-slate-800/50 dark:to-slate-900/50">
