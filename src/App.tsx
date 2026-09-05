@@ -130,7 +130,7 @@ function App() {
           <Route path="/services" element={<SubLayout><ServicesPage /></SubLayout>} />
 
           {/* Uni Porondam Proposal Hub Route */}
-          <Route path="/proposals" element={<SubLayout><ProposalHubEntry /></SubLayout>} />
+          <Route path="/proposals" element={<ProposalHubEntry />} />
 
           {/* Admin Moderation Route */}
           <Route path="/admin" element={<SubLayout><AdminDashboard /></SubLayout>} />
