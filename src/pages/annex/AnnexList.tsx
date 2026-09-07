@@ -550,7 +550,8 @@ const AnnexList = () => {
                                                                         </span>
                                                                     </div>
                                                                 </div>
-                                                                                                                {/* Amenities & SL Utilities Chips */}
+                                                            </div>
+                                                            {/* Amenities & SL Utilities Chips */}
                                                             <div className="flex flex-wrap items-center gap-2 py-3 border-y border-slate-200/50 dark:border-slate-800/50 mt-auto">
                                                                 <span className="text-[10px] font-bold text-slate-600 dark:text-slate-300 flex items-center gap-1">
                                                                     <LuBedDouble className="text-sm text-slate-400" /> {item.beds} Beds
