@@ -546,13 +546,25 @@ const AnnexList = () => {
                                                                         </span>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-
-                                                            {/* Amenities & SL Utilities Chips */}
+                                                                                                                {/* Amenities & SL Utilities Chips */}
                                                             <div className="flex flex-wrap items-center gap-2 py-3 border-y border-slate-200/50 dark:border-slate-800/50 mt-auto">
                                                                 <span className="text-[10px] font-bold text-slate-600 dark:text-slate-300 flex items-center gap-1">
                                                                     <LuBedDouble className="text-sm text-slate-400" /> {item.beds} Beds
                                                                 </span>
+                                                                {item.landlordPresence === 'INDEPENDENT' || item.landlord_presence === 'INDEPENDENT' ? (
+                                                                    <span className="text-[9px] font-black bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 px-2 py-0.5 rounded-md">
+                                                                        🏠 Independent
+                                                                    </span>
+                                                                ) : item.landlordPresence === 'ON_SITE' || item.landlord_presence === 'ON_SITE' ? (
+                                                                    <span className="text-[9px] font-black bg-amber-500/10 text-amber-700 dark:text-amber-400 px-2 py-0.5 rounded-md">
+                                                                        👨‍👩‍👧 On-Site Landlord
+                                                                    </span>
+                                                                ) : null}
+                                                                {item.busRoute || item.bus_route ? (
+                                                                    <span className="text-[9px] font-black bg-blue-500/10 text-blue-700 dark:text-blue-400 px-2 py-0.5 rounded-md line-clamp-1 max-w-[180px]">
+                                                                        🚌 {item.busRoute || item.bus_route}
+                                                                    </span>
+                                                                ) : null}
                                                                 {item.has_power_backup || item.hasPowerBackup ? (
                                                                     <span className="text-[9px] font-black bg-amber-500/10 text-amber-600 dark:text-amber-400 px-2 py-0.5 rounded-md">
                                                                         ⚡ Generator/UPS
@@ -567,7 +579,7 @@ const AnnexList = () => {
                                                                     <span className="text-[9px] font-black bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 px-2 py-0.5 rounded-md">
                                                                         🍳 Cooking Allowed
                                                                     </span>
-                                                                ) : null}
+                                                                ) : null}                  ) : null}
                                                             </div>
 
                                                             {/* Action Button */}

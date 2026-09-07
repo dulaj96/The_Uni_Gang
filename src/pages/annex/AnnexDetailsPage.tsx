@@ -81,6 +81,10 @@ const AnnexDetailsPage = () => {
   const [loading, setLoading] = useState(true);
   const [annex, setAnnex] = useState<any | null>(null);
 
+  // Image swap & roommate calculator states
+  const [activeImageIdx, setActiveImageIdx] = useState(0);
+  const [splitRoommates, setSplitRoommates] = useState(2);
+
   // Review posting states
   const [overall, setOverall] = useState(5);
   const [cleanliness, setCleanliness] = useState(5);
@@ -239,9 +243,9 @@ const AnnexDetailsPage = () => {
               <section className="w-full md:w-[45%] p-6 md:p-10 flex flex-col gap-6 bg-white/30 dark:bg-slate-950/30 overflow-y-auto custom-scrollbar md:overflow-hidden">
                 <div className="relative group rounded-[2rem] overflow-hidden aspect-[4/5] shadow-xl bg-slate-100">
                   <img
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"
                     src={annex.images && annex.images.length > 0 
-                      ? `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}${annex.images[0].imageUrl}` 
+                      ? `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}${annex.images[Math.min(activeImageIdx, annex.images.length - 1)].imageUrl}` 
                       : "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=800"}
                     alt={annex.title}
                   />
@@ -253,12 +257,18 @@ const AnnexDetailsPage = () => {
                   </div>
                 </div>
 
-                {/* Sub Images */}
+                {/* Sub Images / Thumbnails */}
                 {annex.images && annex.images.length > 1 && (
-                  <div className="grid grid-cols-3 gap-4">
-                    {annex.images.slice(1, 4).map((img: any, idx: number) => (
-                      <div key={idx} className="aspect-square rounded-2xl overflow-hidden cursor-pointer hover:ring-2 ring-blue-600 transition-all shadow-md">
-                        <img className="w-full h-full object-cover" src={`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}${img.imageUrl}`} alt="sub area" />
+                  <div className="grid grid-cols-4 gap-3">
+                    {annex.images.map((img: any, idx: number) => (
+                      <div
+                        key={idx}
+                        onClick={() => setActiveImageIdx(idx)}
+                        className={`aspect-square rounded-2xl overflow-hidden cursor-pointer transition-all shadow-md border-2 ${
+                          activeImageIdx === idx ? 'border-blue-600 ring-2 ring-blue-500/30 scale-105' : 'border-transparent opacity-70 hover:opacity-100'
+                        }`}
+                      >
+                        <img className="w-full h-full object-cover" src={`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}${img.imageUrl}`} alt={`thumbnail ${idx + 1}`} />
                       </div>
                     ))}
                   </div>
@@ -296,6 +306,53 @@ const AnnexDetailsPage = () => {
                     <p className="text-sm font-bold text-slate-500 dark:text-slate-400 mt-1">
                       {annex.beds} Beds • {annex.bath || "Shared Bath"}
                     </p>
+                  </div>
+
+                  {/* Interactive Rent & Bill Splitter Widget (Roommate Calculator) */}
+                  <div className="p-5 rounded-3xl bg-blue-50/60 dark:bg-slate-800/60 border border-blue-200/60 dark:border-slate-700 shadow-sm space-y-4">
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <h3 className="text-xs font-black uppercase tracking-widest text-blue-800 dark:text-blue-300">
+                          🧮 Rent & Bill Splitter Calculator
+                        </h3>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+                          Estimate per-student cost when sharing this annex
+                        </p>
+                      </div>
+                      <span className="text-xs font-bold px-3 py-1 bg-blue-600 text-white rounded-full">
+                        {splitRoommates} Roommates
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-4">
+                      <span className="text-xs font-bold text-slate-600 dark:text-slate-300">1</span>
+                      <input
+                        type="range"
+                        min="1"
+                        max="6"
+                        value={splitRoommates}
+                        onChange={(e) => setSplitRoommates(parseInt(e.target.value))}
+                        className="flex-grow h-2 bg-blue-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                      />
+                      <span className="text-xs font-bold text-slate-600 dark:text-slate-300">6</span>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3 pt-2 border-t border-blue-200/40 dark:border-slate-700/60">
+                      <div className="p-3 bg-white/70 dark:bg-slate-900/60 rounded-2xl">
+                        <span className="text-[10px] font-bold uppercase text-slate-400 block mb-0.5">Rent Share</span>
+                        <span className="text-lg font-black text-blue-800 dark:text-blue-400">
+                          Rs. {Math.round(parseFloat(annex.price || 0) / splitRoommates).toLocaleString()}
+                        </span>
+                        <span className="text-[10px] text-slate-500 block">/student/mo</span>
+                      </div>
+                      <div className="p-3 bg-white/70 dark:bg-slate-900/60 rounded-2xl">
+                        <span className="text-[10px] font-bold uppercase text-slate-400 block mb-0.5">Total Share (Est. CEB/Water)</span>
+                        <span className="text-lg font-black text-emerald-600 dark:text-emerald-400">
+                          Rs. {(Math.round(parseFloat(annex.price || 0) / splitRoommates) + 2500).toLocaleString()}
+                        </span>
+                        <span className="text-[10px] text-slate-500 block">incl. ~Rs.2,500 bills</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
@@ -428,6 +485,24 @@ const AnnexDetailsPage = () => {
                 <div className="space-y-4 border-t border-slate-200/50 dark:border-slate-800/50 pt-6">
                   <h2 className="text-xs font-black uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500">Sri Lanka Student Utilities</h2>
                   <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
+                    <div className={`p-3.5 rounded-2xl flex items-center gap-2.5 border text-xs font-bold ${annex.landlordPresence === 'ON_SITE' ? 'bg-amber-500/10 border-amber-500/20 text-amber-700 dark:text-amber-400' : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-700 dark:text-emerald-400'}`}>
+                      <span className="text-base">{annex.landlordPresence === 'ON_SITE' ? '👨‍👩‍👧' : '🏠'}</span> {annex.landlordPresence === 'ON_SITE' ? 'Landlord Lives On-Site' : 'Independent (No Landlord on-site)'}
+                    </div>
+                    {annex.curfewTime && (
+                      <div className="p-3.5 rounded-2xl flex items-center gap-2.5 border text-xs font-bold bg-indigo-500/10 border-indigo-500/20 text-indigo-700 dark:text-indigo-400">
+                        <span className="text-base">🕒</span> Gate Rules: {annex.curfewTime}
+                      </div>
+                    )}
+                    {annex.visitorPolicy && (
+                      <div className="p-3.5 rounded-2xl flex items-center gap-2.5 border text-xs font-bold bg-purple-500/10 border-purple-500/20 text-purple-700 dark:text-purple-400">
+                        <span className="text-base">👥</span> Visitors: {annex.visitorPolicy}
+                      </div>
+                    )}
+                    {annex.busRoute && (
+                      <div className="p-3.5 rounded-2xl flex items-center gap-2.5 border text-xs font-bold bg-blue-500/10 border-blue-500/20 text-blue-700 dark:text-blue-400 col-span-2 lg:col-span-3">
+                        <span className="text-base">🚌</span> Transit: {annex.busRoute}
+                      </div>
+                    )}
                     <div className={`p-3.5 rounded-2xl flex items-center gap-2.5 border text-xs font-bold ${annex.walkTimeMins ? 'bg-blue-500/10 border-blue-500/20 text-blue-700 dark:text-blue-400' : 'bg-slate-100 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 text-slate-500'}`}>
                       <span className="text-base">🚶</span> {annex.walkTimeMins || 5} mins walk to gate
                     </div>
