@@ -94,6 +94,10 @@ const PostAdPage = () => {
       formData.append('universityId', adData.universityId);
       formData.append('securityDeposit', adData.securityDeposit || '');
       formData.append('listingType', adData.listingType || 'LANDLORD_RENT');
+      if (adData.landlordPresence) formData.append('landlordPresence', adData.landlordPresence);
+      if (adData.curfewTime) formData.append('curfewTime', adData.curfewTime);
+      if (adData.visitorPolicy) formData.append('visitorPolicy', adData.visitorPolicy);
+      if (adData.busRoute) formData.append('busRoute', adData.busRoute);
       if (adData.customInstitution) {
         formData.append('customInstitution', adData.customInstitution);
       }

@@ -162,6 +162,10 @@ const formSchema = z.object({
   universityId: z.string().min(1, 'Selecting a university or institution is required'),
   customInstitution: z.string().optional(),
   listingType: z.enum(['LANDLORD_RENT', 'ROOMMATE_WANTED']),
+  landlordPresence: z.enum(['INDEPENDENT', 'ON_SITE']).default('INDEPENDENT'),
+  curfewTime: z.string().optional(),
+  visitorPolicy: z.string().optional(),
+  busRoute: z.string().optional(),
   beds: z.string().min(1, 'Beds capacity is required'),
   bath: z.string().min(1, 'Bathroom type is required'),
   houseRules: z.string().min(1, 'House rules are required (e.g. Girls Only)'),
@@ -270,7 +274,11 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
       address: initialData?.address ?? '',
       universityId: initialData?.universityId ? String(initialData.universityId) : '',
       customInstitution: '',
-      listingType: initialData?.listing_type ?? 'LANDLORD_RENT',
+      listingType: initialData?.listing_type ?? initialData?.listingType ?? 'LANDLORD_RENT',
+      landlordPresence: initialData?.landlordPresence ?? 'INDEPENDENT',
+      curfewTime: initialData?.curfewTime ?? '24/7 Access',
+      visitorPolicy: initialData?.visitorPolicy ?? 'Visitors Allowed',
+      busRoute: initialData?.busRoute ?? '',
       beds: initialData?.beds ? String(initialData.beds) : '1',
       bath: initialData?.bath ?? 'Private Bath',
       houseRules: initialData?.features?.map((f: any) => f.featureName).join(', ') ?? '',
@@ -332,16 +340,60 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
 
   const onPrev = () => setCurrentStep(prev => Math.max(prev - 1, 0));
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const filesArray = Array.from(e.target.files);
-      setImages(prev => {
-        const combined = [...prev, ...filesArray];
-        if (combined.length > 4) {
-          toast.error('Maximum 4 images allowed (1 cover + up to 3 gallery photos)');
+  const compressImage = (file: File): Promise<File> => {
+    return new Promise((resolve) => {
+      if (!file.type.startsWith('image/')) return resolve(file);
+      const img = new Image();
+      img.src = URL.createObjectURL(file);
+      img.onload = () => {
+        URL.revokeObjectURL(img.src);
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+        const MAX_WIDTH = 1200;
+        if (width > MAX_WIDTH) {
+          height = Math.round((height * MAX_WIDTH) / width);
+          width = MAX_WIDTH;
         }
-        return combined.slice(0, 4);
-      });
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return resolve(file);
+        ctx.drawImage(img, 0, 0, width, height);
+        canvas.toBlob(
+          (blob) => {
+            if (!blob) return resolve(file);
+            const compressedFile = new File([blob], file.name.replace(/\.[^/.]+$/, '.jpg'), {
+              type: 'image/jpeg',
+              lastModified: Date.now(),
+            });
+            resolve(compressedFile);
+          },
+          'image/jpeg',
+          0.82
+        );
+      };
+      img.onerror = () => resolve(file);
+    });
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const rawFiles = Array.from(e.target.files);
+      const toastId = toast.loading('Optimizing photos for fast upload...');
+      try {
+        const compressedFiles = await Promise.all(rawFiles.map(f => compressImage(f)));
+        toast.success('Photos optimized!', { id: toastId });
+        setImages(prev => {
+          const combined = [...prev, ...compressedFiles];
+          if (combined.length > 4) {
+            toast.error('Maximum 4 images allowed (1 cover + up to 3 gallery photos)');
+          }
+          return combined.slice(0, 4);
+        });
+      } catch (err) {
+        toast.dismiss(toastId);
+      }
     }
   };
 
@@ -462,6 +514,44 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
                       <option value="Shared Bath">Shared Bath</option>
                     </select>
                   </div>
+                </div>
+
+                {/* Landlord Presence Selector */}
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Landlord Presence</label>
+                  <div className="flex p-1 bg-slate-100 dark:bg-slate-800/80 rounded-2xl w-full">
+                    {(['INDEPENDENT', 'ON_SITE'] as const).map((presence) => (
+                      <button
+                        key={presence}
+                        type="button"
+                        onClick={() => setValue('landlordPresence', presence)}
+                        className={`flex-1 px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-300 border-none cursor-pointer ${
+                          watch('landlordPresence') === presence
+                            ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
+                            : 'text-slate-500 dark:text-slate-400 bg-transparent hover:text-slate-800 dark:hover:text-slate-200'
+                        }`}
+                      >
+                        {presence === 'INDEPENDENT' ? '🏠 Independent (No Landlord on-site)' : '👨‍👩‍👧 Landlord Lives in Same Premise'}
+                      </button>
+                    ))}
+                  </div>
+                  <input type="hidden" {...register('landlordPresence')} />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Night Curfew / Gate Rules</label>
+                    <input {...register('curfewTime')} placeholder="e.g. 24/7 Access or 10:00 PM Gate Lock" className="w-full px-5 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 font-medium outline-none transition-all dark:text-white" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Visitor Policy</label>
+                    <input {...register('visitorPolicy')} placeholder="e.g. Parents & Batchmates Allowed" className="w-full px-5 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 font-medium outline-none transition-all dark:text-white" />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">🚌 Nearest Bus Route & Transit Proximity</label>
+                  <input {...register('busRoute')} placeholder="e.g. 100m to 138 High Level Bus Route / 5 mins to Railway Station" className="w-full px-5 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 font-medium outline-none transition-all dark:text-white" />
                 </div>
 
                 <div>
@@ -619,17 +709,22 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
                         exit={{ opacity: 0, height: 0 }}
                         className="overflow-hidden"
                       >
-                        <div className="p-4 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800/40 rounded-2xl">
+                        <div className="p-4 bg-amber-50/80 dark:bg-amber-950/40 border-2 border-amber-300 dark:border-amber-700/60 rounded-2xl shadow-sm">
                           <div className="flex items-start gap-3 mb-3">
-                            <LuAlertCircle className="text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" size={16} />
-                            <p className="text-xs text-amber-700 dark:text-amber-400 font-semibold leading-relaxed">
-                              Your institution isn't listed? No problem! Enter its name below and pinpoint your property on the map. Students searching nearby will still find your listing.
-                            </p>
+                            <LuAlertCircle className="text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" size={20} />
+                            <div>
+                              <h4 className="text-xs font-black uppercase tracking-wider text-amber-800 dark:text-amber-300 mb-1">
+                                🛡️ Instant Listing Guarantee for Custom Institutes
+                              </h4>
+                              <p className="text-xs text-amber-700 dark:text-amber-400 font-semibold leading-relaxed">
+                                ඔබගේ Campus / Institute නම Dropdown එකෙහි නොමැතිද? ගැටලුවක් නැත! පහතින් නම සටහන් කර ඔබගේ ස්ථානය Map එකෙහි ලකුණු කරන්න. අවට සිටින සිසුන්ට ඔබගේ දැන්වීම සාර්ථකව දර්ශනය වේ.
+                              </p>
+                            </div>
                           </div>
                           <input
                             {...register('customInstitution')}
-                            placeholder="e.g. SLIIT, NSBM, Aquinas, Lanka Nippon..."
-                            className="w-full px-4 py-3 rounded-xl bg-white dark:bg-slate-800 border border-amber-200 dark:border-amber-700 focus:border-amber-400 focus:ring-4 focus:ring-amber-500/10 text-sm font-medium outline-none transition-all dark:text-white"
+                            placeholder="e.g. CIPM Rajagiriya, Horizon Campus, NIBM Kandy, Saegis, KIU..."
+                            className="w-full px-4 py-3 rounded-xl bg-white dark:bg-slate-900 border border-amber-300 dark:border-amber-700 focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 text-sm font-bold outline-none transition-all dark:text-white"
                           />
                           {errors.customInstitution && <p className="text-red-500 text-sm mt-1">{errors.customInstitution.message}</p>}
                         </div>
