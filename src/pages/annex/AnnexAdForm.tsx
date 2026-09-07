@@ -179,19 +179,19 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 const AMENITIES_LIST = [
-  { id: 'WiFi', label: 'High-speed Wifi', icon: LuWifi, col: 'text-blue-500' },
-  { id: 'Attached Bath', label: 'Attached Bath', icon: LuBath, col: 'text-teal-500' },
-  { id: 'A/C', label: 'Air Conditioning', icon: LuSnowflake, col: 'text-red-500' },
-  { id: 'Safe Parking', label: 'Safe Parking', icon: LuCar, col: 'text-orange-500' },
-  { id: 'Kitchen', label: 'Equipped Kitchen', icon: LuUtensils, col: 'text-indigo-500' },
-  { id: 'Power Backup', label: 'Power Backup', icon: LuZap, col: 'text-yellow-500' },
+  { id: 'WiFi', labelEn: 'High-speed Wifi', labelSi: 'අධිවේගී Wi-Fi පහසුකම (Wifi)', icon: LuWifi, col: 'text-blue-500' },
+  { id: 'Attached Bath', labelEn: 'Attached Bath', labelSi: 'අනුයුක්ත නාන කාමරය (Attached Bath)', icon: LuBath, col: 'text-teal-500' },
+  { id: 'A/C', labelEn: 'Air Conditioning', labelSi: 'වායු සමීකරණය (Air Conditioning)', icon: LuSnowflake, col: 'text-red-500' },
+  { id: 'Safe Parking', labelEn: 'Safe Parking', labelSi: 'ආරක්ෂිත වාහන නැවැත්වීම (Vehicle Parking)', icon: LuCar, col: 'text-orange-500' },
+  { id: 'Kitchen', labelEn: 'Equipped Kitchen', labelSi: 'කුස්සිය / කෑම පිසීමේ පහසුකම් (Kitchen)', icon: LuUtensils, col: 'text-indigo-500' },
+  { id: 'Power Backup', labelEn: 'Power Backup', labelSi: 'විදුලි ජනක යන්ත්‍ර / UPS (Power Backup)', icon: LuZap, col: 'text-yellow-500' },
 ];
 
 const STEPS = [
-  { id: 'specs', title: 'General Specs', icon: LuFileText },
-  { id: 'amenities', title: 'Amenities', icon: LuLayoutDashboard },
-  { id: 'media', title: 'Media Gallery', icon: LuImage },
-  { id: 'location', title: 'Location & Contact', icon: LuMapPin },
+  { id: 'specs', titleEn: 'General Specs', titleSi: 'ප්‍රධාන තොරතුරු', icon: LuFileText },
+  { id: 'amenities', titleEn: 'Amenities', titleSi: 'පහසුකම්', icon: LuLayoutDashboard },
+  { id: 'media', titleEn: 'Media Gallery', titleSi: 'ඡායාරූප', icon: LuImage },
+  { id: 'location', titleEn: 'Location & Contact', titleSi: 'ස්ථානය සහ ඇමතුම්', icon: LuMapPin },
 ];
 
 interface AnnexFormProps {
@@ -203,6 +203,7 @@ interface AnnexFormProps {
 }
 
 const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel, isEditing, isSubmitting = false }) => {
+  const [lang, setLang] = useState<'si' | 'en'>('si');
   const [currentStep, setCurrentStep] = useState(0);
   const [images, setImages] = useState<File[]>([]);
   const [universities, setUniversities] = useState<any[]>(universitiesData);
@@ -414,23 +415,47 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
 
       {/* Header */}
       <div className="px-8 py-8 md:px-12 md:py-10 border-b border-slate-200/50 dark:border-slate-800/50 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 dark:from-slate-800/50 dark:to-slate-900/50">
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="text-3xl font-black text-slate-800 dark:text-white tracking-tight leading-none">
-              {isEditing ? 'Update Listing' : 'List Property'}
+            <h1 className="text-2xl md:text-3xl font-black text-slate-800 dark:text-white tracking-tight leading-none">
+              {lang === 'si'
+                ? (isEditing ? 'දැන්වීම යාවත්කාලීන කරන්න' : 'නව ඇනෙක්සි දැන්වීමක් පළ කරන්න')
+                : (isEditing ? 'Update Listing' : 'List Property')
+              }
             </h1>
-            <p className="text-sm font-semibold text-blue-600 dark:text-blue-400 mt-2 uppercase tracking-widest">
-              Premium Landlord Portal
+            <p className="text-xs md:text-sm font-semibold text-blue-600 dark:text-blue-400 mt-2 uppercase tracking-widest">
+              {lang === 'si' ? 'ගෙවල් හිමියන් සඳහා විශේෂ පෝරමය · Premium Landlord Portal' : 'Premium Landlord Portal'}
             </p>
           </div>
-          <button onClick={onCancel} className="w-10 h-10 rounded-full bg-white dark:bg-slate-800 shadow-md flex items-center justify-center text-slate-500 hover:text-slate-800 dark:hover:text-white transition-all hover:scale-105 active:scale-95 border border-slate-100 dark:border-slate-700">
-            <LuX size={20} />
-          </button>
+
+          <div className="flex items-center gap-3 self-end sm:self-auto">
+            {/* Language Switcher Pill */}
+            <div className="flex p-1 bg-white/90 dark:bg-slate-800/90 rounded-full border border-slate-200 dark:border-slate-700 shadow-sm">
+              <button
+                type="button"
+                onClick={() => setLang('si')}
+                className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all border-none cursor-pointer ${lang === 'si' ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20' : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 bg-transparent'}`}
+              >
+                🇱🇰 සිංහල
+              </button>
+              <button
+                type="button"
+                onClick={() => setLang('en')}
+                className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all border-none cursor-pointer ${lang === 'en' ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20' : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 bg-transparent'}`}
+              >
+                🇬🇧 English
+              </button>
+            </div>
+
+            <button onClick={onCancel} className="w-10 h-10 rounded-full bg-white dark:bg-slate-800 shadow-md flex items-center justify-center text-slate-500 hover:text-slate-800 dark:hover:text-white transition-all hover:scale-105 active:scale-95 border border-slate-100 dark:border-slate-700">
+              <LuX size={20} />
+            </button>
+          </div>
         </div>
 
         {/* Stepper */}
         <div className="mt-10 flex items-center justify-between relative">
-          <div className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+          <div className="absolute left-0 top-5 -translate-y-1/2 w-full h-1 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
             <motion.div
               className="h-full bg-gradient-to-r from-blue-500 to-indigo-500"
               initial={{ width: 0 }}
@@ -439,10 +464,13 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
             />
           </div>
           {STEPS.map((step, idx) => (
-            <div key={step.id} className="relative z-10 flex flex-col items-center gap-2">
+            <div key={step.id} className="relative z-10 flex flex-col items-center gap-1">
               <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-500 border-2 ${currentStep >= idx ? 'bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-500/30' : 'bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-slate-400'}`}>
                 {currentStep > idx ? <LuCheck size={18} /> : <step.icon size={18} />}
               </div>
+              <span className={`text-[10px] font-bold uppercase tracking-wider hidden sm:block ${currentStep === idx ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400'}`}>
+                {lang === 'si' ? step.titleSi : step.titleEn}
+              </span>
             </div>
           ))}
         </div>
@@ -454,24 +482,31 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
           {/* ── STEP 1: General Specs ── */}
           {currentStep === 0 && (
             <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
-              <h2 className="text-xl font-bold text-slate-800 dark:text-white mb-6">General Specifications</h2>
+              <h2 className="text-xl font-bold text-slate-800 dark:text-white mb-6">
+                {lang === 'si' ? 'නවාතැනේ ප්‍රධාන තොරතුරු (General Specifications)' : 'General Specifications'}
+              </h2>
               <div className="space-y-4">
                 {/* Listing Type Segment Selector */}
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Listing Purpose</label>
+                  <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">
+                    {lang === 'si' ? 'නවාතැන් වර්ගය / Listing Purpose' : 'Listing Purpose'}
+                  </label>
                   <div className="flex p-1 bg-slate-100 dark:bg-slate-800/80 rounded-2xl w-full">
                     {(['LANDLORD_RENT', 'ROOMMATE_WANTED'] as const).map((type) => (
                       <button
                         key={type}
                         type="button"
                         onClick={() => setValue('listingType', type)}
-                        className={`flex-1 px-6 py-3.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all duration-300 border-none cursor-pointer ${
+                        className={`flex-1 px-4 md:px-6 py-3.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all duration-300 border-none cursor-pointer ${
                           watch('listingType') === type
                             ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20'
                             : 'text-slate-500 dark:text-slate-400 bg-transparent hover:text-slate-800 dark:hover:text-slate-200'
                         }`}
                       >
-                        {type === 'LANDLORD_RENT' ? '🏠 Entire Boarding Place' : '👥 Roommate Finder / Share'}
+                        {type === 'LANDLORD_RENT' 
+                          ? (lang === 'si' ? '🏠 සම්පූර්ණ බෝඩිම / ඇනෙක්සිය' : '🏠 Boarding Place / Annex') 
+                          : (lang === 'si' ? '👥 රූම්මේට් කෙනෙක් අවශ්‍යයි (Share)' : '👥 Roommate Finder / Share')
+                        }
                       </button>
                     ))}
                   </div>
@@ -479,46 +514,71 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Ad Title</label>
-                  <input {...register('title')} placeholder="e.g. Modern Studio near UOM" className="w-full px-5 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 font-medium outline-none transition-all dark:text-white" />
+                  <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">
+                    {lang === 'si' ? 'දැන්වීමේ මාතෘකාව / Ad Title' : 'Ad Title'}
+                  </label>
+                  <input
+                    {...register('title')}
+                    placeholder={lang === 'si' ? 'උදා: මොරටුව කැම්පස් එක ළඟ පිරිමි ළමයින්ට බෝඩිමක් (e.g. Modern Studio near UOM)' : 'e.g. Modern Studio near UOM'}
+                    className="w-full px-5 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 font-medium outline-none transition-all dark:text-white"
+                  />
                   {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Monthly Rent (Rs.)</label>
-                    <input type="number" {...register('monthlyRent')} placeholder="18000" className="w-full px-5 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 font-bold text-blue-600 dark:text-blue-400 outline-none transition-all" />
+                    <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">
+                      {lang === 'si' ? 'මාසික කුලිය / Rent per Month (රු.)' : 'Monthly Rent (Rs.)'}
+                    </label>
+                    <input
+                      type="number"
+                      {...register('monthlyRent')}
+                      placeholder="18000"
+                      className="w-full px-5 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 font-bold text-blue-600 dark:text-blue-400 outline-none transition-all"
+                    />
                     {errors.monthlyRent && <p className="text-red-500 text-sm mt-1">{errors.monthlyRent.message}</p>}
                   </div>
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Security Deposit (Key Money)</label>
-                    <input {...register('securityDeposit')} placeholder="e.g. 4 Months" className="w-full px-5 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 font-medium outline-none transition-all dark:text-white" />
+                    <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">
+                      {lang === 'si' ? 'ඇප මුදල / Security Deposit (Key Money)' : 'Security Deposit (Key Money)'}
+                    </label>
+                    <input
+                      {...register('securityDeposit')}
+                      placeholder={lang === 'si' ? 'උදා: මාස 3 ක මුදල (e.g. 3 Months Rent)' : 'e.g. 3 Months Rent'}
+                      className="w-full px-5 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 font-medium outline-none transition-all dark:text-white"
+                    />
                     {errors.securityDeposit && <p className="text-red-500 text-sm mt-1">{errors.securityDeposit.message}</p>}
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Beds Capacity</label>
+                    <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">
+                      {lang === 'si' ? 'ඇඳන් ගණන / Beds Capacity' : 'Beds Capacity'}
+                    </label>
                     <select {...register('beds')} className="w-full px-5 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold outline-none cursor-pointer">
-                      <option value="1">1 Bed</option>
-                      <option value="2">2 Beds</option>
-                      <option value="3">3 Beds</option>
-                      <option value="4">4+ Beds</option>
+                      <option value="1">{lang === 'si' ? '1 ඇඳයි (1 Bed)' : '1 Bed'}</option>
+                      <option value="2">{lang === 'si' ? 'ඇඳන් 2 යි (2 Beds)' : '2 Beds'}</option>
+                      <option value="3">{lang === 'si' ? 'ඇඳන් 3 යි (3 Beds)' : '3 Beds'}</option>
+                      <option value="4">{lang === 'si' ? 'ඇඳන් 4ක් හෝ ඊට වැඩි (4+ Beds)' : '4+ Beds'}</option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Bathroom Type</label>
+                    <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">
+                      {lang === 'si' ? 'නාන කාමර වර්ගය / Bathroom Type' : 'Bathroom Type'}
+                    </label>
                     <select {...register('bath')} className="w-full px-5 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold outline-none cursor-pointer">
-                      <option value="Private Bath">Private Bath</option>
-                      <option value="Shared Bath">Shared Bath</option>
+                      <option value="Private Bath">{lang === 'si' ? 'තනි නාන කාමරය (Private Bath)' : 'Private Bath'}</option>
+                      <option value="Shared Bath">{lang === 'si' ? 'පොදු නාන කාමරය (Shared Bath)' : 'Shared Bath'}</option>
                     </select>
                   </div>
                 </div>
 
                 {/* Landlord Presence Selector */}
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Landlord Presence</label>
+                  <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">
+                    {lang === 'si' ? 'ගෙදර අයිතිකරුවන් සිටීම / Landlord Presence' : 'Landlord Presence'}
+                  </label>
                   <div className="flex p-1 bg-slate-100 dark:bg-slate-800/80 rounded-2xl w-full">
                     {(['INDEPENDENT', 'ON_SITE'] as const).map((presence) => (
                       <button
@@ -531,7 +591,10 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
                             : 'text-slate-500 dark:text-slate-400 bg-transparent hover:text-slate-800 dark:hover:text-slate-200'
                         }`}
                       >
-                        {presence === 'INDEPENDENT' ? '🏠 Independent (No Landlord on-site)' : '👨‍👩‍👧 Landlord Lives in Same Premise'}
+                        {presence === 'INDEPENDENT' 
+                          ? (lang === 'si' ? '🏠 අයිතිකරුවන් නැත / නිදහස් (Independent)' : '🏠 Independent (No Landlord on-site)') 
+                          : (lang === 'si' ? '👨‍👩‍👧 අයිතිකරුවන් එකම ඉඩමේ පදිංචිව සිටී' : '👨‍👩‍👧 Landlord Lives in Same Premise')
+                        }
                       </button>
                     ))}
                   </div>
@@ -540,29 +603,59 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Night Curfew / Gate Rules</label>
-                    <input {...register('curfewTime')} placeholder="e.g. 24/7 Access or 10:00 PM Gate Lock" className="w-full px-5 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 font-medium outline-none transition-all dark:text-white" />
+                    <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">
+                      {lang === 'si' ? 'රාත්‍රී ගේට්ටු නීති / Night Curfew & Gate Access' : 'Night Curfew / Gate Rules'}
+                    </label>
+                    <input
+                      {...register('curfewTime')}
+                      placeholder={lang === 'si' ? 'උදා: පැය 24ම ඇතුල් විය හැක / රාත්‍රී 10:00 ට ගේට්ටුව වසා තැබේ' : 'e.g. 24/7 Access or 10:00 PM Gate Lock'}
+                      className="w-full px-5 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 font-medium outline-none transition-all dark:text-white"
+                    />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Visitor Policy</label>
-                    <input {...register('visitorPolicy')} placeholder="e.g. Parents & Batchmates Allowed" className="w-full px-5 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 font-medium outline-none transition-all dark:text-white" />
+                    <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">
+                      {lang === 'si' ? 'අමුත්තන් පැමිණීමේ නීති / Visitor Policy' : 'Visitor Policy'}
+                    </label>
+                    <input
+                      {...register('visitorPolicy')}
+                      placeholder={lang === 'si' ? 'උදා: දෙමාපියන්ට සහ යාළුවන්ට පැමිණිය හැක' : 'e.g. Parents & Batchmates Allowed'}
+                      className="w-full px-5 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 font-medium outline-none transition-all dark:text-white"
+                    />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">🚌 Nearest Bus Route & Transit Proximity</label>
-                  <input {...register('busRoute')} placeholder="e.g. 100m to 138 High Level Bus Route / 5 mins to Railway Station" className="w-full px-5 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 font-medium outline-none transition-all dark:text-white" />
+                  <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">
+                    {lang === 'si' ? '🚌 ළඟම ඇති බස් පාර සහ ගමනාගමන පහසුව / Nearest Bus Route & Transit' : '🚌 Nearest Bus Route & Transit Proximity'}
+                  </label>
+                  <input
+                    {...register('busRoute')}
+                    placeholder={lang === 'si' ? 'උදා: 138 හයිලෙවල් බස් පාරට 100m / දුම්රිය ස්ථානයට විනාඩි 5 යි' : 'e.g. 100m to 138 High Level Bus Route / 5 mins to Railway Station'}
+                    className="w-full px-5 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 font-medium outline-none transition-all dark:text-white"
+                  />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Exact Property Address</label>
-                  <input {...register('address')} placeholder="e.g. No 45, Bandaranayake Mawatha, Moratuwa" className="w-full px-5 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 font-medium outline-none transition-all dark:text-white" />
+                  <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">
+                    {lang === 'si' ? 'නවාතැන පිහිටි නිවැරදි ලිපිනය / Exact Property Address' : 'Exact Property Address'}
+                  </label>
+                  <input
+                    {...register('address')}
+                    placeholder={lang === 'si' ? 'උදා: නො: 45, බණ්ඩාරනායක මාවත, මොරටුව' : 'e.g. No 45, Bandaranayake Mawatha, Moratuwa'}
+                    className="w-full px-5 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 font-medium outline-none transition-all dark:text-white"
+                  />
                   {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address.message}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">House Rules (Comma Separated)</label>
-                  <input {...register('houseRules')} placeholder="Girls Only, No Smoking, Quiet Hours after 11 PM" className="w-full px-5 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 font-medium outline-none transition-all dark:text-white" />
+                  <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">
+                    {lang === 'si' ? 'නවාතැන් රීති / House Rules (කොමා වලින් වෙන් කරන්න)' : 'House Rules (Comma Separated)'}
+                  </label>
+                  <input
+                    {...register('houseRules')}
+                    placeholder={lang === 'si' ? 'උදා: ගැහැණු ළමයින්ට පමණයි, ධූමපානය තහනම්, රාත්‍රී 11 න් පසු නිහඬව සිටින්න' : 'Girls Only, No Smoking, Quiet Hours after 11 PM'}
+                    className="w-full px-5 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 font-medium outline-none transition-all dark:text-white"
+                  />
                   {errors.houseRules && <p className="text-red-500 text-sm mt-1">{errors.houseRules.message}</p>}
                 </div>
               </div>
@@ -572,7 +665,9 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
           {/* ── STEP 2: Amenities ── */}
           {currentStep === 1 && (
             <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
-              <h2 className="text-xl font-bold text-slate-800 dark:text-white mb-6">Select Amenities</h2>
+              <h2 className="text-xl font-bold text-slate-800 dark:text-white mb-6">
+                {lang === 'si' ? 'නවාතැනේ ඇති පහසුකම් තෝරන්න (Select Amenities)' : 'Select Amenities'}
+              </h2>
               {errors.amenities && <p className="text-red-500 text-sm mb-4">{errors.amenities.message}</p>}
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 <Controller
@@ -594,8 +689,8 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
                             className={`cursor-pointer p-4 rounded-2xl flex flex-col gap-3 items-start border-2 transition-all hover:-translate-y-1 ${isSelected ? 'bg-blue-50/50 dark:bg-blue-900/20 border-blue-500 shadow-[0_10px_20px_rgba(59,130,246,0.15)]' : 'bg-white/50 dark:bg-slate-800/50 border-white/60 dark:border-slate-700 hover:border-blue-300'}`}
                           >
                             <amenity.icon className={`text-2xl ${isSelected ? amenity.col : 'text-slate-400'}`} />
-                            <span className={`text-sm font-bold ${isSelected ? 'text-blue-700 dark:text-blue-300' : 'text-slate-600 dark:text-slate-300'}`}>
-                              {amenity.label}
+                            <span className={`text-xs md:text-sm font-bold ${isSelected ? 'text-blue-700 dark:text-blue-300' : 'text-slate-600 dark:text-slate-300'}`}>
+                              {lang === 'si' ? amenity.labelSi : amenity.labelEn}
                             </span>
                           </div>
                         );
@@ -610,7 +705,9 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
           {/* ── STEP 3: Media Gallery ── */}
           {currentStep === 2 && (
             <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
-              <h2 className="text-xl font-bold text-slate-800 dark:text-white mb-6">Media Gallery</h2>
+              <h2 className="text-xl font-bold text-slate-800 dark:text-white mb-6">
+                {lang === 'si' ? 'නවාතැනේ ඡායාරූප (Media Gallery)' : 'Media Gallery'}
+              </h2>
               
               <div className={`border-2 border-dashed rounded-[2rem] p-10 text-center relative group transition-colors ${images.length >= 4 ? 'border-slate-200 dark:border-slate-700 bg-slate-100/50 dark:bg-slate-800/20 opacity-60 cursor-not-allowed' : 'border-slate-300 dark:border-slate-600 bg-slate-50/50 dark:bg-slate-800/30 hover:bg-slate-100/50 cursor-pointer'}`}>
                 {images.length < 4 && (
@@ -621,10 +718,16 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
                     <LuUpload size={28} />
                   </div>
                   <p className="font-bold text-slate-700 dark:text-slate-200">
-                    {images.length >= 4 ? 'Maximum 4 images reached' : 'Drag & Drop or Click to Upload'}
+                    {images.length >= 4 
+                      ? (lang === 'si' ? 'උපරිම ඡායාරූප 4 සීමාවට පැමිණ ඇත' : 'Maximum 4 images reached')
+                      : (lang === 'si' ? 'ඡායාරූප මෙතැනට Drag & Drop කරන්න හෝ Click කර තෝරන්න' : 'Drag & Drop or Click to Upload')
+                    }
                   </p>
                   <p className="text-xs text-slate-500 mt-2 font-medium tracking-wide">
-                    1 Cover photo + up to 3 gallery photos &nbsp;·&nbsp; {images.length}/4 uploaded
+                    {lang === 'si' 
+                      ? `ප්‍රධාන කවර් ඡායාරූපය 1 යි + තවත් ඡායාරූප 3 ක් දක්වා · ඡායාරූප ${images.length}/4 ක් එකතු කර ඇත` 
+                      : `1 Cover photo + up to 3 gallery photos · ${images.length}/4 uploaded`
+                    }
                   </p>
                 </div>
               </div>
@@ -642,7 +745,9 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
                         <LuX size={14} />
                       </button>
                       {idx === 0 && (
-                        <span className="absolute bottom-2 left-2 text-[10px] font-bold bg-blue-600 text-white px-2 py-1 rounded-md">COVER</span>
+                        <span className="absolute bottom-2 left-2 text-[10px] font-bold bg-blue-600 text-white px-2 py-1 rounded-md">
+                          {lang === 'si' ? 'ප්‍රධාන කවර් ඡායාරූපය' : 'COVER'}
+                        </span>
                       )}
                     </div>
                   ))}
@@ -658,7 +763,9 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
                         <div key={idx} className="relative aspect-square rounded-2xl overflow-hidden shadow-md group">
                           <img src={src} alt="existing preview" className="w-full h-full object-cover" />
                           {idx === 0 && (
-                            <span className="absolute bottom-2 left-2 text-[10px] font-bold bg-green-600 text-white px-2 py-1 rounded-md">CURRENT COVER</span>
+                            <span className="absolute bottom-2 left-2 text-[10px] font-bold bg-green-600 text-white px-2 py-1 rounded-md">
+                              {lang === 'si' ? 'වර්තමාන කවර් ඡායාරූපය' : 'CURRENT COVER'}
+                            </span>
                           )}
                         </div>
                       );
@@ -672,14 +779,16 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
           {/* ── STEP 4: Location Map Picker & Contact ── */}
           {currentStep === 3 && (
             <motion.div key="step4" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
-              <h2 className="text-xl font-bold text-slate-800 dark:text-white mb-6">Location & Contact Details</h2>
+              <h2 className="text-xl font-bold text-slate-800 dark:text-white mb-6">
+                {lang === 'si' ? 'ස්ථානය සහ ඇමතුම් විස්තර (Location & Contact Details)' : 'Location & Contact Details'}
+              </h2>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
                   {/* University Dropdown */}
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">
-                      Nearest University / Institution
+                      {lang === 'si' ? 'ළඟම ඇති විශ්වවිද්‍යාලය හෝ උසස් අධ්‍යාපන ආයතනය / Nearest Campus' : 'Nearest University / Institution'}
                     </label>
                     <div className="relative">
                       <LuGraduationCap className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg pointer-events-none z-10" />
@@ -687,14 +796,18 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
                         {...register('universityId')}
                         className="w-full pl-12 pr-5 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold outline-none cursor-pointer appearance-none"
                       >
-                        <option value="">— Select University / Institution —</option>
+                        <option value="">
+                          {lang === 'si' ? '— විශ්වවිද්‍යාලය / ආයතනය තෝරන්න —' : '— Select University / Institution —'}
+                        </option>
                         {universities
                           .filter(u => String(u.id) !== '0')
                           .map(uni => (
                             <option key={uni.id} value={String(uni.id)}>{uni.name}</option>
                           ))
                         }
-                        <option value="0">🔍 Other / Not Listed</option>
+                        <option value="0">
+                          {lang === 'si' ? '🔍 වෙනත් ආයතනයක් / ලැයිස්තුවේ නොමැත (Other / Not Listed)' : '🔍 Other / Not Listed'}
+                        </option>
                       </select>
                     </div>
                     {errors.universityId && <p className="text-red-500 text-sm mt-1">{errors.universityId.message}</p>}
@@ -717,13 +830,16 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
                                 🛡️ Instant Listing Guarantee for Custom Institutes
                               </h4>
                               <p className="text-xs text-amber-700 dark:text-amber-400 font-semibold leading-relaxed">
-                                ඔබගේ Campus / Institute නම Dropdown එකෙහි නොමැතිද? ගැටලුවක් නැත! පහතින් නම සටහන් කර ඔබගේ ස්ථානය Map එකෙහි ලකුණු කරන්න. අවට සිටින සිසුන්ට ඔබගේ දැන්වීම සාර්ථකව දර්ශනය වේ.
+                                {lang === 'si' 
+                                  ? 'ඔබගේ Campus / Institute නම Dropdown එකෙහි නොමැතිද? ගැටලුවක් නැත! පහතින් නම සටහන් කර ඔබගේ ස්ථානය Map එකෙහි ලකුණු කරන්න. අවට සිටින සිසුන්ට ඔබගේ දැන්වීම සාර්ථකව දර්ශනය වේ.' 
+                                  : 'Is your Campus / Institute not in the dropdown? No problem! Type the name below and pin your location on the map. Nearby students will see your listing immediately.'
+                                }
                               </p>
                             </div>
                           </div>
                           <input
                             {...register('customInstitution')}
-                            placeholder="e.g. CIPM Rajagiriya, Horizon Campus, NIBM Kandy, Saegis, KIU..."
+                            placeholder={lang === 'si' ? 'උදා: CIPM රාජගිරිය, Horizon Campus, NIBM මහනුවර, Saegis, KIU...' : 'e.g. CIPM Rajagiriya, Horizon Campus, NIBM Kandy, Saegis, KIU...'}
                             className="w-full px-4 py-3 rounded-xl bg-white dark:bg-slate-900 border border-amber-300 dark:border-amber-700 focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 text-sm font-bold outline-none transition-all dark:text-white"
                           />
                           {errors.customInstitution && <p className="text-red-500 text-sm mt-1">{errors.customInstitution.message}</p>}
@@ -735,7 +851,7 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
                   {/* Address Auto-Mapping Geocoder */}
                   <div className="p-4 bg-blue-50/50 dark:bg-slate-800/30 border border-blue-100/50 dark:border-slate-800/80 rounded-2xl relative z-30">
                     <label className="block text-xs font-bold uppercase tracking-widest text-blue-600 dark:text-blue-400 mb-2">
-                      📍 Sri Lanka Location Autocomplete (OSM Nominatim)
+                      📍 {lang === 'si' ? 'ශ්‍රී ලංකා සිතියම් සෙවීම / Location Search (OSM Nominatim)' : 'Sri Lanka Location Autocomplete (OSM Nominatim)'}
                     </label>
                     <div className="flex gap-2">
                       <div className="relative flex-grow">
@@ -745,7 +861,7 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
                           value={geocodeQuery}
                           onChange={(e) => setGeocodeQuery(e.target.value)}
                           onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleGeocodeSearch(geocodeQuery); } }}
-                          placeholder="e.g. Katubedda Moratuwa, Pambahinna, SUSL..."
+                          placeholder={lang === 'si' ? 'උදා: කටුබැද්ද මොරටුව, පඹහින්න, සබරගමුව...' : 'e.g. Katubedda Moratuwa, Pambahinna, SUSL...'}
                           className="w-full pl-10 pr-4 py-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm font-medium outline-none transition-all dark:text-white"
                         />
                       </div>
@@ -753,9 +869,9 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
                         type="button"
                         onClick={() => handleGeocodeSearch(geocodeQuery)}
                         disabled={geocodeLoading}
-                        className="px-6 py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-xs uppercase tracking-wider rounded-xl hover:shadow-lg transition-all active:scale-95 disabled:opacity-50 shrink-0"
+                        className="px-6 py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-xs uppercase tracking-wider rounded-xl hover:shadow-lg transition-all active:scale-95 disabled:opacity-50 shrink-0 border-none cursor-pointer"
                       >
-                        {geocodeLoading ? 'Searching...' : 'Search'}
+                        {geocodeLoading ? (lang === 'si' ? 'සොයමින්...' : 'Searching...') : (lang === 'si' ? 'සොයන්න' : 'Search')}
                       </button>
                       <button
                         type="button"
@@ -820,7 +936,9 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
                   {/* Coordinate display (read-only) */}
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">Latitude</label>
+                      <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">
+                        {lang === 'si' ? 'අක්ෂාංශ (Latitude)' : 'Latitude'}
+                      </label>
                       <input
                         type="number"
                         step="any"
@@ -830,7 +948,9 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
                       />
                     </div>
                     <div>
-                      <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">Longitude</label>
+                      <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">
+                        {lang === 'si' ? 'දේශාංශ (Longitude)' : 'Longitude'}
+                      </label>
                       <input
                         type="number"
                         step="any"
@@ -841,9 +961,10 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
                     </div>
                   </div>
                   <p className="text-[10px] text-blue-600 dark:text-blue-400 font-semibold uppercase tracking-wider">
-                    {isOtherSelected
-                      ? '📍 Pin your property location on the map — students will see it relative to your institution.'
-                      : '👉 Select your university above, then click on the map to pin your exact property location.'}
+                    {lang === 'si'
+                      ? '👉 ඉහතින් ඔබගේ කැම්පස් එක තෝරා, Map එක Click කර ඔබගේ නවාතැන පිහිටි නිවැරදි ස්ථානය ලකුණු කරන්න.'
+                      : '👉 Select your university above, then click on the map to pin your exact property location.'
+                    }
                   </p>
                 </div>
 
@@ -863,7 +984,7 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
                     <div className="w-full h-[280px] rounded-[1.8rem] bg-slate-100 dark:bg-slate-800 flex flex-col items-center justify-center gap-3 text-slate-400">
                       <LuMapPin size={40} className="opacity-30" />
                       <p className="text-sm font-semibold text-center px-6">
-                        Select a university above to load the map
+                        {lang === 'si' ? 'සිතියම (Map) ලබාගැනීමට ඉහතින් කැම්පස් එක තෝරන්න' : 'Select a university above to load the map'}
                       </p>
                     </div>
                   )}
@@ -872,14 +993,24 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
 
               {/* Landlord Info */}
               <div className="mt-8 border-t border-slate-200 dark:border-slate-800 pt-8">
-                <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-4">Landlord Contact Info</h3>
+                <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-4">
+                  {lang === 'si' ? 'ඇමතුම් විස්තර / Landlord Contact Info' : 'Landlord Contact Info'}
+                </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <input {...register('contactName')} placeholder="Landlord Full Name" className="w-full px-5 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 focus:border-blue-500 font-medium outline-none transition-all dark:text-white" />
+                    <input
+                      {...register('contactName')}
+                      placeholder={lang === 'si' ? 'ගෙදර අයිතිකරුගේ / භාරකරුගේ නම (Landlord Full Name)' : 'Landlord Full Name'}
+                      className="w-full px-5 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 focus:border-blue-500 font-medium outline-none transition-all dark:text-white"
+                    />
                     {errors.contactName && <p className="text-red-500 text-sm mt-1">{errors.contactName.message}</p>}
                   </div>
                   <div>
-                    <input {...register('contactPhone')} placeholder="WhatsApp / Phone (e.g. 0771234567)" className="w-full px-5 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 focus:border-blue-500 font-medium outline-none transition-all dark:text-white" />
+                    <input
+                      {...register('contactPhone')}
+                      placeholder={lang === 'si' ? 'දුරකථන / WhatsApp අංකය (e.g. 0771234567)' : 'WhatsApp / Phone (e.g. 0771234567)'}
+                      className="w-full px-5 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 focus:border-blue-500 font-medium outline-none transition-all dark:text-white"
+                    />
                     {errors.contactPhone && <p className="text-red-500 text-sm mt-1">{errors.contactPhone.message}</p>}
                   </div>
                 </div>
@@ -894,26 +1025,29 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
             type="button"
             onClick={onPrev}
             disabled={currentStep === 0}
-            className={`flex items-center gap-2 px-6 py-3 font-bold rounded-xl transition-all ${currentStep === 0 ? 'opacity-0 pointer-events-none' : 'text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800'}`}
+            className={`flex items-center gap-2 px-6 py-3 font-bold rounded-xl transition-all border-none cursor-pointer ${currentStep === 0 ? 'opacity-0 pointer-events-none' : 'text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800'}`}
           >
-            <LuChevronLeft /> Back
+            <LuChevronLeft /> {lang === 'si' ? 'ආපසු (Back)' : 'Back'}
           </button>
 
           {currentStep < STEPS.length - 1 ? (
             <button
               type="button"
               onClick={onNext}
-              className="flex items-center gap-2 px-8 py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold rounded-xl hover:shadow-lg hover:shadow-slate-900/20 dark:hover:shadow-white/20 transition-all hover:scale-105 active:scale-95"
+              className="flex items-center gap-2 px-8 py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold rounded-xl hover:shadow-lg hover:shadow-slate-900/20 dark:hover:shadow-white/20 transition-all hover:scale-105 active:scale-95 border-none cursor-pointer"
             >
-              Continue <LuChevronRight />
+              {lang === 'si' ? 'ඊළඟ පියවර (Continue)' : 'Continue'} <LuChevronRight />
             </button>
           ) : (
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-xl hover:shadow-xl hover:shadow-blue-500/30 transition-all hover:scale-105 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
+              className="flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-xl hover:shadow-xl hover:shadow-blue-500/30 transition-all hover:scale-105 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100 border-none cursor-pointer"
             >
-              {isSubmitting ? 'Publishing...' : (isEditing ? 'Save Updates' : 'Publish Ad')} <LuCheck />
+              {isSubmitting 
+                ? (lang === 'si' ? 'පළ කරමින්...' : 'Publishing...') 
+                : (isEditing ? (lang === 'si' ? 'යාවත්කාලීන කරන්න' : 'Save Updates') : (lang === 'si' ? 'දැන්වීම පළ කරන්න' : 'Publish Ad'))
+              } <LuCheck />
             </button>
           )}
         </div>
