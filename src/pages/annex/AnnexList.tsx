@@ -152,14 +152,15 @@ const AnnexList = () => {
             const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}/api/annexes?${queryParams.toString()}`);
             const data = await response.json();
             
-            // Search locally by search keyword supporting title, address, university, or distance
-            let filtered = data;
+            const rawList = Array.isArray(data) ? data : [];
+            let filtered = rawList;
             if (searchTerm.trim() !== "") {
                 const query = searchTerm.toLowerCase();
                 const numericQuery = parseFloat(query);
                 const isNumeric = !isNaN(numericQuery);
 
-                filtered = data.filter((item: any) => {
+                filtered = rawList.filter((item: any) => {
+                    if (!item) return false;
                     const matchesTitle = item.title?.toLowerCase().includes(query);
                     const matchesAddress = item.address?.toLowerCase().includes(query);
                     const matchesUniName = item.university?.name?.toLowerCase().includes(query);
@@ -172,6 +173,7 @@ const AnnexList = () => {
             setAnnexes(filtered);
         } catch (error) {
             console.error("Error loading annexes:", error);
+            setAnnexes([]);
         } finally {
             setLoading(false);
         }
@@ -186,9 +188,10 @@ const AnnexList = () => {
         setCurrentPage(1);
     };
 
+    const safeAnnexes = Array.isArray(annexes) ? annexes : [];
     const itemsPerPage = 12;
-    const totalPages = Math.max(1, Math.ceil(annexes.length / itemsPerPage));
-    const paginatedData = annexes.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    const totalPages = Math.max(1, Math.ceil(safeAnnexes.length / itemsPerPage));
+    const paginatedData = safeAnnexes.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
@@ -196,9 +199,10 @@ const AnnexList = () => {
     };
 
     const toggleFavorite = (id: string) => {
-        setFavorites(prev =>
-            prev.includes(id) ? prev.filter(fId => fId !== id) : [...prev, id]
-        );
+        setFavorites(prev => {
+            const safePrev = Array.isArray(prev) ? prev : [];
+            return safePrev.includes(id) ? safePrev.filter(fId => fId !== id) : [...safePrev, id];
+        });
     };
 
     return (
@@ -445,7 +449,7 @@ const AnnexList = () => {
 
                                         {/* Pagination Context Info */}
                                         <div className="text-sm font-semibold text-slate-500 bg-white/40 dark:bg-slate-900/40 px-4 py-3 rounded-full border border-slate-200 dark:border-slate-800 w-full sm:w-auto text-center whitespace-nowrap">
-                                            Showing {annexes.length > 0 ? ((currentPage - 1) * itemsPerPage) + 1 : 0} - {Math.min(currentPage * itemsPerPage, annexes.length)} of {annexes.length}
+                                            Showing {safeAnnexes.length > 0 ? ((currentPage - 1) * itemsPerPage) + 1 : 0} - {Math.min(currentPage * itemsPerPage, safeAnnexes.length)} of {safeAnnexes.length}
                                         </div>
                                     </div>
                                 </div>
