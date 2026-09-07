@@ -579,7 +579,7 @@ const AnnexList = () => {
                                                                     <span className="text-[9px] font-black bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 px-2 py-0.5 rounded-md">
                                                                         🍳 Cooking Allowed
                                                                     </span>
-                                                                ) : null}                  ) : null}
+                                                                ) : null}
                                                             </div>
 
                                                             {/* Action Button */}
