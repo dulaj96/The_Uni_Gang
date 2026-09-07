@@ -37,6 +37,20 @@ export interface Annex {
   distanceToUni?: string | number;
   status?: 'Pending' | 'Approved' | 'Rejected';
   universityId?: number | null;
+  landlordPresence?: 'INDEPENDENT' | 'ON_SITE';
+  curfewTime?: string;
+  visitorPolicy?: string;
+  busRoute?: string;
+  customInstitution?: string;
+  hasPowerBackup?: boolean;
+  hasWaterTank?: boolean;
+  isCookingAllowed?: boolean;
+  hasSeparateEntrance?: boolean;
+  hasSeparateMeter?: boolean;
+  genderPolicy?: 'ANY' | 'GIRLS_ONLY' | 'BOYS_ONLY';
+  keyMoneyMonths?: number;
+  walkTimeMins?: number;
+  listingType?: 'LANDLORD_RENT' | 'ROOMMATE_WANTED';
   images: AnnexImage[];           // Array of image objects from AnnexImage table
   features: AnnexFeature[];       // Array of feature objects from AnnexFeature table
   owner?: AnnexOwner;

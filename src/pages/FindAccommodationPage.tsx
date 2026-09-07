@@ -5,4 +5,3 @@ const FindAccommodationPage = () => {
 };
 
 export default FindAccommodationPage;
-
