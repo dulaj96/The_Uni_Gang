@@ -1,33 +1,4 @@
 import React from 'react';
-import { Search, SlidersHorizontal, Crown } from 'lucide-react';
-import { useTheme } from '../../../../context/ThemeContext';
-import { SearchFilterState } from './ProposalSearchSidebar';
-
-interface ProposalSearchTopFilterBarProps {
-  filters: SearchFilterState;
-  onFilterChange: (filters: SearchFilterState) => void;
-  onOpenAdvancedDrawer: () => void;
-  activeFilterCount: number;
-}
-
-export default function ProposalSearchTopFilterBar({
-  filters,
-  onFilterChange,
-  onOpenAdvancedDrawer,
-  activeFilterCount,
-}: ProposalSearchTopFilterBarProps) {
-  const { theme } = useTheme();
-  const isDark = theme === 'dark';
-
-  const handleChange = (field: keyof SearchFilterState, value: any) => {
-    onFilterChange({
-      ...filters,
-      [field]: value,
-    });
-  };
-
-  return (
-import React from 'react';
 import { Search, SlidersHorizontal, Crown, ChevronDown } from 'lucide-react';
 import { useTheme } from '../../../../context/ThemeContext';
 import { SearchFilterState } from './ProposalSearchSidebar';
@@ -206,7 +177,5 @@ export default function ProposalSearchTopFilterBar({
         </div>
       </div>
     </div>
-  );
-}
   );
 }
