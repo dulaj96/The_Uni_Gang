@@ -6,8 +6,6 @@ import {
   Heart, 
   ShieldCheck, 
   MapPin, 
-  Briefcase, 
-  GraduationCap, 
   AlertTriangle, 
   UserX,
   Lock,
@@ -15,7 +13,9 @@ import {
   Users,
   User2,
   Sparkles,
-  Info
+  Info,
+  GraduationCap,
+  Camera
 } from 'lucide-react';
 import { cx } from './ui/ProposalPrimitives';
 import { WatermarkOverlay } from './privacy/WatermarkOverlay';
@@ -34,7 +34,7 @@ export default function ProposalProfileModal({ profile, onClose }: { profile: an
     }, 1500);
   };
 
-  // Ensure 3 candidate photos exist
+  // Guarantee 3 candidate photos
   const allImages = [
     ...(profile.images || []),
     'https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
@@ -48,14 +48,14 @@ export default function ProposalProfileModal({ profile, onClose }: { profile: an
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-center justify-center p-0 md:p-6 bg-black/70 backdrop-blur-md font-sans"
+          className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-6 bg-black/75 backdrop-blur-md font-sans"
         >
           <motion.div 
             initial={{ y: '100%', opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: '100%', opacity: 0 }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="w-full h-full md:h-[92vh] max-w-2xl bg-white dark:bg-slate-900 md:rounded-[2.5rem] overflow-hidden flex flex-col relative shadow-2xl border border-slate-200 dark:border-slate-800 font-sans"
+            className="w-full h-full md:h-[90vh] max-w-4xl bg-white dark:bg-slate-900 md:rounded-[2.5rem] overflow-hidden flex flex-col relative shadow-2xl border border-slate-200 dark:border-slate-800 font-sans"
           >
             {/* Success Animation Overlay */}
             <AnimatePresence>
@@ -81,27 +81,28 @@ export default function ProposalProfileModal({ profile, onClose }: { profile: an
             </AnimatePresence>
 
             {/* Top Bar Header Controls */}
-            <div className="p-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 flex items-center justify-between z-20 shrink-0 font-sans">
+            <div className="px-6 py-3.5 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 flex items-center justify-between z-20 shrink-0 font-sans">
               <button 
                 onClick={onClose}
-                className="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center hover:bg-rose-500 hover:text-white transition-colors"
+                className="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center hover:bg-rose-500 hover:text-white transition-colors cursor-pointer"
               >
                 <ChevronDown size={20} />
               </button>
               
-              <div className="text-center font-sans">
-                <span className="font-extrabold text-sm text-slate-900 dark:text-white block">
+              <div className="text-center font-sans flex items-center gap-2">
+                <span className="font-extrabold text-sm text-slate-900 dark:text-white">
                   {profile.name}
                 </span>
-                <span className="text-[10px] font-bold text-rose-500">
-                  {profile.code || 'BR000158'} • Age {profile.age || 31}
+                <span className="text-xs font-black text-rose-500 bg-rose-500/10 px-2.5 py-0.5 rounded-full border border-rose-500/20">
+                  {profile.code || 'BR000158'}
                 </span>
+                {profile.isVerified && <ShieldCheck size={16} className="text-blue-500" />}
               </div>
 
               <div className="relative">
                 <button 
                   onClick={() => setShowMenu(!showMenu)}
-                  className="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                  className="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors cursor-pointer"
                 >
                   <MoreVertical size={18} />
                 </button>
@@ -127,177 +128,148 @@ export default function ProposalProfileModal({ profile, onClose }: { profile: an
               </div>
             </div>
 
-            {/* Scrollable Content Container */}
-            <div className="flex-1 overflow-y-auto pb-32 font-sans">
+            {/* Scrollable Content: 2-Column Split Dashboard */}
+            <div className="flex-1 overflow-y-auto p-6 md:p-8 grid grid-cols-1 md:grid-cols-12 gap-6 font-sans">
               
-              {/* 1. CANDIDATE 3-PHOTO FEATURED GALLERY FRAME */}
-              <div className="relative p-5 bg-gradient-to-b from-rose-500/10 to-transparent border-b border-slate-200 dark:border-slate-800">
-                {/* Featured Photo Display Box */}
-                <div className="relative w-full h-72 sm:h-80 rounded-3xl overflow-hidden shadow-xl border-2 border-slate-200 dark:border-slate-800 mb-4 group">
-                  <WatermarkOverlay text={`ID: ${profile.code || 'BR000158'}`}>
-                    <img 
-                      src={allImages[activePhotoIndex]} 
-                      alt={profile.name} 
-                      className={cx(
-                        "w-full h-full object-cover transition-transform duration-500",
-                        profile.blurPhoto && "blur-2xl brightness-75 scale-110"
-                      )} 
-                    />
-                  </WatermarkOverlay>
+              {/* LEFT COLUMN: Photo Showcase & Quick Info */}
+              <div className="md:col-span-5 space-y-4">
+                
+                {/* Photo Display Card */}
+                <div className="bg-slate-50 dark:bg-slate-800/40 rounded-2xl p-3 border border-slate-200 dark:border-slate-800">
+                  <div className="relative w-full h-56 sm:h-64 rounded-xl overflow-hidden shadow-md border border-slate-200 dark:border-slate-800">
+                    <WatermarkOverlay text={`ID: ${profile.code || 'BR000158'}`}>
+                      <img 
+                        src={allImages[activePhotoIndex]} 
+                        alt={profile.name} 
+                        className={cx(
+                          "w-full h-full object-cover transition-transform duration-500",
+                          profile.blurPhoto && "blur-2xl brightness-75 scale-110"
+                        )} 
+                      />
+                    </WatermarkOverlay>
+                    <div className="absolute top-2 left-2 bg-slate-950/70 text-white text-[9px] font-bold px-2 py-0.5 rounded-full border border-white/20 flex items-center gap-1">
+                      <Camera size={11} /> Photo {activePhotoIndex + 1} of {allImages.length}
+                    </div>
+                  </div>
+
+                  {/* 3 Photos Thumbnail Switcher Row */}
+                  <div className="flex items-center justify-center gap-2.5 mt-3">
+                    {allImages.map((img, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setActivePhotoIndex(idx)}
+                        className={cx(
+                          "relative w-14 h-12 rounded-lg overflow-hidden border-2 transition-all cursor-pointer shadow-sm shrink-0",
+                          activePhotoIndex === idx
+                            ? "border-rose-500 ring-2 ring-rose-500/30 scale-105"
+                            : "border-slate-200 dark:border-slate-800 opacity-60 hover:opacity-100"
+                        )}
+                      >
+                        <img src={img} alt={`Thumb ${idx + 1}`} className="w-full h-full object-cover" />
+                      </button>
+                    ))}
+                  </div>
                 </div>
 
-                {/* 3 Photos Thumbnail Selector Bar */}
-                <div className="flex items-center justify-center gap-3">
-                  {allImages.map((img, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setActivePhotoIndex(idx)}
-                      className={cx(
-                        "relative w-20 h-16 rounded-xl overflow-hidden border-2 transition-all shadow-sm cursor-pointer",
-                        activePhotoIndex === idx
-                          ? "border-rose-500 ring-2 ring-rose-500/30 scale-105"
-                          : "border-slate-200 dark:border-slate-800 opacity-70 hover:opacity-100"
-                      )}
-                    >
-                      <img src={img} alt={`Thumb ${idx + 1}`} className="w-full h-full object-cover" />
-                      <span className="absolute bottom-1 right-1 bg-slate-950/80 text-[8px] font-bold text-white px-1.5 py-0.5 rounded-full">
-                        #{idx + 1}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-
-                {/* Privacy Notice Box (Matching Reference Screenshot 4) */}
-                <div className="mt-4 p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-900 dark:text-amber-300 flex items-start gap-2.5 text-xs font-medium shadow-sm">
-                  <Lock size={16} className="text-amber-500 shrink-0 mt-0.5" />
-                  <div>
-                    <span className="font-bold block text-amber-800 dark:text-amber-200">
-                      🔒 Privacy Alert Notice
+                {/* Candidate Overview Card */}
+                <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-200 dark:border-slate-800 text-xs space-y-3 shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="font-extrabold text-base text-slate-900 dark:text-white">{profile.name}</h3>
+                      <p className="text-[11px] font-bold text-slate-500">{profile.code || 'BR000158'} • Age {profile.age || 31}</p>
+                    </div>
+                    <span className="bg-rose-500/10 text-rose-500 font-extrabold px-2.5 py-1 rounded-full flex items-center gap-1">
+                      <Heart size={13} fill="currentColor" /> {profile.matchPercentage || 95}%
                     </span>
-                    Full name, contact details & horoscope info are visible only after mutual proposal acceptance.
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 text-[11px] font-bold pt-1">
+                    <div className="bg-slate-50 dark:bg-slate-800/60 p-2 rounded-lg"><span className="text-slate-400 block text-[9px] uppercase">Location</span><span className="text-slate-800 dark:text-slate-200 truncate block"><MapPin size={11} className="inline text-emerald-500" /> {profile.district || 'Colombo'}</span></div>
+                    <div className="bg-slate-50 dark:bg-slate-800/60 p-2 rounded-lg"><span className="text-slate-400 block text-[9px] uppercase">Profession</span><span className="text-slate-800 dark:text-slate-200 truncate block">{profile.profession || 'Lecturer'}</span></div>
                   </div>
                 </div>
               </div>
 
-              {/* 2. CATEGORIZED DETAILS CONTENT BLOCKS (Matching Screenshots 1, 2, 3) */}
-              <div className="p-6 space-y-8 font-sans">
+              {/* RIGHT COLUMN: Categorized Details Grid */}
+              <div className="md:col-span-7 space-y-5">
                 
-                {/* About & Partner Preference */}
-                <section className="space-y-4 font-sans">
-                  <h3 className="text-xs font-black uppercase tracking-wider text-rose-500 flex items-center gap-1.5">
-                    <User2 size={16} /> About & Partner Preference
-                  </h3>
+                {/* Privacy Notice Box */}
+                <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-900 dark:text-amber-300 flex items-start gap-2.5 text-xs font-medium shadow-sm">
+                  <Lock size={15} className="text-amber-500 shrink-0 mt-0.5" />
+                  <div>
+                    <span className="font-bold block text-amber-800 dark:text-amber-200 text-[11px]">
+                      🔒 Privacy Protection Notice
+                    </span>
+                    Full name, contact info & birthday are revealed only after mutual proposal acceptance.
+                  </div>
+                </div>
 
-                  <div className="bg-slate-50 dark:bg-slate-800/40 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 text-xs leading-relaxed text-slate-700 dark:text-slate-300">
-                    <p className="font-bold text-slate-900 dark:text-white mb-1">About Candidate:</p>
-                    {profile.bio || `Educated university graduate currently residing in ${profile.district || 'Colombo'}. Looking for a grounded partner with genuine values.`}
+                {/* About & Partner Expectation */}
+                <div className="space-y-2.5 font-sans">
+                  <h4 className="text-[11px] font-black uppercase tracking-wider text-rose-500 flex items-center gap-1">
+                    <User2 size={14} /> About & Partner Preferences
+                  </h4>
+
+                  <div className="bg-white dark:bg-slate-900 rounded-xl p-3.5 border border-slate-200 dark:border-slate-800 text-xs text-slate-700 dark:text-slate-300 leading-relaxed shadow-sm">
+                    {profile.bio || `Educated university graduate currently residing in ${profile.district || 'Colombo'}. Looking for a grounded life partner.`}
                   </div>
 
-                  <div className="bg-gradient-to-br from-rose-500/10 to-transparent p-4 rounded-2xl border border-rose-500/20 text-xs leading-relaxed font-sinhala">
-                    <p className="font-extrabold text-rose-500 mb-1">💕 Partner Preference (සහකරු / සහකාරිය):</p>
+                  <div className="bg-gradient-to-br from-rose-500/10 to-transparent p-3.5 rounded-xl border border-rose-500/20 text-xs leading-relaxed font-sinhala shadow-sm">
+                    <p className="font-extrabold text-rose-500 text-[11px] mb-0.5 flex items-center gap-1">
+                      <Sparkles size={12} /> 💕 Partner Preference (අපේක්ෂා):
+                    </p>
                     <p className="font-bold text-slate-800 dark:text-slate-200">
                       {profile.prompt_ideal_partner || `සමාන අධ්‍යාපන සුදුසුකම් ඇති, යහපත් ගුණධර්ම සහිත වෛද්‍ය/ඉංජිනේරු/කථිකාචාර්ය/මෘදුකාංග ඉංජිනේරු වැනි ගෞරවනීය රැකියාවක නිරත සහකරුවෙකු/සහකාරියක් සොයයි.`}
                     </p>
                   </div>
-                </section>
+                </div>
 
-                {/* Personal Information (Basic, Residency, Education) */}
-                <section className="space-y-4 font-sans">
-                  <h3 className="text-xs font-black uppercase tracking-wider text-blue-500 flex items-center gap-1.5">
-                    <Info size={16} /> Personal Information
-                  </h3>
+                {/* Personal Information */}
+                <div className="space-y-2.5 font-sans">
+                  <h4 className="text-[11px] font-black uppercase tracking-wider text-blue-500 flex items-center gap-1">
+                    <Info size={14} /> Personal Information
+                  </h4>
 
-                  {/* Basic */}
-                  <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden text-xs">
-                    <div className="bg-slate-100 dark:bg-slate-800/60 px-4 py-2 font-bold text-[11px] text-slate-600 dark:text-slate-300 uppercase">
-                      Basic Attributes
+                  <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden text-xs shadow-sm">
+                    <div className="bg-slate-100 dark:bg-slate-800/60 px-3.5 py-1.5 font-bold text-[10px] text-slate-600 dark:text-slate-300 uppercase">
+                      Basic & Location
                     </div>
                     <div className="divide-y divide-slate-100 dark:divide-slate-800/60">
-                      <div className="flex justify-between p-3"><span className="text-slate-500">Ethnicity</span><span className="font-bold">{profile.ethnicity || 'Sinhalese'}</span></div>
-                      <div className="flex justify-between p-3"><span className="text-slate-500">Religion</span><span className="font-bold">{profile.religion || 'Buddhist'}</span></div>
-                      <div className="flex justify-between p-3"><span className="text-slate-500">Caste</span><span className="font-bold">{profile.caste || 'Govigama'}</span></div>
-                      <div className="flex justify-between p-3"><span className="text-slate-500">Height (ft)</span><span className="font-bold">{profile.height || '5.4 ft'}</span></div>
-                      <div className="flex justify-between p-3"><span className="text-slate-500">Age</span><span className="font-bold">{profile.age || 31} years</span></div>
-                      <div className="flex justify-between p-3"><span className="text-slate-500">Civil Status</span><span className="font-bold">{profile.civilStatus || 'Never Married (අවිවාහක)'}</span></div>
+                      <div className="flex justify-between p-2.5"><span className="text-slate-500">Ethnicity & Religion</span><span className="font-bold">{profile.ethnicity || 'Sinhalese'} • {profile.religion || 'Buddhist'}</span></div>
+                      <div className="flex justify-between p-2.5"><span className="text-slate-500">Caste</span><span className="font-bold">{profile.caste || 'Govigama'}</span></div>
+                      <div className="flex justify-between p-2.5"><span className="text-slate-500">Height</span><span className="font-bold">{profile.height || '5.4 ft'}</span></div>
+                      <div className="flex justify-between p-2.5"><span className="text-slate-500">Civil Status</span><span className="font-bold">{profile.civilStatus || 'Never Married (අවිවාහක)'}</span></div>
+                      <div className="flex justify-between p-2.5"><span className="text-slate-500">Education</span><span className="font-bold">{profile.university || 'University Graduate'}</span></div>
+                      <div className="flex justify-between p-2.5"><span className="text-slate-500">Income</span><span className="font-bold text-rose-500">{profile.monthlyIncome || 'Rs 200,000+'}</span></div>
                     </div>
                   </div>
+                </div>
 
-                  {/* Residency */}
-                  <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden text-xs">
-                    <div className="bg-slate-100 dark:bg-slate-800/60 px-4 py-2 font-bold text-[11px] text-slate-600 dark:text-slate-300 uppercase flex items-center gap-1">
-                      <Globe size={13} className="text-emerald-500" /> Residency
-                    </div>
+                {/* Family Info */}
+                <div className="space-y-2.5 font-sans">
+                  <h4 className="text-[11px] font-black uppercase tracking-wider text-amber-500 flex items-center gap-1">
+                    <Users size={14} /> Family Info
+                  </h4>
+
+                  <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden text-xs shadow-sm">
                     <div className="divide-y divide-slate-100 dark:divide-slate-800/60">
-                      <div className="flex justify-between p-3"><span className="text-slate-500">Country</span><span className="font-bold">{profile.country || 'Sri Lanka'}</span></div>
-                      <div className="flex justify-between p-3"><span className="text-slate-500">State / District</span><span className="font-bold">{profile.district || 'Colombo'}</span></div>
-                      <div className="flex justify-between p-3"><span className="text-slate-500">City</span><span className="font-bold">{profile.hometown || 'Colombo 1'}</span></div>
+                      <div className="flex justify-between p-2.5"><span className="text-slate-500">Father's Profession</span><span className="font-bold">{profile.fatherProfession || 'Businessman / Accountant'}</span></div>
+                      <div className="flex justify-between p-2.5"><span className="text-slate-500">Mother's Profession</span><span className="font-bold">{profile.motherProfession || 'Teacher / Housewife'}</span></div>
+                      <div className="flex justify-between p-2.5"><span className="text-slate-500">Siblings</span><span className="font-bold">{profile.siblings || '1 Brother, 1 Sister'}</span></div>
                     </div>
                   </div>
-
-                  {/* Education & Profession */}
-                  <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden text-xs">
-                    <div className="bg-slate-100 dark:bg-slate-800/60 px-4 py-2 font-bold text-[11px] text-slate-600 dark:text-slate-300 uppercase flex items-center gap-1">
-                      <GraduationCap size={14} className="text-indigo-500" /> Education & Profession
-                    </div>
-                    <div className="divide-y divide-slate-100 dark:divide-slate-800/60">
-                      <div className="flex justify-between p-3"><span className="text-slate-500">Education</span><span className="font-bold">{profile.university || 'MPhil / Degree Graduate'}</span></div>
-                      <div className="flex justify-between p-3"><span className="text-slate-500">Profession</span><span className="font-bold">{profile.profession || 'Lecturer / Software Engineer'}</span></div>
-                      <div className="flex justify-between p-3"><span className="text-slate-500">Monthly Income</span><span className="font-bold text-rose-500">{profile.monthlyIncome || 'Rs 200,000 - Rs 300,000'}</span></div>
-                    </div>
-                  </div>
-                </section>
-
-                {/* Family Information (Father, Mother, Siblings Matching Screenshot 1) */}
-                <section className="space-y-4 font-sans">
-                  <h3 className="text-xs font-black uppercase tracking-wider text-amber-500 flex items-center gap-1.5">
-                    <Users size={16} /> Family Info
-                  </h3>
-
-                  {/* Father */}
-                  <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden text-xs">
-                    <div className="bg-slate-100 dark:bg-slate-800/60 px-4 py-2 font-bold text-[11px] text-amber-600 uppercase">
-                      FATHER
-                    </div>
-                    <div className="divide-y divide-slate-100 dark:divide-slate-800/60">
-                      <div className="flex justify-between p-3"><span className="text-slate-500">Ethnicity</span><span className="font-bold">{profile.fatherEthnicity || 'Sinhalese'}</span></div>
-                      <div className="flex justify-between p-3"><span className="text-slate-500">Religion</span><span className="font-bold">{profile.fatherReligion || 'Buddhist'}</span></div>
-                      <div className="flex justify-between p-3"><span className="text-slate-500">Caste</span><span className="font-bold">{profile.fatherCaste || 'Govigama'}</span></div>
-                      <div className="flex justify-between p-3"><span className="text-slate-500">Profession</span><span className="font-bold">{profile.fatherProfession || 'Accountant / Businessman'}</span></div>
-                      <div className="flex justify-between p-3"><span className="text-slate-500">Country</span><span className="font-bold">{profile.fatherCountry || 'Sri Lanka'}</span></div>
-                      <div className="flex justify-between p-3"><span className="text-slate-500">Additional Info</span><span className="font-bold text-slate-800 dark:text-slate-200">{profile.fatherStatus || 'මියගොස් ඇත (Deceased)'}</span></div>
-                    </div>
-                  </div>
-
-                  {/* Mother */}
-                  <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden text-xs">
-                    <div className="bg-slate-100 dark:bg-slate-800/60 px-4 py-2 font-bold text-[11px] text-pink-600 uppercase">
-                      MOTHER
-                    </div>
-                    <div className="divide-y divide-slate-100 dark:divide-slate-800/60">
-                      <div className="flex justify-between p-3"><span className="text-slate-500">Ethnicity</span><span className="font-bold">{profile.motherEthnicity || 'Sinhalese'}</span></div>
-                      <div className="flex justify-between p-3"><span className="text-slate-500">Religion</span><span className="font-bold">{profile.motherReligion || 'Buddhist'}</span></div>
-                      <div className="flex justify-between p-3"><span className="text-slate-500">Caste</span><span className="font-bold">{profile.motherCaste || 'Govigama'}</span></div>
-                      <div className="flex justify-between p-3"><span className="text-slate-500">Profession</span><span className="font-bold">{profile.motherProfession || 'Teacher / Housewife'}</span></div>
-                    </div>
-                  </div>
-
-                  {/* Siblings */}
-                  <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-200 dark:border-slate-800 text-xs flex justify-between">
-                    <span className="text-slate-500">Siblings</span>
-                    <span className="font-bold text-slate-900 dark:text-white">{profile.siblings || '1 Brother, 1 Sister'}</span>
-                  </div>
-                </section>
+                </div>
 
               </div>
             </div>
 
             {/* Sticky Action Footer Bar */}
-            <div className="absolute bottom-0 inset-x-0 p-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-t border-slate-200 dark:border-slate-800 flex items-center justify-center gap-4 z-30 font-sans">
+            <div className="px-6 py-3.5 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-t border-slate-200 dark:border-slate-800 flex items-center justify-center gap-4 z-30 font-sans shrink-0">
               <button 
                 onClick={handleSendProposal}
-                className="w-full py-3.5 rounded-full bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-extrabold text-sm shadow-lg shadow-rose-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full max-w-sm py-3 rounded-full bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-extrabold text-xs shadow-lg shadow-rose-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
-                <Heart size={18} fill="white" />
+                <Heart size={16} fill="white" />
                 <span>Send Proposal Request</span>
               </button>
             </div>
