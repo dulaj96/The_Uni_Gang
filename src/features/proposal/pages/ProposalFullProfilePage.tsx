@@ -52,8 +52,8 @@ export default function ProposalFullProfilePage({
       exit={{ opacity: 0, y: 15 }}
       className="w-full max-w-6xl mx-auto min-h-[calc(100vh-80px)] bg-slate-50 dark:bg-slate-950 flex flex-col relative rounded-[2.5rem] overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800 my-4 font-sans"
     >
-      {/* Sticky Top Header */}
-      <div className="sticky top-0 z-50 flex items-center justify-between px-6 py-3.5 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 shadow-sm font-sans">
+      {/* Top Header inside Profile Card */}
+      <div className="flex items-center justify-between px-6 py-3.5 bg-white/95 dark:bg-slate-900/95 border-b border-slate-200 dark:border-slate-800 font-sans">
         <button 
           onClick={goBack}
           className="w-9 h-9 rounded-full flex items-center justify-center bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-rose-500 hover:text-white transition-colors cursor-pointer"
