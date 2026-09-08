@@ -52,7 +52,7 @@ export default function ProposalHeroSection({ onGetStarted, onSearch }: Proposal
             {/* Main Headline in English */}
             <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-white tracking-tight leading-[1.08] drop-shadow-md">
               Find your <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 via-rose-500 to-fuchsia-500 font-black drop-shadow-lg">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-rose-300 to-amber-400 font-black drop-shadow-lg">
                 perfect match
               </span><br />
               within the campus.
@@ -108,14 +108,14 @@ export default function ProposalHeroSection({ onGetStarted, onSearch }: Proposal
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none" />
 
               <div className="absolute bottom-6 left-6 right-6">
-                <div className="bg-slate-900/90 backdrop-blur-xl p-3 rounded-2xl flex items-center justify-between mb-3 border border-white/10 shadow-xl">
+                <div className="bg-slate-900/90 backdrop-blur-xl p-3 rounded-2xl flex items-center justify-between mb-3 border border-amber-400/30 shadow-xl">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-9 h-9 rounded-full bg-gradient-to-r from-rose-500 to-fuchsia-600 flex items-center justify-center">
-                      <Heart size={16} className="text-white" fill="white" />
+                    <div className="w-9 h-9 rounded-full bg-gradient-to-r from-rose-800 via-rose-900 to-amber-700 border border-amber-400/30 flex items-center justify-center">
+                      <Heart size={16} className="text-amber-300" fill="#fde047" />
                     </div>
                     <div>
                       <p className="text-xs font-extrabold text-white">98% Match</p>
-                      <p className="text-[10px] font-bold text-rose-400 uppercase tracking-wider">Proposal Accepted!</p>
+                      <p className="text-[10px] font-bold text-amber-400 uppercase tracking-wider">Proposal Accepted!</p>
                     </div>
                   </div>
                 </div>
@@ -228,10 +228,10 @@ export default function ProposalHeroSection({ onGetStarted, onSearch }: Proposal
             {/* Field 3: Search Action Button */}
             <button
               type="submit"
-              className="w-full sm:w-14 h-12 sm:h-14 rounded-full bg-gradient-to-r from-rose-500 to-fuchsia-600 text-white flex items-center justify-center shadow-xl shadow-rose-500/40 hover:scale-105 active:scale-95 transition-all shrink-0"
+              className="w-full sm:w-14 h-12 sm:h-14 rounded-full bg-gradient-to-r from-rose-800 via-rose-900 to-amber-700 text-amber-200 border border-amber-400/40 flex items-center justify-center shadow-xl shadow-rose-950/50 hover:scale-105 active:scale-95 transition-all shrink-0"
               title="Search Proposals"
             >
-              <Search size={22} strokeWidth={2.5} />
+              <Search size={22} strokeWidth={2.5} className="text-amber-300" />
             </button>
           </form>
 

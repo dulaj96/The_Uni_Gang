@@ -1,26 +1,38 @@
 import React from 'react';
 
 export function WatermarkOverlay({ text, children }: { text: string; children: React.ReactNode }) {
-  // Create an array to repeat the watermark across the screen
-  const pattern = Array(15).fill(text);
-
   return (
-    <div className="relative w-full h-full overflow-hidden group">
+    <div className="relative w-full h-full overflow-hidden group select-none">
       {children}
-      
-      {/* Invisible/Light Watermark Pattern */}
-      <div className="absolute inset-0 pointer-events-none flex flex-wrap gap-12 p-4 justify-center content-center opacity-0 group-hover:opacity-40 transition-opacity duration-300">
-        {pattern.map((t, i) => (
-          <span 
-            key={i} 
-            className="text-white/30 font-black text-xl -rotate-45 select-none drop-shadow-md"
-            style={{ 
-              transform: `rotate(-45deg) translate(${Math.random() * 20}px, ${Math.random() * 20}px)` 
-            }}
-          >
-            {t}
+
+      {/* Professional Luminous Security Watermark (Clean, Non-cluttered, Fixed Alignment) */}
+      <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-4 opacity-30 group-hover:opacity-50 transition-opacity duration-300 z-10">
+        {/* Top Tier */}
+        <div className="w-full flex justify-between items-center transform -rotate-12">
+          <span className="text-white/80 font-black text-[9px] uppercase tracking-widest drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] bg-black/20 px-2 py-0.5 rounded backdrop-blur-[1px]">
+            {text}
           </span>
-        ))}
+          <span className="text-white/80 font-black text-[9px] uppercase tracking-widest drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] bg-black/20 px-2 py-0.5 rounded backdrop-blur-[1px]">
+            {text}
+          </span>
+        </div>
+
+        {/* Center Luminous Protection Shield */}
+        <div className="w-full flex justify-center items-center transform -rotate-12">
+          <span className="text-amber-300 font-extrabold text-[10px] uppercase tracking-widest drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)] bg-slate-950/60 text-amber-300 px-3 py-1 rounded-full border border-amber-400/40 shadow-lg backdrop-blur-sm">
+            🛡️ UNI PORONDAM • VERIFIED
+          </span>
+        </div>
+
+        {/* Bottom Tier */}
+        <div className="w-full flex justify-between items-center transform -rotate-12">
+          <span className="text-white/80 font-black text-[9px] uppercase tracking-widest drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] bg-black/20 px-2 py-0.5 rounded backdrop-blur-[1px]">
+            {text}
+          </span>
+          <span className="text-white/80 font-black text-[9px] uppercase tracking-widest drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] bg-black/20 px-2 py-0.5 rounded backdrop-blur-[1px]">
+            {text}
+          </span>
+        </div>
       </div>
     </div>
   );

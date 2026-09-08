@@ -48,7 +48,7 @@ const ProposalTeaserSection = () => {
         {/* ── Standarized Centered Section Header (Matching Events/Services/Market style) ── */}
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-4xl md:text-6xl font-extrabold text-white tracking-tight mb-4">
-            Verified Campus <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 via-pink-500 to-purple-400 italic">Proposals</span>
+            Verified Campus <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-rose-300 to-amber-400 italic">Proposals</span>
           </h2>
           <p className="text-slate-400 text-base md:text-lg font-medium leading-relaxed">
             Discover verified university undergraduates, alumni, and working professionals for genuine lifelong connections.

@@ -65,8 +65,8 @@ export default function ProposalFullProfilePage({
 
           {/* Floating Match Badge */}
           <div className="absolute top-6 right-6">
-            <div className="bg-rose-500/90 backdrop-blur-md px-4 py-2 rounded-full text-sm font-bold text-white flex items-center gap-2 border border-white/20 shadow-lg shadow-rose-500/20">
-              <Heart size={16} fill="currentColor" /> {profile.matchPercentage}% Match
+            <div className="bg-gradient-to-r from-rose-800 via-rose-900 to-amber-700 backdrop-blur-md px-4 py-2 rounded-full text-sm font-bold text-amber-200 flex items-center gap-2 border border-amber-400/40 shadow-lg shadow-rose-950/40">
+              <Heart size={16} fill="#fde047" className="text-amber-300" /> {profile.matchPercentage}% Match
             </div>
           </div>
 

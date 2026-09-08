@@ -225,9 +225,9 @@ export default function ProposalProfileModal({ profile, onClose }: { profile: an
               
               <button 
                 onClick={handleSendProposal}
-                className="w-20 h-20 rounded-full bg-gradient-to-r from-rose-500 to-fuchsia-600 text-white shadow-xl shadow-rose-500/30 grid place-items-center transition-transform active:scale-95 hover:scale-105 relative group"
+                className="w-20 h-20 rounded-full bg-gradient-to-r from-rose-800 via-rose-900 to-amber-700 text-amber-100 border-2 border-amber-400/40 shadow-2xl shadow-rose-950/50 grid place-items-center transition-transform active:scale-95 hover:scale-105 relative group"
               >
-                <Heart size={36} fill="white" className="drop-shadow-md transition-transform group-hover:scale-110" />
+                <Heart size={36} fill="#fde047" className="text-amber-300 drop-shadow-md transition-transform group-hover:scale-110" />
               </button>
             </div>
 
