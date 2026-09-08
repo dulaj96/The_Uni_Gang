@@ -62,7 +62,7 @@ export default function ProposalSearchHeader({
             title="Grid Gallery View"
             className={`px-4 py-1.5 rounded-full text-xs font-extrabold transition-all duration-300 flex items-center gap-1.5 cursor-pointer font-sans ${
               layoutMode === 'grid'
-                ? 'bg-gradient-to-r from-rose-500 via-rose-600 to-fuchsia-600 text-white shadow-lg shadow-rose-500/35 scale-105'
+                ? 'bg-gradient-to-r from-rose-500 to-pink-500 text-white shadow-lg shadow-rose-500/20 scale-105'
                 : isDark ? 'text-slate-300 hover:text-white' : 'text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -75,7 +75,7 @@ export default function ProposalSearchHeader({
             title="Compact List View"
             className={`px-4 py-1.5 rounded-full text-xs font-extrabold transition-all duration-300 flex items-center gap-1.5 cursor-pointer font-sans ${
               layoutMode === 'compact'
-                ? 'bg-gradient-to-r from-rose-500 via-rose-600 to-fuchsia-600 text-white shadow-lg shadow-rose-500/35 scale-105'
+                ? 'bg-gradient-to-r from-rose-500 to-pink-500 text-white shadow-lg shadow-rose-500/20 scale-105'
                 : isDark ? 'text-slate-300 hover:text-white' : 'text-slate-600 hover:text-slate-900'
             }`}
           >

@@ -63,7 +63,7 @@ export default function ProposalSearchTopFilterBar({
             onClick={() => handleChange('lookingFor', 'Groom')}
             className={`px-4 py-1.5 rounded-full text-xs font-extrabold transition-all duration-300 flex items-center gap-1.5 cursor-pointer font-sans ${
               filters.lookingFor === 'Groom'
-                ? 'bg-gradient-to-r from-rose-500 via-rose-600 to-fuchsia-600 text-white shadow-md scale-105'
+                ? 'bg-gradient-to-r from-rose-500 to-pink-500 text-white shadow-md scale-105'
                 : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -74,7 +74,7 @@ export default function ProposalSearchTopFilterBar({
             onClick={() => handleChange('lookingFor', 'Bride')}
             className={`px-4 py-1.5 rounded-full text-xs font-extrabold transition-all duration-300 flex items-center gap-1.5 cursor-pointer font-sans ${
               filters.lookingFor === 'Bride'
-                ? 'bg-gradient-to-r from-rose-500 via-rose-600 to-fuchsia-600 text-white shadow-md scale-105'
+                ? 'bg-gradient-to-r from-rose-500 to-pink-500 text-white shadow-md scale-105'
                 : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -138,7 +138,7 @@ export default function ProposalSearchTopFilterBar({
         <button
           type="button"
           onClick={onOpenAdvancedDrawer}
-          className="ml-auto px-5 py-2.5 rounded-full bg-gradient-to-r from-rose-500 via-rose-600 to-fuchsia-600 hover:from-rose-600 hover:to-fuchsia-700 text-white font-extrabold text-xs shadow-lg shadow-rose-500/25 hover:scale-105 transition-all flex items-center gap-2 cursor-pointer font-sans"
+          className="ml-auto px-5 py-2.5 rounded-full bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-extrabold text-xs shadow-lg shadow-rose-500/20 hover:scale-105 transition-all flex items-center gap-2 cursor-pointer font-sans"
         >
           <SlidersHorizontal size={14} />
           <span>All Filters</span>

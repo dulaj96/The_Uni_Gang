@@ -304,7 +304,7 @@ export default function ProposalAdvancedFilterDrawer({
               onApplyFilters();
               onClose();
             }}
-            className="flex-1 py-3 rounded-2xl bg-gradient-to-r from-rose-500 via-rose-600 to-fuchsia-600 text-white font-extrabold text-xs shadow-lg shadow-rose-500/25 hover:scale-[1.02] transition-all flex items-center justify-center gap-2 font-sans"
+            className="flex-1 py-3 rounded-2xl bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-extrabold text-xs shadow-lg shadow-rose-500/20 hover:scale-[1.02] transition-all flex items-center justify-center gap-2 font-sans"
           >
             <Check size={16} strokeWidth={3} /> Apply Filters
           </button>

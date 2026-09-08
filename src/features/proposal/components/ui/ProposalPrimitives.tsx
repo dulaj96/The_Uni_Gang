@@ -6,8 +6,8 @@ export const cx = (...a: (string | undefined | null | false)[]) => a.filter(Bool
 export function Logo() {
   return (
     <div className="flex items-center gap-2 mb-2">
-      <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-rose-800 via-rose-900 to-amber-700 grid place-items-center shadow-lg shadow-rose-900/30 border border-amber-400/30 shrink-0">
-        <Heart size={16} className="text-amber-300" fill="#fde047" strokeWidth={0} />
+      <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-rose-500 to-pink-500 grid place-items-center shadow-lg shadow-rose-500/20 border border-rose-400/30 shrink-0">
+        <Heart size={16} className="text-white" fill="white" strokeWidth={0} />
       </div>
       <div className="leading-none">
         <h1 className="font-bold text-lg text-slate-900 dark:text-white">Uni පොරොන්දම්</h1>
@@ -27,14 +27,14 @@ export function PrimaryButton({ children, className, icon: Icon, small, ...props
   return (
     <button
       className={cx(
-        "inline-flex items-center justify-center gap-1.5 font-semibold rounded-full transition-all active:scale-95 border border-amber-400/30 shadow-md shadow-rose-950/30 hover:shadow-xl hover:brightness-110",
-        "bg-gradient-to-r from-rose-800 via-rose-900 to-amber-800 text-amber-100",
+        "inline-flex items-center justify-center gap-1.5 font-semibold rounded-full transition-all active:scale-95 border border-rose-400/20 shadow-md shadow-rose-500/20 hover:shadow-lg hover:shadow-rose-500/30 hover:scale-[1.02]",
+        "bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white",
         small ? "text-xs px-4 py-2" : "text-sm px-6 py-2.5",
         className
       )}
       {...props}
     >
-      {Icon && <Icon size={small ? 14 : 16} strokeWidth={2.5} className="text-amber-300" />}
+      {Icon && <Icon size={small ? 14 : 16} strokeWidth={2.5} className="text-white" />}
       {children}
     </button>
   );

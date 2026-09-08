@@ -119,7 +119,7 @@ export default function ProposalNavbar({
                 className={cx(
                   "px-5 py-2 rounded-full text-xs font-extrabold transition-all duration-300 relative font-sans cursor-pointer",
                   isActive
-                    ? "bg-gradient-to-r from-rose-500 via-rose-600 to-fuchsia-600 text-white shadow-lg shadow-rose-500/35 scale-105"
+                    ? "bg-gradient-to-r from-rose-500 to-pink-500 text-white shadow-lg shadow-rose-500/25 scale-105"
                     : item.isHighlight
                     ? "text-amber-400 font-extrabold hover:bg-amber-500/10 hover:text-amber-300"
                     : isDark
@@ -160,7 +160,7 @@ export default function ProposalNavbar({
           </button>
           <button
             onClick={onGetStarted}
-            className="px-4 sm:px-5 py-2.5 rounded-full text-xs font-extrabold text-white bg-gradient-to-r from-rose-500 via-rose-600 to-fuchsia-600 hover:from-rose-600 hover:to-fuchsia-700 shadow-lg shadow-rose-500/25 hover:shadow-xl hover:shadow-rose-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-1.5 font-sinhala"
+            className="px-4 sm:px-5 py-2.5 rounded-full text-xs font-extrabold text-white bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 shadow-lg shadow-rose-500/20 hover:shadow-xl hover:shadow-rose-500/30 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-1.5 font-sinhala"
           >
             <Sparkles size={14} />
             <span className="hidden sm:inline">ලියාපදිංචි වන්න</span>

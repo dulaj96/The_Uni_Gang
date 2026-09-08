@@ -195,9 +195,9 @@ export default function ProposalSearchResultCard({
           <button
             type="button"
             onClick={() => onSendInterest(profile)}
-            className="w-full py-2.5 rounded-full bg-gradient-to-r from-rose-700 via-rose-800 to-amber-700 hover:from-rose-800 hover:to-amber-800 text-white font-extrabold text-xs shadow-lg shadow-rose-950/30 hover:shadow-xl hover:shadow-rose-950/40 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer font-sans mb-2 border border-amber-400/30"
+            className="w-full py-2.5 rounded-full bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-extrabold text-xs shadow-lg shadow-rose-500/20 hover:shadow-xl hover:shadow-rose-500/30 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer font-sans mb-2 border border-rose-400/20"
           >
-            <Heart size={14} fill="white" className="text-amber-200" />
+            <Heart size={14} fill="white" className="text-white" />
             <span className="tracking-wide">Send Interest</span>
           </button>
 
@@ -272,9 +272,9 @@ export default function ProposalSearchResultCard({
             <button
               type="button"
               onClick={() => onSendInterest(profile)}
-              className="shrink-0 px-4 py-2 rounded-full bg-gradient-to-r from-rose-700 via-rose-800 to-amber-700 hover:from-rose-800 hover:to-amber-800 text-white font-extrabold text-xs shadow-md hover:scale-105 transition-all flex items-center gap-1.5 cursor-pointer font-sans border border-amber-400/30"
+              className="shrink-0 px-4 py-2 rounded-full bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-extrabold text-xs shadow-md shadow-rose-500/20 hover:scale-105 transition-all flex items-center gap-1.5 cursor-pointer font-sans border border-rose-400/20"
             >
-              <Heart size={14} fill="white" className="text-amber-200" />
+              <Heart size={14} fill="white" className="text-white" />
               <span>Send Interest</span>
             </button>
           </div>
