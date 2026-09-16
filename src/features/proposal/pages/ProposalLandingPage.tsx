@@ -66,23 +66,23 @@ export default function ProposalLandingPage({
           </div>
         </section>
 
-        {/* 3. SRI LANKAN ASTRO PORONDAM FEATURE SHOWCASE SECTION (FRESH ULTRA-LUXURY DESIGN) */}
-        <section className={`py-14 my-8 relative border-t ${isDark ? 'border-slate-900' : 'border-slate-200'}`}>
+        {/* 3. SRI LANKAN ASTRO PORONDAM FEATURE SHOWCASE SECTION (MATCHING FAQ & PROPOSAL LANDING TYPOGRAPHY) */}
+        <section className={`py-14 my-8 relative border-t font-sinhala ${isDark ? 'border-slate-900' : 'border-slate-200'}`}>
           <div className="space-y-12">
             
             {/* Centered Section Header */}
-            <div className="text-center max-w-3xl mx-auto space-y-4">
-              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 font-black text-xs uppercase tracking-widest font-sinhala shadow-sm">
+            <div className="text-center max-w-3xl mx-auto space-y-3">
+              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 font-black text-xs uppercase tracking-widest shadow-sm">
                 <Sparkles size={15} className="text-rose-500 animate-pulse" />
                 <span>ශ්‍රී ලාංකේය පාරම්පරික ජ්‍යොතිෂ සේවාව</span>
               </span>
 
-              <h2 className={`text-3xl sm:text-5xl font-black tracking-tight font-plus-jakarta ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                Astro Match <span className="font-sinhala text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-rose-500 to-amber-500">20-පොරොන්දම් පරීක්ෂාව</span>
+              <h2 className={`text-2xl sm:text-4xl font-extrabold tracking-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                Astro Match 🔮 (ජ්‍යොතිෂ 20-පොරොන්දම් පරීක්ෂාව)
               </h2>
 
-              <p className={`text-sm sm:text-base font-sinhala font-medium leading-relaxed max-w-2xl mx-auto ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
-                ඔබගේ සහ සහකරුගේ/සහකාරියගේ උපන් නැකත හා රාශිය අනුව 100%ක් නිවැරදි සාම්ප්‍රදායික <strong className="text-rose-500 font-bold">විසි පොරොන්දම් ගැලපීම</strong>, <strong className="text-purple-600 dark:text-purple-400 font-bold">කුජ දෝෂය</strong> සහ <strong className="text-amber-600 dark:text-amber-400 font-bold">සෙනසුරු ඒරාෂ්ටක දෝෂ</strong> ක්ෂණිකව ගණනය කරගන්න.
+              <p className={`text-sm sm:text-base font-medium leading-relaxed max-w-2xl mx-auto ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                Uni Porondam මංගල සේවාව පිළිබඳ 100%ක් නිවැරදි සාම්ප්‍රදායික විසි පොරොන්දම් ගැලපීම, කුජ දෝෂය සහ සෙනසුරු ඒරාෂ්ටක දෝෂ ක්ෂණිකව ගණනය කරගන්න.
               </p>
             </div>
 
@@ -92,7 +92,7 @@ export default function ProposalLandingPage({
               {/* Left Column: High-Res Couple Visual Frame with Motion Badges (7 cols) */}
               <div className="lg:col-span-7 relative">
                 <div className={`relative h-[380px] sm:h-[440px] rounded-[2.5rem] overflow-hidden shadow-2xl border transition-all duration-700 group/img ${
-                  isDark ? 'border-purple-500/30 bg-slate-900' : 'border-slate-200 bg-white'
+                  isDark ? 'border-slate-800 bg-slate-900' : 'border-white bg-white'
                 }`}>
                   <img 
                     src={astroCoupleHero} 
@@ -105,7 +105,7 @@ export default function ProposalLandingPage({
                   <motion.div
                     animate={{ y: [0, -10, 0] }}
                     transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                    className="absolute top-6 right-6 z-20 px-4 py-2.5 rounded-2xl bg-slate-950/85 border border-amber-400/40 text-amber-300 backdrop-blur-xl shadow-2xl flex items-center gap-2 text-xs font-black uppercase tracking-wider font-sinhala"
+                    className="absolute top-6 right-6 z-20 px-4 py-2.5 rounded-2xl bg-slate-950/85 border border-amber-400/40 text-amber-300 backdrop-blur-xl shadow-2xl flex items-center gap-2 text-xs font-black uppercase tracking-wider"
                   >
                     <Sparkles size={16} className="text-amber-400" />
                     <span>100% Traditional Match</span>
@@ -122,43 +122,43 @@ export default function ProposalLandingPage({
 
                   {/* Bottom Glass Content Box */}
                   <div className={`absolute bottom-6 left-6 right-6 p-5 rounded-2xl backdrop-blur-xl shadow-2xl flex items-center justify-between border ${
-                    isDark ? 'bg-slate-900/90 border-purple-500/30 text-white' : 'bg-white/95 border-slate-200 text-slate-900'
+                    isDark ? 'bg-slate-900/95 border-slate-800 text-white' : 'bg-white/95 border-slate-200 text-slate-900'
                   }`}>
                     <div className="flex items-center gap-3.5">
-                      <div className="w-11 h-11 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center font-black">
-                        <Award size={24} />
+                      <div className="w-11 h-11 rounded-full bg-rose-500 text-white flex items-center justify-center shrink-0">
+                        <Heart size={20} fill="white" />
                       </div>
                       <div>
-                        <p className={`font-bold text-sm sm:text-base font-sinhala ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                        <h4 className={`text-sm sm:text-base font-bold leading-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>
                           විසි පොරොන්දම් ගණනය
-                        </p>
-                        <p className={`text-xs font-medium font-sinhala ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                          Couples & Single Proposals සදහා
+                        </h4>
+                        <p className="text-xs font-semibold text-rose-500 mt-0.5">
+                          100% Genuine & Verified Match Reports
                         </p>
                       </div>
                     </div>
-                    <span className="px-3.5 py-1.5 rounded-full text-xs font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-plus-jakarta">
-                      98% Verified
+                    <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-rose-500/10 text-rose-500 border border-rose-500/20">
+                      PDF Report
                     </span>
                   </div>
                 </div>
               </div>
 
               {/* Right Column: 3 Pillar Feature Highlights Stack (5 cols) */}
-              <div className="lg:col-span-5 space-y-4">
+              <div className="lg:col-span-5 space-y-3.5">
                 
                 <div className={`p-5 rounded-2xl border transition-all ${
-                  isDark ? 'bg-slate-900/80 border-slate-800 hover:border-purple-500/40' : 'bg-white border-slate-200/90 shadow-md hover:border-rose-300'
+                  isDark ? 'bg-slate-900/90 border-slate-800 hover:border-rose-500/30' : 'bg-white border-slate-200 hover:border-rose-300 shadow-sm'
                 }`}>
                   <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-rose-500/10 text-rose-500 flex items-center justify-center shrink-0 mt-0.5 font-black">
+                    <div className="p-3 rounded-xl bg-rose-500/10 text-rose-500 shrink-0 font-bold text-sm">
                       01
                     </div>
                     <div className="space-y-1">
-                      <h4 className={`text-base font-bold font-sinhala ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                      <h4 className={`text-sm sm:text-base font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
                         නැකත් 27 සහ රාශි 12 පරීක්ෂාව
                       </h4>
-                      <p className={`text-xs leading-relaxed font-sinhala ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                      <p className={`text-xs font-medium leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
                         සාම්ප්‍රදායික ශ්‍රී ලාංකීය 20-Porondam රීති වලට අනුව 100%ක් නිවැරදි ගණනය කිරීම්.
                       </p>
                     </div>
@@ -166,17 +166,17 @@ export default function ProposalLandingPage({
                 </div>
 
                 <div className={`p-5 rounded-2xl border transition-all ${
-                  isDark ? 'bg-slate-900/80 border-slate-800 hover:border-purple-500/40' : 'bg-white border-slate-200/90 shadow-md hover:border-rose-300'
+                  isDark ? 'bg-slate-900/90 border-slate-800 hover:border-rose-500/30' : 'bg-white border-slate-200 hover:border-rose-300 shadow-sm'
                 }`}>
                   <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center shrink-0 mt-0.5 font-black">
+                    <div className="p-3 rounded-xl bg-purple-500/10 text-purple-500 shrink-0 font-bold text-sm">
                       02
                     </div>
                     <div className="space-y-1">
-                      <h4 className={`text-base font-bold font-sinhala ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                      <h4 className={`text-sm sm:text-base font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
                         කුජ & සෙනසුරු දෝෂ භංග වීම්
                       </h4>
-                      <p className={`text-xs leading-relaxed font-sinhala ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                      <p className={`text-xs font-medium leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
                         කුජ දෝෂය හා සෙනසුරු ඒරාෂ්ටක දෝෂ දෙපාර්ශවයටම සමතුලිත වේදැයි automatic පරීක්ෂා කිරීම.
                       </p>
                     </div>
@@ -184,17 +184,17 @@ export default function ProposalLandingPage({
                 </div>
 
                 <div className={`p-5 rounded-2xl border transition-all ${
-                  isDark ? 'bg-slate-900/80 border-slate-800 hover:border-purple-500/40' : 'bg-white border-slate-200/90 shadow-md hover:border-rose-300'
+                  isDark ? 'bg-slate-900/90 border-slate-800 hover:border-rose-500/30' : 'bg-white border-slate-200 hover:border-rose-300 shadow-sm'
                 }`}>
                   <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center shrink-0 mt-0.5 font-black">
+                    <div className="p-3 rounded-xl bg-amber-500/10 text-amber-500 shrink-0 font-bold text-sm">
                       03
                     </div>
                     <div className="space-y-1">
-                      <h4 className={`text-base font-bold font-sinhala ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                      <h4 className={`text-sm sm:text-base font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
                         PDF Match Report Download
                       </h4>
-                      <p className={`text-xs leading-relaxed font-sinhala ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                      <p className={`text-xs font-medium leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
                         Couples සඳහා හෝ තනි යෝජනා සඳහා මුද්‍රිත නිල PDF වාර්තාවක් ක්ෂණිකව ලබාගන්න.
                       </p>
                     </div>
@@ -204,7 +204,7 @@ export default function ProposalLandingPage({
                 <div className="pt-2">
                   <button
                     onClick={onGetStarted}
-                    className="w-full py-4 rounded-full bg-gradient-to-r from-purple-600 via-rose-500 to-amber-500 hover:from-purple-700 hover:to-amber-600 text-white font-black text-xs shadow-xl shadow-rose-500/25 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer text-center flex items-center justify-center gap-2.5 tracking-wider font-plus-jakarta border border-rose-300/40"
+                    className="w-full py-4 rounded-full bg-rose-500 hover:bg-rose-600 text-white font-extrabold text-xs shadow-xl shadow-rose-500/25 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer text-center flex items-center justify-center gap-2.5 tracking-wider border-none"
                   >
                     <span>පොරොන්දම් බලන්න (Astro Hub 🔮 →)</span>
                     <ArrowRight size={16} strokeWidth={3} />

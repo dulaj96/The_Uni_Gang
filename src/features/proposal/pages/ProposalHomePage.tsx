@@ -697,29 +697,29 @@ export default function ProposalHomePage({
       </div>
 
       {/* Astro Porondam Feature Banner on Dashboard */}
-      <div className={`mb-10 rounded-[2.5rem] p-6 sm:p-8 border shadow-2xl transition-all duration-300 relative overflow-hidden group ${
+      <div className={`mb-10 rounded-[2.5rem] p-6 sm:p-8 border shadow-2xl transition-all duration-300 relative overflow-hidden group font-sinhala ${
         isDark 
-          ? 'bg-slate-900/95 border-purple-500/30 text-white shadow-purple-900/20' 
+          ? 'bg-slate-900/95 border-slate-800 text-white shadow-purple-900/10' 
           : 'bg-white border-slate-200 text-slate-900 shadow-xl'
       }`}>
         <div className="grid lg:grid-cols-2 gap-8 items-center relative z-10">
           
           {/* Left Text & Action Side */}
           <div className="space-y-4">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-2xl bg-rose-500/10 text-rose-500 dark:text-rose-400 border border-rose-500/20 font-black text-xs uppercase tracking-wider shadow-sm font-sinhala">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-2xl bg-rose-500/10 text-rose-500 dark:text-rose-400 border border-rose-500/20 font-black text-xs uppercase tracking-wider shadow-sm">
               <Sparkles size={15} className="text-rose-500 animate-pulse" />
               <span>ශ්‍රී ලාංකේය පාරම්පරික ජ්‍යොතිෂ සේවාව</span>
             </div>
 
-            <h3 className={`text-2xl sm:text-3xl font-extrabold tracking-tight font-serif ${isDark ? 'text-white' : 'text-slate-900'}`}>
-              Astro Match <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-rose-500 to-amber-500 font-sinhala">20-පොරොන්දම් පරීක්ෂාව</span>
+            <h3 className={`text-2xl sm:text-3xl font-extrabold tracking-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>
+              Astro Match 🔮 (ජ්‍යොතිෂ 20-පොරොන්දම් පරීක්ෂාව)
             </h3>
 
-            <p className={`text-xs sm:text-sm leading-relaxed font-sinhala ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
-              ඔබේ හා සහකරුගේ නැකතට 100%ක් ගැලපෙන <strong className="text-rose-500 font-black">විසි පොරොන්දම් ගණනය කර PDF වාර්තාව ලබාගන්න.</strong> couples සඳහා හෝ වෙනමම සේවාව ලබාගන්නන්ටද සුදුසුයි!
+            <p className={`text-xs sm:text-sm leading-relaxed font-medium ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+              Uni Porondam මංගල සේවාව පිළිබඳ 100%ක් නිවැරදි සාම්ප්‍රදායික විසි පොරොන්දම් ගණනය කර PDF වාර්තාව ලබාගන්න.
             </p>
 
-            <ul className="space-y-2 font-sinhala text-xs font-semibold">
+            <ul className="space-y-2 text-xs font-semibold">
               <li className={`flex items-center gap-2.5 ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>
                 <CheckCircle2 size={16} className="text-emerald-500 shrink-0" /> නැකත් 27 & රාශි 12 පාරම්පරික විද්‍යාත්මක පරීක්ෂාව
               </li>
@@ -732,7 +732,7 @@ export default function ProposalHomePage({
               <button 
                 type="button"
                 onClick={() => setPage('astro')}
-                className="w-full sm:w-auto px-7 py-3.5 rounded-full bg-gradient-to-r from-purple-600 via-rose-500 to-amber-500 hover:from-purple-700 hover:to-amber-600 text-white font-black text-xs shadow-xl shadow-rose-500/25 hover:scale-[1.03] active:scale-[0.97] transition-all cursor-pointer text-center flex items-center justify-center gap-2 tracking-wider font-sans border border-rose-300/40"
+                className="w-full sm:w-auto px-7 py-3.5 rounded-full bg-rose-500 hover:bg-rose-600 text-white font-extrabold text-xs shadow-xl shadow-rose-500/25 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer text-center flex items-center justify-center gap-2 tracking-wider border-none"
               >
                 <span>පොරොන්දම් බලන්න (Astro Hub 🔮 →)</span>
                 <ArrowRight size={16} strokeWidth={3} />
