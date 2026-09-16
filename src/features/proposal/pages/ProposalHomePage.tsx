@@ -705,14 +705,9 @@ export default function ProposalHomePage({
         <div className="grid lg:grid-cols-2 gap-8 items-center relative z-10">
           
           {/* Left Text & Action Side */}
-          <div className="space-y-4">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-2xl bg-rose-500/10 text-rose-500 dark:text-rose-400 border border-rose-500/20 font-black text-xs uppercase tracking-wider shadow-sm">
-              <Sparkles size={15} className="text-rose-500 animate-pulse" />
-              <span>ශ්‍රී ලාංකේය පාරම්පරික ජ්‍යොතිෂ සේවාව</span>
-            </div>
-
-            <h3 className={`text-2xl sm:text-3xl font-extrabold tracking-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>
-              Astro Match 🔮 (ජ්‍යොතිෂ 20-පොරොන්දම් පරීක්ෂාව)
+          <div className="space-y-3">
+            <h3 className={`text-xl sm:text-2xl font-extrabold tracking-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>
+              Astro Match (ජ්‍යොතිෂ 20-පොරොන්දම් පරීක්ෂාව)
             </h3>
 
             <p className={`text-xs sm:text-sm leading-relaxed font-medium ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>

@@ -71,17 +71,12 @@ export default function ProposalLandingPage({
           <div className="space-y-12">
             
             {/* Centered Section Header */}
-            <div className="text-center max-w-3xl mx-auto space-y-3">
-              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 font-black text-xs uppercase tracking-widest shadow-sm">
-                <Sparkles size={15} className="text-rose-500 animate-pulse" />
-                <span>ශ්‍රී ලාංකේය පාරම්පරික ජ්‍යොතිෂ සේවාව</span>
-              </span>
-
-              <h2 className={`text-2xl sm:text-4xl font-extrabold tracking-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                Astro Match 🔮 (ජ්‍යොතිෂ 20-පොරොන්දම් පරීක්ෂාව)
+            <div className="text-center max-w-4xl mx-auto space-y-2">
+              <h2 className={`text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                Astro Match (ජ්‍යොතිෂ 20-පොරොන්දම් පරීක්ෂාව)
               </h2>
 
-              <p className={`text-sm sm:text-base font-medium leading-relaxed max-w-2xl mx-auto ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+              <p className={`text-xs sm:text-sm md:text-base font-medium leading-relaxed max-w-2xl mx-auto ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
                 Uni Porondam මංගල සේවාව පිළිබඳ 100%ක් නිවැරදි සාම්ප්‍රදායික විසි පොරොන්දම් ගැලපීම, කුජ දෝෂය සහ සෙනසුරු ඒරාෂ්ටක දෝෂ ක්ෂණිකව ගණනය කරගන්න.
               </p>
             </div>
