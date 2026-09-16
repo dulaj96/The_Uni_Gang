@@ -1,4 +1,5 @@
-import { ShieldCheck, Heart, Crown, Lock, Video, CheckCircle2, Star, UserCheck, Sparkles, ArrowRight } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { ShieldCheck, Heart, Crown, Lock, Video, CheckCircle2, Star, UserCheck, Sparkles, ArrowRight, Award } from 'lucide-react';
 import { PrimaryButton, Card } from '../components/ui/ProposalPrimitives';
 import { SUCCESS_STORIES } from '../data/mockProposalData';
 import ProposalHeroSection from '../components/hero/ProposalHeroSection';
@@ -65,106 +66,106 @@ export default function ProposalLandingPage({
           </div>
         </section>
 
-        {/* 3. SRI LANKAN ASTRO PORONDAM FEATURE SHOWCASE SECTION */}
-        <section className="py-8 my-4 relative">
-          <div className={`rounded-[2.5rem] p-1 shadow-2xl transition-all duration-300 ${
-            isDark 
-              ? 'bg-gradient-to-r from-purple-500/40 via-pink-500/30 to-amber-500/40 shadow-[0_16px_50px_0_rgba(147,51,234,0.25)]' 
-              : 'bg-gradient-to-r from-rose-300 via-purple-300 to-amber-300 shadow-[0_16px_50px_0_rgba(244,63,94,0.12)]'
-          }`}>
-            <div className={`rounded-[2.4rem] p-8 sm:p-12 backdrop-blur-2xl flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden group transition-colors duration-300 ${
-              isDark 
-                ? 'bg-slate-900/95 text-white border border-purple-500/30' 
-                : 'bg-gradient-to-br from-white via-rose-50/70 to-purple-50/50 text-slate-900 border border-rose-200/80 shadow-xl'
-            }`}>
-              
-              <div className={`absolute top-0 right-0 w-80 h-80 rounded-full blur-3xl pointer-events-none transition-all duration-500 ${
-                isDark ? 'bg-purple-500/10 group-hover:bg-purple-500/20' : 'bg-rose-400/10 group-hover:bg-rose-400/20'
-              }`} />
-              <div className={`absolute bottom-0 left-10 w-64 h-64 rounded-full blur-3xl pointer-events-none ${
-                isDark ? 'bg-amber-500/10' : 'bg-purple-400/10'
-              }`} />
-
-              <div className="flex flex-col lg:flex-row items-center gap-8 relative z-10 w-full">
-                
-                {/* Visual Image Thumbnail */}
-                <div className="w-full lg:w-48 h-48 rounded-3xl p-1 bg-gradient-to-tr from-amber-400 via-rose-500 to-purple-500 shadow-xl shrink-0 overflow-hidden relative group/img">
-                  <img 
-                    src={astroCoupleHero} 
-                    alt="Astro Sri Lankan Couple" 
-                    className="w-full h-full object-cover object-top group-hover/img:scale-105 transition-transform duration-700 rounded-[22px]"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent flex items-end p-3">
-                    <span className="text-[10px] font-black uppercase text-amber-300 tracking-wider flex items-center gap-1 font-sinhala">
-                      <Sparkles size={12} /> 20-පොරොන්දම් පද්ධතිය
-                    </span>
-                  </div>
-                </div>
-
-                {/* Content Side */}
-                <div className="space-y-4 max-w-2xl text-center md:text-left">
-                  <span className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full font-extrabold text-xs tracking-wider backdrop-blur-md border ${
-                    isDark 
-                      ? 'bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-amber-500/20 text-amber-300 border-purple-400/30' 
-                      : 'bg-rose-100/80 text-rose-900 border-rose-200/80 shadow-sm'
-                  }`}>
-                    <Sparkles size={14} className={isDark ? 'text-amber-300 animate-pulse' : 'text-rose-500'} />
-                    <span className="font-sinhala">ශ්‍රී ලාංකේය පාරම්පරික ජ්‍යොතිෂ සේවාව</span>
-                  </span>
-
-                  <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight font-serif">
-                    Astro Match 🔮 <br />
-                    <span className={`text-transparent bg-clip-text ${
-                      isDark 
-                        ? 'bg-gradient-to-r from-amber-200 via-rose-200 to-purple-300 font-sinhala' 
-                        : 'bg-gradient-to-r from-purple-900 via-rose-700 to-amber-700 font-sinhala'
-                    }`}>
-                      ජ්‍යොතිෂ 20-පොරොන්දම් පරීක්ෂාව
-                    </span>
-                  </h2>
-
-                  <p className={`text-xs sm:text-sm font-medium leading-relaxed font-sinhala ${
-                    isDark ? 'text-slate-300' : 'text-slate-700'
-                  }`}>
-                    ඔබගේ සහ සහකරුගේ/සහකාරියගේ උපන් නැකත හා රාශිය අනුව 100%ක් නිවැරදි <strong className={isDark ? 'text-amber-300 font-black' : 'text-purple-700 font-black'}>20-පොරොන්දම් ගැලපීම</strong>, <strong className={isDark ? 'text-rose-300 font-black' : 'text-rose-700 font-black'}>කුජ/සෙනසුරු දෝෂ</strong> ක්ෂණිකව බලාගන්න. couples සඳහා හෝ තනි යෝජනාවක් සඳහා වෙනමම භාවිත කළ හැක!
-                  </p>
-
-                  <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 text-xs font-bold font-sinhala pt-1">
-                    <span className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border ${
-                      isDark ? 'bg-slate-950/60 text-slate-200 border-purple-500/30' : 'bg-white/90 text-slate-800 border-rose-200 shadow-sm'
-                    }`}>
-                      <CheckCircle2 size={15} className="text-emerald-500" /> 20-පොරොන්දම් ගණනය
-                    </span>
-                    <span className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border ${
-                      isDark ? 'bg-slate-950/60 text-slate-200 border-purple-500/30' : 'bg-white/90 text-slate-800 border-rose-200 shadow-sm'
-                    }`}>
-                      <CheckCircle2 size={15} className="text-emerald-500" /> කුජ දෝෂ භංග වීම්
-                    </span>
-                    <span className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border ${
-                      isDark ? 'bg-slate-950/60 text-slate-200 border-purple-500/30' : 'bg-white/90 text-slate-800 border-rose-200 shadow-sm'
-                    }`}>
-                      <CheckCircle2 size={15} className="text-emerald-500" /> PDF වාර්තාව Download
-                    </span>
-                  </div>
-                </div>
-
+        {/* 3. SRI LANKAN ASTRO PORONDAM FEATURE SHOWCASE SECTION (MATCHING HOW IT WORKS STYLE) */}
+        <section className={`py-12 my-6 relative border-t ${isDark ? 'border-slate-900' : 'border-slate-200'}`}>
+          <div className="grid lg:grid-cols-2 gap-10 sm:gap-14 items-center group">
+            
+            {/* Left Content Side */}
+            <div className="order-2 lg:order-1 space-y-5">
+              <div className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-2xl bg-rose-500/10 text-rose-500 dark:text-rose-400 border border-rose-500/20 font-black text-xs uppercase tracking-wider shadow-sm font-sinhala">
+                <Sparkles size={16} className="text-rose-500 animate-pulse" />
+                <span>ශ්‍රී ලාංකේය පාරම්පරික ජ්‍යොතිෂ සේවාව</span>
               </div>
 
-              <div className="shrink-0 relative z-10 w-full md:w-auto pt-4 md:pt-0">
+              <h2 className={`text-2xl sm:text-4xl font-extrabold tracking-tight font-serif ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                Astro Match <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-rose-500 to-amber-500 font-sinhala">20-පොරොන්දම් පරීක්ෂාව</span>
+              </h2>
+
+              <p className={`text-sm sm:text-base leading-relaxed font-sinhala ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
+                ඔබගේ සහ සහකරුගේ/සහකාරියගේ උපන් නැකත හා රාශිය අනුව 100%ක් නිවැරදි සාම්ප්‍රදායික <strong className="text-rose-500 font-black">විසි පොරොන්දම් ගැලපීම</strong>, <strong className="text-purple-600 dark:text-purple-400 font-black">කුජ දෝෂය</strong> සහ <strong className="text-amber-600 dark:text-amber-400 font-black">සෙනසුරු ඒරාෂ්ටක දෝෂ</strong> ක්ෂණිකව ගණනය කරගන්න.
+              </p>
+
+              <ul className="space-y-3 font-sinhala pt-1">
+                {[
+                  "නැකත් 27 සහ රාශි 12 පාරම්පරික විද්‍යාත්මක පරීක්ෂාව",
+                  "කුජ දෝෂ සහ සෙනසුරු ඒරාෂ්ටක දෝෂ භංග වීම් විග්‍රහය",
+                  "Couples සඳහා මුද්‍රිත නිල PDF වාර්තාව ක්ෂණිකව Download"
+                ].map((point) => (
+                  <li key={point} className={`flex items-center gap-3 text-xs sm:text-sm font-semibold ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>
+                    <CheckCircle2 size={18} className="text-emerald-500 shrink-0" /> {point}
+                  </li>
+                ))}
+              </ul>
+
+              <div className="pt-3">
                 <button
                   onClick={onGetStarted}
-                  className={`w-full md:w-auto px-8 py-4 rounded-full font-black text-xs shadow-xl hover:scale-[1.03] active:scale-[0.97] transition-all cursor-pointer text-center flex items-center justify-center gap-2 tracking-wider font-sans border ${
-                    isDark 
-                      ? 'bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 hover:from-amber-300 hover:to-yellow-300 text-slate-950 border-amber-200 shadow-amber-500/30' 
-                      : 'bg-gradient-to-r from-rose-500 via-purple-600 to-amber-500 hover:from-rose-600 hover:to-purple-700 text-white border-rose-300 shadow-rose-500/25'
-                  }`}
+                  className="w-full sm:w-auto px-8 py-4 rounded-full bg-gradient-to-r from-purple-600 via-rose-500 to-amber-500 hover:from-purple-700 hover:to-amber-600 text-white font-black text-xs shadow-xl shadow-rose-500/25 hover:scale-[1.03] active:scale-[0.97] transition-all cursor-pointer text-center flex items-center justify-center gap-2.5 tracking-wider font-sans border border-rose-300/40"
                 >
-                  <span>පොරොන්දම් පරීක්ෂා කරන්න (Astro Hub 🔮 →)</span>
+                  <span>පොරොන්දම් බලන්න (Astro Hub 🔮 →)</span>
                   <ArrowRight size={16} strokeWidth={3} />
                 </button>
               </div>
-
             </div>
+
+            {/* Right Visual Image Side with Floating Motion Badges */}
+            <div className="order-1 lg:order-2 relative">
+              <div className={`relative h-[360px] sm:h-[420px] rounded-[2.5rem] overflow-hidden shadow-2xl border transition-all duration-700 hover:shadow-rose-500/20 group/img ${
+                isDark ? 'border-purple-500/30 bg-slate-900' : 'border-slate-200 bg-white'
+              }`}>
+                
+                <img 
+                  src={astroCoupleHero} 
+                  alt="Astro Sri Lankan Couple" 
+                  className="w-full h-full object-cover object-top opacity-95 group-hover/img:scale-105 transition-transform duration-700" 
+                />
+                
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent pointer-events-none" />
+
+                {/* Floating Motion Badge 1: Top Right Match Rate */}
+                <motion.div
+                  animate={{ y: [0, -10, 0] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+                  className="absolute top-5 right-5 z-20 px-4 py-2 rounded-2xl bg-slate-950/85 border border-amber-400/40 text-amber-300 backdrop-blur-xl shadow-2xl flex items-center gap-2 text-xs font-black uppercase tracking-wider font-sinhala"
+                >
+                  <Sparkles size={16} className="text-amber-400 animate-spin-slow" />
+                  <span>100% Traditional Match</span>
+                </motion.div>
+
+                {/* Floating Motion Badge 2: Top Left Porondam Tag */}
+                <motion.div
+                  animate={{ y: [0, 10, 0] }}
+                  transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+                  className="absolute top-5 left-5 z-20 px-3.5 py-1.5 rounded-full bg-rose-500 text-white shadow-xl flex items-center gap-1.5 text-xs font-black uppercase tracking-wider"
+                >
+                  <Heart size={14} fill="currentColor" /> 20-Porondam Verified
+                </motion.div>
+
+                {/* Bottom Glass Overlay Banner */}
+                <div className={`absolute bottom-5 left-5 right-5 p-4 rounded-2xl backdrop-blur-xl shadow-2xl flex items-center justify-between border animate-fade-up ${
+                  isDark ? 'bg-slate-900/90 border-purple-500/30 text-white' : 'bg-white/95 border-slate-200 text-slate-900'
+                }`}>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center font-black text-lg">
+                      <Award size={22} />
+                    </div>
+                    <div>
+                      <p className={`font-bold text-sm font-sinhala ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                        20-පොරොන්දම් පද්ධතිය
+                      </p>
+                      <p className={`text-xs font-medium font-sinhala ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                        Couples & Single Proposals සදහා
+                      </p>
+                    </div>
+                  </div>
+                  <span className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                    PDF Report
+                  </span>
+                </div>
+
+              </div>
+            </div>
+
           </div>
         </section>
 
