@@ -50,13 +50,14 @@ const AdminDashboard = () => {
         navigate('/');
         return;
       }
-    } catch (err) {
+    } catch {
       toast.error('Invalid token. Please log in again.');
       navigate('/');
       return;
     }
 
     fetchAdminData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token, navigate]);
 
   const fetchAdminData = async () => {

@@ -26,7 +26,9 @@ const getLoggedInUserEmail = (): string | null => {
         return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
       }).join(''));
       return JSON.parse(jsonPayload).email || null;
-    } catch (e) { }
+    } catch {
+      /* ignore invalid token */
+    }
   }
   return localStorage.getItem('userEmail') || null;
 };
@@ -72,7 +74,7 @@ const BlogDetail: React.FC = () => {
                 const network = await api.getUserNetwork(data.author?.id, token);
                 const amIFollowing = network.followers.some((f: any) => f.email === email || f.id === localStorage.getItem('userId'));
                 setIsFollowing(amIFollowing);
-              } catch (e) { console.error('Failed to check follow status'); }
+              } catch { console.error('Failed to check follow status'); }
             }
           }
 
@@ -81,7 +83,7 @@ const BlogDetail: React.FC = () => {
             const all = await api.getBlogs();
             const related = all.filter((b: Blog) => b.category === data.category && b.id !== data.id).slice(0, 3);
             setRelatedBlogs(related);
-          } catch (e) { console.error('Failed to fetch related blogs'); }
+          } catch { console.error('Failed to fetch related blogs'); }
         }
       } catch (error) {
         console.error('Error fetching blog details:', error);
@@ -201,7 +203,7 @@ const BlogDetail: React.FC = () => {
               await api.deleteComment(blog.id, commentId, token);
               setBlog(prev => prev ? { ...prev, comments: (prev.comments || []).filter(c => c.id !== commentId) } : null);
               toast.success('Comment removed.', { style: { borderRadius: '20px', background: '#1e293b', color: '#fff' } });
-            } catch (err) { toast.error('Failed to delete comment.'); }
+            } catch { toast.error('Failed to delete comment.'); }
           }}
             className="px-3.5 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-red-600/20"
           >

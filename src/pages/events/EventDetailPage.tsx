@@ -63,7 +63,9 @@ const EventDetailPage: React.FC = () => {
                             const isAttending = data.attendees.some((a: any) => a.id === payload.id);
                             setIsInterested(isAttending);
                         }
-                    } catch {}
+                    } catch {
+                        /* ignore invalid token */
+                    }
                 }
             } catch (err: any) {
                 toast.error(err.message || 'Failed to load event details');

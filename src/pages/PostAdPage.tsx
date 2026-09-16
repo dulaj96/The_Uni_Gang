@@ -63,7 +63,6 @@ const PostAdPage = () => {
     navigate('/');
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleAnnexFormSubmit = async (adData: any, isEditing: boolean) => {
     const token = localStorage.getItem('userToken');
     if (!token) {

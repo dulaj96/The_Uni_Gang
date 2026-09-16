@@ -392,7 +392,7 @@ const AnnexAdForm: React.FC<AnnexFormProps> = ({ initialData, onSubmit, onCancel
           }
           return combined.slice(0, 4);
         });
-      } catch (err) {
+      } catch {
         toast.dismiss(toastId);
       }
     }

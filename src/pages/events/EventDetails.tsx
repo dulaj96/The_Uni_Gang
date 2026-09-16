@@ -63,7 +63,9 @@ const EventDetails: React.FC<EventDetailsProps> = ({ event, isOpen, onClose }) =
                         const isAttending = event.attendees.some(a => a.id === payload.id);
                         setIsInterested(isAttending);
                     }
-                } catch { }
+                } catch {
+                    /* ignore invalid token */
+                }
             } else {
                 setIsInterested(false);
                 setIsHost(false);
