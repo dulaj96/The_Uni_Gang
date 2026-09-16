@@ -10,6 +10,7 @@ import {
   Award,
   Crown,
   ShieldCheck,
+  Compass,
   FileText
 } from 'lucide-react';
 import { useTheme } from '../../../context/ThemeContext';
@@ -20,7 +21,7 @@ import {
   AstroMatchReport 
 } from '../utils/astroEngine';
 
-// Rich Visual Image Assets
+// Visual Image Assets
 import astroCoupleHero from '../../../assets/astro_couple_hero.png';
 import astroCoupleCard from '../../../assets/astro_couple_card.png';
 
@@ -56,24 +57,41 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
   const alertCount = report.items.filter(i => !i.passed).length;
 
   return (
-    <div className={`w-full min-h-screen py-10 px-4 sm:px-6 lg:px-8 font-sinhala transition-colors duration-300 ${
-      isDark ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-900'
+    <div className={`w-full min-h-screen py-10 px-4 sm:px-6 lg:px-8 font-sinhala transition-colors duration-500 relative overflow-hidden ${
+      isDark ? 'bg-[#0B0F17] text-slate-100 selection:bg-purple-500/30' : 'bg-slate-50/80 text-slate-900 selection:bg-rose-500/20'
     }`}>
-      <div className="max-w-6xl mx-auto space-y-12">
+      
+      {/* ATMOSPHERIC AMBIENT GLOW ORBS FOR GLASSMORPHISM */}
+      <div className={`absolute top-10 left-1/4 w-[650px] h-[650px] rounded-full blur-[170px] pointer-events-none transition-all duration-700 ${
+        isDark ? 'bg-purple-600/15' : 'bg-purple-300/25'
+      }`} />
+      <div className={`absolute top-1/3 right-10 w-[550px] h-[550px] rounded-full blur-[170px] pointer-events-none transition-all duration-700 ${
+        isDark ? 'bg-rose-500/15' : 'bg-rose-300/25'
+      }`} />
+      <div className={`absolute bottom-10 left-10 w-[650px] h-[650px] rounded-full blur-[180px] pointer-events-none transition-all duration-700 ${
+        isDark ? 'bg-indigo-600/15' : 'bg-indigo-300/25'
+      }`} />
 
-        {/* 1. HERO SECTION WITH IMAGE & FLOATING MOTION BADGES (PROPOSAL HOME STYLE) */}
-        <div className={`rounded-[2.5rem] p-6 sm:p-10 border shadow-2xl transition-all duration-300 relative overflow-hidden group ${
-          isDark 
-            ? 'bg-slate-900/95 border-slate-800 text-white shadow-purple-900/10' 
-            : 'bg-white border-slate-200 text-slate-900 shadow-xl'
-        }`}>
+      <div className="max-w-6xl mx-auto space-y-10 relative z-10">
+
+        {/* 1. HERO SECTION - FROSTED GLASSMORPHISM CONTAINER WITH FLOATING MOTION BADGES */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className={`rounded-[2.8rem] p-6 sm:p-10 border backdrop-blur-2xl shadow-2xl transition-all duration-500 relative overflow-hidden group ${
+            isDark 
+              ? 'bg-slate-900/70 border-white/10 text-white shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)]' 
+              : 'bg-white/75 border-white/80 text-slate-900 shadow-[0_20px_60px_-15px_rgba(31,38,135,0.08)]'
+          }`}
+        >
           <div className="grid lg:grid-cols-12 gap-8 items-center relative z-10">
             
             {/* Left Content Side */}
-            <div className="lg:col-span-7 space-y-4">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-rose-500/10 text-rose-500 font-extrabold text-xs uppercase tracking-wider border border-rose-500/20">
+            <div className="lg:col-span-7 space-y-5">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-500/10 text-rose-500 dark:text-rose-400 font-extrabold text-xs uppercase tracking-wider border border-rose-500/20 backdrop-blur-md">
                 <Sparkles size={14} className="animate-pulse text-rose-500" />
-                <span>20-Porondam Astro System</span>
+                <span>20-Porondam Glassmorphism Hub</span>
               </div>
 
               <h1 className={`text-2xl sm:text-4xl font-extrabold tracking-tight leading-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>
@@ -97,8 +115,8 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
               </div>
             </div>
 
-            {/* Right Visual Image Side with Floating Motion Badges */}
-            <div className="lg:col-span-5 relative h-[320px] sm:h-[360px] rounded-3xl overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800 group/img">
+            {/* Right Visual Image Side with Frosted Glass Floating Motion Badges */}
+            <div className="lg:col-span-5 relative h-[320px] sm:h-[360px] rounded-3xl overflow-hidden shadow-2xl border border-white/20 dark:border-slate-700 group/img">
               <img 
                 src={astroCoupleHero} 
                 alt="Sri Lankan Astro Couple" 
@@ -106,31 +124,31 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent pointer-events-none" />
 
-              {/* Floating Badge Top Right */}
+              {/* Floating Glass Badge Top Right */}
               <motion.div
                 animate={{ y: [0, -10, 0] }}
                 transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                className="absolute top-4 right-4 z-20 px-3.5 py-1.5 rounded-xl bg-slate-950/85 border border-amber-400/40 text-amber-300 backdrop-blur-xl shadow-xl flex items-center gap-1.5 text-xs font-black uppercase tracking-wider"
+                className="absolute top-4 right-4 z-20 px-4 py-2 rounded-2xl bg-slate-950/80 border border-amber-400/40 text-amber-300 backdrop-blur-xl shadow-2xl flex items-center gap-2 text-xs font-black uppercase tracking-wider"
               >
                 <Sparkles size={14} className="text-amber-400" />
                 <span>100% Traditional Match</span>
               </motion.div>
 
-              {/* Floating Badge Top Left */}
+              {/* Floating Glass Badge Top Left */}
               <motion.div
                 animate={{ y: [0, 10, 0] }}
                 transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
-                className="absolute top-4 left-4 z-20 px-3 py-1 rounded-full bg-rose-500 text-white shadow-xl flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider"
+                className="absolute top-4 left-4 z-20 px-3.5 py-1.5 rounded-full bg-rose-500/90 text-white shadow-xl backdrop-blur-md flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider border border-white/20"
               >
                 <Heart size={13} fill="currentColor" /> 20-Porondam Engine
               </motion.div>
 
-              {/* Bottom Glass Overlay */}
-              <div className={`absolute bottom-4 left-4 right-4 p-3.5 rounded-2xl backdrop-blur-xl shadow-xl flex items-center justify-between border ${
-                isDark ? 'bg-slate-900/90 border-slate-700 text-white' : 'bg-white/95 border-slate-200 text-slate-900'
+              {/* Bottom Glass Overlay Box */}
+              <div className={`absolute bottom-4 left-4 right-4 p-4 rounded-2xl backdrop-blur-2xl shadow-2xl flex items-center justify-between border ${
+                isDark ? 'bg-slate-950/85 border-white/15 text-white' : 'bg-white/85 border-white/80 text-slate-900'
               }`}>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-rose-500 text-white flex items-center justify-center shrink-0">
+                  <div className="w-10 h-10 rounded-full bg-rose-500 text-white flex items-center justify-center shrink-0 shadow-md">
                     <Heart size={18} fill="white" />
                   </div>
                   <div>
@@ -142,26 +160,30 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
                     </p>
                   </div>
                 </div>
-                <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 uppercase">
+                <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 uppercase backdrop-blur-md">
                   VERIFIED
                 </span>
               </div>
             </div>
 
           </div>
-        </div>
+        </motion.div>
 
-        {/* 2. DUAL CALCULATOR CARDS (BRIDE VS GROOM) */}
+        {/* 2. DUAL GLASS CALCULATOR CARDS (BRIDE VS GROOM) */}
         <div className="grid md:grid-cols-2 gap-6">
           
-          {/* BRIDE CARD */}
-          <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl space-y-5">
-            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
+          {/* BRIDE FROSTED GLASS CARD (🌸 Pink Highlight Aura) */}
+          <div className={`p-6 sm:p-8 rounded-[2.5rem] border backdrop-blur-2xl shadow-xl space-y-5 transition-all duration-300 ${
+            isDark 
+              ? 'bg-slate-900/70 border-rose-500/30 text-white shadow-[0_8px_32px_0_rgba(244,63,94,0.12)]' 
+              : 'bg-white/75 border-rose-200/80 text-slate-900 shadow-[0_8px_32px_0_rgba(244,63,94,0.06)]'
+          }`}>
+            <div className="flex items-center justify-between border-b border-rose-500/20 pb-4">
               <span className="text-base font-bold text-rose-500 dark:text-rose-400 flex items-center gap-2">
                 <Heart size={18} className="fill-current" />
                 <span>මනාලියගේ විස්තර (Bride)</span>
               </span>
-              <span className="text-xs font-semibold px-3 py-1 rounded-full bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800">
+              <span className="text-xs font-semibold px-3 py-1 rounded-full bg-rose-500/10 text-rose-600 dark:text-rose-300 border border-rose-500/20 font-sinhala backdrop-blur-md">
                 මනාලිය
               </span>
             </div>
@@ -174,10 +196,14 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
                 <select
                   value={brideNakId}
                   onChange={(e) => setBrideNakId(Number(e.target.value))}
-                  className="w-full rounded-xl px-4 py-3 text-xs font-semibold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-rose-500"
+                  className={`w-full rounded-2xl px-4 py-3 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500 shadow-inner cursor-pointer border backdrop-blur-md ${
+                    isDark ? 'bg-slate-950/80 border-rose-500/30 text-white' : 'bg-white/90 border-rose-200 text-slate-900'
+                  }`}
                 >
                   {NAKSHATRAS.map((n) => (
-                    <option key={n.id} value={n.id}>{n.id}. {n.nameSinhala} ({n.name})</option>
+                    <option key={n.id} value={n.id} className={isDark ? 'bg-slate-900 text-white' : 'bg-white text-slate-900'}>
+                      {n.id}. {n.nameSinhala} ({n.name})
+                    </option>
                   ))}
                 </select>
               </div>
@@ -189,24 +215,28 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
                 <select
                   value={brideRashiId}
                   onChange={(e) => setBrideRashiId(Number(e.target.value))}
-                  className="w-full rounded-xl px-4 py-3 text-xs font-semibold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-rose-500"
+                  className={`w-full rounded-2xl px-4 py-3 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500 shadow-inner cursor-pointer border backdrop-blur-md ${
+                    isDark ? 'bg-slate-950/80 border-rose-500/30 text-white' : 'bg-white/90 border-rose-200 text-slate-900'
+                  }`}
                 >
                   {RASHIS.map((r) => (
-                    <option key={r.id} value={r.id}>{r.nameSinhala}</option>
+                    <option key={r.id} value={r.id} className={isDark ? 'bg-slate-900 text-white' : 'bg-white text-slate-900'}>
+                      {r.nameSinhala}
+                    </option>
                   ))}
                 </select>
               </div>
 
               <div 
                 onClick={() => setHasKujaBride(!hasKujaBride)}
-                className={`p-3.5 rounded-xl border transition-all cursor-pointer flex items-center justify-between ${
+                className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex items-center justify-between backdrop-blur-md ${
                   hasKujaBride 
-                    ? 'bg-rose-50 dark:bg-rose-950/40 border-rose-300 dark:border-rose-700 text-rose-700 dark:text-rose-300' 
-                    : 'bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'
+                    ? 'bg-rose-500/15 border-rose-400 text-rose-600 dark:text-rose-300' 
+                    : (isDark ? 'bg-slate-950/50 border-slate-800 text-slate-400 hover:border-rose-500/30' : 'bg-white/80 border-slate-200 text-slate-600 hover:border-rose-300')
                 }`}
               >
                 <div className="flex items-center gap-2.5 text-xs font-semibold">
-                  <div className={`w-4 h-4 rounded flex items-center justify-center border ${hasKujaBride ? 'bg-rose-500 text-white border-rose-500' : 'border-slate-400'}`}>
+                  <div className={`w-4.5 h-4.5 rounded-md flex items-center justify-center border ${hasKujaBride ? 'bg-rose-500 text-white border-rose-500' : 'border-slate-400'}`}>
                     {hasKujaBride && <Check size={12} strokeWidth={3} />}
                   </div>
                   <span>මනාලියට කුජ දෝෂය පවතී (Kuja Doshaya)</span>
@@ -215,14 +245,18 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
             </div>
           </div>
 
-          {/* GROOM CARD */}
-          <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl space-y-5">
-            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
+          {/* GROOM FROSTED GLASS CARD (👔 Frosted Indigo Aura) */}
+          <div className={`p-6 sm:p-8 rounded-[2.5rem] border backdrop-blur-2xl shadow-xl space-y-5 transition-all duration-300 ${
+            isDark 
+              ? 'bg-slate-900/70 border-indigo-500/30 text-white shadow-[0_8px_32px_0_rgba(99,102,241,0.12)]' 
+              : 'bg-white/75 border-indigo-200/80 text-slate-900 shadow-[0_8px_32px_0_rgba(99,102,241,0.06)]'
+          }`}>
+            <div className="flex items-center justify-between border-b border-indigo-500/20 pb-4">
               <span className="text-base font-bold text-indigo-500 dark:text-indigo-400 flex items-center gap-2">
                 <Heart size={18} className="fill-current" />
                 <span>මනාලයාගේ විස්තර (Groom)</span>
               </span>
-              <span className="text-xs font-semibold px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800">
+              <span className="text-xs font-semibold px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-300 border border-indigo-500/20 font-sinhala backdrop-blur-md">
                 මනාලයා
               </span>
             </div>
@@ -235,10 +269,14 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
                 <select
                   value={groomNakId}
                   onChange={(e) => setGroomNakId(Number(e.target.value))}
-                  className="w-full rounded-xl px-4 py-3 text-xs font-semibold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className={`w-full rounded-2xl px-4 py-3 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-inner cursor-pointer border backdrop-blur-md ${
+                    isDark ? 'bg-slate-950/80 border-indigo-500/30 text-white' : 'bg-white/90 border-indigo-200 text-slate-900'
+                  }`}
                 >
                   {NAKSHATRAS.map((n) => (
-                    <option key={n.id} value={n.id}>{n.id}. {n.nameSinhala} ({n.name})</option>
+                    <option key={n.id} value={n.id} className={isDark ? 'bg-slate-900 text-white' : 'bg-white text-slate-900'}>
+                      {n.id}. {n.nameSinhala} ({n.name})
+                    </option>
                   ))}
                 </select>
               </div>
@@ -250,24 +288,28 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
                 <select
                   value={groomRashiId}
                   onChange={(e) => setGroomRashiId(Number(e.target.value))}
-                  className="w-full rounded-xl px-4 py-3 text-xs font-semibold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className={`w-full rounded-2xl px-4 py-3 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-inner cursor-pointer border backdrop-blur-md ${
+                    isDark ? 'bg-slate-950/80 border-indigo-500/30 text-white' : 'bg-white/90 border-indigo-200 text-slate-900'
+                  }`}
                 >
                   {RASHIS.map((r) => (
-                    <option key={r.id} value={r.id}>{r.nameSinhala}</option>
+                    <option key={r.id} value={r.id} className={isDark ? 'bg-slate-900 text-white' : 'bg-white text-slate-900'}>
+                      {r.nameSinhala}
+                    </option>
                   ))}
                 </select>
               </div>
 
               <div 
                 onClick={() => setHasKujaGroom(!hasKujaGroom)}
-                className={`p-3.5 rounded-xl border transition-all cursor-pointer flex items-center justify-between ${
+                className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex items-center justify-between backdrop-blur-md ${
                   hasKujaGroom 
-                    ? 'bg-indigo-50 dark:bg-indigo-950/40 border-indigo-300 dark:border-indigo-700 text-indigo-700 dark:text-indigo-300' 
-                    : 'bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'
+                    ? 'bg-indigo-500/15 border-indigo-400 text-indigo-600 dark:text-indigo-300' 
+                    : (isDark ? 'bg-slate-950/50 border-slate-800 text-slate-400 hover:border-indigo-500/30' : 'bg-white/80 border-slate-200 text-slate-600 hover:border-indigo-300')
                 }`}
               >
                 <div className="flex items-center gap-2.5 text-xs font-semibold">
-                  <div className={`w-4 h-4 rounded flex items-center justify-center border ${hasKujaGroom ? 'bg-indigo-500 text-white border-indigo-500' : 'border-slate-400'}`}>
+                  <div className={`w-4.5 h-4.5 rounded-md flex items-center justify-center border ${hasKujaGroom ? 'bg-indigo-500 text-white border-indigo-500' : 'border-slate-400'}`}>
                     {hasKujaGroom && <Check size={12} strokeWidth={3} />}
                   </div>
                   <span>මනාලයාට කුජ දෝෂය පවතී (Kuja Doshaya)</span>
@@ -278,10 +320,10 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
 
         </div>
 
-        {/* 3. VERDICT RESULT BANNER */}
-        <div className="p-8 rounded-3xl bg-gradient-to-r from-rose-500 via-pink-500 to-purple-600 text-white shadow-xl flex flex-col sm:flex-row items-center justify-between gap-6">
-          <div className="space-y-2 text-center sm:text-left">
-            <span className="text-xs font-extrabold uppercase tracking-wider px-3 py-1 rounded-full bg-white/20 text-white backdrop-blur-md">
+        {/* 3. FROSTED GLASS VERDICT BANNER */}
+        <div className="p-8 rounded-[2.5rem] bg-gradient-to-r from-rose-500/90 via-pink-500/90 to-purple-600/90 backdrop-blur-2xl border border-white/30 text-white shadow-[0_15px_40px_-10px_rgba(244,63,94,0.35)] flex flex-col sm:flex-row items-center justify-between gap-6 relative overflow-hidden">
+          <div className="space-y-2.5 text-center sm:text-left relative z-10">
+            <span className="text-xs font-extrabold uppercase tracking-wider px-3.5 py-1 rounded-full bg-white/20 text-white backdrop-blur-md border border-white/30">
               ★ 20-Porondam Match Result
             </span>
             <h2 className="text-3xl sm:text-4xl font-black flex items-center justify-center sm:justify-start gap-3">
@@ -293,36 +335,39 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
             </p>
           </div>
 
-          <div className="w-24 h-24 rounded-full bg-white/10 backdrop-blur-md border border-white/30 flex flex-col items-center justify-center shrink-0 shadow-lg">
-            <span className="text-2xl font-black text-white">{report.percentage}%</span>
+          {/* Score Circle Gauge */}
+          <div className="w-24 h-24 rounded-full bg-white/15 backdrop-blur-xl border border-white/40 flex flex-col items-center justify-center shrink-0 shadow-2xl relative z-10">
+            <span className="text-2xl font-black text-white tracking-tight">{report.percentage}%</span>
             <span className="text-[10px] font-bold uppercase tracking-widest text-rose-100">Score</span>
           </div>
         </div>
 
-        {/* 4. BREAKDOWN TABLE */}
+        {/* 4. FROSTED GLASS BREAKDOWN TABLE */}
         <div className="space-y-4">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-3">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-200/80 dark:border-slate-800 pb-3">
             <h3 className="text-lg font-extrabold text-slate-900 dark:text-white font-sinhala flex items-center gap-2">
               <Sparkles size={18} className="text-rose-500" />
               <span>විසි පොරොන්දම් ලැයිස්තු විග්‍රහය (Full Breakdown)</span>
             </h3>
             
-            <div className="flex gap-2 text-xs font-bold font-sinhala">
+            <div className={`flex gap-2 text-xs font-bold font-sinhala p-1 rounded-2xl border backdrop-blur-xl ${
+              isDark ? 'bg-slate-900/60 border-slate-800' : 'bg-white/60 border-slate-200'
+            }`}>
               <button 
                 onClick={() => setFilterMode('all')}
-                className={`px-3 py-1.5 rounded-lg transition-all ${filterMode === 'all' ? 'bg-rose-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'}`}
+                className={`px-3 py-1.5 rounded-xl transition-all cursor-pointer ${filterMode === 'all' ? 'bg-rose-500 text-white shadow-md' : 'text-slate-600 dark:text-slate-400'}`}
               >
                 සියල්ල ({report.items.length})
               </button>
               <button 
                 onClick={() => setFilterMode('passed')}
-                className={`px-3 py-1.5 rounded-lg transition-all ${filterMode === 'passed' ? 'bg-emerald-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'}`}
+                className={`px-3 py-1.5 rounded-xl transition-all cursor-pointer ${filterMode === 'passed' ? 'bg-emerald-500 text-white shadow-md' : 'text-slate-600 dark:text-slate-400'}`}
               >
                 සාර්ථකයි ({passedCount})
               </button>
               <button 
                 onClick={() => setFilterMode('alerts')}
-                className={`px-3 py-1.5 rounded-lg transition-all ${filterMode === 'alerts' ? 'bg-amber-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'}`}
+                className={`px-3 py-1.5 rounded-xl transition-all cursor-pointer ${filterMode === 'alerts' ? 'bg-amber-500 text-white shadow-md' : 'text-slate-600 dark:text-slate-400'}`}
               >
                 අවධානය ({alertCount})
               </button>
@@ -333,10 +378,10 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
             {filteredItems.map((item, idx) => (
               <div 
                 key={item.title}
-                className={`p-4 rounded-2xl border flex items-start justify-between gap-3 text-xs transition-all ${
+                className={`p-4 rounded-2xl border backdrop-blur-xl flex items-start justify-between gap-3 text-xs transition-all ${
                   item.passed 
-                    ? 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200' 
-                    : 'bg-amber-50/50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800/40 text-amber-900 dark:text-amber-200'
+                    ? (isDark ? 'bg-slate-900/60 border-slate-800/80 text-slate-200' : 'bg-white/70 border-slate-200/80 text-slate-800') 
+                    : (isDark ? 'bg-amber-950/20 border-amber-800/40 text-amber-200' : 'bg-amber-50/70 border-amber-200 text-amber-900')
                 }`}
               >
                 <div className="flex items-start gap-2.5">
@@ -350,8 +395,8 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
                   </div>
                 </div>
 
-                <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full shrink-0 border ${
-                  item.passed ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800' : 'bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800'
+                <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full shrink-0 border backdrop-blur-md ${
+                  item.passed ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/30' : 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/30'
                 }`}>
                   {item.passed ? '✔ Pass' : '✖ Alert'}
                 </span>
@@ -360,8 +405,8 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
           </div>
         </div>
 
-        {/* 5. PRICING CARDS WITH VISUAL GRAPHIC CARD */}
-        <div className="space-y-6 pt-6 border-t border-slate-200 dark:border-slate-800">
+        {/* 5. FROSTED GLASS PRICING CARDS */}
+        <div className="space-y-6 pt-6 border-t border-slate-200/80 dark:border-slate-800">
           <div className="text-center space-y-2">
             <span className="text-xs font-bold text-rose-500 uppercase tracking-widest">
               Service Packages
@@ -374,7 +419,7 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
           <div className="grid lg:grid-cols-12 gap-6 items-stretch">
             
             {/* Left Graphic Showcase Card */}
-            <div className="lg:col-span-4 rounded-3xl overflow-hidden relative border border-slate-200 dark:border-slate-800 shadow-xl group min-h-[280px]">
+            <div className="lg:col-span-4 rounded-[2.2rem] overflow-hidden relative border border-white/40 dark:border-slate-800 shadow-xl group min-h-[280px]">
               <img 
                 src={astroCoupleCard} 
                 alt="Sri Lankan Astro Couple" 
@@ -394,9 +439,11 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
             </div>
 
             {/* Single Report Card */}
-            <div className="lg:col-span-4 p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl flex flex-col justify-between space-y-6">
+            <div className={`lg:col-span-4 p-8 rounded-[2.2rem] border backdrop-blur-2xl shadow-xl flex flex-col justify-between space-y-6 ${
+              isDark ? 'bg-slate-900/70 border-slate-800/80 text-white' : 'bg-white/75 border-white/80 text-slate-900'
+            }`}>
               <div className="space-y-4">
-                <span className="text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+                <span className="text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-slate-500/10 text-slate-600 dark:text-slate-300 border border-slate-500/20 backdrop-blur-md">
                   Single Proposal Check
                 </span>
                 <div>
@@ -417,8 +464,8 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
             </div>
 
             {/* VIP Pass Card */}
-            <div className="lg:col-span-4 p-8 rounded-3xl bg-gradient-to-b from-rose-500/10 via-pink-500/5 to-purple-500/10 dark:from-rose-500/20 dark:via-pink-500/15 dark:to-purple-500/20 border-2 border-rose-500 shadow-xl flex flex-col justify-between space-y-6 relative overflow-hidden">
-              <span className="absolute top-6 right-6 px-3 py-1 rounded-full text-[10px] font-black uppercase bg-rose-500 text-white shadow-md flex items-center gap-1">
+            <div className="lg:col-span-4 p-8 rounded-[2.2rem] bg-gradient-to-b from-rose-500/15 via-pink-500/10 to-purple-500/15 dark:from-rose-500/20 dark:via-pink-500/15 dark:to-purple-500/20 border-2 border-rose-500 backdrop-blur-2xl shadow-xl flex flex-col justify-between space-y-6 relative overflow-hidden">
+              <span className="absolute top-6 right-6 px-3 py-1 rounded-full text-[10px] font-black uppercase bg-rose-500 text-white shadow-md flex items-center gap-1 backdrop-blur-md">
                 <Sparkles size={12} /> Best Value
               </span>
 
@@ -442,6 +489,7 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
                 <Crown size={16} /> Upgrade to VIP Pro (Rs. 1,499)
               </button>
             </div>
+
           </div>
         </div>
 
