@@ -77,7 +77,7 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
                 <span className="font-sinhala">ශ්‍රී ලාංකේය පාරම්පරික ජ්‍යොතිෂ 20-පොරොන්දම් පද්ධතිය</span>
               </div>
 
-              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.12] font-serif">
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.12] font-plus-jakarta">
                 Astro Match Hub 🔮 <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-rose-200 to-purple-300 font-sinhala">
                   ජ්‍යොතිෂ පොරොන්දම් පරීක්ෂාව
