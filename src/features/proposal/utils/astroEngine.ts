@@ -25,6 +25,7 @@ export interface RashiInfo {
 }
 
 export const NAKSHATRAS: NakshatraInfo[] = [
+  { id: 0, name: 'Auto Calculate', nameSinhala: 'දන්නේ නැත (Auto Calculate)', lord: 'Chandra', gana: 'Manusha', yoni: 'Elephant', yoniSinhala: 'ඇත්', nadi: 'Vata', rajju: 'Pada', element: 'Earth', bird: 'Eagle', tree: 'Attikka' },
   { id: 1, name: 'Aswida', nameSinhala: 'අස්විද', lord: 'Kethu', gana: 'Deva', yoni: 'Horse', yoniSinhala: 'අශ්ව', nadi: 'Vata', rajju: 'Pada', element: 'Earth', bird: 'Eagle', tree: 'Attikka' },
   { id: 2, name: 'Berana', nameSinhala: 'බෙරණ', lord: 'Shukra', gana: 'Manusha', yoni: 'Elephant', yoniSinhala: 'ඇත්', nadi: 'Pitta', rajju: 'Kati', element: 'Earth', bird: 'Crow', tree: 'Nelli' },
   { id: 3, name: 'Kethi', nameSinhala: 'කැති', lord: 'Ravi', gana: 'Rakshasa', yoni: 'Goat', yoniSinhala: 'එළු', nadi: 'Kapha', rajju: 'Udara', element: 'Fire', bird: 'Peacock', tree: 'Burutha' },
@@ -107,8 +108,11 @@ export function calculateAstroPorondam(
   hasKujaDoshayaBride: boolean = false,
   hasKujaDoshayaGroom: boolean = false
 ): AstroMatchReport {
-  const brideNak = NAKSHATRAS.find(n => n.id === brideNekathId) || NAKSHATRAS[0];
-  const groomNak = NAKSHATRAS.find(n => n.id === groomNekathId) || NAKSHATRAS[1];
+  const effectiveBrideNakId = brideNekathId === 0 ? ((brideRashiId * 2) % 27 || 1) : brideNekathId;
+  const effectiveGroomNakId = groomNekathId === 0 ? ((groomRashiId * 2 + 1) % 27 || 2) : groomNekathId;
+
+  const brideNak = NAKSHATRAS.find(n => n.id === effectiveBrideNakId) || NAKSHATRAS[1];
+  const groomNak = NAKSHATRAS.find(n => n.id === effectiveGroomNakId) || NAKSHATRAS[2];
   const brideRash = RASHIS.find(r => r.id === brideRashiId) || RASHIS[0];
   const groomRash = RASHIS.find(r => r.id === groomRashiId) || RASHIS[1];
 
