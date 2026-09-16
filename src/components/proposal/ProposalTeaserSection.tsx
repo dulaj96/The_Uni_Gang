@@ -19,11 +19,8 @@ const ProposalTeaserSection = () => {
   const [isNavigating, setIsNavigating] = useState(false);
 
   const handleOpenHub = () => {
-    setIsNavigating(true);
-    setTimeout(() => {
-      navigate('/proposals');
-      setTimeout(() => setIsNavigating(false), 100);
-    }, 300);
+    navigate('/proposals');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (

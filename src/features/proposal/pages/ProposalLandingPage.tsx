@@ -1,4 +1,4 @@
-import { ShieldCheck, Heart, Crown, Lock, Video, CheckCircle2, Star, UserCheck } from 'lucide-react';
+import { ShieldCheck, Heart, Crown, Lock, Video, CheckCircle2, Star, UserCheck, Sparkles, ArrowRight } from 'lucide-react';
 import { PrimaryButton, Card } from '../components/ui/ProposalPrimitives';
 import { SUCCESS_STORIES } from '../data/mockProposalData';
 import ProposalHeroSection from '../components/hero/ProposalHeroSection';
@@ -6,11 +6,12 @@ import ProposalFAQSection from '../components/faq/ProposalFAQSection';
 import { useTheme } from '../../../context/ThemeContext';
 
 export default function ProposalLandingPage({
-  dark: _dark,
-  onGetStarted
+  onGetStarted,
+  hasProposalProfile = false
 }: {
-  dark: boolean;
+  dark?: boolean;
   onGetStarted: () => void;
+  hasProposalProfile?: boolean;
 }) {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
@@ -22,7 +23,7 @@ export default function ProposalLandingPage({
       <div className="w-full px-4 sm:px-6 lg:px-12 max-w-7xl mx-auto relative z-10">
 
         {/* 1. HERO SECTION */}
-        <ProposalHeroSection onGetStarted={onGetStarted} />
+        <ProposalHeroSection onGetStarted={onGetStarted} hasProposalProfile={hasProposalProfile} />
 
         {/* 2. TRUST & SAFETY SECTION (MATCHING SCREENSHOT 1) */}
         <section className="py-16 relative">
@@ -60,6 +61,57 @@ export default function ProposalLandingPage({
                 Keep your photos blurred to the public. Reveal your identity only to those whose proposals you explicitly accept.
               </p>
             </Card>
+          </div>
+        </section>
+
+        {/* 3. SRI LANKAN ASTRO PORONDAM FEATURE SHOWCASE SECTION */}
+        <section className="py-8 my-4 relative">
+          <div className="rounded-[2.5rem] p-1 bg-gradient-to-r from-purple-500/40 via-pink-500/30 to-amber-500/40 shadow-[0_16px_50px_0_rgba(147,51,234,0.25)]">
+            <div className="rounded-[2.4rem] p-8 sm:p-12 bg-slate-900/90 backdrop-blur-2xl text-white flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden group">
+              
+              <div className="absolute top-0 right-0 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl pointer-events-none group-hover:bg-purple-500/20 transition-all duration-500" />
+              <div className="absolute bottom-0 left-10 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+
+              <div className="space-y-4 max-w-2xl relative z-10 text-center md:text-left">
+                <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-amber-500/20 text-amber-300 font-extrabold text-xs border border-purple-400/30 uppercase tracking-wider backdrop-blur-md">
+                  <Sparkles size={14} className="text-amber-300 animate-pulse" />
+                  <span>ශ්‍රී ලාංකේය පාරම්පරික ජ්‍යොතිෂ සේවාව</span>
+                </span>
+
+                <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight font-serif text-white">
+                  Astro Match 🔮 <br />
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-rose-200 to-purple-300">
+                    ජ්‍යොතිෂ 20-පොරොන්දම් පරීක්ෂාව
+                  </span>
+                </h2>
+
+                <p className="text-xs sm:text-sm font-medium text-slate-300 leading-relaxed font-sinhala">
+                  ඔබගේ සහ සහකරුගේ/සහකාරියගේ උපන් නැකත හා රාශිය අනුව 100%ක් නිවැරදි <strong className="text-amber-300 font-black">20-පොරොන්දම් ගැලපීම</strong>, <strong className="text-rose-300 font-black">කුජ/සෙනසුරු දෝෂ</strong> ක්ෂණිකව බලාගන්න. couples සඳහා හෝ තනි යෝජනාවක් සඳහා වෙනමම භාවිත කළ හැක!
+                </p>
+
+                <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 text-xs font-bold text-slate-200 pt-1 font-sinhala">
+                  <span className="flex items-center gap-1.5 bg-slate-950/60 px-3.5 py-1.5 rounded-full border border-purple-500/30">
+                    <CheckCircle2 size={15} className="text-emerald-400" /> 20-පොරොන්දම් ගණනය
+                  </span>
+                  <span className="flex items-center gap-1.5 bg-slate-950/60 px-3.5 py-1.5 rounded-full border border-purple-500/30">
+                    <CheckCircle2 size={15} className="text-emerald-400" /> කුජ දෝෂ භංග වීම්
+                  </span>
+                  <span className="flex items-center gap-1.5 bg-slate-950/60 px-3.5 py-1.5 rounded-full border border-purple-500/30">
+                    <CheckCircle2 size={15} className="text-emerald-400" /> PDF වාර්තාව Download
+                  </span>
+                </div>
+              </div>
+
+              <div className="shrink-0 relative z-10 w-full md:w-auto">
+                <button
+                  onClick={onGetStarted}
+                  className="w-full md:w-auto px-8 py-4 rounded-full bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 hover:from-amber-300 hover:to-yellow-300 text-slate-950 font-black text-xs shadow-xl shadow-amber-500/30 hover:scale-[1.03] active:scale-[0.97] transition-all cursor-pointer text-center flex items-center justify-center gap-2 tracking-wider font-sans border border-amber-200"
+                >
+                  <span>පොරොන්දම් පරීක්ෂා කරන්න (Astro Hub 🔮 →)</span>
+                  <ArrowRight size={16} strokeWidth={3} />
+                </button>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -335,8 +387,8 @@ export default function ProposalLandingPage({
           <p className={`text-sm sm:text-base font-medium mb-8 max-w-xl mx-auto ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
             Join thousands of verified undergraduates and alumni across Sri Lanka who are already writing their success stories.
           </p>
-          <PrimaryButton onClick={onGetStarted} icon={Heart} className="px-8 py-4 text-xs font-extrabold">
-            Join Uni Porondam Today
+          <PrimaryButton onClick={onGetStarted} icon={Heart} className="px-8 py-4 text-xs font-extrabold shadow-[0_0_35px_rgba(244,63,94,0.4)]">
+            {hasProposalProfile ? 'Go to My Proposal Dashboard 💖' : 'Join Uni Porondam Today'}
           </PrimaryButton>
         </section>
       </div>
