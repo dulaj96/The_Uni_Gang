@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Search, SlidersHorizontal, RotateCcw, Save, Crown, Check, User, ChevronDown } from 'lucide-react';
+import React from 'react';
+import { Search, SlidersHorizontal, RotateCcw, Save, Crown, Check } from 'lucide-react';
 import { useTheme } from '../../../../context/ThemeContext';
 
 export interface SearchFilterState {

@@ -30,6 +30,8 @@ const INITIAL_CANDIDATES: CandidateProfile[] = [
     height: '5.4 ft',
     country: 'Sri Lanka',
     publishedDate: '8/31/2026',
+    educationCategory: 'University',
+    categoryBadge: 'Campus Graduate 🎓'
   },
   {
     id: 2,
@@ -49,6 +51,8 @@ const INITIAL_CANDIDATES: CandidateProfile[] = [
     height: '5.7 ft',
     country: 'Sri Lanka',
     publishedDate: '8/31/2026',
+    educationCategory: 'Professional Qualification',
+    categoryBadge: 'Working Professional 💼'
   },
   {
     id: 3,
@@ -68,6 +72,8 @@ const INITIAL_CANDIDATES: CandidateProfile[] = [
     height: '5.8 ft',
     country: 'Sri Lanka',
     publishedDate: '8/26/2026',
+    educationCategory: 'University',
+    categoryBadge: 'Campus Graduate 🎓'
   },
   {
     id: 4,
@@ -87,6 +93,8 @@ const INITIAL_CANDIDATES: CandidateProfile[] = [
     height: '5.9 ft',
     country: 'Sri Lanka',
     publishedDate: '8/26/2026',
+    educationCategory: 'Professional Qualification',
+    categoryBadge: 'Working Professional 💼'
   },
   {
     id: 5,
@@ -106,6 +114,8 @@ const INITIAL_CANDIDATES: CandidateProfile[] = [
     height: '5.9 ft',
     country: 'Sri Lanka',
     publishedDate: '6/4/2026',
+    educationCategory: 'University',
+    categoryBadge: 'Campus Graduate 🎓'
   },
   {
     id: 6,
@@ -125,6 +135,8 @@ const INITIAL_CANDIDATES: CandidateProfile[] = [
     height: '5.0 ft',
     country: 'Sri Lanka',
     publishedDate: '6/4/2026',
+    educationCategory: 'General / Business',
+    categoryBadge: 'Business Enterprise 🏢'
   },
   {
     id: 7,
@@ -144,6 +156,8 @@ const INITIAL_CANDIDATES: CandidateProfile[] = [
     height: '5.5 ft',
     country: 'Sri Lanka',
     publishedDate: '5/18/2026',
+    educationCategory: 'Professional Qualification',
+    categoryBadge: 'Working Professional 💼'
   },
   {
     id: 8,
@@ -163,6 +177,8 @@ const INITIAL_CANDIDATES: CandidateProfile[] = [
     height: '5.7 ft',
     country: 'Sri Lanka',
     publishedDate: '8/31/2026',
+    educationCategory: 'General / Business',
+    categoryBadge: 'Business Enterprise 🏢'
   },
 ];
 

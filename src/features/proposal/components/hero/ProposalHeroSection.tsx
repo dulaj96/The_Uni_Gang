@@ -6,9 +6,10 @@ import FallingHearts from '../animations/FallingHearts';
 interface ProposalHeroSectionProps {
   onGetStarted: () => void;
   onSearch?: (filters: any) => void;
+  hasProposalProfile?: boolean;
 }
 
-export default function ProposalHeroSection({ onGetStarted, onSearch }: ProposalHeroSectionProps) {
+export default function ProposalHeroSection({ onGetStarted, onSearch, hasProposalProfile = false }: ProposalHeroSectionProps) {
   const [lookingFor, setLookingFor] = useState<'Female' | 'Male'>('Female');
   const [showGenderPopup, setShowGenderPopup] = useState(false);
   const [ageRange, setAgeRange] = useState('18 - 80');
@@ -68,8 +69,8 @@ export default function ProposalHeroSection({ onGetStarted, onSearch }: Proposal
 
             {/* Hero CTAs */}
             <div className="flex flex-wrap items-center gap-4 mt-8">
-              <PrimaryButton onClick={onGetStarted} icon={ArrowRight} className="shadow-[0_0_35px_rgba(244,63,94,0.4)] px-8 py-4 font-bold text-sm">
-                Create Your Profile
+              <PrimaryButton onClick={onGetStarted} icon={hasProposalProfile ? Heart : ArrowRight} className="shadow-[0_0_35px_rgba(244,63,94,0.4)] px-8 py-4 font-bold text-sm">
+                {hasProposalProfile ? 'Go to My Proposal Dashboard 💖' : 'Create Your Profile'}
               </PrimaryButton>
             </div>
           </div>

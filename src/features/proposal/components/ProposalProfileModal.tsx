@@ -9,12 +9,10 @@ import {
   AlertTriangle, 
   UserX,
   Lock,
-  Globe,
   Users,
   User2,
   Sparkles,
   Info,
-  GraduationCap,
   Camera
 } from 'lucide-react';
 import { cx } from './ui/ProposalPrimitives';

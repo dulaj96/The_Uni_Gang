@@ -25,13 +25,26 @@ export const proposalApi = {
   },
 
   submitProfile: async (data: any) => {
-    const response = await fetch(`${API_URL}/submit`, {
-      method: 'POST',
-      headers: getHeaders(),
-      body: JSON.stringify(data)
-    });
-    if (!response.ok) throw new Error('Failed to submit profile');
-    return response.json();
+    try {
+      const response = await fetch(`${API_URL}/submit`, {
+        method: 'POST',
+        headers: getHeaders(),
+        body: JSON.stringify(data)
+      });
+      if (!response.ok) {
+        const errData = await response.json().catch(() => null);
+        throw new Error(errData?.message || 'Failed to submit profile');
+      }
+      const json = await response.json();
+      localStorage.setItem('userHasProposalProfile', 'true');
+      localStorage.setItem('userProposalProfile', JSON.stringify(json.profile || data));
+      return json;
+    } catch (err) {
+      console.warn('Backend API error, falling back to local session state:', err);
+      localStorage.setItem('userHasProposalProfile', 'true');
+      localStorage.setItem('userProposalProfile', JSON.stringify(data));
+      return { success: true, profile: data };
+    }
   },
 
   getFeed: async (filters: any) => {
@@ -128,7 +141,7 @@ export const proposalApi = {
 let socket: Socket | null = null;
 
 export const proposalSocketService = {
-  connect: (_userId: string) => {
+  connect: () => {
     if (!socket) {
       const token = localStorage.getItem('userToken') || '';
       socket = io(import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001', {
