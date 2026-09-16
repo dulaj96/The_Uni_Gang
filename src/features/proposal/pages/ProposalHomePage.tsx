@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Compass, Send, Heart, Eye, CheckCircle2, Crown, ArrowRight, ShieldCheck, Lock, MessageCircle, Settings, Home, GraduationCap, User2, Sparkles, Inbox, Check, X, Clock } from 'lucide-react';
 import { cx, PrimaryButton, Card } from '../components/ui/ProposalPrimitives';
 import { proposalApi } from '../api/proposalApi';
+import { useTheme } from '../../../context/ThemeContext';
 import astroCoupleHero from '../../../assets/astro_couple_hero.png';
 
 export default function ProposalHomePage({
@@ -13,6 +14,8 @@ export default function ProposalHomePage({
   openProfile: (p: any) => void;
   goToLanding: () => void;
 }) {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const [discoverProfiles, setDiscoverProfiles] = useState<any[]>([]);
   const [currentUser, setCurrentUser] = useState<any>({ 
     name: 'User', 
@@ -693,10 +696,20 @@ export default function ProposalHomePage({
       </div>
 
       {/* Astro Porondam Feature Banner on Dashboard */}
-      <div className="mb-8 rounded-[2.5rem] p-1 bg-gradient-to-r from-purple-500/40 via-pink-500/30 to-amber-500/40 shadow-[0_16px_50px_0_rgba(147,51,234,0.25)]">
-        <div className="rounded-[2.4rem] p-6 sm:p-8 bg-slate-900/90 backdrop-blur-2xl text-white flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden group">
+      <div className={`mb-8 rounded-[2.5rem] p-1 shadow-2xl transition-all duration-300 ${
+        isDark 
+          ? 'bg-gradient-to-r from-purple-500/40 via-pink-500/30 to-amber-500/40 shadow-[0_16px_50px_0_rgba(147,51,234,0.25)]' 
+          : 'bg-gradient-to-r from-rose-300 via-purple-300 to-amber-300 shadow-[0_16px_50px_0_rgba(244,63,94,0.12)]'
+      }`}>
+        <div className={`rounded-[2.4rem] p-6 sm:p-8 backdrop-blur-2xl flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden group transition-colors duration-300 ${
+          isDark 
+            ? 'bg-slate-900/95 text-white border border-purple-500/30' 
+            : 'bg-gradient-to-br from-white via-rose-50/70 to-purple-50/50 text-slate-900 border border-rose-200/80 shadow-xl'
+        }`}>
           
-          <div className="absolute top-0 right-0 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl pointer-events-none group-hover:bg-purple-500/20 transition-all duration-500" />
+          <div className={`absolute top-0 right-0 w-80 h-80 rounded-full blur-3xl pointer-events-none transition-all duration-500 ${
+            isDark ? 'bg-purple-500/10 group-hover:bg-purple-500/20' : 'bg-rose-400/10 group-hover:bg-rose-400/20'
+          }`} />
 
           <div className="flex items-center gap-5 relative z-10">
             {/* Visual Thumbnail */}
@@ -710,15 +723,17 @@ export default function ProposalHomePage({
             
             <div className="space-y-1">
               <div className="flex items-center gap-2 flex-wrap">
-                <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight font-serif">
+                <h3 className={`text-xl sm:text-2xl font-black tracking-tight font-serif ${isDark ? 'text-white' : 'text-slate-900'}`}>
                   Astro Match Hub 🔮
                 </h3>
-                <span className="text-[10px] bg-purple-500/20 text-purple-300 font-black px-3 py-1 rounded-full border border-purple-400/30 uppercase tracking-widest flex items-center gap-1 shadow-sm backdrop-blur-md">
+                <span className={`text-[10px] font-black px-3 py-1 rounded-full border uppercase tracking-widest flex items-center gap-1 shadow-sm backdrop-blur-md ${
+                  isDark ? 'bg-purple-500/20 text-purple-300 border-purple-400/30' : 'bg-rose-100 text-rose-900 border-rose-200'
+                }`}>
                   ජ්‍යොතිෂ 20-පොරොන්දම් පරීක්ෂාව
                 </span>
               </div>
-              <p className="text-xs sm:text-sm font-medium text-slate-300 max-w-2xl leading-relaxed font-sinhala">
-                ඔබේ හා සහකරුගේ නැකතට 100%ක් ගැලපෙන <strong className="text-amber-300 font-black">විසි පොරොන්දම් ගණනය කර PDF වාර්තාව ලබාගන්න.</strong> couples සඳහා හෝ වෙනමම සේවාව ලබාගන්නන්ටද සුදුසුයි!
+              <p className={`text-xs sm:text-sm font-medium max-w-2xl leading-relaxed font-sinhala ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                ඔබේ හා සහකරුගේ නැකතට 100%ක් ගැලපෙන <strong className={isDark ? 'text-amber-300 font-black' : 'text-purple-700 font-black'}>විසි පොරොන්දම් ගණනය කර PDF වාර්තාව ලබාගන්න.</strong> couples සඳහා හෝ වෙනමම සේවාව ලබාගන්නන්ටද සුදුසුයි!
               </p>
             </div>
           </div>
@@ -727,7 +742,11 @@ export default function ProposalHomePage({
             <button 
               type="button"
               onClick={() => setPage('astro')}
-              className="w-full md:w-auto px-7 py-3.5 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-amber-400 hover:from-purple-600 hover:to-amber-500 text-slate-950 font-black text-xs shadow-xl shadow-purple-500/30 hover:scale-[1.03] active:scale-[0.97] transition-all cursor-pointer text-center flex items-center justify-center gap-2 tracking-wider font-sans border border-purple-300"
+              className={`w-full md:w-auto px-7 py-3.5 rounded-full font-black text-xs shadow-xl hover:scale-[1.03] active:scale-[0.97] transition-all cursor-pointer text-center flex items-center justify-center gap-2 tracking-wider font-sans border ${
+                isDark 
+                  ? 'bg-gradient-to-r from-purple-500 via-pink-500 to-amber-400 hover:from-purple-600 hover:to-amber-500 text-slate-950 border-purple-300 shadow-purple-500/30' 
+                  : 'bg-gradient-to-r from-rose-500 via-purple-600 to-amber-500 hover:from-rose-600 hover:to-purple-700 text-white border-rose-300 shadow-rose-500/25'
+              }`}
             >
               <span>පොරොන්දම් බලන්න (Astro Hub 🔮 →)</span>
               <ArrowRight size={16} strokeWidth={3} />

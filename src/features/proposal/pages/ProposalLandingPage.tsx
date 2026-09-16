@@ -4,6 +4,7 @@ import { SUCCESS_STORIES } from '../data/mockProposalData';
 import ProposalHeroSection from '../components/hero/ProposalHeroSection';
 import ProposalFAQSection from '../components/faq/ProposalFAQSection';
 import { useTheme } from '../../../context/ThemeContext';
+import astroCoupleHero from '../../../assets/astro_couple_hero.png';
 
 export default function ProposalLandingPage({
   onGetStarted,
@@ -66,51 +67,103 @@ export default function ProposalLandingPage({
 
         {/* 3. SRI LANKAN ASTRO PORONDAM FEATURE SHOWCASE SECTION */}
         <section className="py-8 my-4 relative">
-          <div className="rounded-[2.5rem] p-1 bg-gradient-to-r from-purple-500/40 via-pink-500/30 to-amber-500/40 shadow-[0_16px_50px_0_rgba(147,51,234,0.25)]">
-            <div className="rounded-[2.4rem] p-8 sm:p-12 bg-slate-900/90 backdrop-blur-2xl text-white flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden group">
+          <div className={`rounded-[2.5rem] p-1 shadow-2xl transition-all duration-300 ${
+            isDark 
+              ? 'bg-gradient-to-r from-purple-500/40 via-pink-500/30 to-amber-500/40 shadow-[0_16px_50px_0_rgba(147,51,234,0.25)]' 
+              : 'bg-gradient-to-r from-rose-300 via-purple-300 to-amber-300 shadow-[0_16px_50px_0_rgba(244,63,94,0.12)]'
+          }`}>
+            <div className={`rounded-[2.4rem] p-8 sm:p-12 backdrop-blur-2xl flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden group transition-colors duration-300 ${
+              isDark 
+                ? 'bg-slate-900/95 text-white border border-purple-500/30' 
+                : 'bg-gradient-to-br from-white via-rose-50/70 to-purple-50/50 text-slate-900 border border-rose-200/80 shadow-xl'
+            }`}>
               
-              <div className="absolute top-0 right-0 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl pointer-events-none group-hover:bg-purple-500/20 transition-all duration-500" />
-              <div className="absolute bottom-0 left-10 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+              <div className={`absolute top-0 right-0 w-80 h-80 rounded-full blur-3xl pointer-events-none transition-all duration-500 ${
+                isDark ? 'bg-purple-500/10 group-hover:bg-purple-500/20' : 'bg-rose-400/10 group-hover:bg-rose-400/20'
+              }`} />
+              <div className={`absolute bottom-0 left-10 w-64 h-64 rounded-full blur-3xl pointer-events-none ${
+                isDark ? 'bg-amber-500/10' : 'bg-purple-400/10'
+              }`} />
 
-              <div className="space-y-4 max-w-2xl relative z-10 text-center md:text-left">
-                <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-amber-500/20 text-amber-300 font-extrabold text-xs border border-purple-400/30 uppercase tracking-wider backdrop-blur-md">
-                  <Sparkles size={14} className="text-amber-300 animate-pulse" />
-                  <span>ශ්‍රී ලාංකේය පාරම්පරික ජ්‍යොතිෂ සේවාව</span>
-                </span>
-
-                <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight font-serif text-white">
-                  Astro Match 🔮 <br />
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-rose-200 to-purple-300">
-                    ජ්‍යොතිෂ 20-පොරොන්දම් පරීක්ෂාව
-                  </span>
-                </h2>
-
-                <p className="text-xs sm:text-sm font-medium text-slate-300 leading-relaxed font-sinhala">
-                  ඔබගේ සහ සහකරුගේ/සහකාරියගේ උපන් නැකත හා රාශිය අනුව 100%ක් නිවැරදි <strong className="text-amber-300 font-black">20-පොරොන්දම් ගැලපීම</strong>, <strong className="text-rose-300 font-black">කුජ/සෙනසුරු දෝෂ</strong> ක්ෂණිකව බලාගන්න. couples සඳහා හෝ තනි යෝජනාවක් සඳහා වෙනමම භාවිත කළ හැක!
-                </p>
-
-                <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 text-xs font-bold text-slate-200 pt-1 font-sinhala">
-                  <span className="flex items-center gap-1.5 bg-slate-950/60 px-3.5 py-1.5 rounded-full border border-purple-500/30">
-                    <CheckCircle2 size={15} className="text-emerald-400" /> 20-පොරොන්දම් ගණනය
-                  </span>
-                  <span className="flex items-center gap-1.5 bg-slate-950/60 px-3.5 py-1.5 rounded-full border border-purple-500/30">
-                    <CheckCircle2 size={15} className="text-emerald-400" /> කුජ දෝෂ භංග වීම්
-                  </span>
-                  <span className="flex items-center gap-1.5 bg-slate-950/60 px-3.5 py-1.5 rounded-full border border-purple-500/30">
-                    <CheckCircle2 size={15} className="text-emerald-400" /> PDF වාර්තාව Download
-                  </span>
+              <div className="flex flex-col lg:flex-row items-center gap-8 relative z-10 w-full">
+                
+                {/* Visual Image Thumbnail */}
+                <div className="w-full lg:w-48 h-48 rounded-3xl p-1 bg-gradient-to-tr from-amber-400 via-rose-500 to-purple-500 shadow-xl shrink-0 overflow-hidden relative group/img">
+                  <img 
+                    src={astroCoupleHero} 
+                    alt="Astro Sri Lankan Couple" 
+                    className="w-full h-full object-cover object-top group-hover/img:scale-105 transition-transform duration-700 rounded-[22px]"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent flex items-end p-3">
+                    <span className="text-[10px] font-black uppercase text-amber-300 tracking-wider flex items-center gap-1 font-sinhala">
+                      <Sparkles size={12} /> 20-පොරොන්දම් පද්ධතිය
+                    </span>
+                  </div>
                 </div>
+
+                {/* Content Side */}
+                <div className="space-y-4 max-w-2xl text-center md:text-left">
+                  <span className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full font-extrabold text-xs tracking-wider backdrop-blur-md border ${
+                    isDark 
+                      ? 'bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-amber-500/20 text-amber-300 border-purple-400/30' 
+                      : 'bg-rose-100/80 text-rose-900 border-rose-200/80 shadow-sm'
+                  }`}>
+                    <Sparkles size={14} className={isDark ? 'text-amber-300 animate-pulse' : 'text-rose-500'} />
+                    <span className="font-sinhala">ශ්‍රී ලාංකේය පාරම්පරික ජ්‍යොතිෂ සේවාව</span>
+                  </span>
+
+                  <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight font-serif">
+                    Astro Match 🔮 <br />
+                    <span className={`text-transparent bg-clip-text ${
+                      isDark 
+                        ? 'bg-gradient-to-r from-amber-200 via-rose-200 to-purple-300 font-sinhala' 
+                        : 'bg-gradient-to-r from-purple-900 via-rose-700 to-amber-700 font-sinhala'
+                    }`}>
+                      ජ්‍යොතිෂ 20-පොරොන්දම් පරීක්ෂාව
+                    </span>
+                  </h2>
+
+                  <p className={`text-xs sm:text-sm font-medium leading-relaxed font-sinhala ${
+                    isDark ? 'text-slate-300' : 'text-slate-700'
+                  }`}>
+                    ඔබගේ සහ සහකරුගේ/සහකාරියගේ උපන් නැකත හා රාශිය අනුව 100%ක් නිවැරදි <strong className={isDark ? 'text-amber-300 font-black' : 'text-purple-700 font-black'}>20-පොරොන්දම් ගැලපීම</strong>, <strong className={isDark ? 'text-rose-300 font-black' : 'text-rose-700 font-black'}>කුජ/සෙනසුරු දෝෂ</strong> ක්ෂණිකව බලාගන්න. couples සඳහා හෝ තනි යෝජනාවක් සඳහා වෙනමම භාවිත කළ හැක!
+                  </p>
+
+                  <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 text-xs font-bold font-sinhala pt-1">
+                    <span className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border ${
+                      isDark ? 'bg-slate-950/60 text-slate-200 border-purple-500/30' : 'bg-white/90 text-slate-800 border-rose-200 shadow-sm'
+                    }`}>
+                      <CheckCircle2 size={15} className="text-emerald-500" /> 20-පොරොන්දම් ගණනය
+                    </span>
+                    <span className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border ${
+                      isDark ? 'bg-slate-950/60 text-slate-200 border-purple-500/30' : 'bg-white/90 text-slate-800 border-rose-200 shadow-sm'
+                    }`}>
+                      <CheckCircle2 size={15} className="text-emerald-500" /> කුජ දෝෂ භංග වීම්
+                    </span>
+                    <span className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border ${
+                      isDark ? 'bg-slate-950/60 text-slate-200 border-purple-500/30' : 'bg-white/90 text-slate-800 border-rose-200 shadow-sm'
+                    }`}>
+                      <CheckCircle2 size={15} className="text-emerald-500" /> PDF වාර්තාව Download
+                    </span>
+                  </div>
+                </div>
+
               </div>
 
-              <div className="shrink-0 relative z-10 w-full md:w-auto">
+              <div className="shrink-0 relative z-10 w-full md:w-auto pt-4 md:pt-0">
                 <button
                   onClick={onGetStarted}
-                  className="w-full md:w-auto px-8 py-4 rounded-full bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 hover:from-amber-300 hover:to-yellow-300 text-slate-950 font-black text-xs shadow-xl shadow-amber-500/30 hover:scale-[1.03] active:scale-[0.97] transition-all cursor-pointer text-center flex items-center justify-center gap-2 tracking-wider font-sans border border-amber-200"
+                  className={`w-full md:w-auto px-8 py-4 rounded-full font-black text-xs shadow-xl hover:scale-[1.03] active:scale-[0.97] transition-all cursor-pointer text-center flex items-center justify-center gap-2 tracking-wider font-sans border ${
+                    isDark 
+                      ? 'bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 hover:from-amber-300 hover:to-yellow-300 text-slate-950 border-amber-200 shadow-amber-500/30' 
+                      : 'bg-gradient-to-r from-rose-500 via-purple-600 to-amber-500 hover:from-rose-600 hover:to-purple-700 text-white border-rose-300 shadow-rose-500/25'
+                  }`}
                 >
                   <span>පොරොන්දම් පරීක්ෂා කරන්න (Astro Hub 🔮 →)</span>
                   <ArrowRight size={16} strokeWidth={3} />
                 </button>
               </div>
+
             </div>
           </div>
         </section>
