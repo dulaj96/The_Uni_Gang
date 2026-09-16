@@ -10,6 +10,10 @@ interface ProposalNavbarProps {
   onNavigate?: (tab: string) => void;
   onGetStarted?: () => void;
   onSignIn?: () => void;
+  isLoggedIn?: boolean;
+  hasProposalProfile?: boolean;
+  user?: { name: string; avatar?: string } | null;
+  onCreateProposalProfile?: () => void;
 }
 
 export default function ProposalNavbar({
@@ -17,6 +21,10 @@ export default function ProposalNavbar({
   onNavigate,
   onGetStarted,
   onSignIn,
+  isLoggedIn = false,
+  hasProposalProfile = false,
+  user,
+  onCreateProposalProfile,
 }: ProposalNavbarProps) {
   const { theme, toggleTheme } = useTheme();
   const [scrolled, setScrolled] = useState(false);
@@ -32,8 +40,8 @@ export default function ProposalNavbar({
   const navItems = [
     { id: 'home', label: 'Home', isHighlight: false },
     { id: 'discover', label: 'Search', isHighlight: false },
-    { id: 'premium', label: '★ VIP', isHighlight: true },
-    { id: 'pricing', label: 'Pricing', isHighlight: false },
+    { id: 'premium', label: '👑 VIP', isHighlight: true },
+    { id: 'astro', label: '🔮 Astro Match', isHighlight: true },
   ];
 
   const handleNavClick = (id: string) => {
@@ -94,7 +102,7 @@ export default function ProposalNavbar({
                 <span className={cx("text-base sm:text-lg font-bold tracking-tight font-sans", isDark ? "text-white" : "text-slate-900")}>
                   The <span className="text-blue-500">Uni Gang</span>
                 </span>
-                <span className="text-xs font-extrabold text-rose-500 bg-rose-500/10 px-2 py-0.5 rounded-full border border-rose-500/20">
+                <span className="text-xs font-black text-rose-500 dark:text-rose-400 bg-rose-500/10 px-2.5 py-0.5 rounded-full border border-rose-500/20">
                   Uni Porondam
                 </span>
               </div>
@@ -119,7 +127,7 @@ export default function ProposalNavbar({
                 className={cx(
                   "px-5 py-2 rounded-full text-xs font-extrabold transition-all duration-300 relative font-sans cursor-pointer",
                   isActive
-                    ? "bg-gradient-to-r from-rose-500 to-pink-500 text-white shadow-lg shadow-rose-500/25 scale-105"
+                    ? "bg-gradient-to-r from-pink-400 via-rose-400 to-pink-400 text-white shadow-md shadow-pink-400/25 scale-105 font-black"
                     : item.isHighlight
                     ? "text-amber-400 font-extrabold hover:bg-amber-500/10 hover:text-amber-300"
                     : isDark
@@ -149,23 +157,64 @@ export default function ProposalNavbar({
             {isDark ? <LuSun className="w-5 h-5 text-amber-400" /> : <LuMoon className="w-5 h-5 text-slate-700" />}
           </button>
 
-          <button
-            onClick={onSignIn || onGetStarted}
-            className={cx(
-              "px-3 sm:px-4 py-2 rounded-full text-xs font-bold transition-colors font-sinhala",
-              isDark ? "text-slate-300 hover:text-rose-400" : "text-slate-700 hover:text-rose-600"
-            )}
-          >
-            ඇතුළු වන්න
-          </button>
-          <button
-            onClick={onGetStarted}
-            className="px-4 sm:px-5 py-2.5 rounded-full text-xs font-extrabold text-white bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 shadow-lg shadow-rose-500/20 hover:shadow-xl hover:shadow-rose-500/30 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-1.5 font-sinhala"
-          >
-            <Sparkles size={14} />
-            <span className="hidden sm:inline">ලියාපදිංචි වන්න</span>
-            <span className="sm:hidden">Join</span>
-          </button>
+          {/* Conditional Auth & User Profile State Display */}
+          {isLoggedIn ? (
+            !hasProposalProfile ? (
+              /* State 2: Main Website User (Logged In), but no Proposal Profile created yet */
+              <button
+                type="button"
+                onClick={onCreateProposalProfile || onGetStarted}
+                className="px-4 py-2 rounded-full text-xs font-black text-white bg-gradient-to-r from-pink-400 via-rose-500 to-pink-500 hover:from-pink-500 hover:to-rose-600 shadow-md shadow-pink-500/20 hover:shadow-lg transition-all flex items-center gap-1.5 cursor-pointer font-sinhala"
+              >
+                <Sparkles size={14} />
+                <span>Profile එක සාදන්න (Free Access 🎁)</span>
+              </button>
+            ) : (
+              /* State 3: Active Proposal Member */
+              <button
+                type="button"
+                onClick={() => onNavigate && onNavigate('profile')}
+                className={cx(
+                  "flex items-center gap-2 px-3.5 py-1.5 rounded-full border transition-all cursor-pointer font-sans shadow-sm",
+                  (activeTab === 'profile' || activeTab === 'dashboard')
+                    ? "bg-gradient-to-r from-pink-400 via-rose-400 to-pink-400 text-white border-pink-300 shadow-md font-black scale-105"
+                    : isDark ? "bg-slate-900 border-slate-800 text-slate-200 hover:border-pink-400" : "bg-white border-slate-200 text-slate-800 hover:border-pink-400"
+                )}
+              >
+                <div className={cx(
+                  "w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black shrink-0",
+                  (activeTab === 'profile' || activeTab === 'dashboard') ? "bg-white text-rose-600" : "bg-gradient-to-tr from-pink-400 to-rose-500 text-white"
+                )}>
+                  {user?.name?.[0] || 'K'}
+                </div>
+                <span className="text-xs font-extrabold">
+                  {user?.name || 'Kasun Bandara'}
+                </span>
+              </button>
+            )
+          ) : (
+            /* State 1: Guest / Unauthenticated */
+            <>
+              <button
+                type="button"
+                onClick={onSignIn || onGetStarted}
+                className={cx(
+                  "px-3 sm:px-4 py-2 rounded-full text-xs font-bold transition-colors font-sans cursor-pointer",
+                  isDark ? "text-slate-300 hover:text-rose-400" : "text-slate-700 hover:text-rose-600"
+                )}
+              >
+                Sign In
+              </button>
+              <button
+                type="button"
+                onClick={onGetStarted}
+                className="px-4 sm:px-5 py-2.5 rounded-full text-xs font-black text-white bg-gradient-to-r from-pink-400 via-rose-400 to-pink-400 hover:from-pink-500 hover:to-rose-500 shadow-md shadow-pink-400/20 hover:shadow-lg hover:shadow-pink-400/30 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-1.5 font-sans cursor-pointer"
+              >
+                <Sparkles size={14} />
+                <span>Join Now</span>
+              </button>
+            </>
+          )}
         </div>
       </div>
     </header>

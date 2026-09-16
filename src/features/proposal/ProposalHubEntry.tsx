@@ -11,15 +11,24 @@ import ProposalProfilePage from './pages/ProposalProfilePage';
 import ProposalSettingsPage from './pages/ProposalSettingsPage';
 import ProposalFullProfilePage from './pages/ProposalFullProfilePage';
 import ProposalLikesPage from './pages/ProposalLikesPage';
+import ProposalAstroHubPage from './pages/ProposalAstroHubPage';
 import ErrorBoundary from './components/ErrorBoundary';
 
 export default function ProposalHubEntry() {
-  const [appState, setAppState] = useState<'LANDING' | 'ONBOARDING' | 'HOME'>('LANDING');
-  const [subPage, setSubPage] = useState<'dashboard' | 'discover' | 'premium' | 'inbox' | 'profile' | 'settings' | 'view_profile' | 'likes'>('dashboard');
-  const [activeNavbarTab, setActiveNavbarTab] = useState('home');
+  // Single Sign-On (SSO) & Proposal Profile States
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => !!localStorage.getItem('userToken'));
+  const [hasProposalProfile, setHasProposalProfile] = useState<boolean>(() => localStorage.getItem('userHasProposalProfile') === 'true');
+  const [appState, setAppState] = useState<'LANDING' | 'ONBOARDING' | 'HOME'>(() => {
+    const token = localStorage.getItem('userToken');
+    const hasProfile = localStorage.getItem('userHasProposalProfile') === 'true';
+    return (token && hasProfile) ? 'HOME' : 'LANDING';
+  });
+  const [subPage, setSubPage] = useState<'dashboard' | 'discover' | 'premium' | 'inbox' | 'profile' | 'settings' | 'view_profile' | 'likes' | 'astro'>('dashboard');
+  const [activeNavbarTab, setActiveNavbarTab] = useState(() => (localStorage.getItem('userToken') && localStorage.getItem('userHasProposalProfile') === 'true') ? 'discover' : 'home');
   const [dark] = useState(true);
   const [selectedProfile, setSelectedProfile] = useState<any | null>(null);
   const [previousSubPage, setPreviousSubPage] = useState<'dashboard' | 'discover'>('dashboard');
+  const [showAuth, setShowAuth] = useState(false);
 
   const handleOpenProfile = (profile: any, from: 'dashboard' | 'discover') => {
     setSelectedProfile(profile);
@@ -27,23 +36,37 @@ export default function ProposalHubEntry() {
     setSubPage('view_profile');
   };
 
-  const [showAuth, setShowAuth] = useState(false);
-
   const handleGetStarted = () => {
     const token = localStorage.getItem('userToken');
     if (!token) {
       setShowAuth(true);
       return;
     }
-    setAppState('ONBOARDING');
+    if (!hasProposalProfile) {
+      setAppState('ONBOARDING');
+    } else {
+      setAppState('HOME');
+      setSubPage('discover');
+    }
   };
 
   const handleAuthSuccess = () => {
     setShowAuth(false);
-    setAppState('ONBOARDING');
+    setIsLoggedIn(true);
+    localStorage.setItem('userToken', 'mock_sso_jwt_token');
+
+    if (localStorage.getItem('userHasProposalProfile') === 'true') {
+      setHasProposalProfile(true);
+      setAppState('HOME');
+      setSubPage('dashboard');
+    } else {
+      setAppState('ONBOARDING');
+    }
   };
 
   const handleOnboardingComplete = () => {
+    localStorage.setItem('userHasProposalProfile', 'true');
+    setHasProposalProfile(true);
     setAppState('HOME');
     setSubPage('dashboard');
     setActiveNavbarTab('discover');
@@ -56,12 +79,19 @@ export default function ProposalHubEntry() {
 
   const handleNavbarNavigate = (tabId: string) => {
     setActiveNavbarTab(tabId);
-    if (tabId === 'home') {
+    if (tabId === 'profile' || tabId === 'dashboard') {
+      if (isLoggedIn && hasProposalProfile) {
+        setAppState('HOME');
+        setSubPage('dashboard');
+      }
+    } else if (tabId === 'home') {
       setAppState('LANDING');
     } else if (tabId === 'discover') {
       const token = localStorage.getItem('userToken');
       if (!token) {
         setShowAuth(true);
+      } else if (!hasProposalProfile) {
+        setAppState('ONBOARDING');
       } else if (appState !== 'HOME') {
         setAppState('HOME');
         setSubPage('discover');
@@ -71,15 +101,24 @@ export default function ProposalHubEntry() {
     } else if (tabId === 'premium') {
       if (appState !== 'HOME') setAppState('HOME');
       setSubPage('premium');
+    } else if (tabId === 'astro') {
+      if (appState !== 'HOME') setAppState('HOME');
+      setSubPage('astro');
     } else if (tabId === 'pricing') {
-      if (appState === 'LANDING') {
-        const el = document.getElementById('pricing');
-        if (el) el.scrollIntoView({ behavior: 'smooth' });
-      } else {
-        setAppState('HOME');
-        setSubPage('premium');
-      }
+      if (appState !== 'HOME') setAppState('HOME');
+      setSubPage('astro');
     }
+  };
+
+  const getUserName = () => {
+    try {
+      const savedRaw = localStorage.getItem('userProposalProfile');
+      if (savedRaw) {
+        const parsed = JSON.parse(savedRaw);
+        if (parsed.name && parsed.name.trim().length > 0) return parsed.name;
+      }
+    } catch (e) {}
+    return 'Kasun Bandara';
   };
 
   if (showAuth) {
@@ -87,7 +126,7 @@ export default function ProposalHubEntry() {
       <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col justify-center items-center py-10 relative">
         <button 
           onClick={() => setShowAuth(false)}
-          className="absolute top-8 left-8 text-slate-500 hover:text-slate-900 dark:hover:text-white flex items-center gap-2 font-bold text-sm"
+          className="absolute top-8 left-8 text-slate-500 hover:text-slate-900 dark:hover:text-white flex items-center gap-2 font-bold text-sm cursor-pointer"
         >
           &larr; Back to Hub
         </button>
@@ -109,8 +148,12 @@ export default function ProposalHubEntry() {
             onNavigate={handleNavbarNavigate}
             onGetStarted={handleGetStarted}
             onSignIn={() => setShowAuth(true)}
+            isLoggedIn={isLoggedIn}
+            hasProposalProfile={hasProposalProfile}
+            user={isLoggedIn ? { name: getUserName() } : null}
+            onCreateProposalProfile={() => setAppState('ONBOARDING')}
           />
-          <ProposalLandingPage dark={dark} onGetStarted={handleGetStarted} />
+          <ProposalLandingPage dark={dark} onGetStarted={handleGetStarted} hasProposalProfile={isLoggedIn && hasProposalProfile} />
         </div>
       </ErrorBoundary>
     );
@@ -123,16 +166,30 @@ export default function ProposalHubEntry() {
   return (
     <ErrorBoundary>
       <ProposalNavbar
-        activeTab={subPage === 'discover' ? 'discover' : subPage === 'premium' ? 'premium' : 'home'}
+        activeTab={subPage}
         onNavigate={handleNavbarNavigate}
         onGetStarted={handleGetStarted}
         onSignIn={() => setShowAuth(true)}
+        isLoggedIn={isLoggedIn}
+        hasProposalProfile={hasProposalProfile}
+        user={isLoggedIn ? { name: getUserName() } : null}
+        onCreateProposalProfile={() => setAppState('ONBOARDING')}
       />
       {subPage === 'discover' && <ProposalDiscoverPage setPage={(p) => setSubPage(p as any)} openProfile={(p) => handleOpenProfile(p, 'discover')} />}
       {subPage === 'premium' && <ProposalPremiumPage setPage={(p) => setSubPage(p as any)} />}
       {subPage === 'inbox' && <ProposalInboxPage setPage={(p) => setSubPage(p as any)} />}
       {subPage === 'profile' && <ProposalProfilePage setPage={(p) => setSubPage(p as any)} />}
-      {subPage === 'settings' && <ProposalSettingsPage setPage={(p) => setSubPage(p as any)} />}
+      {subPage === 'settings' && (
+        <ProposalSettingsPage 
+          setPage={(p) => setSubPage(p as any)} 
+          onDeleteProposalProfile={() => {
+            setHasProposalProfile(false);
+            setAppState('LANDING');
+            setActiveNavbarTab('home');
+          }}
+        />
+      )}
+      {subPage === 'astro' && <ProposalAstroHubPage setPage={(p) => setSubPage(p as any)} />}
       {subPage === 'dashboard' && <ProposalHomePage setPage={(p) => setSubPage(p as any)} openProfile={(p) => handleOpenProfile(p, 'dashboard')} goToLanding={handleGoToLanding} />}
       {subPage === 'likes' && <ProposalLikesPage setPage={(p) => setSubPage(p as any)} />}
       {subPage === 'view_profile' && <ProposalFullProfilePage profile={selectedProfile} goBack={() => setSubPage(previousSubPage)} />}
