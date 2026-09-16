@@ -37,7 +37,7 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
   const { theme } = useTheme();
   const isDark = theme === 'dark';
 
-  // Form Inputs - Unfilled by Default with "-- තෝරන්න --" Placeholders
+  // Form Inputs - Unfilled by Default
   const [brideName, setBrideName] = useState('');
   const [brideDob, setBrideDob] = useState('');
   const [brideTime, setBrideTime] = useState('');
@@ -60,6 +60,8 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
     groomName?: string; 
     brideLagna?: string; 
     groomLagna?: string;
+    brideNak?: string;
+    groomNak?: string;
   }>({});
   
   const [isCalculating, setIsCalculating] = useState(false);
@@ -89,7 +91,14 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
 
   const handleCalculateSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const errors: { brideName?: string; groomName?: string; brideLagna?: string; groomLagna?: string } = {};
+    const errors: { 
+      brideName?: string; 
+      groomName?: string; 
+      brideLagna?: string; 
+      groomLagna?: string;
+      brideNak?: string;
+      groomNak?: string;
+    } = {};
 
     if (!brideName.trim()) {
       errors.brideName = 'කරුණාකර මනාලියගේ නම ඇතුළත් කරන්න';
@@ -97,11 +106,17 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
     if (!groomName.trim()) {
       errors.groomName = 'කරුණාකර මනාලයාගේ නම ඇතුළත් කරන්න';
     }
-    if (!brideRashiId) {
+    if (brideRashiId === '') {
       errors.brideLagna = 'කරුණාකර මනාලියගේ ලග්නය තෝරන්න';
     }
-    if (!groomRashiId) {
+    if (groomRashiId === '') {
       errors.groomLagna = 'කරුණාකර මනාලයාගේ ලග්නය තෝරන්න';
+    }
+    if (brideNakId === '') {
+      errors.brideNak = 'කරුණාකර මනාලියගේ නැකත තෝරන්න';
+    }
+    if (groomNakId === '') {
+      errors.groomNak = 'කරුණාකර මනාලයාගේ නැකත තෝරන්න';
     }
 
     if (Object.keys(errors).length > 0) {
@@ -119,19 +134,20 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
   };
 
   return (
-    <div className={`w-full min-h-screen py-10 px-4 sm:px-6 lg:px-8 font-sinhala transition-colors duration-500 relative overflow-hidden ${
+    <div className={`w-full min-h-screen py-10 px-4 sm:px-6 lg:px-12 font-sinhala transition-colors duration-500 relative overflow-hidden ${
       isDark ? 'bg-[#0B0F17] text-slate-100 selection:bg-purple-500/30' : 'bg-slate-50 text-slate-900 selection:bg-rose-500/20'
     }`}>
       
       {/* ATMOSPHERIC AMBIENT GLOW ORBS FOR GLASSMORPHISM */}
-      <div className={`absolute top-10 left-1/4 w-[650px] h-[650px] rounded-full blur-[170px] pointer-events-none transition-all duration-700 ${
+      <div className={`absolute top-10 left-1/4 w-[700px] h-[700px] rounded-full blur-[170px] pointer-events-none transition-all duration-700 ${
         isDark ? 'bg-purple-600/15' : 'bg-purple-300/25'
       }`} />
-      <div className={`absolute top-1/3 right-10 w-[550px] h-[550px] rounded-full blur-[170px] pointer-events-none transition-all duration-700 ${
+      <div className={`absolute top-1/3 right-10 w-[600px] h-[600px] rounded-full blur-[170px] pointer-events-none transition-all duration-700 ${
         isDark ? 'bg-rose-500/15' : 'bg-rose-300/25'
       }`} />
 
-      <div className="max-w-5xl mx-auto space-y-10 relative z-10">
+      {/* MATCHED CONTAINER WIDTH WITH OTHER SECTIONS (max-w-6xl) */}
+      <div className="max-w-6xl mx-auto space-y-12 relative z-10">
 
         {/* 1. HERO SECTION WITH IMAGE & FLOATING MOTION BADGES */}
         <div className={`rounded-[2.5rem] p-6 sm:p-10 border shadow-2xl backdrop-blur-2xl transition-all duration-300 relative overflow-hidden group ${
@@ -296,13 +312,16 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
                 <div>
                   <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5 mb-1.5 font-sinhala">
                     <Star size={13} className="text-amber-400" />
-                    <span>උපන් නැකත (Nakshatra)</span>
+                    <span>උපන් නැකත (Nakshatra)</span> <span className="text-rose-500">*</span>
                   </label>
                   <select
                     value={brideNakId}
-                    onChange={(e) => setBrideNakId(e.target.value !== '' ? Number(e.target.value) : '')}
+                    onChange={(e) => {
+                      setBrideNakId(e.target.value !== '' ? Number(e.target.value) : '');
+                      if (formErrors.brideNak) setFormErrors({ ...formErrors, brideNak: undefined });
+                    }}
                     className={`w-full rounded-2xl px-4 py-3 text-xs font-semibold border backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-rose-500 cursor-pointer shadow-inner ${
-                      isDark ? 'bg-slate-950/80 border-rose-500/30 text-white' : 'bg-white border-rose-200 text-slate-900'
+                      formErrors.brideNak ? 'border-rose-500 bg-rose-50/60 dark:bg-rose-950/40' : (isDark ? 'bg-slate-950/80 border-rose-500/30 text-white' : 'bg-white border-rose-200 text-slate-900')
                     }`}
                   >
                     <option value="" className={isDark ? 'bg-slate-900 text-slate-400' : 'bg-white text-slate-500'}>
@@ -314,6 +333,12 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
                       </option>
                     ))}
                   </select>
+
+                  {formErrors.brideNak && (
+                    <span className="text-[11px] font-bold text-rose-500 flex items-center gap-1 mt-1 font-sinhala">
+                      <AlertCircle size={12} /> {formErrors.brideNak}
+                    </span>
+                  )}
 
                   {brideNakId === 0 && (
                     <span className="text-[11px] font-medium text-rose-500 dark:text-rose-400 flex items-start gap-1 mt-1.5 font-sinhala leading-relaxed">
@@ -479,13 +504,16 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
                 <div>
                   <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5 mb-1.5 font-sinhala">
                     <Star size={13} className="text-amber-400" />
-                    <span>උපන් නැකත (Nakshatra)</span>
+                    <span>උපන් නැකත (Nakshatra)</span> <span className="text-rose-500">*</span>
                   </label>
                   <select
                     value={groomNakId}
-                    onChange={(e) => setGroomNakId(e.target.value !== '' ? Number(e.target.value) : '')}
+                    onChange={(e) => {
+                      setGroomNakId(e.target.value !== '' ? Number(e.target.value) : '');
+                      if (formErrors.groomNak) setFormErrors({ ...formErrors, groomNak: undefined });
+                    }}
                     className={`w-full rounded-2xl px-4 py-3 text-xs font-semibold border backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer shadow-inner ${
-                      isDark ? 'bg-slate-950/80 border-indigo-500/30 text-white' : 'bg-white border-indigo-200 text-slate-900'
+                      formErrors.groomNak ? 'border-rose-500 bg-rose-50/60 dark:bg-rose-950/40' : (isDark ? 'bg-slate-950/80 border-indigo-500/30 text-white' : 'bg-white border-indigo-200 text-slate-900')
                     }`}
                   >
                     <option value="" className={isDark ? 'bg-slate-900 text-slate-400' : 'bg-white text-slate-500'}>
@@ -497,6 +525,12 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
                       </option>
                     ))}
                   </select>
+
+                  {formErrors.groomNak && (
+                    <span className="text-[11px] font-bold text-rose-500 flex items-center gap-1 mt-1 font-sinhala">
+                      <AlertCircle size={12} /> {formErrors.groomNak}
+                    </span>
+                  )}
 
                   {groomNakId === 0 && (
                     <span className="text-[11px] font-medium text-indigo-500 dark:text-indigo-400 flex items-start gap-1 mt-1.5 font-sinhala leading-relaxed">
