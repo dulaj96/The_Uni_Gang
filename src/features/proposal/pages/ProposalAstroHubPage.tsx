@@ -11,7 +11,10 @@ import {
   Printer,
   X,
   AlertCircle,
-  FileText,
+  Calendar,
+  Clock,
+  ChevronDown,
+  ShieldCheck,
   UserCheck
 } from 'lucide-react';
 import { useTheme } from '../../../context/ThemeContext';
@@ -30,14 +33,19 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
   const { theme } = useTheme();
   const isDark = theme === 'dark';
 
-  // Form Inputs
+  // Form Inputs (Bride & Groom Authentic Horoscope Inputs)
   const [brideName, setBrideName] = useState('');
-  const [groomName, setGroomName] = useState('');
+  const [brideDob, setBrideDob] = useState('');
+  const [brideTime, setBrideTime] = useState('');
   const [brideNakId, setBrideNakId] = useState<number>(1); // Aswida
-  const [groomNakId, setGroomNakId] = useState<number>(2); // Berana
   const [brideRashiId, setBrideRashiId] = useState<number>(1); // Mesha
-  const [groomRashiId, setGroomRashiId] = useState<number>(2); // Vrishabha
   const [hasKujaBride, setHasKujaBride] = useState(false);
+
+  const [groomName, setGroomName] = useState('');
+  const [groomDob, setGroomDob] = useState('');
+  const [groomTime, setGroomTime] = useState('');
+  const [groomNakId, setGroomNakId] = useState<number>(2); // Berana
+  const [groomRashiId, setGroomRashiId] = useState<number>(2); // Vrishabha
   const [hasKujaGroom, setHasKujaGroom] = useState(false);
 
   // Form Validation & Modal States
@@ -110,7 +118,7 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
             <div className="lg:col-span-7 space-y-4">
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-rose-500/10 text-rose-500 font-extrabold text-xs uppercase tracking-wider border border-rose-500/20">
                 <Sparkles size={14} className="animate-pulse text-rose-500" />
-                <span>20-Porondam Astro System</span>
+                <span>20-Porondam Astro Engine</span>
               </div>
 
               <h1 className={`text-2xl sm:text-4xl font-extrabold tracking-tight leading-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>
@@ -118,7 +126,7 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
               </h1>
 
               <p className={`text-xs sm:text-sm leading-relaxed font-medium ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
-                මනාලයාගේ සහ මනාලියගේ නම, නැකත හා රාශිය ඇතුළත් කර <strong className="text-rose-500">"පොරොන්දම් පරීක්ෂා කරන්න"</strong> බටන් එක ක්ලික් කරන්න. සම්පූර්ණ 20-පොරොන්දම් වාර්තාව Popup එකක් ලෙස ලබාගන්න.
+                මනාලයාගේ සහ මනාලියගේ නම, උපන් නැකත හා රාශිය ඇතුළත් කර <strong className="text-rose-500">"පොරොන්දම් පරීක්ෂා කරන්න"</strong> බටන් එක ක්ලික් කරන්න. සම්පූර්ණ 20-පොරොන්දම් වාර්තාව Popup එකක් ලෙස ලබාගන්න.
               </p>
 
               <div className="space-y-2.5 text-xs font-semibold pt-1">
@@ -172,7 +180,7 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
           <div className="grid md:grid-cols-2 gap-6">
             
             {/* BRIDE CARD */}
-            <div className={`p-6 sm:p-8 rounded-3xl border shadow-xl space-y-5 transition-all ${
+            <div className={`p-6 sm:p-8 rounded-[2.2rem] border shadow-xl space-y-5 transition-all ${
               isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
             }`}>
               <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
@@ -198,7 +206,7 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
                       if (formErrors.brideName) setFormErrors({ ...formErrors, brideName: undefined });
                     }}
                     placeholder="උදා: නිමාලි පෙරේරා"
-                    className={`w-full rounded-xl px-4 py-3 text-xs font-semibold bg-slate-50 dark:bg-slate-800 border text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-rose-500 ${
+                    className={`w-full rounded-2xl px-4 py-3 text-xs font-semibold bg-slate-50 dark:bg-slate-800 border text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-rose-500 ${
                       formErrors.brideName ? 'border-rose-500 bg-rose-50/50' : 'border-slate-200 dark:border-slate-700'
                     }`}
                   />
@@ -209,6 +217,31 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
                   )}
                 </div>
 
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1 mb-1.5">
+                      <Calendar size={13} className="text-rose-500" /> උපන් දිනය
+                    </label>
+                    <input
+                      type="date"
+                      value={brideDob}
+                      onChange={(e) => setBrideDob(e.target.value)}
+                      className="w-full rounded-2xl px-3 py-2.5 text-xs font-semibold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-rose-500 cursor-pointer"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1 mb-1.5">
+                      <Clock size={13} className="text-rose-500" /> උපන් වේලාව
+                    </label>
+                    <input
+                      type="time"
+                      value={brideTime}
+                      onChange={(e) => setBrideTime(e.target.value)}
+                      className="w-full rounded-2xl px-3 py-2.5 text-xs font-semibold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-rose-500 cursor-pointer"
+                    />
+                  </div>
+                </div>
+
                 <div>
                   <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">
                     උපන් නැකත (Nakshatra)
@@ -216,7 +249,7 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
                   <select
                     value={brideNakId}
                     onChange={(e) => setBrideNakId(Number(e.target.value))}
-                    className="w-full rounded-xl px-4 py-3 text-xs font-semibold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-rose-500"
+                    className="w-full rounded-2xl px-4 py-3 text-xs font-semibold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-rose-500 cursor-pointer"
                   >
                     {NAKSHATRAS.map((n) => (
                       <option key={n.id} value={n.id}>{n.id}. {n.nameSinhala} ({n.name})</option>
@@ -231,7 +264,7 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
                   <select
                     value={brideRashiId}
                     onChange={(e) => setBrideRashiId(Number(e.target.value))}
-                    className="w-full rounded-xl px-4 py-3 text-xs font-semibold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-rose-500"
+                    className="w-full rounded-2xl px-4 py-3 text-xs font-semibold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-rose-500 cursor-pointer"
                   >
                     {RASHIS.map((r) => (
                       <option key={r.id} value={r.id}>{r.nameSinhala}</option>
@@ -241,7 +274,7 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
 
                 <div 
                   onClick={() => setHasKujaBride(!hasKujaBride)}
-                  className={`p-3.5 rounded-xl border transition-all cursor-pointer flex items-center justify-between ${
+                  className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${
                     hasKujaBride 
                       ? 'bg-rose-50 dark:bg-rose-950/40 border-rose-300 dark:border-rose-700 text-rose-700 dark:text-rose-300' 
                       : 'bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'
@@ -258,7 +291,7 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
             </div>
 
             {/* GROOM CARD */}
-            <div className={`p-6 sm:p-8 rounded-3xl border shadow-xl space-y-5 transition-all ${
+            <div className={`p-6 sm:p-8 rounded-[2.2rem] border shadow-xl space-y-5 transition-all ${
               isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
             }`}>
               <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
@@ -284,7 +317,7 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
                       if (formErrors.groomName) setFormErrors({ ...formErrors, groomName: undefined });
                     }}
                     placeholder="උදා: කසුන් බණ්ඩාර"
-                    className={`w-full rounded-xl px-4 py-3 text-xs font-semibold bg-slate-50 dark:bg-slate-800 border text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
+                    className={`w-full rounded-2xl px-4 py-3 text-xs font-semibold bg-slate-50 dark:bg-slate-800 border text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
                       formErrors.groomName ? 'border-rose-500 bg-rose-50/50' : 'border-slate-200 dark:border-slate-700'
                     }`}
                   />
@@ -295,6 +328,31 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
                   )}
                 </div>
 
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1 mb-1.5">
+                      <Calendar size={13} className="text-indigo-500" /> උපන් දිනය
+                    </label>
+                    <input
+                      type="date"
+                      value={groomDob}
+                      onChange={(e) => setGroomDob(e.target.value)}
+                      className="w-full rounded-2xl px-3 py-2.5 text-xs font-semibold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1 mb-1.5">
+                      <Clock size={13} className="text-indigo-500" /> උපන් වේලාව
+                    </label>
+                    <input
+                      type="time"
+                      value={groomTime}
+                      onChange={(e) => setGroomTime(e.target.value)}
+                      className="w-full rounded-2xl px-3 py-2.5 text-xs font-semibold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
+                    />
+                  </div>
+                </div>
+
                 <div>
                   <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">
                     උපන් නැකත (Nakshatra)
@@ -302,7 +360,7 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
                   <select
                     value={groomNakId}
                     onChange={(e) => setGroomNakId(Number(e.target.value))}
-                    className="w-full rounded-xl px-4 py-3 text-xs font-semibold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full rounded-2xl px-4 py-3 text-xs font-semibold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
                   >
                     {NAKSHATRAS.map((n) => (
                       <option key={n.id} value={n.id}>{n.id}. {n.nameSinhala} ({n.name})</option>
@@ -317,7 +375,7 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
                   <select
                     value={groomRashiId}
                     onChange={(e) => setGroomRashiId(Number(e.target.value))}
-                    className="w-full rounded-xl px-4 py-3 text-xs font-semibold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full rounded-2xl px-4 py-3 text-xs font-semibold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
                   >
                     {RASHIS.map((r) => (
                       <option key={r.id} value={r.id}>{r.nameSinhala}</option>
@@ -327,7 +385,7 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
 
                 <div 
                   onClick={() => setHasKujaGroom(!hasKujaGroom)}
-                  className={`p-3.5 rounded-xl border transition-all cursor-pointer flex items-center justify-between ${
+                  className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${
                     hasKujaGroom 
                       ? 'bg-indigo-50 dark:bg-indigo-950/40 border-indigo-300 dark:border-indigo-700 text-indigo-700 dark:text-indigo-300' 
                       : 'bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'
@@ -345,12 +403,12 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
 
           </div>
 
-          {/* SUBMIT CTA BUTTON */}
+          {/* SUBMIT CTA BUTTON WITH PROFESSIONAL STYLING */}
           <div className="flex justify-center pt-2">
             <button
               type="submit"
               disabled={isCalculating}
-              className="w-full sm:w-auto px-10 py-4.5 rounded-full bg-gradient-to-r from-rose-500 via-pink-500 to-purple-600 hover:from-rose-600 hover:to-purple-700 text-white font-extrabold text-sm shadow-xl shadow-rose-500/25 hover:scale-[1.03] active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-3 uppercase tracking-wider border-none font-sans"
+              className="w-full sm:w-auto px-10 py-4.5 rounded-2xl bg-gradient-to-r from-rose-500 via-pink-500 to-purple-600 hover:from-rose-600 hover:to-purple-700 text-white font-extrabold text-xs uppercase tracking-widest shadow-xl shadow-rose-500/25 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2.5 border-none font-sans"
             >
               {isCalculating ? (
                 <>
@@ -360,7 +418,7 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
               ) : (
                 <>
                   <Sparkles size={18} className="text-amber-300" />
-                  <span>🔮 පොරොන්දම් පරීක්ෂා කරන්න (Calculate Match)</span>
+                  <span>🔮 පොරොන්දම් පරීක්ෂා කරන්න (Calculate Porondam Match)</span>
                 </>
               )}
             </button>
@@ -455,143 +513,172 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
 
       </div>
 
-      {/* 4. ULTRA-PROFESSIONAL POPUP MODAL FOR ASTRO REPORT RESULTS */}
+      {/* 4. ULTRA-PROFESSIONAL FULL POPUP MODAL (MATCHING PROPOSALPROFILEMODAL STYLING) */}
       <AnimatePresence>
         {showResultModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-950/80 backdrop-blur-md font-sinhala"
+          >
             <motion.div
-              initial={{ opacity: 0, scale: 0.92, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.92, y: 20 }}
-              className={`rounded-3xl p-6 sm:p-10 max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative space-y-6 font-sinhala border transition-colors ${
+              initial={{ y: '100%', opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: '100%', opacity: 0 }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className={`w-full max-h-[92vh] max-w-4xl rounded-[2.5rem] overflow-hidden flex flex-col relative shadow-2xl border transition-colors ${
                 isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
               }`}
             >
-              {/* Close Button */}
-              <button
-                onClick={() => setShowResultModal(false)}
-                className="absolute top-6 right-6 p-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors cursor-pointer"
-              >
-                <X size={20} />
-              </button>
-
-              {/* Modal Title Bar */}
-              <div className="flex items-center gap-3 border-b border-slate-200 dark:border-slate-800 pb-4">
-                <div className="w-10 h-10 rounded-full bg-rose-500/10 text-rose-500 flex items-center justify-center shrink-0">
-                  <UserCheck size={20} />
-                </div>
-                <div>
-                  <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
-                    {brideName} සහ {groomName} ගේ 20-පොරොන්දම් වාර්තාව
-                  </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-                    100% Traditional Sri Lankan Nirayana Astrology Calculation
-                  </p>
-                </div>
-              </div>
-
-              {/* Verdict Score Banner */}
-              <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-rose-500 via-pink-500 to-purple-600 text-white shadow-xl flex flex-col sm:flex-row items-center justify-between gap-6">
-                <div className="space-y-2 text-center sm:text-left">
-                  <span className="text-xs font-extrabold uppercase tracking-wider px-3.5 py-1 rounded-full bg-white/20 text-white backdrop-blur-md">
-                    ★ 20-PORONDAM MATCH RESULT
+              {/* Top Bar Header Controls */}
+              <div className="px-6 py-4 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 flex items-center justify-between z-20 shrink-0">
+                <button 
+                  onClick={() => setShowResultModal(false)}
+                  className="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center hover:bg-rose-500 hover:text-white transition-colors cursor-pointer"
+                >
+                  <ChevronDown size={20} />
+                </button>
+                
+                <div className="text-center flex items-center gap-2">
+                  <span className="font-extrabold text-sm sm:text-base text-slate-900 dark:text-white">
+                    {brideName} ❤️ {groomName}
                   </span>
-                  <h2 className="text-3xl sm:text-4xl font-black flex items-center justify-center sm:justify-start gap-3">
-                    <span>{report.totalMatched} / 20</span>
-                    <span className="text-lg font-bold text-rose-100 font-sinhala">පොරොන්දම් සාර්ථකයි ({report.percentage}%)</span>
-                  </h2>
-                  <p className="text-xs text-rose-100 max-w-xl font-sinhala leading-relaxed">
-                    {report.kujaDoshayaStatus}
-                  </p>
+                  <span className="text-[10px] font-black text-rose-500 bg-rose-500/10 px-2.5 py-0.5 rounded-full border border-rose-500/20 uppercase tracking-widest">
+                    VERIFIED HOROSCOPE
+                  </span>
+                  <ShieldCheck size={16} className="text-emerald-500" />
                 </div>
 
-                {/* Score Gauge Circle */}
-                <div className="w-24 h-24 rounded-full bg-white/10 backdrop-blur-md border border-white/30 flex flex-col items-center justify-center shrink-0 shadow-lg">
-                  <span className="text-2xl font-black text-white">{report.percentage}%</span>
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-rose-100">Score</span>
-                </div>
+                <div className="w-9 h-9" />
               </div>
 
-              {/* Porondam Items Breakdown Table */}
-              <div className="space-y-4">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-3">
-                  <h4 className="text-base font-extrabold text-slate-900 dark:text-white font-sinhala flex items-center gap-2">
-                    <Sparkles size={16} className="text-rose-500" />
-                    <span>විසි පොරොන්දම් ලැයිස්තු විග්‍රහය (Full Breakdown)</span>
-                  </h4>
-                  
-                  <div className="flex gap-2 text-xs font-bold font-sinhala">
-                    <button 
-                      onClick={() => setFilterMode('all')}
-                      className={`px-3 py-1.5 rounded-lg transition-all ${filterMode === 'all' ? 'bg-rose-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'}`}
-                    >
-                      සියල්ල ({report.items.length})
-                    </button>
-                    <button 
-                      onClick={() => setFilterMode('passed')}
-                      className={`px-3 py-1.5 rounded-lg transition-all ${filterMode === 'passed' ? 'bg-emerald-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'}`}
-                    >
-                      සාර්ථකයි ({passedCount})
-                    </button>
-                    <button 
-                      onClick={() => setFilterMode('alerts')}
-                      className={`px-3 py-1.5 rounded-lg transition-all ${filterMode === 'alerts' ? 'bg-amber-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'}`}
-                    >
-                      අවධානය ({alertCount})
-                    </button>
+              {/* Scrollable Modal Content */}
+              <div className="p-6 sm:p-8 space-y-6 overflow-y-auto custom-scrollbar flex-1">
+
+                {/* Identity Summary Card */}
+                <div className="grid grid-cols-2 gap-4 p-5 rounded-3xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 text-xs">
+                  <div className="space-y-1">
+                    <span className="text-[10px] font-extrabold text-rose-500 uppercase tracking-widest">මනාලිය (BRIDE)</span>
+                    <h4 className="text-base font-extrabold text-slate-900 dark:text-white">{brideName}</h4>
+                    <p className="text-slate-600 dark:text-slate-400">නැකත: <strong className="text-slate-900 dark:text-white font-bold">{report.brideNakshatra.nameSinhala}</strong> ({report.brideNakshatra.name})</p>
+                    <p className="text-slate-600 dark:text-slate-400">රාශිය: <strong className="text-slate-900 dark:text-white font-bold">{report.brideRashi.nameSinhala}</strong></p>
+                    {brideDob && <p className="text-slate-500 text-[11px]">උපන් දිනය: {brideDob} {brideTime && `(${brideTime})`}</p>}
+                  </div>
+
+                  <div className="space-y-1">
+                    <span className="text-[10px] font-extrabold text-indigo-500 uppercase tracking-widest">මනාලයා (GROOM)</span>
+                    <h4 className="text-base font-extrabold text-slate-900 dark:text-white">{groomName}</h4>
+                    <p className="text-slate-600 dark:text-slate-400">නැකත: <strong className="text-slate-900 dark:text-white font-bold">{report.groomNakshatra.nameSinhala}</strong> ({report.groomNakshatra.name})</p>
+                    <p className="text-slate-600 dark:text-slate-400">රාශිය: <strong className="text-slate-900 dark:text-white font-bold">{report.groomRashi.nameSinhala}</strong></p>
+                    {groomDob && <p className="text-slate-500 text-[11px]">උපන් දිනය: {groomDob} {groomTime && `(${groomTime})`}</p>}
                   </div>
                 </div>
 
-                <div className="grid sm:grid-cols-2 gap-3 max-h-[380px] overflow-y-auto pr-1">
-                  {filteredItems.map((item, idx) => (
-                    <div 
-                      key={item.title}
-                      className={`p-3.5 rounded-2xl border flex items-start justify-between gap-3 text-xs transition-all ${
-                        item.passed 
-                          ? 'bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200' 
-                          : 'bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800/40 text-amber-900 dark:text-amber-200'
-                      }`}
-                    >
-                      <div className="flex items-start gap-2.5">
-                        <span className="font-extrabold text-slate-400 w-5 shrink-0 text-xs">{idx + 1}.</span>
-                        <div className="space-y-1">
-                          <h4 className="font-bold text-xs font-sinhala text-slate-900 dark:text-white flex items-center gap-1">
-                            <span>{item.titleSinhala}</span>
-                            <span className="text-[10px] text-slate-400 font-normal">({item.title})</span>
-                          </h4>
-                          <p className="text-[11px] text-slate-500 dark:text-slate-400 font-sinhala leading-relaxed">{item.details}</p>
-                        </div>
-                      </div>
+                {/* Verdict Score Banner */}
+                <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-rose-500 via-pink-500 to-purple-600 text-white shadow-xl flex flex-col sm:flex-row items-center justify-between gap-6">
+                  <div className="space-y-2 text-center sm:text-left">
+                    <span className="text-xs font-extrabold uppercase tracking-wider px-3.5 py-1 rounded-full bg-white/20 text-white backdrop-blur-md border border-white/20">
+                      ★ 20-PORONDAM MATCH VERDICT
+                    </span>
+                    <h2 className="text-3xl sm:text-4xl font-black flex items-center justify-center sm:justify-start gap-3">
+                      <span>{report.totalMatched} / 20</span>
+                      <span className="text-lg font-bold text-rose-100 font-sinhala">{report.verdict}</span>
+                    </h2>
+                    <p className="text-xs text-rose-100 max-w-xl font-sinhala leading-relaxed">
+                      {report.kujaDoshayaStatus}
+                    </p>
+                  </div>
 
-                      <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full shrink-0 border ${
-                        item.passed ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800' : 'bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800'
-                      }`}>
-                        {item.passed ? '✔ Pass' : '✖ Alert'}
-                      </span>
-                    </div>
-                  ))}
+                  {/* Score Gauge Circle */}
+                  <div className="w-24 h-24 rounded-full bg-white/10 backdrop-blur-md border border-white/30 flex flex-col items-center justify-center shrink-0 shadow-lg">
+                    <span className="text-2xl font-black text-white">{report.percentage}%</span>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-rose-100">Score</span>
+                  </div>
                 </div>
+
+                {/* Porondam Items Breakdown Table */}
+                <div className="space-y-4">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-3">
+                    <h4 className="text-base font-extrabold text-slate-900 dark:text-white font-sinhala flex items-center gap-2">
+                      <Sparkles size={16} className="text-rose-500" />
+                      <span>විසි පොරොන්දම් ලැයිස්තු විග්‍රහය (Full Breakdown)</span>
+                    </h4>
+                    
+                    <div className="flex gap-2 text-xs font-bold font-sinhala">
+                      <button 
+                        onClick={() => setFilterMode('all')}
+                        className={`px-3 py-1.5 rounded-xl transition-all ${filterMode === 'all' ? 'bg-rose-500 text-white shadow-md' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'}`}
+                      >
+                        සියල්ල ({report.items.length})
+                      </button>
+                      <button 
+                        onClick={() => setFilterMode('passed')}
+                        className={`px-3 py-1.5 rounded-xl transition-all ${filterMode === 'passed' ? 'bg-emerald-500 text-white shadow-md' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'}`}
+                      >
+                        සාර්ථකයි ({passedCount})
+                      </button>
+                      <button 
+                        onClick={() => setFilterMode('alerts')}
+                        className={`px-3 py-1.5 rounded-xl transition-all ${filterMode === 'alerts' ? 'bg-amber-500 text-white shadow-md' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'}`}
+                      >
+                        අවධානය ({alertCount})
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="grid sm:grid-cols-2 gap-3 max-h-[380px] overflow-y-auto pr-1">
+                    {filteredItems.map((item, idx) => (
+                      <div 
+                        key={item.title}
+                        className={`p-3.5 rounded-2xl border flex items-start justify-between gap-3 text-xs transition-all ${
+                          item.passed 
+                            ? 'bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200' 
+                            : 'bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800/40 text-amber-900 dark:text-amber-200'
+                        }`}
+                      >
+                        <div className="flex items-start gap-2.5">
+                          <span className="font-extrabold text-slate-400 w-5 shrink-0 text-xs">{idx + 1}.</span>
+                          <div className="space-y-1">
+                            <h4 className="font-bold text-xs font-sinhala text-slate-900 dark:text-white flex items-center gap-1">
+                              <span>{item.titleSinhala}</span>
+                              <span className="text-[10px] text-slate-400 font-normal">({item.title})</span>
+                            </h4>
+                            <p className="text-[11px] text-slate-500 dark:text-slate-400 font-sinhala leading-relaxed">{item.details}</p>
+                          </div>
+                        </div>
+
+                        <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full shrink-0 border ${
+                          item.passed ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800' : 'bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800'
+                        }`}>
+                          {item.passed ? '✔ Pass' : '✖ Alert'}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
               </div>
 
-              {/* Modal Actions */}
-              <div className="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-slate-800">
+              {/* Bottom Action Footer Bar */}
+              <div className="px-6 py-4 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0 font-sinhala">
                 <button
                   onClick={() => setShowResultModal(false)}
-                  className="px-5 py-2.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs cursor-pointer transition-colors"
+                  className="px-5 py-2.5 rounded-2xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs cursor-pointer transition-colors"
                 >
                   වසා දමන්න (Close)
                 </button>
 
                 <button
                   onClick={() => window.print()}
-                  className="px-6 py-3 rounded-full bg-rose-500 hover:bg-rose-600 text-white font-extrabold text-xs uppercase tracking-wider flex items-center gap-2 cursor-pointer shadow-lg shadow-rose-500/25 transition-all border-none"
+                  className="px-7 py-3 rounded-2xl bg-gradient-to-r from-rose-500 via-pink-500 to-purple-600 hover:from-rose-600 hover:to-purple-700 text-white font-extrabold text-xs uppercase tracking-widest flex items-center gap-2 cursor-pointer shadow-lg shadow-rose-500/25 transition-all border-none font-sans"
                 >
                   <Printer size={16} /> PDF ලෙස Print / Save කරන්න
                 </button>
               </div>
 
             </motion.div>
-          </div>
+          </motion.div>
         )}
       </AnimatePresence>
 
