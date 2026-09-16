@@ -18,7 +18,8 @@ import {
   ShieldCheck,
   UserCheck,
   Info,
-  Compass
+  Compass,
+  User
 } from 'lucide-react';
 import { useTheme } from '../../../context/ThemeContext';
 import { 
@@ -36,25 +37,31 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
   const { theme } = useTheme();
   const isDark = theme === 'dark';
 
-  // Form Inputs (Bride & Groom Authentic Horoscope Inputs)
+  // Form Inputs - Unfilled by Default with "-- තෝරන්න --" Placeholders
   const [brideName, setBrideName] = useState('');
   const [brideDob, setBrideDob] = useState('');
   const [brideTime, setBrideTime] = useState('');
   const [bridePlace, setBridePlace] = useState('');
-  const [brideNakId, setBrideNakId] = useState<number>(1); // Aswida
-  const [brideRashiId, setBrideRashiId] = useState<number>(1); // Mesha
+  const [brideNakId, setBrideNakId] = useState<number | ''>(''); // Unfilled
+  const [brideRashiId, setBrideRashiId] = useState<number | ''>(''); // Unfilled
   const [hasKujaBride, setHasKujaBride] = useState(false);
 
   const [groomName, setGroomName] = useState('');
   const [groomDob, setGroomDob] = useState('');
   const [groomTime, setGroomTime] = useState('');
   const [groomPlace, setGroomPlace] = useState('');
-  const [groomNakId, setGroomNakId] = useState<number>(2); // Berana
-  const [groomRashiId, setGroomRashiId] = useState<number>(2); // Vrishabha
+  const [groomNakId, setGroomNakId] = useState<number | ''>(''); // Unfilled
+  const [groomRashiId, setGroomRashiId] = useState<number | ''>(''); // Unfilled
   const [hasKujaGroom, setHasKujaGroom] = useState(false);
 
   // Form Validation & Modal States
-  const [formErrors, setFormErrors] = useState<{ brideName?: string; groomName?: string }>({});
+  const [formErrors, setFormErrors] = useState<{ 
+    brideName?: string; 
+    groomName?: string; 
+    brideLagna?: string; 
+    groomLagna?: string;
+  }>({});
+  
   const [isCalculating, setIsCalculating] = useState(false);
   const [showResultModal, setShowResultModal] = useState(false);
   const [filterMode, setFilterMode] = useState<'all' | 'passed' | 'alerts'>('all');
@@ -62,10 +69,10 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
   // Real-time calculation from 20-porondam engine
   const report: AstroMatchReport = useMemo(() => {
     return calculateAstroPorondam(
-      brideNakId,
-      groomNakId,
-      brideRashiId,
-      groomRashiId,
+      brideNakId === '' ? 1 : brideNakId,
+      groomNakId === '' ? 2 : groomNakId,
+      brideRashiId === '' ? 1 : brideRashiId,
+      groomRashiId === '' ? 2 : groomRashiId,
       hasKujaBride,
       hasKujaGroom
     );
@@ -82,13 +89,19 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
 
   const handleCalculateSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const errors: { brideName?: string; groomName?: string } = {};
+    const errors: { brideName?: string; groomName?: string; brideLagna?: string; groomLagna?: string } = {};
 
     if (!brideName.trim()) {
       errors.brideName = 'කරුණාකර මනාලියගේ නම ඇතුළත් කරන්න';
     }
     if (!groomName.trim()) {
       errors.groomName = 'කරුණාකර මනාලයාගේ නම ඇතුළත් කරන්න';
+    }
+    if (!brideRashiId) {
+      errors.brideLagna = 'කරුණාකර මනාලියගේ ලග්නය තෝරන්න';
+    }
+    if (!groomRashiId) {
+      errors.groomLagna = 'කරුණාකර මනාලයාගේ ලග්නය තෝරන්න';
     }
 
     if (Object.keys(errors).length > 0) {
@@ -188,324 +201,374 @@ export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string)
           </div>
         </div>
 
-        {/* 2. DUAL INPUT FORM WITH HIGH-END EXECUTIVE GLASS CARDS */}
+        {/* 2. DUAL INPUT FORM WITH NEW ULTRA-PROFESSIONAL GLASS CARDS */}
         <form onSubmit={handleCalculateSubmit} className="space-y-8">
           
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-2 gap-8">
             
-            {/* BRIDE EXECUTIVE GLASS CARD (🌸 Pink Accent) */}
-            <div className={`rounded-[2.5rem] border backdrop-blur-2xl shadow-2xl overflow-hidden relative transition-all duration-300 ${
+            {/* BRIDE EXECUTIVE GLASS CARD (🌸 Modern Pink/Rose Theme) */}
+            <div className={`rounded-[2.5rem] border-2 backdrop-blur-2xl shadow-2xl overflow-hidden relative transition-all duration-300 group ${
               isDark 
-                ? 'bg-slate-900/70 border-rose-500/30 text-white shadow-[0_8px_32px_0_rgba(244,63,94,0.12)]' 
-                : 'bg-white/80 border-rose-200 text-slate-900 shadow-[0_8px_32px_0_rgba(244,63,94,0.06)]'
+                ? 'bg-gradient-to-b from-rose-950/20 via-slate-900/90 to-slate-900 border-rose-500/30 text-white shadow-[0_12px_40px_0_rgba(244,63,94,0.15)]' 
+                : 'bg-gradient-to-b from-rose-50/80 via-white to-white border-rose-200 text-slate-900 shadow-[0_12px_40px_0_rgba(244,63,94,0.08)]'
             }`}>
-              {/* Top Accent Gradient Bar */}
-              <div className="h-2 w-full bg-gradient-to-r from-rose-500 via-pink-500 to-purple-500" />
-
-              <div className="p-6 sm:p-8 space-y-5">
-                <div className="flex items-center justify-between border-b border-rose-500/20 pb-4">
-                  <span className="text-base font-bold text-rose-500 dark:text-rose-400 flex items-center gap-2">
-                    <Heart size={18} className="fill-current" />
-                    <span>මනාලියගේ විස්තර (Bride)</span>
-                  </span>
-                  <span className="text-xs font-semibold px-3 py-1 rounded-full bg-rose-500/10 text-rose-600 dark:text-rose-300 border border-rose-500/20 font-sinhala backdrop-blur-md">
-                    මනාලිය
-                  </span>
+              {/* Top Accent Pill Header */}
+              <div className="px-6 py-4 bg-rose-500/10 border-b border-rose-500/20 flex items-center justify-between backdrop-blur-md">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 rounded-full bg-rose-500 text-white flex items-center justify-center shadow-md">
+                    <Heart size={18} fill="currentColor" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-extrabold text-rose-600 dark:text-rose-300 font-sinhala leading-none">
+                      මනාලියගේ විස්තර (Bride)
+                    </h3>
+                    <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">
+                      Horoscope Parameters
+                    </span>
+                  </div>
                 </div>
 
-                <div className="space-y-4">
-                  {/* Bride Name */}
-                  <div>
-                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5 font-sinhala">
-                      මනාලියගේ නම <span className="text-rose-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={brideName}
-                      onChange={(e) => {
-                        setBrideName(e.target.value);
-                        if (formErrors.brideName) setFormErrors({ ...formErrors, brideName: undefined });
-                      }}
-                      placeholder="උදා: නිමාලි පෙරේරා"
-                      className={`w-full rounded-2xl px-4 py-3 text-xs font-semibold border backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-rose-500 transition-colors ${
-                        formErrors.brideName ? 'border-rose-500 bg-rose-50/50' : (isDark ? 'bg-slate-950/80 border-rose-500/30 text-white' : 'bg-white/90 border-rose-200 text-slate-900')
-                      }`}
-                    />
-                    {formErrors.brideName && (
-                      <span className="text-[11px] font-bold text-rose-500 flex items-center gap-1 mt-1 font-sinhala">
-                        <AlertCircle size={12} /> {formErrors.brideName}
-                      </span>
-                    )}
-                  </div>
+                <span className="text-[11px] font-black px-3 py-1 rounded-full bg-rose-500 text-white shadow-sm font-sinhala">
+                  මනාලිය
+                </span>
+              </div>
 
-                  {/* Date & Time Grid */}
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="text-[11px] font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1 mb-1.5 font-sinhala">
-                        <Calendar size={13} className="text-rose-500" /> උපන් දිනය
-                      </label>
-                      <input
-                        type="date"
-                        value={brideDob}
-                        onChange={(e) => setBrideDob(e.target.value)}
-                        className={`w-full rounded-2xl px-3 py-2.5 text-xs font-semibold border backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-rose-500 cursor-pointer ${
-                          isDark ? 'bg-slate-950/80 border-rose-500/30 text-white' : 'bg-white/90 border-rose-200 text-slate-900'
-                        }`}
-                      />
-                    </div>
-                    <div>
-                      <label className="text-[11px] font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1 mb-1.5 font-sinhala">
-                        <Clock size={13} className="text-rose-500" /> උපන් වේලාව
-                      </label>
-                      <input
-                        type="time"
-                        value={brideTime}
-                        onChange={(e) => setBrideTime(e.target.value)}
-                        className={`w-full rounded-2xl px-3 py-2.5 text-xs font-semibold border backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-rose-500 cursor-pointer ${
-                          isDark ? 'bg-slate-950/80 border-rose-500/30 text-white' : 'bg-white/90 border-rose-200 text-slate-900'
-                        }`}
-                      />
-                    </div>
-                  </div>
+              <div className="p-6 sm:p-8 space-y-4">
+                
+                {/* Bride Name Input */}
+                <div>
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5 mb-1.5 font-sinhala">
+                    <User size={13} className="text-rose-500" />
+                    <span>මනාලියගේ නම</span> <span className="text-rose-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={brideName}
+                    onChange={(e) => {
+                      setBrideName(e.target.value);
+                      if (formErrors.brideName) setFormErrors({ ...formErrors, brideName: undefined });
+                    }}
+                    placeholder="උදා: නිමාලි පෙරේරා"
+                    className={`w-full rounded-2xl px-4 py-3 text-xs font-semibold border backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-rose-500 transition-colors shadow-inner ${
+                      formErrors.brideName ? 'border-rose-500 bg-rose-50/60 dark:bg-rose-950/40' : (isDark ? 'bg-slate-950/80 border-rose-500/30 text-white' : 'bg-white border-rose-200 text-slate-900')
+                    }`}
+                  />
+                  {formErrors.brideName && (
+                    <span className="text-[11px] font-bold text-rose-500 flex items-center gap-1 mt-1 font-sinhala">
+                      <AlertCircle size={12} /> {formErrors.brideName}
+                    </span>
+                  )}
+                </div>
 
-                  {/* Birth Place / District */}
-                  <div>
-                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1 mb-1.5 font-sinhala">
-                      <MapPin size={13} className="text-rose-500" /> උපන් ස්ථානය / දිස්ත්‍රික්කය (Birth Place)
-                    </label>
-                    <input
-                      type="text"
-                      value={bridePlace}
-                      onChange={(e) => setBridePlace(e.target.value)}
-                      placeholder="උදා: කොළඹ / මහනුවර / Galle"
-                      className={`w-full rounded-2xl px-4 py-3 text-xs font-semibold border backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-rose-500 ${
-                        isDark ? 'bg-slate-950/80 border-rose-500/30 text-white' : 'bg-white/90 border-rose-200 text-slate-900'
-                      }`}
-                    />
-                  </div>
-
-                  {/* Lagna (Zodiac Sign) */}
-                  <div>
-                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1 mb-1.5 font-sinhala">
-                      <Compass size={13} className="text-rose-500" /> ලග්නය (Lagna / Zodiac Sign)
-                    </label>
-                    <select
-                      value={brideRashiId}
-                      onChange={(e) => setBrideRashiId(Number(e.target.value))}
-                      className={`w-full rounded-2xl px-4 py-3 text-xs font-semibold border backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-rose-500 cursor-pointer ${
-                        isDark ? 'bg-slate-950/80 border-rose-500/30 text-white' : 'bg-white/90 border-rose-200 text-slate-900'
-                      }`}
-                    >
-                      {RASHIS.map((r) => (
-                        <option key={r.id} value={r.id} className={isDark ? 'bg-slate-900 text-white' : 'bg-white text-slate-900'}>
-                          {r.nameSinhala}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Nakshatra with Don't Know Option */}
-                  <div>
-                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1 mb-1.5 font-sinhala">
-                      <Star size={13} className="text-amber-400" /> උපන් නැකත (Nakshatra)
-                    </label>
-                    <select
-                      value={brideNakId}
-                      onChange={(e) => setBrideNakId(Number(e.target.value))}
-                      className={`w-full rounded-2xl px-4 py-3 text-xs font-semibold border backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-rose-500 cursor-pointer ${
-                        isDark ? 'bg-slate-950/80 border-rose-500/30 text-white' : 'bg-white/90 border-rose-200 text-slate-900'
-                      }`}
-                    >
-                      {NAKSHATRAS.map((n) => (
-                        <option key={n.id} value={n.id} className={isDark ? 'bg-slate-900 text-white' : 'bg-white text-slate-900'}>
-                          {n.id === 0 ? '✨ 0. දන්නේ නැත (Auto Calculate)' : `${n.id}. ${n.nameSinhala} (${n.name})`}
-                        </option>
-                      ))}
-                    </select>
-
-                    {brideNakId === 0 && (
-                      <span className="text-[11px] font-medium text-rose-500 dark:text-rose-400 flex items-start gap-1 mt-1.5 font-sinhala leading-relaxed">
-                        <Info size={13} className="shrink-0 mt-0.5" />
-                        <span>නැකත දන්නේ නැත්නම් ලග්නය හා උපන් වේලාව අනුව auto-calculate වේ.</span>
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Kuja Doshaya Check */}
-                  <div 
-                    onClick={() => setHasKujaBride(!hasKujaBride)}
-                    className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex items-center justify-between backdrop-blur-md ${
-                      hasKujaBride 
-                        ? 'bg-rose-500/15 border-rose-400 text-rose-600 dark:text-rose-300' 
-                        : (isDark ? 'bg-slate-950/50 border-slate-800 text-slate-400 hover:border-rose-500/30' : 'bg-white/80 border-slate-200 text-slate-600 hover:border-rose-300')
+                {/* Lagna (Zodiac Sign) - UNFILLED BY DEFAULT */}
+                <div>
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5 mb-1.5 font-sinhala">
+                    <Compass size={13} className="text-rose-500" />
+                    <span>ලග්නය (Lagna / Zodiac Sign)</span> <span className="text-rose-500">*</span>
+                  </label>
+                  <select
+                    value={brideRashiId}
+                    onChange={(e) => {
+                      setBrideRashiId(e.target.value ? Number(e.target.value) : '');
+                      if (formErrors.brideLagna) setFormErrors({ ...formErrors, brideLagna: undefined });
+                    }}
+                    className={`w-full rounded-2xl px-4 py-3 text-xs font-semibold border backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-rose-500 cursor-pointer shadow-inner ${
+                      formErrors.brideLagna ? 'border-rose-500 bg-rose-50/60 dark:bg-rose-950/40' : (isDark ? 'bg-slate-950/80 border-rose-500/30 text-white' : 'bg-white border-rose-200 text-slate-900')
                     }`}
                   >
-                    <div className="flex items-center gap-2.5 text-xs font-semibold">
-                      <div className={`w-4.5 h-4.5 rounded-md flex items-center justify-center border ${hasKujaBride ? 'bg-rose-500 text-white border-rose-500' : 'border-slate-400'}`}>
-                        {hasKujaBride && <Check size={12} strokeWidth={3} />}
-                      </div>
-                      <span>මනාලියට කුජ දෝෂය පවතී (Kuja Doshaya)</span>
-                    </div>
+                    <option value="" className={isDark ? 'bg-slate-900 text-slate-400' : 'bg-white text-slate-500'}>
+                      -- ලග්නය තෝරන්න (Select Lagna) --
+                    </option>
+                    {RASHIS.map((r) => (
+                      <option key={r.id} value={r.id} className={isDark ? 'bg-slate-900 text-white' : 'bg-white text-slate-900'}>
+                        {r.nameSinhala}
+                      </option>
+                    ))}
+                  </select>
+                  {formErrors.brideLagna && (
+                    <span className="text-[11px] font-bold text-rose-500 flex items-center gap-1 mt-1 font-sinhala">
+                      <AlertCircle size={12} /> {formErrors.brideLagna}
+                    </span>
+                  )}
+                </div>
+
+                {/* Nakshatra (Unfilled by default with Don't Know Option) */}
+                <div>
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5 mb-1.5 font-sinhala">
+                    <Star size={13} className="text-amber-400" />
+                    <span>උපන් නැකත (Nakshatra)</span>
+                  </label>
+                  <select
+                    value={brideNakId}
+                    onChange={(e) => setBrideNakId(e.target.value !== '' ? Number(e.target.value) : '')}
+                    className={`w-full rounded-2xl px-4 py-3 text-xs font-semibold border backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-rose-500 cursor-pointer shadow-inner ${
+                      isDark ? 'bg-slate-950/80 border-rose-500/30 text-white' : 'bg-white border-rose-200 text-slate-900'
+                    }`}
+                  >
+                    <option value="" className={isDark ? 'bg-slate-900 text-slate-400' : 'bg-white text-slate-500'}>
+                      -- නැකත තෝරන්න (Select Nakshatra) --
+                    </option>
+                    {NAKSHATRAS.map((n) => (
+                      <option key={n.id} value={n.id} className={isDark ? 'bg-slate-900 text-white' : 'bg-white text-slate-900'}>
+                        {n.id === 0 ? '✨ 0. දන්නේ නැත (Auto Calculate)' : `${n.id}. ${n.nameSinhala} (${n.name})`}
+                      </option>
+                    ))}
+                  </select>
+
+                  {brideNakId === 0 && (
+                    <span className="text-[11px] font-medium text-rose-500 dark:text-rose-400 flex items-start gap-1 mt-1.5 font-sinhala leading-relaxed">
+                      <Info size={13} className="shrink-0 mt-0.5" />
+                      <span>නැකත දන්නේ නැත්නම් ලග්නය හා උපන් වේලාව අනුව auto-calculate වේ.</span>
+                    </span>
+                  )}
+                </div>
+
+                {/* Date & Time Grid */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-[11px] font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1 mb-1.5 font-sinhala">
+                      <Calendar size={13} className="text-rose-500" /> උපන් දිනය
+                    </label>
+                    <input
+                      type="date"
+                      value={brideDob}
+                      onChange={(e) => setBrideDob(e.target.value)}
+                      className={`w-full rounded-2xl px-3 py-2.5 text-xs font-semibold border backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-rose-500 cursor-pointer ${
+                        isDark ? 'bg-slate-950/80 border-rose-500/30 text-white' : 'bg-white border-rose-200 text-slate-900'
+                      }`}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[11px] font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1 mb-1.5 font-sinhala">
+                      <Clock size={13} className="text-rose-500" /> උපන් වේලාව
+                    </label>
+                    <input
+                      type="time"
+                      value={brideTime}
+                      onChange={(e) => setBrideTime(e.target.value)}
+                      className={`w-full rounded-2xl px-3 py-2.5 text-xs font-semibold border backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-rose-500 cursor-pointer ${
+                        isDark ? 'bg-slate-950/80 border-rose-500/30 text-white' : 'bg-white border-rose-200 text-slate-900'
+                      }`}
+                    />
                   </div>
                 </div>
+
+                {/* Birth Place / District */}
+                <div>
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1 mb-1.5 font-sinhala">
+                    <MapPin size={13} className="text-rose-500" /> උපන් ස්ථානය / දිස්ත්‍රික්කය
+                  </label>
+                  <input
+                    type="text"
+                    value={bridePlace}
+                    onChange={(e) => setBridePlace(e.target.value)}
+                    placeholder="උදා: කොළඹ / මහනුවර"
+                    className={`w-full rounded-2xl px-4 py-3 text-xs font-semibold border backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-rose-500 ${
+                      isDark ? 'bg-slate-950/80 border-rose-500/30 text-white' : 'bg-white border-rose-200 text-slate-900'
+                    }`}
+                  />
+                </div>
+
+                {/* Kuja Doshaya Check */}
+                <div 
+                  onClick={() => setHasKujaBride(!hasKujaBride)}
+                  className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex items-center justify-between backdrop-blur-md ${
+                    hasKujaBride 
+                      ? 'bg-rose-500/15 border-rose-400 text-rose-600 dark:text-rose-300' 
+                      : (isDark ? 'bg-slate-950/50 border-slate-800 text-slate-400 hover:border-rose-500/30' : 'bg-white/80 border-slate-200 text-slate-600 hover:border-rose-300')
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5 text-xs font-semibold">
+                    <div className={`w-4.5 h-4.5 rounded-md flex items-center justify-center border ${hasKujaBride ? 'bg-rose-500 text-white border-rose-500' : 'border-slate-400'}`}>
+                      {hasKujaBride && <Check size={12} strokeWidth={3} />}
+                    </div>
+                    <span>මනාලියට කුජ දෝෂය පවතී (Kuja Doshaya)</span>
+                  </div>
+                </div>
+
               </div>
             </div>
 
-            {/* GROOM EXECUTIVE GLASS CARD (👔 Indigo Accent) */}
-            <div className={`rounded-[2.5rem] border backdrop-blur-2xl shadow-2xl overflow-hidden relative transition-all duration-300 ${
+            {/* GROOM EXECUTIVE GLASS CARD (👔 Modern Indigo/Cyan Theme) */}
+            <div className={`rounded-[2.5rem] border-2 backdrop-blur-2xl shadow-2xl overflow-hidden relative transition-all duration-300 group ${
               isDark 
-                ? 'bg-slate-900/70 border-indigo-500/30 text-white shadow-[0_8px_32px_0_rgba(99,102,241,0.12)]' 
-                : 'bg-white/80 border-indigo-200 text-slate-900 shadow-[0_8px_32px_0_rgba(99,102,241,0.06)]'
+                ? 'bg-gradient-to-b from-indigo-950/20 via-slate-900/90 to-slate-900 border-indigo-500/30 text-white shadow-[0_12px_40px_0_rgba(99,102,241,0.15)]' 
+                : 'bg-gradient-to-b from-indigo-50/80 via-white to-white border-indigo-200 text-slate-900 shadow-[0_12px_40px_0_rgba(99,102,241,0.08)]'
             }`}>
-              {/* Top Accent Gradient Bar */}
-              <div className="h-2 w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-500" />
-
-              <div className="p-6 sm:p-8 space-y-5">
-                <div className="flex items-center justify-between border-b border-indigo-500/20 pb-4">
-                  <span className="text-base font-bold text-indigo-500 dark:text-indigo-400 flex items-center gap-2">
-                    <Heart size={18} className="fill-current" />
-                    <span>මනාලයාගේ විස්තර (Groom)</span>
-                  </span>
-                  <span className="text-xs font-semibold px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-300 border border-indigo-500/20 font-sinhala backdrop-blur-md">
-                    මනාලයා
-                  </span>
+              {/* Top Accent Pill Header */}
+              <div className="px-6 py-4 bg-indigo-500/10 border-b border-indigo-500/20 flex items-center justify-between backdrop-blur-md">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 rounded-full bg-indigo-500 text-white flex items-center justify-center shadow-md">
+                    <Heart size={18} fill="currentColor" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-extrabold text-indigo-600 dark:text-indigo-300 font-sinhala leading-none">
+                      මනාලයාගේ විස්තර (Groom)
+                    </h3>
+                    <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">
+                      Horoscope Parameters
+                    </span>
+                  </div>
                 </div>
 
-                <div className="space-y-4">
-                  {/* Groom Name */}
-                  <div>
-                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5 font-sinhala">
-                      මනාලයාගේ නම <span className="text-rose-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={groomName}
-                      onChange={(e) => {
-                        setGroomName(e.target.value);
-                        if (formErrors.groomName) setFormErrors({ ...formErrors, groomName: undefined });
-                      }}
-                      placeholder="උදා: කසුන් බණ්ඩාර"
-                      className={`w-full rounded-2xl px-4 py-3 text-xs font-semibold border backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors ${
-                        formErrors.groomName ? 'border-rose-500 bg-rose-50/50' : (isDark ? 'bg-slate-950/80 border-indigo-500/30 text-white' : 'bg-white/90 border-indigo-200 text-slate-900')
-                      }`}
-                    />
-                    {formErrors.groomName && (
-                      <span className="text-[11px] font-bold text-rose-500 flex items-center gap-1 mt-1 font-sinhala">
-                        <AlertCircle size={12} /> {formErrors.groomName}
-                      </span>
-                    )}
-                  </div>
+                <span className="text-[11px] font-black px-3 py-1 rounded-full bg-indigo-500 text-white shadow-sm font-sinhala">
+                  මනාලයා
+                </span>
+              </div>
 
-                  {/* Date & Time Grid */}
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="text-[11px] font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1 mb-1.5 font-sinhala">
-                        <Calendar size={13} className="text-indigo-500" /> උපන් දිනය
-                      </label>
-                      <input
-                        type="date"
-                        value={groomDob}
-                        onChange={(e) => setGroomDob(e.target.value)}
-                        className={`w-full rounded-2xl px-3 py-2.5 text-xs font-semibold border backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer ${
-                          isDark ? 'bg-slate-950/80 border-indigo-500/30 text-white' : 'bg-white/90 border-indigo-200 text-slate-900'
-                        }`}
-                      />
-                    </div>
-                    <div>
-                      <label className="text-[11px] font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1 mb-1.5 font-sinhala">
-                        <Clock size={13} className="text-indigo-500" /> උපන් වේලාව
-                      </label>
-                      <input
-                        type="time"
-                        value={groomTime}
-                        onChange={(e) => setGroomTime(e.target.value)}
-                        className={`w-full rounded-2xl px-3 py-2.5 text-xs font-semibold border backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer ${
-                          isDark ? 'bg-slate-950/80 border-indigo-500/30 text-white' : 'bg-white/90 border-indigo-200 text-slate-900'
-                        }`}
-                      />
-                    </div>
-                  </div>
+              <div className="p-6 sm:p-8 space-y-4">
+                
+                {/* Groom Name Input */}
+                <div>
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5 mb-1.5 font-sinhala">
+                    <User size={13} className="text-indigo-500" />
+                    <span>මනාලයාගේ නම</span> <span className="text-rose-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={groomName}
+                    onChange={(e) => {
+                      setGroomName(e.target.value);
+                      if (formErrors.groomName) setFormErrors({ ...formErrors, groomName: undefined });
+                    }}
+                    placeholder="උදා: කසුන් බණ්ඩාර"
+                    className={`w-full rounded-2xl px-4 py-3 text-xs font-semibold border backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors shadow-inner ${
+                      formErrors.groomName ? 'border-rose-500 bg-rose-50/60 dark:bg-rose-950/40' : (isDark ? 'bg-slate-950/80 border-indigo-500/30 text-white' : 'bg-white border-indigo-200 text-slate-900')
+                    }`}
+                  />
+                  {formErrors.groomName && (
+                    <span className="text-[11px] font-bold text-rose-500 flex items-center gap-1 mt-1 font-sinhala">
+                      <AlertCircle size={12} /> {formErrors.groomName}
+                    </span>
+                  )}
+                </div>
 
-                  {/* Birth Place / District */}
-                  <div>
-                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1 mb-1.5 font-sinhala">
-                      <MapPin size={13} className="text-indigo-500" /> උපන් ස්ථානය / දිස්ත්‍රික්කය (Birth Place)
-                    </label>
-                    <input
-                      type="text"
-                      value={groomPlace}
-                      onChange={(e) => setGroomPlace(e.target.value)}
-                      placeholder="උදා: කොළඹ / මහනුවර / Kandy"
-                      className={`w-full rounded-2xl px-4 py-3 text-xs font-semibold border backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
-                        isDark ? 'bg-slate-950/80 border-indigo-500/30 text-white' : 'bg-white/90 border-indigo-200 text-slate-900'
-                      }`}
-                    />
-                  </div>
-
-                  {/* Lagna (Zodiac Sign) */}
-                  <div>
-                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1 mb-1.5 font-sinhala">
-                      <Compass size={13} className="text-indigo-500" /> ලග්නය (Lagna / Zodiac Sign)
-                    </label>
-                    <select
-                      value={groomRashiId}
-                      onChange={(e) => setGroomRashiId(Number(e.target.value))}
-                      className={`w-full rounded-2xl px-4 py-3 text-xs font-semibold border backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer ${
-                        isDark ? 'bg-slate-950/80 border-indigo-500/30 text-white' : 'bg-white/90 border-indigo-200 text-slate-900'
-                      }`}
-                    >
-                      {RASHIS.map((r) => (
-                        <option key={r.id} value={r.id} className={isDark ? 'bg-slate-900 text-white' : 'bg-white text-slate-900'}>
-                          {r.nameSinhala}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Nakshatra with Don't Know Option */}
-                  <div>
-                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1 mb-1.5 font-sinhala">
-                      <Star size={13} className="text-amber-400" /> උපන් නැකත (Nakshatra)
-                    </label>
-                    <select
-                      value={groomNakId}
-                      onChange={(e) => setGroomNakId(Number(e.target.value))}
-                      className={`w-full rounded-2xl px-4 py-3 text-xs font-semibold border backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer ${
-                        isDark ? 'bg-slate-950/80 border-indigo-500/30 text-white' : 'bg-white/90 border-indigo-200 text-slate-900'
-                      }`}
-                    >
-                      {NAKSHATRAS.map((n) => (
-                        <option key={n.id} value={n.id} className={isDark ? 'bg-slate-900 text-white' : 'bg-white text-slate-900'}>
-                          {n.id === 0 ? '✨ 0. දන්නේ නැත (Auto Calculate)' : `${n.id}. ${n.nameSinhala} (${n.name})`}
-                        </option>
-                      ))}
-                    </select>
-
-                    {groomNakId === 0 && (
-                      <span className="text-[11px] font-medium text-indigo-500 dark:text-indigo-400 flex items-start gap-1 mt-1.5 font-sinhala leading-relaxed">
-                        <Info size={13} className="shrink-0 mt-0.5" />
-                        <span>නැකත දන්නේ නැත්නම් ලග්නය හා උපන් වේලාව අනුව auto-calculate වේ.</span>
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Kuja Doshaya Check */}
-                  <div 
-                    onClick={() => setHasKujaGroom(!hasKujaGroom)}
-                    className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex items-center justify-between backdrop-blur-md ${
-                      hasKujaGroom 
-                        ? 'bg-indigo-500/15 border-indigo-400 text-indigo-600 dark:text-indigo-300' 
-                        : (isDark ? 'bg-slate-950/50 border-slate-800 text-slate-400 hover:border-indigo-500/30' : 'bg-white/80 border-slate-200 text-slate-600 hover:border-indigo-300')
+                {/* Lagna (Zodiac Sign) - UNFILLED BY DEFAULT */}
+                <div>
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5 mb-1.5 font-sinhala">
+                    <Compass size={13} className="text-indigo-500" />
+                    <span>ලග්නය (Lagna / Zodiac Sign)</span> <span className="text-rose-500">*</span>
+                  </label>
+                  <select
+                    value={groomRashiId}
+                    onChange={(e) => {
+                      setGroomRashiId(e.target.value ? Number(e.target.value) : '');
+                      if (formErrors.groomLagna) setFormErrors({ ...formErrors, groomLagna: undefined });
+                    }}
+                    className={`w-full rounded-2xl px-4 py-3 text-xs font-semibold border backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer shadow-inner ${
+                      formErrors.groomLagna ? 'border-rose-500 bg-rose-50/60 dark:bg-rose-950/40' : (isDark ? 'bg-slate-950/80 border-indigo-500/30 text-white' : 'bg-white border-indigo-200 text-slate-900')
                     }`}
                   >
-                    <div className="flex items-center gap-2.5 text-xs font-semibold">
-                      <div className={`w-4.5 h-4.5 rounded-md flex items-center justify-center border ${hasKujaGroom ? 'bg-indigo-500 text-white border-indigo-500' : 'border-slate-400'}`}>
-                        {hasKujaGroom && <Check size={12} strokeWidth={3} />}
-                      </div>
-                      <span>මනාලයාට කුජ දෝෂය පවතී (Kuja Doshaya)</span>
-                    </div>
+                    <option value="" className={isDark ? 'bg-slate-900 text-slate-400' : 'bg-white text-slate-500'}>
+                      -- ලග්නය තෝරන්න (Select Lagna) --
+                    </option>
+                    {RASHIS.map((r) => (
+                      <option key={r.id} value={r.id} className={isDark ? 'bg-slate-900 text-white' : 'bg-white text-slate-900'}>
+                        {r.nameSinhala}
+                      </option>
+                    ))}
+                  </select>
+                  {formErrors.groomLagna && (
+                    <span className="text-[11px] font-bold text-rose-500 flex items-center gap-1 mt-1 font-sinhala">
+                      <AlertCircle size={12} /> {formErrors.groomLagna}
+                    </span>
+                  )}
+                </div>
+
+                {/* Nakshatra (Unfilled by default with Don't Know Option) */}
+                <div>
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5 mb-1.5 font-sinhala">
+                    <Star size={13} className="text-amber-400" />
+                    <span>උපන් නැකත (Nakshatra)</span>
+                  </label>
+                  <select
+                    value={groomNakId}
+                    onChange={(e) => setGroomNakId(e.target.value !== '' ? Number(e.target.value) : '')}
+                    className={`w-full rounded-2xl px-4 py-3 text-xs font-semibold border backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer shadow-inner ${
+                      isDark ? 'bg-slate-950/80 border-indigo-500/30 text-white' : 'bg-white border-indigo-200 text-slate-900'
+                    }`}
+                  >
+                    <option value="" className={isDark ? 'bg-slate-900 text-slate-400' : 'bg-white text-slate-500'}>
+                      -- නැකත තෝරන්න (Select Nakshatra) --
+                    </option>
+                    {NAKSHATRAS.map((n) => (
+                      <option key={n.id} value={n.id} className={isDark ? 'bg-slate-900 text-white' : 'bg-white text-slate-900'}>
+                        {n.id === 0 ? '✨ 0. දන්නේ නැත (Auto Calculate)' : `${n.id}. ${n.nameSinhala} (${n.name})`}
+                      </option>
+                    ))}
+                  </select>
+
+                  {groomNakId === 0 && (
+                    <span className="text-[11px] font-medium text-indigo-500 dark:text-indigo-400 flex items-start gap-1 mt-1.5 font-sinhala leading-relaxed">
+                      <Info size={13} className="shrink-0 mt-0.5" />
+                      <span>නැකත දන්නේ නැත්නම් ලග්නය හා උපන් වේලාව අනුව auto-calculate වේ.</span>
+                    </span>
+                  )}
+                </div>
+
+                {/* Date & Time Grid */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-[11px] font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1 mb-1.5 font-sinhala">
+                      <Calendar size={13} className="text-indigo-500" /> උපන් දිනය
+                    </label>
+                    <input
+                      type="date"
+                      value={groomDob}
+                      onChange={(e) => setGroomDob(e.target.value)}
+                      className={`w-full rounded-2xl px-3 py-2.5 text-xs font-semibold border backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer ${
+                        isDark ? 'bg-slate-950/80 border-indigo-500/30 text-white' : 'bg-white border-indigo-200 text-slate-900'
+                      }`}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[11px] font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1 mb-1.5 font-sinhala">
+                      <Clock size={13} className="text-indigo-500" /> උපන් වේලාව
+                    </label>
+                    <input
+                      type="time"
+                      value={groomTime}
+                      onChange={(e) => setGroomTime(e.target.value)}
+                      className={`w-full rounded-2xl px-3 py-2.5 text-xs font-semibold border backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer ${
+                        isDark ? 'bg-slate-950/80 border-indigo-500/30 text-white' : 'bg-white border-indigo-200 text-slate-900'
+                      }`}
+                    />
                   </div>
                 </div>
+
+                {/* Birth Place / District */}
+                <div>
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1 mb-1.5 font-sinhala">
+                    <MapPin size={13} className="text-indigo-500" /> උපන් ස්ථානය / දිස්ත්‍රික්කය
+                  </label>
+                  <input
+                    type="text"
+                    value={groomPlace}
+                    onChange={(e) => setGroomPlace(e.target.value)}
+                    placeholder="උදා: කොළඹ / මහනුවර"
+                    className={`w-full rounded-2xl px-4 py-3 text-xs font-semibold border backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
+                      isDark ? 'bg-slate-950/80 border-indigo-500/30 text-white' : 'bg-white border-indigo-200 text-slate-900'
+                    }`}
+                  />
+                </div>
+
+                {/* Kuja Doshaya Check */}
+                <div 
+                  onClick={() => setHasKujaGroom(!hasKujaGroom)}
+                  className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex items-center justify-between backdrop-blur-md ${
+                    hasKujaGroom 
+                      ? 'bg-indigo-500/15 border-indigo-400 text-indigo-600 dark:text-indigo-300' 
+                      : (isDark ? 'bg-slate-950/50 border-slate-800 text-slate-400 hover:border-indigo-500/30' : 'bg-white/80 border-slate-200 text-slate-600 hover:border-indigo-300')
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5 text-xs font-semibold">
+                    <div className={`w-4.5 h-4.5 rounded-md flex items-center justify-center border ${hasKujaGroom ? 'bg-indigo-500 text-white border-indigo-500' : 'border-slate-400'}`}>
+                      {hasKujaGroom && <Check size={12} strokeWidth={3} />}
+                    </div>
+                    <span>මනාලයාට කුජ දෝෂය පවතී (Kuja Doshaya)</span>
+                  </div>
+                </div>
+
               </div>
             </div>
 
