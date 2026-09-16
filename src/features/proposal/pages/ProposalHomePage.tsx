@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Compass, Send, Heart, Eye, CheckCircle2, Crown, ArrowRight, ShieldCheck, Lock, MessageCircle, Settings, Home, GraduationCap, User2, Sparkles, Inbox, Check, X, Clock } from 'lucide-react';
 import { cx, PrimaryButton, Card } from '../components/ui/ProposalPrimitives';
 import { proposalApi } from '../api/proposalApi';
-import astroCoupleHero from '../../../../assets/astro_couple_hero.png';
+import astroCoupleHero from '../../../assets/astro_couple_hero.png';
 
 export default function ProposalHomePage({
   setPage,

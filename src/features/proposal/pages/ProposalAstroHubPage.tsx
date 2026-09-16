@@ -26,9 +26,9 @@ import {
 import { cx } from '../components/ui/ProposalPrimitives';
 
 // Rich Visual Image Assets
-import astroCoupleHero from '../../../../assets/astro_couple_hero.png';
-import astroZodiacBg from '../../../../assets/astro_zodiac_bg.png';
-import astroCoupleCard from '../../../../assets/astro_couple_card.png';
+import astroCoupleHero from '../../../assets/astro_couple_hero.png';
+import astroZodiacBg from '../../../assets/astro_zodiac_bg.png';
+import astroCoupleCard from '../../../assets/astro_couple_card.png';
 
 export default function ProposalAstroHubPage({ setPage }: { setPage: (p: string) => void }) {
   const [brideNakId, setBrideNakId] = useState<number>(1); // Aswida
